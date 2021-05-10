@@ -6,6 +6,8 @@
  * Version:           1.0.0
  * Requires at least: 5.7
  * Requires PHP:      7.4
+ * WC requires at least: 5.2.2
+ * WC tested up to: 5.2.2
  * Author:            Αλέξανδρος Ράικος
  * Author URI:        https://www.araikos.gr/
  * License:           GNU General Public License v3.0

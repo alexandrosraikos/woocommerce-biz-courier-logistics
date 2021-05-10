@@ -3,7 +3,7 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       http://example.com
+ * @link       https://github.com/alexandrosraikos/woobiz
  * @since      1.0.0
  *
  * @package    WooBiz
