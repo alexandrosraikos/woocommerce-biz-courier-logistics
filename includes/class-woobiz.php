@@ -25,7 +25,7 @@
  * @since      1.0.0
  * @package    WooBiz
  * @subpackage WooBiz/includes
- * @author     Your Name <email@example.com>
+ * @author     Your Name <alexandros@araikos.gr>
  */
 class WooBiz {
 
