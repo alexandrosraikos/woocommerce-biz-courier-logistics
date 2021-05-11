@@ -20,7 +20,8 @@
  * @subpackage WooBiz/admin
  * @author     Your Name <alexandros@araikos.gr>
  */
-class WooBiz_Admin {
+class WooBiz_Admin
+{
 
 	/**
 	 * The ID of this plugin.
@@ -47,11 +48,11 @@ class WooBiz_Admin {
 	 * @param      string    $WooBiz       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $WooBiz, $version ) {
+	public function __construct($WooBiz, $version)
+	{
 
 		$this->WooBiz = $WooBiz;
 		$this->version = $version;
-
 	}
 
 	/**
@@ -59,7 +60,8 @@ class WooBiz_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function enqueue_styles()
+	{
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -73,8 +75,7 @@ class WooBiz_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->WooBiz, plugin_dir_url( __FILE__ ) . 'css/woobiz-admin.css', array(), $this->version, 'all' );
-
+		wp_enqueue_style($this->WooBiz, plugin_dir_url(__FILE__) . 'css/woobiz-admin.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -82,7 +83,8 @@ class WooBiz_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts()
+	{
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -96,8 +98,32 @@ class WooBiz_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->WooBiz, plugin_dir_url( __FILE__ ) . 'js/woobiz-admin.js', array( 'jquery' ), $this->version, false );
-
+		wp_enqueue_script($this->WooBiz, plugin_dir_url(__FILE__) . 'js/woobiz-admin.js', array('jquery'), $this->version, false);
 	}
 
-}
+	// TODO: Add WooCommerce Settings API & Options API pane for BizCourier credentials.
+	// - Duplicate placeholder functions above to get started.
+	// - Add PHPDoc for clarity.
+
+	/**
+	 * Register BizCourier credentials.
+	 * 
+	 * @since 1.0.0
+	 */
+		/**
+		 * Initialise Gateway Settings Form Fields
+		 */
+		function bizcourier_shipping_method()
+		{
+			if (!class_exists('BizCourier_Shipping_Method')) {
+				require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/shipping-method.php';
+			}
+		}
+
+		function add_bizcourier_shipping_method($methods)
+		{
+			$methods[] = 'BizCourier_Shipping_Method';
+			return $methods;
+		}
+
+	}

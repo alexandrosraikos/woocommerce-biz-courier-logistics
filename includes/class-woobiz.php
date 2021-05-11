@@ -157,6 +157,9 @@ class WooBiz {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		// Add shipping method.
+		$this->loader->add_action('woocommerce_shipping_init', $plugin_admin, 'bizcourier_shipping_method');
+		$this->loader->add_filter('woocommerce_shipping_methods', $plugin_admin, 'add_bizcourier_shipping_method');
 	}
 
 	/**
