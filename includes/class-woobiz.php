@@ -154,12 +154,13 @@ class WooBiz {
 
 		$plugin_admin = new WooBiz_Admin( $this->get_WooBiz(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_styles', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
-		// Add shipping method.
-		$this->loader->add_action('woocommerce_shipping_init', $plugin_admin, 'bizcourier_shipping_method');
-		$this->loader->add_filter('woocommerce_shipping_methods', $plugin_admin, 'add_bizcourier_shipping_method');
+		// Add preference pane for BizCourier credentials.
+        $this->loader->add_filter( 'woocommerce_settings_tabs_array', $plugin_admin, 'add_biz_settings_tab', 50 );
+        $this->loader->add_action( 'woocommerce_settings_tabs_biz_settings_tab', $plugin_admin, 'biz_settings_tab' );
+        $this->loader->add_action( 'woocommerce_update_options_biz_settings_tab', $plugin_admin, 'update_biz_settings' );
 	}
 
 	/**
