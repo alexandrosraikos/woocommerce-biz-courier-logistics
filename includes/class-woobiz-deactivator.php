@@ -23,14 +23,18 @@
 class WooBiz_Deactivator {
 
 	/**
-	 * Short Description. (use period)
+	 * Delete BizCourier credentials.
 	 *
-	 * Long Description.
+	 * Upon deactivation, all BizCourier credentials are deleted from the database.
 	 *
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+		delete_option( 'wc_biz_settings_tab_account_number' );
+		delete_option( 'wc_biz_settings_tab_head_crm' );
+		delete_option( 'wc_biz_settings_tab_warehouse_crm' );
+		delete_option( 'wc_biz_settings_tab_username' );
+		delete_option( 'wc_biz_settings_tab_password' );
 	}
 
 }
