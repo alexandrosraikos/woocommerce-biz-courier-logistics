@@ -105,87 +105,96 @@ class WooBiz_Admin
 	// - Duplicate placeholder functions above to get started.
 	// - Add PHPDoc for clarity.
 
-	
-    /* BIZ CREDENTIALS SETTINGS */
-    
-    /**
-     * Add a new settings tab to the WooCommerce settings tabs array.
-     *
-     * @param array $settings_tabs Array of WooCommerce setting tabs & their labels, excluding the Subscription tab.
-     * @return array $settings_tabs Array of WooCommerce setting tabs & their labels, including the Subscription tab.
-     */
-    public static function add_biz_settings_tab( $settings_tabs ) {
-        $settings_tabs['biz_settings_tab'] = __( 'BizCourier', 'woocommerce-biz-settings-tab' );
-        return $settings_tabs;
-    }
+
+	/* BIZ CREDENTIALS SETTINGS */
+
+	/**
+	 * Add a new settings tab to the WooCommerce settings tabs array.
+	 *
+	 * @param array $settings_tabs Array of WooCommerce setting tabs & their labels, excluding the Subscription tab.
+	 * @return array $settings_tabs Array of WooCommerce setting tabs & their labels, including the Subscription tab.
+	 */
+	public static function add_biz_settings_tab($settings_tabs)
+	{
+		$settings_tabs['biz_settings_tab'] = __('BizCourier', 'woocommerce-biz-settings-tab');
+		return $settings_tabs;
+	}
 
 
-    /**
-     * Uses the WooCommerce admin fields API to output settings via the @see woocommerce_admin_fields() function.
-     *
-     * @uses woocommerce_admin_fields()
-     * @uses self::get_settings()
-     */
-    public static function biz_settings_tab() {
-        woocommerce_admin_fields( self::get_settings() );
-    }
+	/**
+	 * Uses the WooCommerce admin fields API to output settings via the @see woocommerce_admin_fields() function.
+	 *
+	 * @uses woocommerce_admin_fields()
+	 * @uses self::get_settings()
+	 */
+	public static function biz_settings_tab()
+	{
+		woocommerce_admin_fields(self::get_settings());
+	}
 
 
-    /**
-     * Uses the WooCommerce options API to save settings via the @see woocommerce_update_options() function.
-     *
-     * @uses woocommerce_update_options()
-     * @uses self::get_settings()
-     */
-    public static function update_biz_settings() {
-        woocommerce_update_options( self::get_settings() );
-    }
+	/**
+	 * Uses the WooCommerce options API to save settings via the @see woocommerce_update_options() function.
+	 *
+	 * @uses woocommerce_update_options()
+	 * @uses self::get_settings()
+	 */
+	public static function update_biz_settings()
+	{
+		woocommerce_update_options(self::get_settings());
+	}
 
+	/**
+	 * Get all the settings for this plugin for @see woocommerce_admin_fields() function.
+	 *
+	 * @return array Array of settings for @see woocommerce_admin_fields() function.
+	 */
+	public static function get_settings()
+	{
 
-    /**
-     * Get all the settings for this plugin for @see woocommerce_admin_fields() function.
-     *
-     * @return array Array of settings for @see woocommerce_admin_fields() function.
-     */
-    public static function get_settings() {
+		$settings = array(
+			'section_title' => array(
+				'name'     => __('BizCourier Credentials', 'woobiz'),
+				'type'     => 'title',
+				'desc'     => __('Insert your BizCourier credentials here. If you are still unregistered with BizCourier, please <a href="https://www.bizcourier.eu/ContactUs.htm" target="blank">contact us</a>.', 'woobiz'),
+				'id'       => 'wc_biz_settings_tab_section_title'
+			),
+			'account_number' => array(
+				'name' => __('Account Number', 'woobiz'),
+				'type' => 'text',
+				'desc' => __('Your account number registered with BizCourier.', 'woobiz'),
+				'id'   => 'wc_settings_tab_account_number'
+			),
+			'head_crm' => array(
+				'name' => __('Head CRM Number', 'woobiz'),
+				'type' => 'text',
+				'desc' => __('Your head CRM number registered with BizCourier.', 'woobiz'),
+				'id'   => 'wc_biz_settings_tab_head_crm'
+			),
+			'warehouse_crm' => array(
+				'name' => __('Warehouse CRM Number', 'woobiz'),
+				'type' => 'text',
+				'desc' => __('Your CRM number for the warehouse location assigned to this store.', 'woobiz'),
+				'id'   => 'wc_biz_settings_tab_warehouse_crm'
+			),
+			'username' => array(
+				'name' => __('Username', 'woobiz'),
+				'type' => 'text',
+				'desc' => __('Your username registered with BizCourier.', 'woobiz'),
+				'id'   => 'wc_biz_settings_tab_username'
+			),
+			'password' => array(
+				'name' => __('Password', 'woobiz'),
+				'type' => 'password',
+				'desc' => __('Your BizCourier merchant password.', 'woobiz'),
+				'id'   => 'wc_biz_settings_tab_password'
+			),
+			'section_end' => array(
+				'type' => 'sectionend',
+				'id' => 'wc_biz_settings_tab_section_end'
+			),
+		);
 
-        $settings = array(
-            'section_title' => array(
-                'name'     => __( 'BizCourier Credentials', 'woobiz' ),
-                'type'     => 'title',
-                'desc'     => __('Insert your BizCourier credentials here. If you are still unregistered with BizCourier, please <a href="https://www.bizcourier.eu/ContactUs.htm" target="blank">contact us</a>.', 'woobiz'),
-                'id'       => 'wc_biz_settings_tab_section_title'
-            ),
-            'account_number' => array(
-                'name' => __( 'Account Number', 'woobiz' ),
-                'type' => 'text',
-                'desc' => __( 'Your account number registered with BizCourier.', 'woobiz' ),
-                'id'   => 'wc_settings_tab_account_number'
-            ),
-            'head_crm' => array(
-                'name' => __( 'Head CRM', 'woobiz' ),
-                'type' => 'text',
-                'desc' => __( 'Your head CRM number registered with BizCourier.', 'woobiz' ),
-                'id'   => 'wc_biz_settings_tab_head_crm'
-            ),
-            'username' => array(
-                'name' => __( 'Username', 'woobiz' ),
-                'type' => 'text',
-                'desc' => __( 'Your username registered with BizCourier.', 'woobiz' ),
-                'id'   => 'wc_biz_settings_tab_username'
-            ),
-            'password' => array(
-                'name' => __( 'Password', 'woobiz' ),
-                'type' => 'password',
-                'desc' => __( 'Your BizCourier merchant password.', 'woobiz' ),
-                'id'   => 'wc_biz_settings_tab_password'
-            ),
-            'section_end' => array(
-                 'type' => 'sectionend',
-                 'id' => 'wc_biz_settings_tab_section_end'
-            )
-        );
-
-        return apply_filters( 'wc_biz_settings_tab_settings', $settings );
-    }
+		return apply_filters('wc_biz_settings_tab_settings', $settings);
+	}
 }
