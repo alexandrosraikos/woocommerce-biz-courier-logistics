@@ -163,7 +163,7 @@ class WooBiz_Admin
 				'name' => __('Account Number', 'woobiz'),
 				'type' => 'text',
 				'desc' => __('Your account number registered with BizCourier.', 'woobiz'),
-				'id'   => 'wc_settings_tab_account_number'
+				'id'   => 'wc_biz_settings_tab_account_number'
 			),
 			'head_crm' => array(
 				'name' => __('Head CRM Number', 'woobiz'),
