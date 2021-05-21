@@ -18,7 +18,7 @@
  *
  * @package    WooBiz
  * @subpackage WooBiz/admin
- * @author     Your Name <alexandros@araikos.gr>
+ * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
 class WooBiz_Admin
 {
@@ -101,13 +101,6 @@ class WooBiz_Admin
 		wp_enqueue_script($this->WooBiz, plugin_dir_url(__FILE__) . 'js/woobiz-admin.js', array('jquery'), $this->version, false);
 	}
 
-	// TODO: Add WooCommerce Settings API & Options API pane for BizCourier credentials.
-	// - Duplicate placeholder functions above to get started.
-	// - Add PHPDoc for clarity.
-
-
-	/* BIZ CREDENTIALS SETTINGS */
-
 	/**
 	 * Add a new settings tab to the WooCommerce settings tabs array.
 	 *
@@ -116,7 +109,7 @@ class WooBiz_Admin
 	 */
 	public static function add_biz_settings_tab($settings_tabs)
 	{
-		$settings_tabs['biz_settings_tab'] = __('BizCourier', 'woocommerce-biz-settings-tab');
+		$settings_tabs['biz_settings_tab'] = __('Biz Courier', 'woocommerce-biz-settings-tab');
 		return $settings_tabs;
 	}
 
@@ -154,21 +147,21 @@ class WooBiz_Admin
 
 		$settings = array(
 			'section_title' => array(
-				'name'     => __('BizCourier Credentials', 'woobiz'),
+				'name'     => __('Biz Courier Credentials', 'woobiz'),
 				'type'     => 'title',
-				'desc'     => __('Insert your BizCourier credentials here. If you are still unregistered with BizCourier, please <a href="https://www.bizcourier.eu/ContactUs.htm" target="blank">contact us</a>.', 'woobiz'),
+				'desc'     => __('Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href="https://www.bizcourier.eu/ContactUs.htm" target="blank">contact us</a>.', 'woobiz'),
 				'id'       => 'wc_biz_settings_tab_section_title'
 			),
 			'account_number' => array(
 				'name' => __('Account Number', 'woobiz'),
 				'type' => 'text',
-				'desc' => __('Your account number registered with BizCourier.', 'woobiz'),
+				'desc' => __('Your account number registered with Biz Courier.', 'woobiz'),
 				'id'   => 'wc_biz_settings_tab_account_number'
 			),
 			'head_crm' => array(
 				'name' => __('Head CRM Number', 'woobiz'),
 				'type' => 'text',
-				'desc' => __('Your head CRM number registered with BizCourier.', 'woobiz'),
+				'desc' => __('Your head CRM number registered with Biz Courier.', 'woobiz'),
 				'id'   => 'wc_biz_settings_tab_head_crm'
 			),
 			'warehouse_crm' => array(
@@ -180,13 +173,13 @@ class WooBiz_Admin
 			'username' => array(
 				'name' => __('Username', 'woobiz'),
 				'type' => 'text',
-				'desc' => __('Your username registered with BizCourier.', 'woobiz'),
+				'desc' => __('Your username registered with Biz Courier.', 'woobiz'),
 				'id'   => 'wc_biz_settings_tab_username'
 			),
 			'password' => array(
 				'name' => __('Password', 'woobiz'),
 				'type' => 'password',
-				'desc' => __('Your BizCourier merchant password.', 'woobiz'),
+				'desc' => __('Your Biz Courier merchant password.', 'woobiz'),
 				'id'   => 'wc_biz_settings_tab_password'
 			),
 			'section_end' => array(
@@ -196,5 +189,46 @@ class WooBiz_Admin
 		);
 
 		return apply_filters('wc_biz_settings_tab_settings', $settings);
+	}
+
+	function biz_order_status($order) {
+		// $client = new SoapClient();
+
+	}
+
+
+
+	/**
+	 * Add Biz Courier connection indicator metabox to a single order.
+	 *
+	 * @since    1.0.0
+	 */
+	function add_biz_order_meta_box()
+	{
+		function biz_order_meta_box($post)
+		{
+
+			// Get markup.
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
+
+			$order = wc_get_order($post->ID);
+
+			/*	1. Check order meta (if sync on/off).
+					1.1. If not synced, prompt admin to sync:
+			*/
+			biz_order_meta_box_not_synchronized_html();
+			/*
+					1.2. If synced,
+						1.2.1. Get order status and show to admin: 
+			*/
+			// TODO: Implement biz_order_status($order->get_ID()) for front and back & handle connection errors.
+			/*
+				2. Check if POST['woobiz_sync']=true (& nonce) and do initial sync.
+			*/
+			// TODO: Implement biz_order_sync($order), raise sync meta flag & handle connection errors.
+
+
+		}
+		add_meta_box('woobiz_order_meta_box', __('Biz Courier status', 'woobiz'), 'biz_order_meta_box', 'shop_order', 'side', 'high');
 	}
 }

@@ -11,6 +11,11 @@
  * @package    WooBiz
  * @subpackage WooBiz/admin/partials
  */
-?>
 
-<!-- This file should primarily consist of HTML with a little bit of PHP. -->
+function biz_order_meta_box_not_synchronized_html()
+{
+?>  
+    <p class="woobiz-order-indicator not-synchronized"><?php _e("This order is not synchronized with Biz.", "woobiz") ?></p>
+    <input type="submit" value="<?php _e("Synchronize","woobiz")?>" class="button save-order button-primary"/></input>
+<?php
+}

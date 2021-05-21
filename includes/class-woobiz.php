@@ -25,9 +25,10 @@
  * @since      1.0.0
  * @package    WooBiz
  * @subpackage WooBiz/includes
- * @author     Your Name <alexandros@araikos.gr>
+ * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
-class WooBiz {
+class WooBiz
+{
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -66,8 +67,9 @@ class WooBiz {
 	 *
 	 * @since    1.0.0
 	 */
-	public function __construct() {
-		if ( defined( 'WooBiz_VERSION' ) ) {
+	public function __construct()
+	{
+		if (defined('WooBiz_VERSION')) {
 			$this->version = WooBiz_VERSION;
 		} else {
 			$this->version = '1.0.0';
@@ -78,7 +80,6 @@ class WooBiz {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
 	}
 
 	/**
@@ -97,33 +98,33 @@ class WooBiz {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function load_dependencies() {
+	private function load_dependencies()
+	{
 
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-woobiz-loader.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-woobiz-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-woobiz-i18n.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-woobiz-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-woobiz-admin.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-woobiz-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-woobiz-public.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-woobiz-public.php';
 
 		$this->loader = new WooBiz_Loader();
-
 	}
 
 	/**
@@ -135,12 +136,12 @@ class WooBiz {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function set_locale() {
+	private function set_locale()
+	{
 
 		$plugin_i18n = new WooBiz_i18n();
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
+		$this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
 	}
 
 	/**
@@ -150,17 +151,21 @@ class WooBiz {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_admin_hooks() {
+	private function define_admin_hooks()
+	{
 
-		$plugin_admin = new WooBiz_Admin( $this->get_WooBiz(), $this->get_version() );
+		$plugin_admin = new WooBiz_Admin($this->get_WooBiz(), $this->get_version());
 
-		$this->loader->add_action( 'admin_enqueue_styles', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action('admin_enqueue_styles', $plugin_admin, 'enqueue_styles');
+		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
-		// Add preference pane for BizCourier credentials.
-        $this->loader->add_filter( 'woocommerce_settings_tabs_array', $plugin_admin, 'add_biz_settings_tab', 50 );
-        $this->loader->add_action( 'woocommerce_settings_tabs_biz_settings_tab', $plugin_admin, 'biz_settings_tab' );
-        $this->loader->add_action( 'woocommerce_update_options_biz_settings_tab', $plugin_admin, 'update_biz_settings' );
+		// Add preference pane for Biz Courier credentials.
+		$this->loader->add_filter('woocommerce_settings_tabs_array', $plugin_admin, 'add_biz_settings_tab', 50);
+		$this->loader->add_action('woocommerce_settings_tabs_biz_settings_tab', $plugin_admin, 'biz_settings_tab');
+		$this->loader->add_action('woocommerce_update_options_biz_settings_tab', $plugin_admin, 'update_biz_settings');
+
+		// TODO: Add Biz Courier indicator meta box in orders.
+		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_order_meta_box');
 	}
 
 	/**
@@ -170,13 +175,13 @@ class WooBiz {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_public_hooks() {
+	private function define_public_hooks()
+	{
 
-		$plugin_public = new WooBiz_Public( $this->get_WooBiz(), $this->get_version() );
+		$plugin_public = new WooBiz_Public($this->get_WooBiz(), $this->get_version());
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
+		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
+		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
 	}
 
 	/**
@@ -184,7 +189,8 @@ class WooBiz {
 	 *
 	 * @since    1.0.0
 	 */
-	public function run() {
+	public function run()
+	{
 		$this->loader->run();
 	}
 
@@ -195,7 +201,8 @@ class WooBiz {
 	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
 	 */
-	public function get_WooBiz() {
+	public function get_WooBiz()
+	{
 		return $this->WooBiz;
 	}
 
@@ -205,7 +212,8 @@ class WooBiz {
 	 * @since     1.0.0
 	 * @return    WooBiz_Loader    Orchestrates the hooks of the plugin.
 	 */
-	public function get_loader() {
+	public function get_loader()
+	{
 		return $this->loader;
 	}
 
@@ -215,8 +223,8 @@ class WooBiz {
 	 * @since     1.0.0
 	 * @return    string    The version number of the plugin.
 	 */
-	public function get_version() {
+	public function get_version()
+	{
 		return $this->version;
 	}
-
 }
