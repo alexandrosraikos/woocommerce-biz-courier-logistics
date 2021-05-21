@@ -19,7 +19,7 @@
  *
  * @package    WooBiz
  * @subpackage WooBiz/includes
- * @author     Your Name <alexandros@araikos.gr>
+ * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
 class WooBiz_Loader {
 

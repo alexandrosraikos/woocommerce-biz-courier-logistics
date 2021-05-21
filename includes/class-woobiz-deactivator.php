@@ -18,14 +18,14 @@
  * @since      1.0.0
  * @package    WooBiz
  * @subpackage WooBiz/includes
- * @author     Your Name <alexandros@araikos.gr>
+ * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
 class WooBiz_Deactivator {
 
 	/**
-	 * Delete BizCourier credentials.
+	 * Delete Biz Courier credentials.
 	 *
-	 * Upon deactivation, all BizCourier credentials are deleted from the database.
+	 * Upon deactivation, all Biz Courier credentials are deleted from the database.
 	 *
 	 * @since    1.0.0
 	 */

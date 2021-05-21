@@ -19,9 +19,9 @@ msgstr ""
 "Language: el\n"
 
 #: ../admin/shipping-method.php:13
-msgid "BizCourier Shipping"
-msgstr "Αποστολές BizCourier"
+msgid "Biz Courier Shipping"
+msgstr "Αποστολές Biz Courier"
 
 #: ../admin/shipping-method.php:14
-msgid "Enable shipping integration with BizCourier."
-msgstr "Ενεργοποιήστε την ενσωμάτωση αποστολής με το BizCourier."
+msgid "Enable shipping integration with Biz Courier."
+msgstr "Ενεργοποιήστε την ενσωμάτωση αποστολής με το Biz Courier."

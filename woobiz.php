@@ -3,7 +3,7 @@
 /**
  * Plugin Name:       WooBiz
  * Plugin URI:        https://github.com/alexandrosraikos/woobiz
- * Description:       Ενσωματώστε το WooCommerce με την πλατφόρμα BizCourier.
+ * Description:       Ενσωματώστε το WooCommerce με την πλατφόρμα Biz Courier.
  * Version:           1.0.0
  * Requires at least: 5.7
  * Requires PHP:      7.4
