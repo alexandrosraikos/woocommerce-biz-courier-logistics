@@ -191,12 +191,60 @@ class WooBiz_Admin
 		return apply_filters('wc_biz_settings_tab_settings', $settings);
 	}
 
-	function biz_order_status($order) {
-		// $client = new SoapClient();
-
+	function biz_order_status($order)
+	{
+		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/full_history.php?wsdl", array(
+			'encoding' => 'UTF-8',
+		));
+		try {
+			$result = $client->__soapCall("full_status", array("Voucher" => strval($order->get_order_number())));
+		} catch (Exception $e) {
+			$error = $e->getMessage();
+			throw new ErrorException(__("There was a problem contacting Biz Courier. Details: ", 'woobiz') + $error);
+		}
 	}
 
+	function biz_order_create($order)
+	{
+		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl", array(
+			'encoding' => 'UTF-8',
+		));
+		try {
+			$result = $client->__soapCall("full_status", array("Voucher" => strval($order->get_order_number())));
+		} catch (Exception $e) {
+			$error = $e->getMessage();
+			throw new ErrorException(__("There was a problem contacting Biz Courier. Details: ", 'woobiz') + $error);
+		}
+	}
 
+	/**
+	 * Add Biz Courier remaining stock synchronization button to All Products page.
+	 *
+	 * @since    1.0.0
+	 */
+	function add_biz_stock_sync_button()
+	{
+		global $current_screen;
+		if ('product' != $current_screen->post_type) {
+			return;
+		}
+		?> 
+		<button class="button button-primary" style="height:32px;"><?php _e("Synchronize", "woobiz") ?></button>
+		<?php 
+	}
+
+	function add_biz_stock_sync_indicator_column($columns) {
+		$columns['biz_sync'] = __('Biz Status', 'woobiz');
+		return $columns;
+	}
+
+	function biz_stock_sync_indicator_column($name) {
+		global $post;
+		switch ($name) {
+			case 'biz_sync':
+				echo '<div>hi!</div>';
+		}
+	}
 
 	/**
 	 * Add Biz Courier connection indicator metabox to a single order.
@@ -213,7 +261,7 @@ class WooBiz_Admin
 
 			$order = wc_get_order($post->ID);
 
-			/*	1. Check order meta (if sync on/off).
+			/*	1. Check order meta (if biz_order_voucher exists).
 					1.1. If not synced, prompt admin to sync:
 			*/
 			biz_order_meta_box_not_synchronized_html();
@@ -221,11 +269,11 @@ class WooBiz_Admin
 					1.2. If synced,
 						1.2.1. Get order status and show to admin: 
 			*/
-			// TODO: Implement biz_order_status($order->get_ID()) for front and back & handle connection errors.
+			// TODO: Implement biz_order_status($order->get_voucher()) for front and back & handle connection errors. Then show voucher number and status on meta box.
 			/*
 				2. Check if POST['woobiz_sync']=true (& nonce) and do initial sync.
 			*/
-			// TODO: Implement biz_order_sync($order), raise sync meta flag & handle connection errors.
+			// TODO: Implement biz_order_create($order), add biz_order_voucher as post meta & handle connection errors. Show error in meta box.
 
 
 		}

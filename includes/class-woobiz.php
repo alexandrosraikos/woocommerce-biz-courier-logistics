@@ -164,8 +164,14 @@ class WooBiz
 		$this->loader->add_action('woocommerce_settings_tabs_biz_settings_tab', $plugin_admin, 'biz_settings_tab');
 		$this->loader->add_action('woocommerce_update_options_biz_settings_tab', $plugin_admin, 'update_biz_settings');
 
-		// TODO: Add Biz Courier indicator meta box in orders.
+		// Biz Courier functions.
+		// Add single order meta box.
 		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_order_meta_box');
+		// Add product list stock sync button.
+		$this->loader->add_action('manage_posts_extra_tablenav', $plugin_admin, 'add_biz_stock_sync_button', 20, 1);
+		// Add product list Biz sync indicator.
+		$this->loader->add_filter('manage_edit-product_columns', $plugin_admin, 'add_biz_stock_sync_indicator_column');
+		$this->loader->add_action('manage_product_posts_custom_column',$plugin_admin,'biz_stock_sync_indicator_column');
 	}
 
 	/**
