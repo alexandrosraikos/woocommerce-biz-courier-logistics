@@ -156,7 +156,7 @@ class WooBiz
 
 		$plugin_admin = new WooBiz_Admin($this->get_WooBiz(), $this->get_version());
 
-		$this->loader->add_action('admin_enqueue_styles', $plugin_admin, 'enqueue_styles');
+		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
 		// Add preference pane for Biz Courier credentials.
