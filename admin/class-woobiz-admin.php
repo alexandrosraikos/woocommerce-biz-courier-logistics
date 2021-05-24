@@ -50,7 +50,6 @@ class WooBiz_Admin
 	 */
 	public function __construct($WooBiz, $version)
 	{
-
 		$this->WooBiz = $WooBiz;
 		$this->version = $version;
 	}
@@ -62,19 +61,6 @@ class WooBiz_Admin
 	 */
 	public function enqueue_styles()
 	{
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in WooBiz_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The WooBiz_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_style($this->WooBiz, plugin_dir_url(__FILE__) . 'css/woobiz-admin.css', array(), $this->version, 'all');
 	}
 
@@ -85,19 +71,6 @@ class WooBiz_Admin
 	 */
 	public function enqueue_scripts()
 	{
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in WooBiz_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The WooBiz_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_script($this->WooBiz, plugin_dir_url(__FILE__) . 'js/woobiz-admin.js', array('jquery'), $this->version, false);
 	}
 
@@ -112,6 +85,14 @@ class WooBiz_Admin
 		$settings_tabs['biz_settings_tab'] = __('Biz Courier', 'woocommerce-biz-settings-tab');
 		return $settings_tabs;
 	}
+
+	/**
+	 * 	WooCommerce Settings Pane for Biz Courier.
+	 * 	------------
+	 *  This section provides the necessary functionality to store
+	 * 	Biz Courier credentials into the database for future use.
+	 * 
+	 */
 
 
 	/**
@@ -191,6 +172,20 @@ class WooBiz_Admin
 		return apply_filters('wc_biz_settings_tab_settings', $settings);
 	}
 
+	/**
+	 * 	Order Status 
+	 * 	------------
+	 *  This section provides the necessary functionality for mapping, managing and displaying
+	 * 	WooCommerce orders and their status to Biz Courier Shipments.
+	 * 
+	 */
+
+
+	/**
+	 * Get the status of a Biz Courier shipment using the stored voucher number.
+	 *
+	 * @since    1.0.0
+	 */
 	function biz_order_status($order)
 	{
 		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/full_history.php?wsdl", array(
@@ -204,6 +199,11 @@ class WooBiz_Admin
 		}
 	}
 
+	/**
+	 * Create a Biz Courier Shipment with a given WooCommerce order.
+	 *
+	 * @since    1.0.0
+	 */
 	function biz_order_create($order)
 	{
 		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl", array(
@@ -214,35 +214,6 @@ class WooBiz_Admin
 		} catch (Exception $e) {
 			$error = $e->getMessage();
 			throw new ErrorException(__("There was a problem contacting Biz Courier. Details: ", 'woobiz') + $error);
-		}
-	}
-
-	/**
-	 * Add Biz Courier remaining stock synchronization button to All Products page.
-	 *
-	 * @since    1.0.0
-	 */
-	function add_biz_stock_sync_button()
-	{
-		global $current_screen;
-		if ('product' != $current_screen->post_type) {
-			return;
-		}
-		?> 
-		<button class="button button-primary" style="height:32px;"><?php _e("Synchronize", "woobiz") ?></button>
-		<?php 
-	}
-
-	function add_biz_stock_sync_indicator_column($columns) {
-		$columns['biz_sync'] = __('Biz Status', 'woobiz');
-		return $columns;
-	}
-
-	function biz_stock_sync_indicator_column($name) {
-		global $post;
-		switch ($name) {
-			case 'biz_sync':
-				echo '<div>hi!</div>';
 		}
 	}
 
@@ -278,5 +249,56 @@ class WooBiz_Admin
 
 		}
 		add_meta_box('woobiz_order_meta_box', __('Biz Courier status', 'woobiz'), 'biz_order_meta_box', 'shop_order', 'side', 'high');
+	}
+
+	/**
+	 * 	Stock Synchronisation functionality.
+	 * 	------------
+	 *  This section provides all the functionality related to syncing stock 
+	 * 	between the WooCommerce store and the items in the connected warehouse.
+	 * 
+	 */
+
+	/**
+	 * Add Biz Courier remaining stock synchronization button to the All Products page.
+	 *
+	 * @since    1.0.0
+	 */
+	function add_biz_stock_sync_button()
+	{
+		global $current_screen;
+		if ('product' != $current_screen->post_type) {
+			return;
+		}
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
+		biz_stock_sync_all_button();
+	}
+
+
+	/**
+	 * Add Biz Courier stock synchronisation status column to the All Products page.
+	 *
+	 * @since    1.0.0
+	 */
+	function add_biz_stock_sync_indicator_column($columns)
+	{
+		$columns['biz_sync'] = __('Biz Status', 'woobiz');
+		return $columns;
+	}
+
+	/**
+	 * Add Biz Courier stock synchronisation status indicator column to each product
+	 * in the All Products page.
+	 *
+	 * @since    1.0.0
+	 */
+	function biz_stock_sync_indicator_column($name)
+	{
+		global $post;
+		$status = get_post_meta($post->ID, "biz_sync_status", true);
+		switch ($name) {
+			case 'biz_sync':
+				echo '<div class="biz_sync-indicator ' . $status . '"></div>';
+		}
 	}
 }

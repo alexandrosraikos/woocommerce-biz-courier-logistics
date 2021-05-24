@@ -19,3 +19,9 @@ function biz_order_meta_box_not_synchronized_html()
     <input type="submit" value="<?php _e("Send shipment","woobiz")?>" class="button save-order button-primary"/></input>
 <?php
 }
+
+function biz_stock_sync_all_button() {
+    ?>
+    <button class="button button-primary" style="height:32px;"><?php _e("Synchronize", "woobiz") ?></button>
+    <?php
+}
