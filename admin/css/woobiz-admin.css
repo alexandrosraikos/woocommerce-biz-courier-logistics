@@ -3,8 +3,8 @@
  * included in this file.
  */
 
-.woobiz-order-indicator {
-  font-weight: bold;
+.woobiz-stock-sync-meta-box.error {
+  color: darkred;
 }
 
 .column-biz_sync {

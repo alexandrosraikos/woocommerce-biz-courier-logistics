@@ -248,6 +248,7 @@ class WooBiz_Admin
 
 
 		}
+
 		add_meta_box('woobiz_order_meta_box', __('Biz Courier status', 'woobiz'), 'biz_order_meta_box', 'shop_order', 'side', 'high');
 	}
 
@@ -260,16 +261,105 @@ class WooBiz_Admin
 	 */
 
 	/**
+	 * Handles stock sync AJAX requests from authorized users and contacts Biz via SOAP.
+	 *
+	 * @since    1.0.0
+	 */
+	function biz_stock_sync_handler()
+	{
+		// TODO: Resolve error 400 and handle AJAX call.
+		if (isset($_POST['sync_stock'])) {
+			if ($_POST['sync_stock'] == "true") {
+			}
+		}
+	}
+	/**
+	 * Gets all SKUs of a product or its variants.
+	 *
+	 * @since    1.0.0
+	 */
+	static function get_all_related_skus($product) {
+		$skus = array();
+		$variants = $product->get_children();
+		if($product->managing_stock()) {
+			array_push($skus, $product->get_sku());
+		}
+		if (!empty($variants)) {
+			foreach ($variants as $variant_id) {
+				$product_variant = wc_get_product($variant_id);
+				if ($product_variant->managing_stock()) {
+					$variant_sku = $product_variant->get_sku();
+					array_push($skus, $variant_sku);
+				}
+			}
+		}
+		return array_unique($skus);
+	}
+
+	/**
+	 * Creates the meta box for product pages and localises each product page's script 
+	 * with the appropriate SKU parameters.
+	 *
+	 * @since    1.0.0
+	 */
+	function add_biz_stock_sync_meta_box()
+	{
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
+
+		function biz_stock_sync_meta_box($post)
+		{
+			wp_enqueue_script('woobiz-stock-sync', plugin_dir_url(__FILE__) . 'js/woobiz-admin-stock-sync.js', array('jquery'));
+			wp_localize_script('woobiz-stock-sync', "ajax_sync", array(
+				"ajax_url" => admin_url('admin-ajax.php'),
+				"nonce" => wp_create_nonce('ajax_sync_validation'),
+				"product_skus" => WooBiz_Admin::get_all_related_skus(wc_get_product($post->ID))
+			));
+
+			$sync_status = get_post_meta($post->ID, "biz_sync_status");
+
+			if ($sync_status == "error") {
+				biz_stock_sync_meta_box_error_html();
+			} elseif ($sync_status == "success") {
+				biz_stock_sync_meta_box_success_html();
+			} else {
+				biz_stock_sync_meta_box_html();
+			}
+		}
+		add_meta_box('woobiz_stock_sync_meta_box', __('Biz warehouse status', 'woobiz'), 'biz_stock_sync_meta_box', 'product', 'side');
+	}
+
+	/**
 	 * Add Biz Courier remaining stock synchronization button to the All Products page.
 	 *
 	 * @since    1.0.0
 	 */
-	function add_biz_stock_sync_button()
+	function add_biz_stock_sync_all_button()
 	{
 		global $current_screen;
 		if ('product' != $current_screen->post_type) {
 			return;
 		}
+
+		$products = get_posts(array(
+			'post_type' => 'product',
+			'posts_per_page' => -1
+		));
+
+		$all_skus = array();
+		if (!empty($products)) {
+			foreach ($products as $product_id){
+				$product = wc_get_product($product_id->ID);
+				$all_skus = WooBiz_Admin::get_all_related_skus($product);
+			}
+		}
+
+		wp_enqueue_script('woobiz-stock-sync', plugin_dir_url(__FILE__) . 'js/woobiz-admin-stock-sync.js', array('jquery'));
+		wp_localize_script('woobiz-stock-sync', "ajax_sync", array(
+			"ajax_url" => admin_url('admin-ajax.php'),
+			"nonce" => wp_create_nonce('ajax_sync_validation'),
+			"product_skus" => $all_skus
+		));
+
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
 		biz_stock_sync_all_button();
 	}
