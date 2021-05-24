@@ -6,18 +6,19 @@
       console.log("Sending sync signal...");
       $.ajax({
         type: "post",
-        url: ajax_sync.ajax_url,
+        url: ajax_prop.ajax_url,
         data: {
-          nonce: ajax_sync.nonce,
-          sync_stock: true,
-          product_skus: ajax_sync.product_skus,
+          action: "biz_stock_sync",
+          nonce: ajax_prop.nonce,
+          product_skus: ajax_prop.product_skus,
         },
         dataType: "json",
         success: function (response) {
           if (!response.success) {
-            alert(ajax_sync.error_msg);
+            alert("API Failure!");
+          } else {
+            location.reload();
           }
-          location.reload();
         },
       });
     });

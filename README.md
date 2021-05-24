@@ -6,6 +6,10 @@ A plugin designed to integrate WooCommerce with the Biz Courier logistics platfo
 
 ## Getting Started
 
+## Requirements
+
+Recommended requirements for this plugin are PHP 8.0+ (with `soap` extension enabled), WordPress 5.7+, WooCommerce 5.2+.
+
 ### Installation
 
 Simply setup WordPress with WooCommerce and enable the plugin.

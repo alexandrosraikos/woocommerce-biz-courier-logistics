@@ -261,27 +261,15 @@ class WooBiz_Admin
 	 */
 
 	/**
-	 * Handles stock sync AJAX requests from authorized users and contacts Biz via SOAP.
-	 *
-	 * @since    1.0.0
-	 */
-	function biz_stock_sync_handler()
-	{
-		// TODO: Resolve error 400 and handle AJAX call.
-		if (isset($_POST['sync_stock'])) {
-			if ($_POST['sync_stock'] == "true") {
-			}
-		}
-	}
-	/**
 	 * Gets all SKUs of a product or its variants.
 	 *
 	 * @since    1.0.0
 	 */
-	static function get_all_related_skus($product) {
+	static function get_all_related_skus($product)
+	{
 		$skus = array();
 		$variants = $product->get_children();
-		if($product->managing_stock()) {
+		if ($product->managing_stock()) {
 			array_push($skus, $product->get_sku());
 		}
 		if (!empty($variants)) {
@@ -297,6 +285,22 @@ class WooBiz_Admin
 	}
 
 	/**
+	 * Handles stock sync AJAX requests from authorized users and contacts Biz via SOAP.
+	 *
+	 * @since    1.0.0
+	 */
+	function biz_stock_sync_handler()
+	{
+		// TODO: Handle AJAX call and write 'biz_sync_status' meta on products.
+		if( !wp_verify_nonce($_POST['nonce'],'ajax_sync_validation')) {
+			die("Unverified request to synchronise stock.");
+		}
+		
+		// TODO: SOAP request using AJAX product SKUs and stored credentials.
+		
+	}
+
+	/**
 	 * Creates the meta box for product pages and localises each product page's script 
 	 * with the appropriate SKU parameters.
 	 *
@@ -309,7 +313,7 @@ class WooBiz_Admin
 		function biz_stock_sync_meta_box($post)
 		{
 			wp_enqueue_script('woobiz-stock-sync', plugin_dir_url(__FILE__) . 'js/woobiz-admin-stock-sync.js', array('jquery'));
-			wp_localize_script('woobiz-stock-sync', "ajax_sync", array(
+			wp_localize_script('woobiz-stock-sync', "ajax_prop", array(
 				"ajax_url" => admin_url('admin-ajax.php'),
 				"nonce" => wp_create_nonce('ajax_sync_validation'),
 				"product_skus" => WooBiz_Admin::get_all_related_skus(wc_get_product($post->ID))
@@ -347,16 +351,16 @@ class WooBiz_Admin
 
 		$all_skus = array();
 		if (!empty($products)) {
-			foreach ($products as $product_id){
+			foreach ($products as $product_id) {
 				$product = wc_get_product($product_id->ID);
 				$all_skus = WooBiz_Admin::get_all_related_skus($product);
 			}
 		}
 
 		wp_enqueue_script('woobiz-stock-sync', plugin_dir_url(__FILE__) . 'js/woobiz-admin-stock-sync.js', array('jquery'));
-		wp_localize_script('woobiz-stock-sync', "ajax_sync", array(
+		wp_localize_script('woobiz-stock-sync', "ajax_prop", array(
 			"ajax_url" => admin_url('admin-ajax.php'),
-			"nonce" => wp_create_nonce('ajax_sync_validation'),
+			"nonce" => wp_create_nonce('ajax_prop_validation'),
 			"product_skus" => $all_skus
 		));
 
