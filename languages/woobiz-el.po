@@ -18,10 +18,64 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: el\n"
 
-#: ../admin/shipping-method.php:13
-msgid "Biz Courier Shipping"
-msgstr "Αποστολές Biz Courier"
+# Biz Courier settings notices.
+msgid "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
+msgstr "Πρέπει να ρυθμίσετε τα στοιχεία σας Biz Courier στις <a href='%s'>ρυθμίσεις WooCommerce</a>."
 
-#: ../admin/shipping-method.php:14
-msgid "Enable shipping integration with Biz Courier."
-msgstr "Ενεργοποιήστε την ενσωμάτωση αποστολής με το Biz Courier."
+msgid "Your Biz Courier credentials are invalid. Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
+msgstr "Τα στοιχεία σας Biz Courier δεν είναι σωστά. Πρέπει να ρυθμίσετε τα στοιχεία σας Biz Courier στις <a href='%s'>ρυθμίσεις WooCommerce</a>."
+
+# Biz Courier settings view.
+msgid "Biz Courier Credentials"
+msgstr "Στοιχεία Biz Courier"
+
+msgid "Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact us</a>."
+msgstr "Εισάγετε τα στοιχεία σας Biz Courier στα παρακάτω πεδία. Αν δεν έχετε εγγραφεί ακόμη, <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">επικοινωνήστε μαζί μας</a>."
+
+msgid  "Account Number"
+msgstr "Αριθμός λογαριασμού"
+
+msgid "Your account number registered with Biz Courier."
+msgstr "Ο αριθμός λογαριασμού ο οποίος σας έχει αποσταλεί από την Biz Courier."
+
+msgid "Head CRM Number"
+msgstr "Κωδικός βασικού CRM"
+
+msgid "Your head CRM number registered with Biz Courier."
+msgstr "Ο κωδικός βασικού CRM ο οποίος σας έχει αποσταλεί από την Biz Courier."
+
+msgid "Warehouse CRM Number"
+msgstr "Κωδικός CRM αποθήκης"
+
+msgid "Your CRM number for the warehouse location assigned to this store."
+msgstr "Ο κωδικός CRM της αποθήκης που θέλετε να συνδέσετε με αυτό το κατάστημα."
+
+msgid "Username"
+msgstr "Όνομα χρήστη"
+
+msgid "Your username registered with Biz Courier."
+msgstr "Το όνομα χρήστη σας για την Biz Courier."
+
+msgid "Password"
+msgstr "Κωδικός πρόσβασης"
+
+msgid "Your Biz Courier merchant password."
+msgstr "Ο κωδικός πρόσβασής σας για την Biz Courier."
+
+# Biz Courier stock synchronization.
+
+msgid "Biz Warehouse"
+msgstr "Αποθήκη Biz"
+
+msgid "Get stock"
+msgstr "Ενημέρωση αποθέματος"
+
+msgid "Pending"
+msgstr "Εκκρεμεί"
+
+msgid "Found"
+msgstr "Βρέθηκε"
+
+msgid "Not found"
+msgstr "Εκτός"
+

@@ -30,11 +30,11 @@ div.woobiz-notice {
 }
 
 .column-biz_sync .biz_sync-indicator.synced::before {
-  background-color: green;
+  background-color: #7ad03a;
 }
 
 .column-biz_sync .biz_sync-indicator.not-synced::before {
-  background-color: red;
+  background-color: #a44;
 }
 
 button.woobiz-loading {

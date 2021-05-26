@@ -82,7 +82,7 @@ class WooBiz_Admin
 	 */
 	public static function add_biz_settings_tab($settings_tabs)
 	{
-		$settings_tabs['biz_settings_tab'] = __('Biz Courier', 'woocommerce-biz-settings-tab');
+		$settings_tabs['biz_settings_tab'] = 'Biz Courier';
 		return $settings_tabs;
 	}
 
@@ -131,7 +131,7 @@ class WooBiz_Admin
 			'section_title' => array(
 				'name'     => __('Biz Courier Credentials', 'woobiz'),
 				'type'     => 'title',
-				'desc'     => __('Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href="https://www.bizcourier.eu/ContactUs.htm" target="blank">contact us</a>.', 'woobiz'),
+				'desc'     => __("Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact us</a>.", 'woobiz'),
 				'id'       => 'wc_biz_settings_tab_section_title'
 			),
 			'account_number' => array(
@@ -344,39 +344,7 @@ class WooBiz_Admin
 		} catch (Exception $e) {
 			error_log("Error contacting Biz Courier - " . $e->getMessage());
 		}
-	}
-
-	/**
-	 * Creates the meta box for product pages and localises each product page's script 
-	 * with the appropriate SKU parameters.
-	 *
-	 * @since    1.0.0
-	 */
-	function add_biz_stock_sync_meta_box()
-	{
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
-
-		function biz_stock_sync_meta_box($post)
-		{
-			wp_enqueue_script('woobiz-stock-sync', plugin_dir_url(__FILE__) . 'js/woobiz-admin-stock-sync.js', array('jquery'));
-			wp_localize_script('woobiz-stock-sync', "ajax_prop", array(
-				"ajax_url" => admin_url('admin-ajax.php'),
-				"nonce" => wp_create_nonce('ajax_sync_validation'),
-				"product_skus" => WooBiz_Admin::get_all_related_skus(wc_get_product($post->ID))
-			));
-
-			$sync_status = get_post_meta($post->ID, "biz_sync", true);
-
-			if ($sync_status == "not-synced") {
-				biz_stock_sync_meta_box_error_html();
-			} elseif ($sync_status == "synced") {
-				biz_stock_sync_meta_box_success_html();
-			} else {
-				biz_stock_sync_meta_box_html();
-			}
-		}
-		add_meta_box('woobiz_stock_sync_meta_box', __('Biz warehouse status', 'woobiz'), 'biz_stock_sync_meta_box', 'product', 'side');
-	}
+	} 
 
 	/**
 	 * Add Biz Courier remaining stock synchronization button to the All Products page.
@@ -418,7 +386,7 @@ class WooBiz_Admin
 	 */
 	function add_biz_stock_sync_indicator_column($columns)
 	{
-		$columns['biz_sync'] = __('Biz Status', 'woobiz');
+		$columns['biz_sync'] = __('Biz Warehouse', 'woobiz');
 		return $columns;
 	}
 
@@ -478,7 +446,7 @@ class WooBiz_Admin
 			$result = $client->__soapCall("full_status", array("Voucher" => strval($order->get_order_number())));
 		} catch (Exception $e) {
 			$error = $e->getMessage();
-			throw new ErrorException(__("There was a problem contacting Biz Courier. Details: ", 'woobiz') + $error);
+			throw new ErrorException("There was a problem contacting Biz Courier. Details: ".$error);
 		}
 	}
 

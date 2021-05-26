@@ -171,7 +171,6 @@ class WooBiz
 		 *  Stock synchronization.
 		 */
 		$this->loader->add_action('wp_ajax_biz_stock_sync', $plugin_admin, 'biz_stock_sync_handler');
-		// $this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_stock_sync_meta_box');
 		$this->loader->add_action('manage_posts_extra_tablenav', $plugin_admin, 'add_biz_stock_sync_all_button', 20, 1);
 		$this->loader->add_filter('manage_edit-product_columns', $plugin_admin, 'add_biz_stock_sync_indicator_column');
 		$this->loader->add_action('manage_product_posts_custom_column', $plugin_admin, 'biz_stock_sync_indicator_column', 10, 2);
