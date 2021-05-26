@@ -20,7 +20,8 @@
  * @subpackage WooBiz/includes
  * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
-class WooBiz_Deactivator {
+class WooBiz_Deactivator
+{
 
 	/**
 	 * Delete Biz Courier credentials.
@@ -29,12 +30,14 @@ class WooBiz_Deactivator {
 	 *
 	 * @since    1.0.0
 	 */
-	public static function deactivate() {
-		delete_option( 'wc_biz_settings_tab_account_number' );
-		delete_option( 'wc_biz_settings_tab_head_crm' );
-		delete_option( 'wc_biz_settings_tab_warehouse_crm' );
-		delete_option( 'wc_biz_settings_tab_username' );
-		delete_option( 'wc_biz_settings_tab_password' );
-	}
+	public static function deactivate()
+	{
+		delete_option('wc_biz_settings_tab_account_number');
+		delete_option('wc_biz_settings_tab_head_crm');
+		delete_option('wc_biz_settings_tab_warehouse_crm');
+		delete_option('wc_biz_settings_tab_username');
+		delete_option('wc_biz_settings_tab_password');
 
+		WooBiz_Admin::reset_all_sync_status();
+	}
 }

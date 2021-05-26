@@ -3,25 +3,41 @@
  * included in this file.
  */
 
-.woobiz-stock-sync-meta-box.error {
-  color: darkred;
+div.woobiz-notice {
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
 }
+
+/* .woobiz-stock-sync-meta-box.error {
+  color: darkred;
+} */
 
 .column-biz_sync {
   width: 10ch;
 }
 
-.column-biz_sync .biz_sync-indicator {
+.column-biz_sync .biz_sync-indicator::before {
+  content: "";
+  display: inline-block;
   height: 10px;
   width: 10px;
+  margin-right: 5px;
   background-color: gray;
   border-radius: 20px;
 }
 
-.column-biz_sync .biz_sync-indicator .synced {
+.column-biz_sync .biz_sync-indicator.synced::before {
   background-color: green;
 }
 
-.column-biz_sync .biz_sync-indicator .error {
+.column-biz_sync .biz_sync-indicator.not-synced::before {
   background-color: red;
+}
+
+button.woobiz-loading {
+  opacity: 1;
+  cursor: unset;
 }

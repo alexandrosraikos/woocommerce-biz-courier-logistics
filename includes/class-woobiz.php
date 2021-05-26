@@ -165,20 +165,22 @@ class WooBiz
 		$this->loader->add_filter('woocommerce_settings_tabs_array', $plugin_admin, 'add_biz_settings_tab', 50);
 		$this->loader->add_action('woocommerce_settings_tabs_biz_settings_tab', $plugin_admin, 'biz_settings_tab');
 		$this->loader->add_action('woocommerce_update_options_biz_settings_tab', $plugin_admin, 'update_biz_settings');
+		$this->loader->add_filter('admin_notices', $plugin_admin, 'biz_settings_notice');
+
+		/** 
+		 *  Stock synchronization.
+		 */
+		$this->loader->add_action('wp_ajax_biz_stock_sync', $plugin_admin, 'biz_stock_sync_handler');
+		// $this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_stock_sync_meta_box');
+		$this->loader->add_action('manage_posts_extra_tablenav', $plugin_admin, 'add_biz_stock_sync_all_button', 20, 1);
+		$this->loader->add_filter('manage_edit-product_columns', $plugin_admin, 'add_biz_stock_sync_indicator_column');
+		$this->loader->add_action('manage_product_posts_custom_column', $plugin_admin, 'biz_stock_sync_indicator_column', 10, 2);
 
 		/**
 		 *  Order and shipment status synchronization.
 		 */
-		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_order_meta_box');
-
-		/** 
-		 *  Stock levels synchronization.
-		 */
-		$this->loader->add_action('wp_ajax_biz_stock_sync', $plugin_admin, 'biz_stock_sync_handler');
-		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_stock_sync_meta_box');
-		$this->loader->add_action('manage_posts_extra_tablenav', $plugin_admin, 'add_biz_stock_sync_all_button', 20, 1);
-		$this->loader->add_filter('manage_edit-product_columns', $plugin_admin, 'add_biz_stock_sync_indicator_column');
-		$this->loader->add_action('manage_product_posts_custom_column', $plugin_admin, 'biz_stock_sync_indicator_column');
+		$this->loader->add_action('wp_ajax_biz_send_shipment', $plugin_admin, 'biz_stock_send_shipment');
+		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_shipment_meta_box');
 	}
 
 	/**

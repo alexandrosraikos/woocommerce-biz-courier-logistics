@@ -1,20 +1,19 @@
 (function ($) {
   "use strict";
   $(document).ready(function () {
-    $("button.woobiz-sync-stock").click(function (event) {
+    $("#woobiz-send-shipment").click(function (event) {
       event.preventDefault();
-      $("button.woobiz-sync-stock").prop("disabled", true);
-      $("button.woobiz-sync-stock").addClass("woobiz-loading");
       $.ajax({
         url: ajax_prop.ajax_url,
         type: "post",
         data: {
-          action: "biz_stock_sync",
+          action: "biz_send_shipment",
           nonce: ajax_prop.nonce,
-          product_skus: ajax_prop.product_skus,
+          order_id: ajax_prop.order_id,
         },
         success: function (response) {
-          window.location.reload();
+          // window.location.reload();
+          alert(response);
         },
         dataType: "json",
       });
