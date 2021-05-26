@@ -250,7 +250,6 @@ class WooBiz_Admin
 		));
 		if (!empty($products)) {
 			foreach ($products as $product) {
-				error_log(json_encode($product->get_id()));
 				delete_post_meta($product->get_id(), 'biz_sync');
 			}
 		}
@@ -260,7 +259,6 @@ class WooBiz_Admin
 		));
 		if (!empty($variations)) {
 			foreach ($variations as $variation) {
-				error_log(json_encode($variation->get_id()));
 				delete_post_meta($variation->get_id(), 'biz_sync');
 			}
 		}
