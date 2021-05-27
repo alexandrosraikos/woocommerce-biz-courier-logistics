@@ -25,7 +25,16 @@ msgstr "Πρέπει να ρυθμίσετε τα στοιχεία σας Biz Co
 msgid "Your Biz Courier credentials are invalid. Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 msgstr "Τα στοιχεία σας Biz Courier δεν είναι σωστά. Πρέπει να ρυθμίσετε τα στοιχεία σας Biz Courier στις <a href='%s'>ρυθμίσεις WooCommerce</a>."
 
-# Biz Courier settings view.
+msgid "There was an error contacting Biz Courier, please try again later."
+msgstr "Υπήρξε ένα σφάλμα κατά την επικοινωνία με την Biz Courier. Προσπαθήστε ξανά αργότερα."
+
+# Biz Courier integration view.
+msgid "Biz Courier & Logistics"
+msgstr "Biz Courier & Logistics"
+
+msgid "An integration for synchronising stock, orders and payment fees with the Biz Courier & Logistics platform."
+msgstr "Μία ενσωμάτωση για να συγχρονίζετε το απόθεμά σας, τις παραγγελίες και τις προμήθειες courier με την πλατφόρμα Biz Courier & Logistics."
+
 msgid "Biz Courier Credentials"
 msgstr "Στοιχεία Biz Courier"
 
@@ -37,9 +46,6 @@ msgstr "Αριθμός λογαριασμού"
 
 msgid "Your account number registered with Biz Courier."
 msgstr "Ο αριθμός λογαριασμού ο οποίος σας έχει αποσταλεί από την Biz Courier."
-
-msgid "Head CRM Number"
-msgstr "Κωδικός βασικού CRM"
 
 msgid "Your head CRM number registered with Biz Courier."
 msgstr "Ο κωδικός βασικού CRM ο οποίος σας έχει αποσταλεί από την Biz Courier."
@@ -79,3 +85,103 @@ msgstr "Βρέθηκε"
 msgid "Not found"
 msgstr "Εκτός"
 
+# Biz Courier shipping
+
+msgid "Biz Courier Shipping"
+msgstr "Αποστολές Biz Courier"
+
+msgid "Send with Biz Courier Shipping."
+msgstr "Αποστολή μέσω της Biz Courier."
+
+msgid "Enable"
+msgstr "Ενεργοποίηση"
+
+msgid "Allow shipping with Biz Courier."
+msgstr "Ενεργοποιήστε τις αποστολές με Biz Courier."
+
+msgid "COD fee"
+msgstr "Προμήθεια αντικαταβολής"
+
+msgid "Insert the additional Biz fee for Cash On Delivery payments."
+msgstr "Εισάγετε το ποσό χρέωσης αντικαταβολής για αποστολές Biz."
+
+msgid "Shipping Warehouses"
+msgstr "Αποθήκες αποστολών"
+
+msgid "Warehouse Location"
+msgstr "Τοποθεσία αποθήκης"
+
+msgid "Select the country of the active Biz warehouse currently connected to this store."
+msgstr "Επιλέξτε την χώρα της ενεργής αποθήκης που έχετε συνδέσει με αυτό το κατάστημα."
+
+msgid "Greece"
+msgstr "Ελλάδα"
+
+msgid "Destination Pricing"
+msgstr "Τιμοκατάλογος προορισμών"
+
+msgid "Insert the agreed upon prices for Biz Courier Shipping."
+msgstr "Εισάγετε τις τιμές που έχετε συμφωνήσει στο συμβόλαιό σας με την Biz Courier"
+
+msgid "Same Region"
+msgstr "Εντός νομού"
+
+msgid "Insert the price for destinations within the warehouse region."
+msgstr "Εισάγετε το κόστος αποστολής για προορισμούς εντός του νομού της αποθήκης σας."
+
+msgid "Delivery pricing"
+msgstr "Κόστος αποστολής"
+
+msgid "Charge per extra kg"
+msgstr "Χρέωση ανά επιπλέον κιλό"
+
+msgid "Land Destinations"
+msgstr "Χερσαίοι προορισμοί"
+
+msgid "Insert the price for domestic land destinations."
+msgstr "Εισάγετε το κόστος αποστολής για εγχώριους χερσαίους προορισμούς."
+
+msgid "Island Destinations"
+msgstr "Νησιωτικοί προορισμοί"
+
+msgid "Insert the price for domestic island destinations."
+msgstr "Εισάγετε το κόστος αποστολής για εγχώριους νησιωτικούς προορισμούς."
+
+msgid "Inaccessible Areas"
+msgstr "Δυσπρόσιτες περιοχές"
+
+msgid "Insert the price for domestic inaccessible destinations."
+msgstr "Εισάγετε το κόστος αποστολής για εγχώριες δυσπρόσιτες περιοχές."
+
+msgid "Same Day Delivery"
+msgstr "Παράδοση αυθημερόν"
+
+msgid "Insert the pricing for same day delivery."
+msgstr "Εισάγετε το κόστος παράδοσης αυθημερόν."
+
+msgid "Allow same region customers to opt for same day delivery."
+msgstr "Επιτρέψτε στους πελάτες που βρίσκονται στον ίδιο νομό να ζητήσουν αυθημερόν παράδοση."
+
+msgid "Charge per km"
+msgstr "Χρέωση ανα χλμ"
+
+msgid "Minimum charge"
+msgstr "Ελάχιστη χρέωση"
+
+msgid "Additional Services"
+msgstr "Πρόσθετες υπηρεσίες"
+
+msgid "Adjust options for additional services provided by Biz Courier."
+msgstr "Προσαρμόστε τις ρυθμίσεις των πρόσθετων υπηρεσιών αποστολών Biz Courier."
+
+msgid "Morning delivery fee"
+msgstr "Κόστος πρωϊνής παράδοσης"
+
+msgid "Insert the additional fee amount for morning deliveries."
+msgstr "Προσθέστε το ποσό επιπλέον χρέωσης για πρωϊνές παραδόσεις."
+
+msgid "Saturday delivery fee"
+msgstr "Κόστος παράδοσης Σαββάτου"
+
+msgid "Insert the additional fee amount for deliveries on Saturdays."
+msgstr "Προσθέστε το ποσό επιπλέον χρέωσης για παραδόσεις το Σάββατο."
