@@ -74,103 +74,23 @@ class WooBiz_Admin
 		wp_enqueue_script($this->WooBiz, plugin_dir_url(__FILE__) . 'js/woobiz-admin.js', array('jquery'), $this->version, false);
 	}
 
-	/**
-	 * Add a new settings tab to the WooCommerce settings tabs array.
-	 *
-	 * @param array $settings_tabs Array of WooCommerce setting tabs & their labels, excluding the Subscription tab.
-	 * @return array $settings_tabs Array of WooCommerce setting tabs & their labels, including the Subscription tab.
-	 */
-	public static function add_biz_settings_tab($settings_tabs)
-	{
-		$settings_tabs['biz_settings_tab'] = 'Biz Courier';
-		return $settings_tabs;
-	}
 
 	/**
-	 * 	WooCommerce Settings Pane for Biz Courier.
+	 * 	Integration
 	 * 	------------
-	 *  This section provides the necessary functionality to store
-	 * 	Biz Courier credentials into the database for future use.
+	 *  This section provides the necessary functionality for initialising the custom Biz integration.
 	 * 
 	 */
 
-
-	/**
-	 * Uses the WooCommerce admin fields API to output settings via the @see woocommerce_admin_fields() function.
-	 *
-	 * @uses woocommerce_admin_fields()
-	 * @uses self::get_settings()
-	 */
-	public static function biz_settings_tab()
-	{
-		woocommerce_admin_fields(self::get_settings());
+	function biz_integration() {
+		if (!class_exists('Biz_Integration')) {
+		   require_once plugin_dir_path(dirname(__FILE__)).'includes/class-woobiz-integration.php';
+		}
 	}
 
-
-	/**
-	 * Uses the WooCommerce options API to save settings via the @see woocommerce_update_options() function.
-	 *
-	 * @uses woocommerce_update_options()
-	 * @uses self::get_settings()
-	 */
-	public static function update_biz_settings()
-	{
-		update_option('wc_biz_connection', 'ok');
-		woocommerce_update_options(self::get_settings());
-	}
-
-	/**
-	 * Get all the settings for this plugin for @see woocommerce_admin_fields() function.
-	 *
-	 * @return array Array of settings for @see woocommerce_admin_fields() function.
-	 */
-	public static function get_settings()
-	{
-
-		$settings = array(
-			'section_title' => array(
-				'name'     => __('Biz Courier Credentials', 'woobiz'),
-				'type'     => 'title',
-				'desc'     => __("Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact us</a>.", 'woobiz'),
-				'id'       => 'wc_biz_settings_tab_section_title'
-			),
-			'account_number' => array(
-				'name' => __('Account Number', 'woobiz'),
-				'type' => 'text',
-				'desc' => __('Your account number registered with Biz Courier.', 'woobiz'),
-				'id'   => 'wc_biz_settings_tab_account_number'
-			),
-			'head_crm' => array(
-				'name' => __('Head CRM Number', 'woobiz'),
-				'type' => 'text',
-				'desc' => __('Your head CRM number registered with Biz Courier.', 'woobiz'),
-				'id'   => 'wc_biz_settings_tab_head_crm'
-			),
-			'warehouse_crm' => array(
-				'name' => __('Warehouse CRM Number', 'woobiz'),
-				'type' => 'text',
-				'desc' => __('Your CRM number for the warehouse location assigned to this store.', 'woobiz'),
-				'id'   => 'wc_biz_settings_tab_warehouse_crm'
-			),
-			'username' => array(
-				'name' => __('Username', 'woobiz'),
-				'type' => 'text',
-				'desc' => __('Your username registered with Biz Courier.', 'woobiz'),
-				'id'   => 'wc_biz_settings_tab_username'
-			),
-			'password' => array(
-				'name' => __('Password', 'woobiz'),
-				'type' => 'password',
-				'desc' => __('Your Biz Courier merchant password.', 'woobiz'),
-				'id'   => 'wc_biz_settings_tab_password'
-			),
-			'section_end' => array(
-				'type' => 'sectionend',
-				'id' => 'wc_biz_settings_tab_section_end'
-			),
-		);
-
-		return apply_filters('wc_biz_settings_tab_settings', $settings);
+	function add_biz_integration($integrations) {
+	   $integrations[] = 'Biz_Integration';
+	   return $integrations;
 	}
 
 	/**
@@ -182,24 +102,31 @@ class WooBiz_Admin
 	function biz_settings_notice()
 	{
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
+		
 		$in_biz_tab = false;
-		if(isset($_GET['tab'])) {
-			$in_biz_tab = $_GET['tab'] == 'biz_settings_tab';
+		if (isset($_GET['tab']) && isset($_GET['section'])) {
+			$in_biz_tab = $_GET['section'] == 'biz_integration';
 		}
+
 		if (is_admin() && !$in_biz_tab) {
-			if (get_option('wc_biz_connection') == 'auth-error') {
-				biz_settings_notice_invalid_html();
-			} elseif (get_option('wc_biz_connection') == 'conn-error') {
-				biz_settings_notice_error_html();
-			} elseif (
-				get_option('wc_biz_settings_tab_account_number') == null ||
-				get_option('wc_biz_settings_tab_head_crm') == null ||
-				get_option('wc_biz_settings_tab_warehouse_crm') == null ||
-				get_option('wc_biz_settings_tab_username') == null ||
-				get_option('wc_biz_settings_tab_password') == null
+			$biz_settings = get_option('woocommerce_biz_integration_settings');
+			if (isset($_GET['biz_error'])) {
+				if ($_GET['biz_error'] == 'auth-error') {
+					biz_settings_notice_invalid_html();
+				} 
+				elseif ($_GET['biz_error'] == 'conn-error') {
+					biz_settings_notice_error_html();
+				} 
+			}
+			elseif (
+				$biz_settings['account_number'] == null ||
+				$biz_settings['warehouse_crm'] == null ||
+				$biz_settings['username'] == null ||
+				$biz_settings['password'] == null
 			) {
 				biz_settings_notice_missing_html();
 			}
+			
 		}
 	}
 
@@ -244,7 +171,8 @@ class WooBiz_Admin
 	 *
 	 * @since    1.0.0
 	 */
-	public static function reset_all_sync_status() {
+	public static function reset_all_sync_status()
+	{
 		$products = wc_get_products(array(
 			'posts_per_page' => -1
 		));
@@ -279,20 +207,18 @@ class WooBiz_Admin
 				'trace' => 1,
 				'encoding' => 'UTF-8',
 			));
+			$biz_settings = get_option('woocommerce_biz_integration_settings');
 			$response = $client->__soapCall('prod_stock', array(
-				'Code' => get_option('wc_biz_settings_tab_account_number'),
-				'User' => get_option('wc_biz_settings_tab_username'),
-				'Pass' => get_option('wc_biz_settings_tab_password')
+				'Code' => $biz_settings['account_number'],
+				'User' => $biz_settings['username'],
+				'Pass' => $biz_settings['password']
 			));
 
-			if ($response[0]->Remaining_Quantity == 'Error') {
-				if ($response[0]->Product_Code == "Wrong Authentication Data") {
-					update_option('wc_biz_connection', 'auth-error');
-				}
+			if ($response[0]->Product_Code == "Wrong Authentication Data") {
 				WooBiz_Admin::reset_all_sync_status();
-				throw new Exception("Biz: " . $response[0]->Product_Code);
+				throw new Exception('auth-error');
 			}
-
+			
 			foreach ($response as $biz_product) {
 				if (in_array($biz_product->Product_Code, $skus)) {
 					$product_post_id = wc_get_product_id_by_sku($biz_product->Product_Code);
@@ -321,11 +247,8 @@ class WooBiz_Admin
 					update_post_meta($product_post_id, 'biz_sync', 'not-synced');
 				}
 			}
-
-			update_option('wc_biz_connection', 'ok');
 		} catch (SoapFault $fault) {
-			update_option('wc_biz_connection', 'conn-error');
-			throw new Exception("SOAP Fault: (faultcode: {$fault->faultcode}, faultstring: {$fault->faultstring})");
+			throw new Exception('conn-error');
 		}
 	}
 
@@ -342,9 +265,11 @@ class WooBiz_Admin
 		try {
 			WooBiz_Admin::biz_stock_sync($_POST['product_skus']);
 		} catch (Exception $e) {
+			echo $e->getMessage();
 			error_log("Error contacting Biz Courier - " . $e->getMessage());
 		}
-	} 
+		die();
+	}
 
 	/**
 	 * Add Biz Courier remaining stock synchronization button to the All Products page.
@@ -424,6 +349,25 @@ class WooBiz_Admin
 	}
 
 	/**
+	 * 	Shipping Method 
+	 * 	------------
+	 *  This section provides the necessary functionality for initialising the custom Biz shipping method.
+	 * 
+	 */
+
+	 function biz_shipping_method() {
+		 if (!class_exists('Biz_Shipping_Method')) {
+			require_once plugin_dir_path(dirname(__FILE__)).'includes/class-woobiz-shipping-method.php';
+		 }
+	 }
+
+	 function add_biz_shipping_method($methods) {
+		$methods[] = 'Biz_Shipping_Method';
+		return $methods;
+	 }
+
+
+	/**
 	 * 	Order Status 
 	 * 	------------
 	 *  This section provides the necessary functionality for mapping, managing and displaying
@@ -446,7 +390,7 @@ class WooBiz_Admin
 			$result = $client->__soapCall("full_status", array("Voucher" => strval($order->get_order_number())));
 		} catch (Exception $e) {
 			$error = $e->getMessage();
-			throw new ErrorException("There was a problem contacting Biz Courier. Details: ".$error);
+			throw new ErrorException("There was a problem contacting Biz Courier. Details: " . $error);
 		}
 	}
 

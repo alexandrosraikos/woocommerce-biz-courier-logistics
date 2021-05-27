@@ -18,19 +18,19 @@
 
  function biz_settings_notice_missing_html() {
     ?>
-    <div class="notice notice-warning woobiz-notice is-dismissible"><?php echo sprintf(__("Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.","woobiz"),admin_url('admin.php?page=wc-settings&tab=biz_settings_tab')) ?></div>
+    <div class="notice notice-warning woobiz-notice is-dismissible"><?php echo sprintf(__("Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.","woobiz"),admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')) ?></div>
     <?php
  }
 
  function biz_settings_notice_invalid_html() {
     ?>
-    <div class="notice notice-error woobiz-notice"><?php echo sprintf(__("Your Biz Courier credentials are invalid. Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.","woobiz"),admin_url('admin.php?page=wc-settings&tab=biz_settings_tab'))  ?></div>
+    <div class="notice notice-error woobiz-notice"><?php echo sprintf(__("Your Biz Courier credentials are invalid. Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.","woobiz"),admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration'))  ?></div>
     <?php
  }
 
  function biz_settings_notice_error_html() {
     ?>
-    <div class="notice notice-error woobiz-notice"><?php _e("There was an error contacting Biz Courier.","woobiz")  ?></div>
+    <div class="notice notice-error woobiz-notice"><?php _e("There was an error contacting Biz Courier, please try again later.","woobiz")  ?></div>
     <?php
  }
 

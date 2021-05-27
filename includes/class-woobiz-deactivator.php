@@ -31,12 +31,11 @@ class WooBiz_Deactivator
 	 * @since    1.0.0
 	 */
 	public static function deactivate()
-	{
-		delete_option('wc_biz_settings_tab_account_number');
-		delete_option('wc_biz_settings_tab_head_crm');
-		delete_option('wc_biz_settings_tab_warehouse_crm');
-		delete_option('wc_biz_settings_tab_username');
-		delete_option('wc_biz_settings_tab_password');
+	{	
+		
+		delete_option('woocommerce_biz_integration_settings');
+
+		delete_option('wc_biz_inaccessible_areas');
 
 		WooBiz_Admin::reset_all_sync_status();
 	}
