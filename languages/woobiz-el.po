@@ -121,7 +121,7 @@ msgid "Destination Pricing"
 msgstr "Τιμοκατάλογος προορισμών"
 
 msgid "Insert the agreed upon prices for Biz Courier Shipping."
-msgstr "Εισάγετε τις τιμές που έχετε συμφωνήσει στο συμβόλαιό σας με την Biz Courier"
+msgstr "Εισάγετε τις τιμές που έχετε συμφωνήσει στο συμβόλαιό σας με την Biz Courier."
 
 msgid "Same Region"
 msgstr "Εντός νομού"
