@@ -82,15 +82,17 @@ class WooBiz_Admin
 	 * 
 	 */
 
-	function biz_integration() {
+	function biz_integration()
+	{
 		if (!class_exists('Biz_Integration')) {
-		   require_once plugin_dir_path(dirname(__FILE__)).'includes/class-woobiz-integration.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-woobiz-integration.php';
 		}
 	}
 
-	function add_biz_integration($integrations) {
-	   $integrations[] = 'Biz_Integration';
-	   return $integrations;
+	function add_biz_integration($integrations)
+	{
+		$integrations[] = 'Biz_Integration';
+		return $integrations;
 	}
 
 	/**
@@ -102,7 +104,7 @@ class WooBiz_Admin
 	function biz_settings_notice()
 	{
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
-		
+
 		$in_biz_tab = false;
 		if (isset($_GET['tab']) && isset($_GET['section'])) {
 			$in_biz_tab = $_GET['section'] == 'biz_integration';
@@ -113,12 +115,10 @@ class WooBiz_Admin
 			if (isset($_GET['biz_error'])) {
 				if ($_GET['biz_error'] == 'auth-error') {
 					biz_settings_notice_invalid_html();
-				} 
-				elseif ($_GET['biz_error'] == 'conn-error') {
+				} elseif ($_GET['biz_error'] == 'conn-error') {
 					biz_settings_notice_error_html();
-				} 
-			}
-			elseif (
+				}
+			} elseif (
 				$biz_settings['account_number'] == null ||
 				$biz_settings['warehouse_crm'] == null ||
 				$biz_settings['username'] == null ||
@@ -126,7 +126,6 @@ class WooBiz_Admin
 			) {
 				biz_settings_notice_missing_html();
 			}
-			
 		}
 	}
 
@@ -218,7 +217,7 @@ class WooBiz_Admin
 				WooBiz_Admin::reset_all_sync_status();
 				throw new Exception('auth-error');
 			}
-			
+
 			foreach ($response as $biz_product) {
 				if (in_array($biz_product->Product_Code, $skus)) {
 					$product_post_id = wc_get_product_id_by_sku($biz_product->Product_Code);
@@ -355,16 +354,18 @@ class WooBiz_Admin
 	 * 
 	 */
 
-	 function biz_shipping_method() {
-		 if (!class_exists('Biz_Shipping_Method')) {
-			require_once plugin_dir_path(dirname(__FILE__)).'includes/class-woobiz-shipping-method.php';
-		 }
-	 }
+	function biz_shipping_method()
+	{
+		if (!class_exists('Biz_Shipping_Method')) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-woobiz-shipping-method.php';
+		}
+	}
 
-	 function add_biz_shipping_method($methods) {
+	function add_biz_shipping_method($methods)
+	{
 		$methods['biz_shipping_method'] = 'Biz_Shipping_Method';
 		return $methods;
-	 }
+	}
 
 
 	/**

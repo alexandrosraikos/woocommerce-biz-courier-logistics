@@ -183,12 +183,12 @@ class WooBiz
 		/**
 		 *  Order and shipment interactivity.
 		 */
-
+		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_shipment_meta_box');
 		// TODO: Create order hook for Biz (+ Send shipments with order data + special biz shipping fields).
 		$this->loader->add_action('wp_ajax_biz_send_shipment', $plugin_admin, 'biz_stock_send_shipment');
 
 		// TODO: Retrieve shipment voucher.
-		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_shipment_meta_box');
+
 	}
 
 	/**
