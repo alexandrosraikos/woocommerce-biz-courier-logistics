@@ -362,7 +362,7 @@ class WooBiz_Admin
 	 }
 
 	 function add_biz_shipping_method($methods) {
-		$methods[] = 'Biz_Shipping_Method';
+		$methods['biz_shipping_method'] = 'Biz_Shipping_Method';
 		return $methods;
 	 }
 

@@ -160,21 +160,23 @@ class WooBiz
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
 		/**
-		 *  Biz Courier settings pane for WooCommerce.
+		 *  Biz Courier Integration.
 		 */
 		$this->loader->add_action('woocommerce_integrations_init', $plugin_admin, 'biz_integration');
 		$this->loader->add_filter('woocommerce_integrations', $plugin_admin, 'add_biz_integration');
 		$this->loader->add_filter('admin_notices', $plugin_admin, 'biz_settings_notice');
 
 		/** 
-		 *  Stock synchronization.
+		 *  Custom Stock Synchronization.
 		 */
 		$this->loader->add_action('wp_ajax_biz_stock_sync', $plugin_admin, 'biz_stock_sync_handler');
 		$this->loader->add_action('manage_posts_extra_tablenav', $plugin_admin, 'add_biz_stock_sync_all_button', 20, 1);
 		$this->loader->add_filter('manage_edit-product_columns', $plugin_admin, 'add_biz_stock_sync_indicator_column');
 		$this->loader->add_action('manage_product_posts_custom_column', $plugin_admin, 'biz_stock_sync_indicator_column', 10, 2);
 
-		// TODO: Create Biz shipping method & custom pricing fields. (+ Dynamic warehouse location discovery from CRM code.)
+		/** 
+		 *  Biz Courier Shipping Method.
+		 */
 		$this->loader->add_action('woocommerce_shipping_init', $plugin_admin, 'biz_shipping_method');
 		$this->loader->add_filter('woocommerce_shipping_methods', $plugin_admin, 'add_biz_shipping_method');
 

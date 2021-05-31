@@ -90,8 +90,17 @@ msgstr "Εκτός"
 msgid "Biz Courier Shipping"
 msgstr "Αποστολές Biz Courier"
 
-msgid "Send with Biz Courier Shipping."
-msgstr "Αποστολή μέσω της Biz Courier."
+msgid "Simple delivery"
+msgstr "Απλή παράδοση"
+
+msgid "Morning delivery (until 10:30 a.m.)"
+msgstr "Πρωινή παράδοση (έως 10:30 π.μ.)"
+
+msgid "Saturday delivery"
+msgstr "Παράδοση εντός Σαββάτου"
+
+msgid "Allow your customers to receive their products via Biz Courier Shipping."
+msgstr "Επιτρέψτε στους πελάτες σας να λάβουν τα προϊόντα τους μέσω της Biz Courier."
 
 msgid "Enable"
 msgstr "Ενεργοποίηση"
@@ -111,43 +120,43 @@ msgstr "Αποθήκες αποστολών"
 msgid "Warehouse Location"
 msgstr "Τοποθεσία αποθήκης"
 
-msgid "Select the country of the active Biz warehouse currently connected to this store."
-msgstr "Επιλέξτε την χώρα της ενεργής αποθήκης που έχετε συνδέσει με αυτό το κατάστημα."
-
-msgid "Greece"
-msgstr "Ελλάδα"
-
-msgid "Destination Pricing"
-msgstr "Τιμοκατάλογος προορισμών"
-
 msgid "Insert the agreed upon prices for Biz Courier Shipping."
 msgstr "Εισάγετε τις τιμές που έχετε συμφωνήσει στο συμβόλαιό σας με την Biz Courier."
 
-msgid "Same Region"
-msgstr "Εντός νομού"
+msgid "Shipping zone type"
+msgstr "Τύπος ζώνης αποστολών"
 
-msgid "Insert the price for destinations within the warehouse region."
-msgstr "Εισάγετε το κόστος αποστολής για προορισμούς εντός του νομού της αποθήκης σας."
+msgid "Select the type of Biz area covered by this shipping zone."
+msgstr "Επιλέξτε τον τύπο περιοχής Biz που αντιπροσωπεύει αυτή η ζώνη αποστολών."
+
+msgid "Same area as warehouse"
+msgstr "Εντός νομού αποθήκης"
 
 msgid "Delivery pricing"
 msgstr "Κόστος αποστολής"
 
+msgid "Insert the delivery fee amount for up to 2kg."
+msgstr "Εισάγετε το ποσό χρέωσης για την αποστολή εώς 2 κιλών (kg)."
+
+msgid "Insert the delivery fee amount for every extra kg."
+msgstr "Εισάγετε το ποσό χρέωσης για κάθε επιπλέον κιλό (kg) στην αποστολή."
+
 msgid "Charge per extra kg"
 msgstr "Χρέωση ανά επιπλέον κιλό"
 
-msgid "Land Destinations"
+msgid "Land destinations"
 msgstr "Χερσαίοι προορισμοί"
 
 msgid "Insert the price for domestic land destinations."
 msgstr "Εισάγετε το κόστος αποστολής για εγχώριους χερσαίους προορισμούς."
 
-msgid "Island Destinations"
+msgid "Island destinations"
 msgstr "Νησιωτικοί προορισμοί"
 
 msgid "Insert the price for domestic island destinations."
 msgstr "Εισάγετε το κόστος αποστολής για εγχώριους νησιωτικούς προορισμούς."
 
-msgid "Inaccessible Areas"
+msgid "Inaccessible areas"
 msgstr "Δυσπρόσιτες περιοχές"
 
 msgid "Insert the price for domestic inaccessible destinations."
