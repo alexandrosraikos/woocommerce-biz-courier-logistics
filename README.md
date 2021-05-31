@@ -1,7 +1,5 @@
 # WooBiz
 
-![WooBiz Logotype](doc/woobiz_logo.png)
-
 A plugin designed to integrate WooCommerce with the Biz Courier logistics platform.
 
 ## Getting Started
@@ -23,3 +21,7 @@ Simply setup WordPress with WooCommerce and enable the plugin.
 ### Setup
 
 Save your Biz Courier credentials into Dashboard > WooCommerce > Settings > Biz Courier.
+
+## License
+
+© 2021 Alexandros Raikos tou Konstantinou, all rights reserved.
