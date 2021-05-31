@@ -22,6 +22,6 @@ Simply setup WordPress with WooCommerce and enable the plugin.
 
 Save your Biz Courier credentials into Dashboard > WooCommerce > Settings > Biz Courier.
 
-## License
+## Copyright
 
 © 2021 Alexandros Raikos tou Konstantinou, all rights reserved.
