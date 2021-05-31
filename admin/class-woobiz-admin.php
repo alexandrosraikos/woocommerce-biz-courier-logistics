@@ -376,19 +376,195 @@ class WooBiz_Admin
 	 * 
 	 */
 
+	/**
+	 * Creates a new shipment with Biz and saves voucher code.
+	 *
+	 * @since    1.0.0
+	 * @param	 array $skus An array of product skus formatted as strings.
+	 */
+	protected static function biz_send_shipment($order_id)
+	{
+		try {
+			// Connect to Biz.
+			$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl", array(
+				'trace' => 1,
+				'encoding' => 'UTF-8',
+			));
+
+			// --- Data preparation.
+			function truncate_field(string $string, int $length = 40)
+			{
+				return (strlen($string) > $length) ? substr($string, 0, $length - 1) . "." : $string;
+			}
+
+			$order = wc_get_order($order_id);
+			$items = $order->get_items();
+
+			if (empty($items)) {
+				throw new Exception('no-products-error');
+			}
+
+			// Get Biz codes and quantities.
+			$shipment_products = array(
+				'product_code' => array(),
+				'quantity' => array()
+			);
+			// Calculate volume.
+			$total_order_volume = array(
+				'width' => 0,
+				'height' => 0,
+				'length' => 0,
+				'weight' => 0
+			);
+			foreach ($items as $item) {
+				$product = wc_get_product($item->get_id());
+
+				// Only for synchronised products.
+				if (get_post_meta($product->get_id(), 'biz_sync', true)) {
+					$shipment_products['product_code'] = array_push($shipment_products['product_code'], $product->get_sku());
+					$shipment_products['quantity'] = array_push($shipment_products['quantity'], $item->get_quantity());
+
+					if (empty($shipment_products['product_code']) || empty($shipment_products['quantity'])) {
+						throw new Exception('products-error');
+					}
+
+					$total_order_volume['width'] += $product->get_width() * $item->get_quantity();
+					$total_order_volume['height'] += $product->get_height() * $item->get_quantity();
+					$total_order_volume['length'] += $product->get_length() * $item->get_quantity();
+					$total_order_volume['weight'] += $product->get_weight() * $item->get_quantity();
+
+					// Check for existing product metrics.
+					if (in_array(0, $total_order_volume)) {
+						throw new Exception('metrics-error');
+					}
+				} else {
+					throw new Exception('sku-error');
+				}
+			}
+
+			// Get Cash On Delivery amount.
+			if ($order->get_payment_method() == 'cod') {
+				$cash_on_delivery = $order->get_total();
+				$cash_on_delivery = number_format($cash_on_delivery, 2);
+			}
+
+			// REMOVE THIS
+			error_log("The current shipment size is: " . json_encode($total_order_volume));
+
+			// Get credentials.
+			$biz_settings = get_option('woocommerce_biz_integration_settings');
+			$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
+
+			$shipment_data = array(
+				'Code' => $biz_settings['account_number'],
+				'CRM' => $biz_settings['warehouse_crm'],
+				'User' => $biz_settings['username'],
+				'Pass' => $biz_settings['password'],
+				"R_Name" => truncate_field($order->get_shipping_last_name() . " " . $order->get_shipping_first_name()),
+				"R_Address" => truncate_field($order->get_shipping_address_1() . " " . $order->get_shipping_address_2()),
+				"R_Area_Code" => $order->get_shipping_country(),
+				"R_Area" => truncate_field($order->get_shipping_state()),
+				"R_PC" => $order->get_shipping_postcode(),
+				"R_Phone1" => $order->get_billing_phone(),
+				"R_Phone2" => "",
+				"R_Email" => truncate_field($order->get_billing_email(), 60),
+				"Length" => $total_order_volume['length'], // cm int
+				"Width" => $total_order_volume['width'], // cm int
+				"Height" => $total_order_volume['height'], // cm int
+				"Weight" => $total_order_volume['weight'], // kg int
+				"Prod" => $shipment_products['product_code'][0],
+				"Pieces" => $shipment_products['product_code'][0],
+				"Multi_Prod" => implode("#", array_map(function ($product_data) {
+					return $product_data['product_code'] . ":" . $product_data['quantity'];
+				}, $shipment_products)),
+				"Cash_On_Delivery" => $cash_on_delivery,
+				"Checques_On_Delivery" => "", // Unsupported.
+				"Comments" => $order->get_customer_note() ?? "",
+				"Charge" => "3", // Unsupported, always 3.
+				"Type" => "2", // Unsupported, always assume parcel.
+				"Relative1" => "", // Unsupported.
+				"Relative2" => "", // Unsupported.
+				"Delivery_Time_To" => "", // Unsupported.
+				"SMS" => $biz_shipping_settings['biz_sms_notifications'] ? "1" : "0",
+				"Special_Treatment" => "", // Unsupported.
+				"Protocol" => "", // Unsupported.
+				"Morning_Delivery" => "",
+				"Buy_Amount" => "", // Unsupported.
+				"Pick_Up" => "", // Unsupported.
+				"Service_Type" => "", // Unsupported.
+				"Relabel" => "", // Unsupported.
+				"Con_Call" => "0", // Unsupported.
+				"Ins_Amount" => "" // Unsupported.
+			);
+
+			// REMOVE THIS
+			error_log("Shipment data: " . json_encode($shipment_data));
+
+			// Send shipment.
+			$response = $client->__soapCall('newShipment', $shipment_data);
+
+			switch ($response->Error_Code) {
+				case 0:
+					if (isset($response->Voucher)) {
+						update_post_meta($order->get_id(), 'biz_voucher', $response->Voucher);
+						$order->update_status('processing');
+					} else {
+						throw new Exception('response-data-error');
+					}
+					break;
+				case 1:
+					throw new Exception('auth-error');
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+				case 10:
+				case 11:
+					throw new Exception('recipient-info-error');
+				case 7:
+				case 8:
+				case 9:
+				case 12:
+					throw new Exception('package-data-error');
+			}
+		} catch (SoapFault $fault) {
+			throw new Exception('conn-error');
+		}
+	}
+
+	/**
+	 * Handles shipment creation AJAX requests from authorized users.
+	 *
+	 * @since    1.0.0
+	 */
+	function biz_send_shipment_handler()
+	{
+		if (!wp_verify_nonce($_POST['nonce'], 'ajax_send_shipment_validation')) {
+			die("Unverified request to send shipment.");
+		}
+		try {
+			WooBiz_Admin::biz_send_shipment($_POST['order_id']);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+			error_log("Error contacting Biz Courier - " . $e->getMessage());
+		}
+		die();
+	}
+
 
 	/**
 	 * Get the status of a Biz Courier shipment using the stored voucher number.
 	 *
 	 * @since    1.0.0
 	 */
-	function biz_shipment_status($order)
+	protected static function biz_shipment_status($order)
 	{
 		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/full_history.php?wsdl", array(
 			'encoding' => 'UTF-8',
 		));
 		try {
-			$result = $client->__soapCall("full_status", array("Voucher" => strval($order->get_order_number())));
+			$client->__soapCall("full_status", array("Voucher" => strval($order->get_order_number())));
 		} catch (Exception $e) {
 			$error = $e->getMessage();
 			throw new ErrorException("There was a problem contacting Biz Courier. Details: " . $error);
@@ -396,34 +572,21 @@ class WooBiz_Admin
 	}
 
 	/**
-	 * Create a Biz Courier Shipment with a given WooCommerce order.
-	 *
-	 * @since    1.0.0
-	 */
-
-	function biz_stock_send_shipment()
-	{
-		if (!wp_verify_nonce($_POST['nonce'], 'ajax_send_shipment_validation')) {
-			die("Unverified request to send shipment.");
-		}
-		// TODO: Connect to Biz, send shipment and receive voucher and tracking code.
-	}
-
-	/**
 	 * Add Biz Courier connection indicator metabox to a single order.
 	 *
 	 * @since    1.0.0
 	 */
+	// TODO: Handle all errors.
 	function add_biz_shipment_meta_box()
 	{
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
-
 		function biz_shipment_meta_box($post)
 		{
 			$order = wc_get_order($post->ID);
 
-			if (!empty($order->get_meta('biz_voucher'))) {
-				biz_track_shipment_meta_box_html($order->get_meta('biz_voucher'));
+			if (get_post_meta($post->ID, 'biz_voucher') != null) {
+				$status_history = WooBiz_Admin::biz_shipment_status($order);
+				biz_track_shipment_meta_box_html(get_post_meta($post->ID, 'biz_voucher'), $status_history);
 			} else {
 				wp_enqueue_script('woobiz-send-shipment', plugin_dir_url(__FILE__) . 'js/woobiz-admin-send-shipment.js', array('jquery'));
 				wp_localize_script('woobiz-send-shipment', "ajax_prop", array(

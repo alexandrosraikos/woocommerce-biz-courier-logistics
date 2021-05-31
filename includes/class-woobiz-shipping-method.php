@@ -59,38 +59,45 @@ class Biz_Shipping_Method extends WC_Shipping_Method
                 'description' => __('Allow shipping with Biz Courier.', 'woobiz'),
                 'default' => 'yes'
             ),
-            'biz_cash_on_delivery_fee'  => array(
-                'title' => __('COD fee', 'woobiz'),
-                'description' => __('Insert the additional Biz fee for Cash On Delivery payments.', 'woobiz'),
-                'type' => 'price',
-            ),
-            'biz_same_day_delivery_title' => array(
-                'title' => __('Same Day Delivery', 'woobiz'),
-                'type' => 'title',
-                'description' => __('Insert the pricing for same day delivery.', 'woobiz'),
-            ),
-            'biz_same_day_delivery_enabled' => array(
-                'title' => __('Enable', 'woobiz'),
-                'type' => 'checkbox',
-                'description' => __('Allow same region customers to opt for same day delivery.', 'woobiz'),
-                'default' => 'yes'
-            ),
-            'biz_same_day_delivery_pricing'  => array(
-                'title' => __('Charge per km', 'woobiz'),
-                'type' => 'price',
-            ),
-            'biz_same_day_delivery_minimum_charge'  => array(
-                'title' => __('Minimum charge', 'woobiz'),
-                'type' => 'price',
-            ),
-            'biz_same_day_delivery_pricing_extra_kg'  => array(
-                'title' => __('Charge per extra kg', 'woobiz'),
-                'type' => 'price',
-            ),
+
+            // 'biz_cash_on_delivery_fee'  => array(
+            //     'title' => __('COD fee', 'woobiz'),
+            //     'description' => __('Insert the additional Biz fee for Cash On Delivery payments.', 'woobiz'),
+            //     'type' => 'price',
+            // ),
+            // 'biz_same_day_delivery_title' => array(
+            //     'title' => __('Same Day Delivery', 'woobiz'),
+            //     'type' => 'title',
+            //     'description' => __('Insert the pricing for same day delivery.', 'woobiz'),
+            // ),
+            // 'biz_same_day_delivery_enabled' => array(
+            //     'title' => __('Enable', 'woobiz'),
+            //     'type' => 'checkbox',
+            //     'description' => __('Allow same region customers to opt for same day delivery.', 'woobiz'),
+            //     'default' => 'yes'
+            // ),
+            // 'biz_same_day_delivery_pricing'  => array(
+            //     'title' => __('Charge per km', 'woobiz'),
+            //     'type' => 'price',
+            // ),
+            // 'biz_same_day_delivery_minimum_charge'  => array(
+            //     'title' => __('Minimum charge', 'woobiz'),
+            //     'type' => 'price',
+            // ),
+            // 'biz_same_day_delivery_pricing_extra_kg'  => array(
+            //     'title' => __('Charge per extra kg', 'woobiz'),
+            //     'type' => 'price',
+            // ),
             'biz_additional_services_title' => array(
                 'title' => __('Additional Services', 'woobiz'),
                 'type' => 'title',
                 'description' => __('Adjust options for additional services provided by Biz Courier.', 'woobiz'),
+            ),
+            'biz_sms_notifications' => array(
+                'title' => __('Enable', 'woobiz'),
+                'type' => 'checkbox',
+                'description' => __('Update your customers about their Biz shipment status via SMS.', 'woobiz'),
+                'default' => 'no'
             ),
             'biz_morning_delivery_fee'  => array(
                 'title' => __('Morning delivery fee', 'woobiz'),

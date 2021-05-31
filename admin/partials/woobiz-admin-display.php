@@ -63,12 +63,18 @@ function biz_stock_sync_column_html($status) {
  *  Biz Courier shipments in orders' views:
  */
 
-function biz_track_shipment_meta_box_html($voucher)
+function biz_track_shipment_meta_box_html(array $status_history, string $voucher)
 {
 ?>
    <p class="woobiz-order-indicator not-synchronized"><?php _e("The order has shipped with Biz.", "woobiz") ?></p>
    <ul>
        <li><?php _e("Voucher number: ").$voucher ?></li>
+       <li>
+           <?php 
+           _e("Status history: ");
+           echo json_encode($status_history) 
+           ?>
+        </li>
    </ul>
    <button id="woobiz-track-shipment" class="button save-order button-primary" /><?php _e("Track shipment", "woobiz") ?></button>
 <?php
