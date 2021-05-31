@@ -576,7 +576,10 @@ class WooBiz_Admin
 	 *
 	 * @since    1.0.0
 	 */
-	// TODO: Handle all errors.
+	// TODO: Handle all shipment creation errors.
+	// TODO: Add WooCommerce order actions.
+	// TODO: Auto generate order note.
+	// TODO: Add voucher to info email.
 	function add_biz_shipment_meta_box()
 	{
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';

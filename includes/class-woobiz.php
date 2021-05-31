@@ -184,11 +184,7 @@ class WooBiz
 		 *  Order and shipment interactivity.
 		 */
 		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_shipment_meta_box');
-		// TODO: Create order hook for Biz (+ Send shipments with order data + special biz shipping fields).
 		$this->loader->add_action('wp_ajax_biz_send_shipment', $plugin_admin, 'biz_send_shipment_handler');
-
-		// TODO: Retrieve shipment voucher.
-
 	}
 
 	/**
@@ -205,11 +201,7 @@ class WooBiz
 
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
-
-		// TODO: Add Biz shipping method options (same day delivery, etc).
-		// TODO: Calculate shipping costs on front-end.
-
-		// TODO: Display order status history (on lod), Biz tracking code & contact information.
+		// TODO: Display order Biz tracking code & contact information.
 	}
 
 	/**
