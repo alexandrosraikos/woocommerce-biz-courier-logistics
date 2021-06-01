@@ -82,6 +82,13 @@ class WooBiz_Admin
 	 * 
 	 */
 
+
+	/**
+	 * Declare the Biz_Integration class.
+	 *
+	 * @since    1.0.0
+	 * @uses 	 plugin_dir_path()
+	 */
 	function biz_integration()
 	{
 		if (!class_exists('Biz_Integration')) {
@@ -89,6 +96,13 @@ class WooBiz_Admin
 		}
 	}
 
+
+	/**
+	 * Include Biz_Integration in WooCommerce Integrations.
+	 *
+	 * @since    1.0.0
+	 * @param 	 array $integrations The active list of WooCommerce Integrations.
+	 */
 	function add_biz_integration($integrations)
 	{
 		$integrations[] = 'Biz_Integration';
@@ -98,19 +112,25 @@ class WooBiz_Admin
 	/**
 	 * Displays a WordPress notice depending on Biz credential and connection status.
 	 *
-	 * @uses get_options()
+	 * @uses 	get_option()
+	 * @uses 	biz_settings_notice_invalid_html()
+	 * @uses 	biz_settings_notice_error_html()
+	 * @uses 	biz_settings_notice_missing_html()
 	 * @since	1.0.0
 	 */
 	function biz_settings_notice()
 	{
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
 
+		// Check if the administrator is already in the Biz tab.
 		$in_biz_tab = false;
 		if (isset($_GET['tab']) && isset($_GET['section'])) {
 			$in_biz_tab = $_GET['section'] == 'biz_integration';
 		}
 
 		if (is_admin() && !$in_biz_tab) {
+
+			// Handle undesirable credentials state.
 			$biz_settings = get_option('woocommerce_biz_integration_settings');
 			if (isset($_GET['biz_error'])) {
 				if ($_GET['biz_error'] == 'auth-error') {
@@ -141,15 +161,20 @@ class WooBiz_Admin
 	 * Gets all SKUs of a product or its variants.
 	 *
 	 * @since    1.0.0
+	 * @uses 	 get_children()
+	 * @uses 	 wc_get_product()
 	 * @param	 WC_Product $product A WooCommerce product.
 	 */
-	public static function get_all_related_skus($product)
+	static function get_all_related_skus($product)
 	{
+		// Push simple product SKUs.
 		$skus = array();
-		$variants = $product->get_children();
 		if ($product->managing_stock()) {
 			array_push($skus, $product->get_sku());
 		}
+
+		// Push children variation SKUs.
+		$variants = $product->get_children();
 		if (!empty($variants)) {
 			foreach ($variants as $variant_id) {
 				$product_variant = wc_get_product($variant_id);
@@ -159,6 +184,7 @@ class WooBiz_Admin
 				}
 			}
 		}
+
 		return array_unique($skus);
 	}
 
@@ -169,21 +195,30 @@ class WooBiz_Admin
 	 * All Biz Courier sync status are deleted from the products in the database.
 	 *
 	 * @since    1.0.0
+	 * @uses 	 delete_post_meta()
+	 * @uses 	 wc_get_products()
 	 */
-	public static function reset_all_sync_status()
+	static function reset_all_sync_status()
 	{
+		// Get all products.
 		$products = wc_get_products(array(
 			'posts_per_page' => -1
 		));
+
+		// Delete all synchronisation indicators.
 		if (!empty($products)) {
 			foreach ($products as $product) {
 				delete_post_meta($product->get_id(), 'biz_sync');
 			}
 		}
+
+		// Get all variations.
 		$variations = wc_get_products(array(
 			'posts_per_page' => -1,
 			'type' => 'variation'
 		));
+
+		// Delete all synchronisation indicators.
 		if (!empty($variations)) {
 			foreach ($variations as $variation) {
 				delete_post_meta($variation->get_id(), 'biz_sync');
@@ -197,52 +232,83 @@ class WooBiz_Admin
 	 *
 	 * @since    1.0.0
 	 * @param	 array $skus An array of product skus formatted as strings.
+	 * @uses 	 get_option()
+	 * @uses 	 __soapCall()
+	 * @uses 	 WooBiz_Admin::reset_all_sync_status()
+	 * @uses 	 in_array()
+	 * @uses 	 wc_get_product_id_by_sku()
+	 * @uses 	 wc_get_product()
+	 * @uses 	 get_post()
+	 * @uses 	 update_post_meta()
+	 * @uses 	 delete_post_meta()
 	 */
-	protected static function biz_stock_sync($skus)
+	private static function biz_stock_sync($skus)
 	{
 		try {
-			// Connect to Biz and get all remaining stock.
+			// Initialize client.
 			$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/prod_stock.php?wsdl", array(
 				'trace' => 1,
 				'encoding' => 'UTF-8',
 			));
+
+			// Get credentials settings.
 			$biz_settings = get_option('woocommerce_biz_integration_settings');
+
+			// Make SOAP call.
 			$response = $client->__soapCall('prod_stock', array(
 				'Code' => $biz_settings['account_number'],
 				'User' => $biz_settings['username'],
 				'Pass' => $biz_settings['password']
 			));
 
+			//  Handle authorization error.
 			if ($response[0]->Product_Code == "Wrong Authentication Data") {
 				WooBiz_Admin::reset_all_sync_status();
 				throw new Exception('auth-error');
 			}
 
+			// Compare with each product already in warehouse.
 			foreach ($response as $biz_product) {
 				if (in_array($biz_product->Product_Code, $skus)) {
+
+					// Get the product using the SKU / Biz Product Code.
 					$product_post_id = wc_get_product_id_by_sku($biz_product->Product_Code);
 					$product_post = get_post($product_post_id);
 					$wc_product = wc_get_product($product_post->ID);
+
+					// Check for active stock management.
 					if ($wc_product->managing_stock()) {
+
+						// Update remaining stock quantity.
 						wc_update_product_stock($wc_product, $biz_product->Remaining_Quantity, 'set');
+
+						// Update Biz synchronization post metadata.
 						update_post_meta($product_post_id, 'biz_sync', 'synced');
-						$wc_product->set_catalog_visibility('visible');
 					} else {
+
+						// Delete Biz synchronization post metadata.
 						delete_post_meta($product_post_id, 'biz_sync');
-						$wc_product->set_catalog_visibility('hidden');
 					}
 				}
 			}
 
+			// Compare with each product in the synchronization call.
 			foreach ($skus as $sku) {
+
+				// Extract SKUs.
 				$retrieved_skus = array_map(function ($bp) {
 					return $bp->Product_Code;
 				}, $response);
+
+				// Check for warehouse availability.
 				if (!in_array($sku, $retrieved_skus)) {
+
+					// Get the product using the SKU.
 					$product_post_id = wc_get_product_id_by_sku($sku);
 					$product_post = get_post($product_post_id);
 					$wc_product = wc_get_product($product_post->ID);
-					$wc_product->set_catalog_visibility('hidden');
+
+					// Update Biz synchronization post metadata.
 					update_post_meta($product_post_id, 'biz_sync', 'not-synced');
 				}
 			}
@@ -255,18 +321,25 @@ class WooBiz_Admin
 	 * Handles stock sync AJAX requests from authorized users and initiates sync.
 	 *
 	 * @since    1.0.0
+	 * @uses 	 wp_verify_nonce()
+	 * @uses 	 WooBiz_Admin::biz_stock_sync()
 	 */
 	function biz_stock_sync_handler()
 	{
+		// Verify the WordPress generated nonce.
 		if (!wp_verify_nonce($_POST['nonce'], 'ajax_stock_sync_validation')) {
 			die("Unverified request to synchronise stock.");
 		}
+
+		// Attempt stock synchronization using request SKUs.
 		try {
 			WooBiz_Admin::biz_stock_sync($_POST['product_skus']);
 		} catch (Exception $e) {
 			echo $e->getMessage();
 			error_log("Error contacting Biz Courier - " . $e->getMessage());
 		}
+
+		// Return success.
 		die();
 	}
 
@@ -274,14 +347,20 @@ class WooBiz_Admin
 	 * Add Biz Courier remaining stock synchronization button to the All Products page.
 	 *
 	 * @since    1.0.0
+	 * @uses  	 WooBiz_Admin::get_all_related_skus()
+	 * @uses 	 wp_enqueue_script()
+	 * @uses 	 wp_localize_script()
+	 * @uses 	 wp_create_nonce()
+	 * @uses 	 biz_stock_sync_all_button()
 	 */
 	function add_biz_stock_sync_all_button()
 	{
+		// Ensure active All Products page.
 		global $current_screen;
 		if ('product' != $current_screen->post_type) {
 			return;
 		}
-
+		// Get SKUs from all products.
 		$products = wc_get_products(array());
 		$all_skus = array();
 		if (!empty($products)) {
@@ -290,6 +369,7 @@ class WooBiz_Admin
 			}
 		}
 
+		// Enqeue & localize synchronization button script.
 		wp_enqueue_script('woobiz-stock-sync', plugin_dir_url(__FILE__) . 'js/woobiz-admin-stock-sync.js', array('jquery'));
 		wp_localize_script('woobiz-stock-sync', "ajax_prop", array(
 			"ajax_url" => admin_url('admin-ajax.php'),
@@ -297,8 +377,8 @@ class WooBiz_Admin
 			"product_skus" => $all_skus
 		));
 
+		// Insert button HTML.
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
-
 		biz_stock_sync_all_button();
 	}
 
@@ -307,6 +387,7 @@ class WooBiz_Admin
 	 * Add Biz Courier stock synchronisation status column to the All Products page.
 	 *
 	 * @since    1.0.0
+	 * @param 	 array $columns The active list of columns in the All Products page.
 	 */
 	function add_biz_stock_sync_indicator_column($columns)
 	{
@@ -319,20 +400,27 @@ class WooBiz_Admin
 	 * in the All Products page.
 	 *
 	 * @since    1.0.0
+	 * @uses 	 get_post_meta()
+	 * @uses 	 wc_get_product()
+	 * @uses 	 biz_stock_sync_column_html()
 	 */
 	function biz_stock_sync_indicator_column($column_name, $product_post_id)
 	{
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
+
+		// Ensure Biz Status column.
 		switch ($column_name) {
 			case 'biz_sync':
-				$product = wc_get_product($product_post_id);
+				// Declare empty product status.
 				$status = "";
 
+				// Get product synchronisation status.
+				$product = wc_get_product($product_post_id);
 				if ($product->managing_stock() && $product->get_sku() != null) {
 					$status = get_post_meta($product_post_id, 'biz_sync', true);
 				}
 
-				// Check if any children are synced.
+				// Get children variations' synchronization status.
 				$children_ids = $product->get_children();
 				$synced_children = true;
 				if (!empty($children_ids)) {
@@ -342,7 +430,11 @@ class WooBiz_Admin
 						}
 					}
 				};
+
+				// Update product status.
 				$status = ($synced_children) ? ($status) : ("not-synced");
+
+				// Show HTML.
 				biz_stock_sync_column_html($status);
 		}
 	}
@@ -354,6 +446,12 @@ class WooBiz_Admin
 	 * 
 	 */
 
+
+	/**
+	 * Declare the Biz_Shipping_Method class.
+	 *
+	 * @since    1.0.0
+	 */
 	function biz_shipping_method()
 	{
 		if (!class_exists('Biz_Shipping_Method')) {
@@ -361,6 +459,12 @@ class WooBiz_Admin
 		}
 	}
 
+	/**
+	 * Declare Biz_Shipping_Method class.
+	 *
+	 * @since    1.0.0
+	 * @param 	 array $methods The active list of shipping methods.
+	 */
 	function add_biz_shipping_method($methods)
 	{
 		$methods['biz_shipping_method'] = 'Biz_Shipping_Method';
@@ -377,69 +481,88 @@ class WooBiz_Admin
 	 */
 
 	/**
-	 * Creates a new shipment with Biz and saves voucher code.
+	 * Creates a new shipment with Biz and saves the Biz generated voucher in the order's metadata.
 	 *
 	 * @since    1.0.0
-	 * @param	 array $skus An array of product skus formatted as strings.
+	 * @param	 int $order_id The ID of the WooCommerce order.
+	 * @uses	 __soapCall()
+	 * @uses	 wc_get_order()
+	 * @uses 	 wc_get_product()
+	 * @uses 	 get_post_meta()
+	 * @uses 	 get_option()
+	 * @uses 	 updaate_post_meta()
 	 */
-	protected static function biz_send_shipment($order_id)
+	private static function biz_send_shipment(int $order_id)
 	{
+		/**
+		 * Truncate text to the desired character limit.
+		 *
+		 * @since    1.0.0
+		 * @param string $string The text to be truncated.
+		 * @param int $length The maximum length.
+		 */
+		function truncate_field(string $string, int $length = 40)
+		{
+			return (strlen($string) > $length) ? substr($string, 0, $length - 1) . "." : $string;
+		}
+
 		try {
-			// Connect to Biz.
+			// Initialize client.
 			$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl", array(
 				'trace' => 1,
 				'encoding' => 'UTF-8',
 			));
 
-			// --- Data preparation.
-			function truncate_field(string $string, int $length = 40)
-			{
-				return (strlen($string) > $length) ? substr($string, 0, $length - 1) . "." : $string;
-			}
+			// Initialize Biz item format array in product_code:quantity format.
+			$shipment_products = array();
 
-			$order = wc_get_order($order_id);
-			$items = $order->get_items();
-
-			if (empty($items)) {
-				throw new Exception('no-products-error');
-			}
-
-			// Get Biz codes and quantities.
-			$shipment_products = array(
-				'product_code' => array(),
-				'quantity' => array()
-			);
-			// Calculate volume.
+			// Initialize total volume array.
 			$total_order_volume = array(
 				'width' => 0,
 				'height' => 0,
 				'length' => 0,
 				'weight' => 0
 			);
+
+			// Get order and items.
+			$order = wc_get_order($order_id);
+			$items = $order->get_items();
+
+			// Check for existing items in order.
+			if (empty($items)) {
+				throw new Exception('no-products-error');
+			}
+
+			// Handle each item included in the order.
 			foreach ($items as $item) {
-				$product = wc_get_product($item->get_id());
+				$product = wc_get_product($item->get_product_id());
 
-				// Only for synchronised products.
-				if (get_post_meta($product->get_id(), 'biz_sync', true)) {
-					$shipment_products['product_code'] = array_push($shipment_products['product_code'], $product->get_sku());
-					$shipment_products['quantity'] = array_push($shipment_products['quantity'], $item->get_quantity());
+				// Check for active Biz synchronization status.
+				if (get_post_meta($product->get_id(), 'biz_sync', true) == 'synced') {
+					array_push($shipment_products, $product->get_sku() . ":" . $item->get_quantity());
 
-					if (empty($shipment_products['product_code']) || empty($shipment_products['quantity'])) {
-						throw new Exception('products-error');
-					}
-
-					$total_order_volume['width'] += $product->get_width() * $item->get_quantity();
-					$total_order_volume['height'] += $product->get_height() * $item->get_quantity();
-					$total_order_volume['length'] += $product->get_length() * $item->get_quantity();
-					$total_order_volume['weight'] += $product->get_weight() * $item->get_quantity();
-
-					// Check for existing product metrics.
-					if (in_array(0, $total_order_volume)) {
+					// Calculate total dimensions.
+					if (
+						$product->get_width() != "" &&
+						$product->get_height() != "" &&
+						$product->get_length() != "" &&
+						$product->get_weight() != ""
+					) {
+						$total_order_volume['width'] += $product->get_width() * $item->get_quantity();
+						$total_order_volume['height'] += $product->get_height() * $item->get_quantity();
+						$total_order_volume['length'] += $product->get_length() * $item->get_quantity();
+						$total_order_volume['weight'] += $product->get_weight() * $item->get_quantity();
+					} else {
 						throw new Exception('metrics-error');
 					}
 				} else {
 					throw new Exception('sku-error');
 				}
+			}
+
+			// Check Biz item list sufficiency.
+			if (empty($shipment_products)) {
+				throw new Exception('products-error');
 			}
 
 			// Get Cash On Delivery amount.
@@ -448,13 +571,11 @@ class WooBiz_Admin
 				$cash_on_delivery = number_format($cash_on_delivery, 2);
 			}
 
-			// REMOVE THIS
-			error_log("The current shipment size is: " . json_encode($total_order_volume));
-
-			// Get credentials.
+			// Get Biz credentials and shipping settings.
 			$biz_settings = get_option('woocommerce_biz_integration_settings');
 			$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
 
+			// Prepare SOAP query.
 			$shipment_data = array(
 				'Code' => $biz_settings['account_number'],
 				'CRM' => $biz_settings['warehouse_crm'],
@@ -463,7 +584,7 @@ class WooBiz_Admin
 				"R_Name" => truncate_field($order->get_shipping_last_name() . " " . $order->get_shipping_first_name()),
 				"R_Address" => truncate_field($order->get_shipping_address_1() . " " . $order->get_shipping_address_2()),
 				"R_Area_Code" => $order->get_shipping_country(),
-				"R_Area" => truncate_field($order->get_shipping_state()),
+				"R_Area" => truncate_field($order->get_shipping_city()),
 				"R_PC" => $order->get_shipping_postcode(),
 				"R_Phone1" => $order->get_billing_phone(),
 				"R_Phone2" => "",
@@ -472,11 +593,9 @@ class WooBiz_Admin
 				"Width" => $total_order_volume['width'], // cm int
 				"Height" => $total_order_volume['height'], // cm int
 				"Weight" => $total_order_volume['weight'], // kg int
-				"Prod" => $shipment_products['product_code'][0],
-				"Pieces" => $shipment_products['product_code'][0],
-				"Multi_Prod" => implode("#", array_map(function ($product_data) {
-					return $product_data['product_code'] . ":" . $product_data['quantity'];
-				}, $shipment_products)),
+				"Prod" => explode(":", $shipment_products[0])[0],
+				"Pieces" => explode(":", $shipment_products[0])[1],
+				"Multi_Prod" => implode("#", $shipment_products),
 				"Cash_On_Delivery" => $cash_on_delivery,
 				"Checques_On_Delivery" => "", // Unsupported.
 				"Comments" => $order->get_customer_note() ?? "",
@@ -488,7 +607,7 @@ class WooBiz_Admin
 				"SMS" => $biz_shipping_settings['biz_sms_notifications'] ? "1" : "0",
 				"Special_Treatment" => "", // Unsupported.
 				"Protocol" => "", // Unsupported.
-				"Morning_Delivery" => "",
+				"Morning_Delivery" => (str_contains($order->get_shipping_method(), "Πρωινή") || str_contains($order->get_shipping_method(), "Morning")) ? "yes" : "",
 				"Buy_Amount" => "", // Unsupported.
 				"Pick_Up" => "", // Unsupported.
 				"Service_Type" => "", // Unsupported.
@@ -497,16 +616,20 @@ class WooBiz_Admin
 				"Ins_Amount" => "" // Unsupported.
 			);
 
-			// REMOVE THIS
+			// TODO: REMOVE THIS ----
 			error_log("Shipment data: " . json_encode($shipment_data));
 
-			// Send shipment.
+			// Make SOAP call.
 			$response = $client->__soapCall('newShipment', $shipment_data);
 
+			// TODO: REMOVE THIS ----
+			error_log(json_encode($response));
+
+			// Handle error codes from response.
 			switch ($response->Error_Code) {
 				case 0:
 					if (isset($response->Voucher)) {
-						update_post_meta($order->get_id(), 'biz_voucher', $response->Voucher);
+						update_post_meta($order->get_id(), '_biz_voucher', $response->Voucher);
 						$order->update_status('processing');
 					} else {
 						throw new Exception('response-data-error');
@@ -540,34 +663,76 @@ class WooBiz_Admin
 	 */
 	function biz_send_shipment_handler()
 	{
+		// Verify WordPress generated nonce.
 		if (!wp_verify_nonce($_POST['nonce'], 'ajax_send_shipment_validation')) {
 			die("Unverified request to send shipment.");
 		}
+
+		// Attempt to send shipment using POST data.
 		try {
-			WooBiz_Admin::biz_send_shipment($_POST['order_id']);
+			WooBiz_Admin::biz_send_shipment(intval($_POST['order_id']));
 		} catch (Exception $e) {
 			echo $e->getMessage();
 			error_log("Error contacting Biz Courier - " . $e->getMessage());
 		}
+
+		// Return success.
 		die();
+	}
+
+	/**
+	 * Add tracking code field to e-mail order confirmation.
+	 *
+	 * @since    1.0.0
+	 * @uses 	 get_post_meta()
+	 * @param 	 array $fields The active list of email fields handled by WooCommerce.
+	 * @param 	 WC_Order $order The current WooCommerce order.
+	 */
+	function add_biz_email_order_fields($fields, $sent_to_admin, $order)
+	{
+		$fields['biz_tracking_code'] = array(
+			'label' => __('Tracking Code', 'woobiz'),
+			'value' => get_post_meta($order->get_id(), '_biz_voucher', true),
+		);
+		return $fields;
 	}
 
 
 	/**
-	 * Get the status of a Biz Courier shipment using the stored voucher number.
+	 * Get the status history of a Biz Courier shipment using the stored voucher number.
 	 *
 	 * @since    1.0.0
+	 * @uses 	 __soapCall()
+	 * @param 	 string $voucher The voucher code associated with the Biz shipment.
 	 */
-	protected static function biz_shipment_status($order)
+	private static function biz_shipment_status($voucher)
 	{
+		// Initialize SOAP client.
 		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/full_history.php?wsdl", array(
 			'encoding' => 'UTF-8',
 		));
+
+		// Attempt to get the status history from Biz.
 		try {
-			$client->__soapCall("full_status", array("Voucher" => strval($order->get_order_number())));
-		} catch (Exception $e) {
-			$error = $e->getMessage();
-			throw new ErrorException("There was a problem contacting Biz Courier. Details: " . $error);
+			$response = $client->__soapCall("full_status", array("Voucher" => $voucher));
+
+			// Check for invalid voucher.
+			if (empty($response)) {
+				throw new Exception("voucher-error");
+			}
+
+			// Return a simplified array.
+			return array_map(function ($status) {
+				$single_status = array();
+				$single_status['code'] = $status->Status_Code;
+				$single_status['description'] = $status->Status_Description;
+				$single_status['date'] = $status->Status_Date;
+				$single_status['time'] = $status->Status_Time;
+				return $single_status;
+			}, $response);
+
+		} catch (SoapFault $fault) {
+			throw new Exception('conn-error');
 		}
 	}
 
@@ -575,32 +740,65 @@ class WooBiz_Admin
 	 * Add Biz Courier connection indicator metabox to a single order.
 	 *
 	 * @since    1.0.0
+	 * @uses wp_enqueue_script()
+	 * @uses wp_localize_script()
 	 */
+
 	// TODO: Handle all shipment creation errors.
 	// TODO: Add WooCommerce order actions.
-	// TODO: Auto generate order note.
-	// TODO: Add voucher to info email.
 	function add_biz_shipment_meta_box()
 	{
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
+
+		/**
+		 * Print the metabox.
+		 *
+		 * @since    1.0.0
+		 * @uses 	 wc_get_order()
+		 * @uses 	 get_post_meta()
+		 * @uses 	 add_meta_box()
+		 * @uses 	 biz_track_shipment_meta_box_html()
+		 * @uses	 biz_track_shipment_meta_box_error_html()
+		 * @uses 	 wp_enqueue_script()
+		 * @uses 	 wp_localize_script()
+		 * @param 	 WP_Post $post The current post.
+		 */
 		function biz_shipment_meta_box($post)
 		{
+			// Get order and any voucher data.
 			$order = wc_get_order($post->ID);
+			$voucher = get_post_meta($post->ID, '_biz_voucher', true);
 
-			if (get_post_meta($post->ID, 'biz_voucher') != null) {
-				$status_history = WooBiz_Admin::biz_shipment_status($order);
-				biz_track_shipment_meta_box_html(get_post_meta($post->ID, 'biz_voucher'), $status_history);
-			} else {
+			// Handle existing voucher.
+			if (!empty($voucher)) {
+				try {
+					$status_history = WooBiz_Admin::biz_shipment_status($voucher);
+					biz_track_shipment_meta_box_html($voucher, $status_history);
+				} catch (Exception $e) {
+					biz_track_shipment_meta_box_error_html($e->getMessage());
+				}
+			}
+			// Show "Send Shipment" meta box.
+			else {
+				
+				// Enqueue and localize button scripts.
 				wp_enqueue_script('woobiz-send-shipment', plugin_dir_url(__FILE__) . 'js/woobiz-admin-send-shipment.js', array('jquery'));
 				wp_localize_script('woobiz-send-shipment', "ajax_prop", array(
 					"ajax_url" => admin_url('admin-ajax.php'),
 					"nonce" => wp_create_nonce('ajax_send_shipment_validation'),
 					"order_id" => $order->get_id()
 				));
+
+				// Print HTML.
 				biz_send_shipment_meta_box_html();
 			}
 		}
 
-		add_meta_box('woobiz_send_shipment_meta_box', __('Biz Courier status', 'woobiz'), 'biz_shipment_meta_box', 'shop_order', 'side', 'high');
+		// Ensure the administrator is on "Edit" screen and not "Add".
+		if (get_current_screen()->action != 'add') {
+			
+			// Add the meta box.
+			add_meta_box('woobiz_send_shipment_meta_box', __('Biz Courier status', 'woobiz'), 'biz_shipment_meta_box', 'shop_order', 'side', 'high');
+		}
 	}
 }
