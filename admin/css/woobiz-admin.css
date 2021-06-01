@@ -3,7 +3,14 @@
  * included in this file.
  */
 
-div.woobiz-notice {
+/**
+    * 	Integration
+    * 	------------
+    *  This section provides the necessary styling for initialising the custom Biz integration.
+    * 
+    */
+
+div.biz-notice {
   font-weight: bold;
   margin-top: 15px;
   margin-bottom: 15px;
@@ -11,9 +18,13 @@ div.woobiz-notice {
   padding-bottom: 10px !important;
 }
 
-/* .woobiz-stock-sync-meta-box.error {
-  color: darkred;
-} */
+/**
+    * 	Stock Synchronisation
+    * 	------------
+    *  This section provides all the styling related to syncing stock 
+    * 	between the WooCommerce store and the items in the connected warehouse.
+    * 
+    */
 
 .column-biz_sync {
   width: 10ch;
@@ -37,7 +48,47 @@ div.woobiz-notice {
   background-color: #a44;
 }
 
-button.woobiz-loading {
+button.biz-loading {
   opacity: 1;
   cursor: unset;
+}
+
+/**
+	 * 	Order Status 
+	 * 	------------
+	 *  This section provides the necessary styling for displaying
+	 * 	Biz Courier shipment status.
+	 * 
+	 */
+
+.biz-send-shipment.error {
+  font-weight: bold;
+  color: #a44;
+}
+
+.biz-voucher div {
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+ul.biz-shipment-status {
+  padding: 10px;
+  background-color: rgb(224, 234, 245);
+  border-radius: 7px;
+}
+
+.biz-shipment-status .status-description {
+  font-weight: bold;
+}
+
+.biz-shipment-status .status-date {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.biz-shipment-status.error {
+  font-weight: bold;
+  color: #a44;
 }

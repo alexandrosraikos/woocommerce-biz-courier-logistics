@@ -12,78 +12,177 @@
  * @subpackage WooBiz/admin/partials
  */
 
- /**
-  *  Biz Courier in WooCommerce Settings views:
-  */
 
- function biz_settings_notice_missing_html() {
-    ?>
-    <div class="notice notice-warning woobiz-notice is-dismissible"><?php echo sprintf(__("Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.","woobiz"),admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')) ?></div>
-    <?php
- }
+/**
+     * 	Integration
+     * 	------------
+     *  This section provides the necessary markdown for initialising the custom Biz integration.
+     * 
+     */
 
- function biz_settings_notice_invalid_html() {
-    ?>
-    <div class="notice notice-error woobiz-notice"><?php echo sprintf(__("Your Biz Courier credentials are invalid. Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.","woobiz"),admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration'))  ?></div>
-    <?php
- }
-
- function biz_settings_notice_error_html() {
-    ?>
-    <div class="notice notice-error woobiz-notice"><?php _e("There was an error contacting Biz Courier, please try again later.","woobiz")  ?></div>
-    <?php
- }
-
-
- /**
-  *  Biz Courier  stock synchronisation in products' views:
-  */
-
-function biz_stock_sync_all_button()
+/**
+ * Print HTML notice for missing credentials
+ *
+ * @since    1.0.0
+ * @uses 	 admin_url()
+ */
+function biz_settings_notice_missing_html()
 {
 ?>
-    <button class="button button-primary woobiz-sync-stock" style="height:32px;"><?php _e("Get stock", "woobiz") ?></button>
+    <div class="notice notice-warning biz-notice is-dismissible">
+        <?php echo sprintf(__("Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.", "woobiz"), admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')) ?>
+    </div>
 <?php
 }
 
-function biz_stock_sync_column_html($status) {
+
+/**
+ * Print HTML notice for invalid credentials
+ *
+ * @since    1.0.0
+ * @uses 	 admin_url()
+ */
+function biz_settings_notice_invalid_html()
+{
+?>
+    <div class="notice notice-error biz-notice">
+        <?php echo sprintf(__("Your Biz Courier credentials are invalid. Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.", "woobiz"), admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration'))  ?>
+    </div>
+<?php
+}
+
+
+/**
+ * Print HTML notice for connection errors.
+ *
+ * @since    1.0.0
+ */
+function biz_settings_notice_error_html()
+{
+?>
+    <div class="notice notice-error biz-notice">
+        <?php _e("There was an error contacting Biz Courier, please try again later.", "woobiz")  ?>
+    </div>
+<?php
+}
+
+
+/**
+     * 	Stock Synchronisation
+     * 	------------
+     *  This section provides all the markdown related to syncing stock 
+     * 	between the WooCommerce store and the items in the connected warehouse.
+     * 
+     */
+
+/**
+ * Print HTML button for stock synchronization.
+ *
+ * @since    1.0.0
+ */
+function biz_stock_sync_all_button()
+{
+?>
+    <button class="button button-primary woobiz-sync-stock" style="height:32px;">
+        <?php _e("Get stock", "woobiz") ?>
+    </button>
+<?php
+}
+
+/**
+ * Print HTML column stock synchronization indicators.
+ *
+ * @since    1.0.0
+ */
+function biz_stock_sync_column_html($status)
+{
     $label = __("Pending", "woobiz");
     switch ($status):
         case 'synced';
-            $label = __("Found","woobiz");
+            $label = __("Found", "woobiz");
             break;
         case 'not-synced';
             $label = __("Not found", "woobiz");
             break;
     endswitch;
-    echo '<div class="biz_sync-indicator ' . $status . '">'.$label.'</div>';
+    echo '<div class="biz_sync-indicator ' . $status . '">' . $label . '</div>';
 }
 
 /**
- *  Biz Courier shipments in orders' views:
- */
+	 * 	Order Status 
+	 * 	------------
+	 *  This section provides the necessary functionality for displaying
+	 * 	Biz Courier shipment status.
+	 * 
+	 */
 
-function biz_track_shipment_meta_box_html(array $status_history, string $voucher)
+
+/**
+ * Print HTML for the shipment tracking meta box.
+ *
+ * @since    1.0.0
+ * @param string $voucher The current Biz shipment voucher.
+ * @param array $status_history The array containing the status history of the shipment.
+ */
+function biz_track_shipment_meta_box_html(string $voucher, array $status_history)
 {
 ?>
-   <p class="woobiz-order-indicator not-synchronized"><?php _e("The order has shipped with Biz.", "woobiz") ?></p>
-   <ul>
-       <li><?php _e("Voucher number: ").$voucher ?></li>
-       <li>
-           <?php 
-           _e("Status history: ");
-           echo json_encode($status_history) 
-           ?>
+    <ul>
+        <li class="biz-voucher"><?php echo __("Voucher number: ") . '<div>' . $voucher . '</div>' ?></li>
+        <li>
+            <?php
+            _e("Status history: ");
+            ?>
         </li>
-   </ul>
-   <button id="woobiz-track-shipment" class="button save-order button-primary" /><?php _e("Track shipment", "woobiz") ?></button>
+        <li>
+            <?php
+            foreach ($status_history as $status) {
+                echo '<ul class="biz-shipment-status">';
+                echo '<li class="status-description">' . $status['description'] . '</li>';
+                echo '<li class="status-date">' . $status['date'] . ' ' . __('at', 'woobiz') . ' ' . $status['time'] . '</li>';
+                echo '</ul>';
+            }
+            ?>
+        </li>
+    </ul>
+    <!-- <button id="woobiz-track-shipment" class="button save-order button-primary" /><?php _e("Track shipment", "woobiz") ?></button> -->
 <?php
 }
 
+/**
+ * Print errors in HTML for the shipment tracking meta box.
+ *
+ * @since    1.0.0
+ * @param    string $error The associated error code.
+ */
+function biz_track_shipment_meta_box_error_html(string $error)
+{
+    if ($error == 'voucher-error') {
+        echo '<p class="biz-shipment-status error">' . __("The Biz Courier voucher is invalid, please contact support.", "woobiz") . '</p>';
+    }
+}
+
+/**
+ * Print HTML for the shipment sending meta box.
+ *
+ * @since    1.0.0
+ */
 function biz_send_shipment_meta_box_html()
 {
 ?>
-   <p class="woobiz-order-indicator not-synchronized"><?php _e("This order has not shipped with Biz.", "woobiz") ?></p>
-   <button id="woobiz-send-shipment" class="button save-order button-primary" /><?php _e("Send shipment", "woobiz") ?></button>
+    <p class="woobiz-order-indicator not-synchronized">
+        <?php _e("This order has not shipped with Biz.", "woobiz") ?>
+    </p>
+    <button id="biz-send-shipment" class="button save-order button-primary" />
+        <?php _e("Send shipment", "woobiz") ?>
+    </button>
+    <?php
+	// TODO: Handle all shipment creation errors.
+    if (isset($_GET['biz_error'])) {
+        if ($_GET['biz_error'] == 'sku-error' || $_GET['biz_error'] == 'package-data-error') {
+    ?>
+            <p class="biz-send-shipment error"><?php _e('Some products are not found in the Biz warehouse.', 'woobiz') ?></p>
 <?php
+        }
+    }
 }

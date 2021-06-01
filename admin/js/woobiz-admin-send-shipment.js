@@ -1,10 +1,18 @@
 (function ($) {
   "use strict";
+
+  // Ensure prepared document.
   $(document).ready(function () {
-    $("#woobiz-send-shipment").click(function (event) {
+    // Capture click event.
+    $("#biz-send-shipment").click(function (event) {
+      // Prevent default reload.
       event.preventDefault();
-      $("#woobiz-send-shipment").prop("disabled", true);
-      $("#woobiz-send-shipment").addClass("woobiz-loading");
+
+      // Disable button.
+      $("#biz-send-shipment").prop("disabled", true);
+      $("#biz-send-shipment").addClass("biz-loading");
+
+      // Perform AJAX request.
       $.ajax({
         url: ajax_prop.ajax_url,
         type: "post",
@@ -13,6 +21,7 @@
           nonce: ajax_prop.nonce,
           order_id: ajax_prop.order_id,
         },
+        // Handle response.
         complete: function (response) {
           if (response.responseText.includes("error")) {
             var url = new URL(window.location.href);

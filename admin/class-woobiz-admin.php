@@ -150,7 +150,7 @@ class WooBiz_Admin
 	}
 
 	/**
-	 * 	Stock Synchronisation functionality.
+	 * 	Stock Synchronisation
 	 * 	------------
 	 *  This section provides all the functionality related to syncing stock 
 	 * 	between the WooCommerce store and the items in the connected warehouse.
@@ -743,9 +743,6 @@ class WooBiz_Admin
 	 * @uses wp_enqueue_script()
 	 * @uses wp_localize_script()
 	 */
-
-	// TODO: Handle all shipment creation errors.
-	// TODO: Add WooCommerce order actions.
 	function add_biz_shipment_meta_box()
 	{
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
