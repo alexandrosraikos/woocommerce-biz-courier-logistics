@@ -94,7 +94,7 @@ class Biz_Shipping_Method extends WC_Shipping_Method
                 'description' => __('Adjust options for additional services provided by Biz Courier.', 'woobiz'),
             ),
             'biz_sms_notifications' => array(
-                'title' => __('Enable', 'woobiz'),
+                'title' => __('SMS notifications', 'woobiz'),
                 'type' => 'checkbox',
                 'description' => __('Update your customers about their Biz shipment status via SMS.', 'woobiz'),
                 'default' => 'no'

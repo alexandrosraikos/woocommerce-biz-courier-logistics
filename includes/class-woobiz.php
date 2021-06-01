@@ -185,6 +185,7 @@ class WooBiz
 		 */
 		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_shipment_meta_box');
 		$this->loader->add_action('wp_ajax_biz_send_shipment', $plugin_admin, 'biz_send_shipment_handler');
+		$this->loader->add_filter('woocommerce_email_order_meta_fields', $plugin_admin, 'add_biz_email_order_fields', 10, 3);
 	}
 
 	/**
