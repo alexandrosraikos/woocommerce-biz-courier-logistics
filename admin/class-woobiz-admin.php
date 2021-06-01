@@ -791,7 +791,7 @@ class WooBiz_Admin
 			}
 		}
 
-		// Ensure the administrator is on "Edit" screen and not "Add".
+		// Ensure the administrator is on the "Edit" screen and not "Add".
 		if (get_current_screen()->action != 'add') {
 			
 			// Add the meta box.

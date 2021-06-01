@@ -16,20 +16,23 @@
 /**
  * The integration method class.
  *
- * This is used to define internationalization, admin-specific hooks, and
- * public-facing site hooks.
- *
- * Also maintains the unique identifier of this plugin as well as the current
- * version of the plugin.
+ * This class extends WC_Integration with necessary functional additions
+ * for Biz Courier.
  *
  * @since      1.0.0
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    WC_Integration
  * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
 
 class Biz_Integration extends WC_Integration
 {
+
+	/**
+	 * Initialize the class and set its properties
+	 *
+	 * @since    1.0.0
+	 * @param 	 int $instance_id The given instance ID for this shipping method.
+	 */
     public function __construct()
     {
         global $woocommerce;
@@ -40,6 +43,12 @@ class Biz_Integration extends WC_Integration
         $this->init();
     }
 
+
+	/**
+	 * Initialise the WooCommerce Settings API integration.
+	 *
+	 * @since    1.0.0
+	 */
     function init()
     {
         $this->init_form_fields();
@@ -47,6 +56,12 @@ class Biz_Integration extends WC_Integration
         add_action('woocommerce_update_options_integration_' . $this->id, array($this, 'process_admin_options'));
     }
 
+
+	/**
+	 * Initialize the WooCommerce Settings API form fields.
+	 *
+	 * @since    1.0.0
+	 */
     public function init_form_fields()
     {
         $this->form_fields = array(

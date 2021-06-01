@@ -16,20 +16,22 @@
 /**
  * The shipping method class.
  *
- * This is used to define internationalization, admin-specific hooks, and
- * public-facing site hooks.
- *
- * Also maintains the unique identifier of this plugin as well as the current
- * version of the plugin.
+ * This class extends WC_Shipping_Method with necessary functional additions
+ * for Biz Courier.
  *
  * @since      1.0.0
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    Biz_Shipping_Method
  * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
-
 class Biz_Shipping_Method extends WC_Shipping_Method
 {
+
+	/**
+	 * Initialize the class and set its properties
+	 *
+	 * @since    1.0.0
+	 * @param 	 int $instance_id The given instance ID for this shipping method.
+	 */
     public function __construct($instance_id = 0)
     {
         $this->id = 'biz_shipping_method';
@@ -42,6 +44,12 @@ class Biz_Shipping_Method extends WC_Shipping_Method
         $this->init();
     }
 
+
+	/**
+	 * Initialise the WooCommerce Settings API integration.
+	 *
+	 * @since    1.0.0
+	 */
     function init()
     {
         $this->init_form_fields();
@@ -50,6 +58,12 @@ class Biz_Shipping_Method extends WC_Shipping_Method
         add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
     }
 
+
+	/**
+	 * Initialize the WooCommerce Settings API form fields.
+	 *
+	 * @since    1.0.0
+	 */
     function init_form_fields()
     {
         $this->form_fields = array(
@@ -59,35 +73,34 @@ class Biz_Shipping_Method extends WC_Shipping_Method
                 'description' => __('Allow shipping with Biz Courier.', 'woobiz'),
                 'default' => 'yes'
             ),
-
-            // 'biz_cash_on_delivery_fee'  => array(
-            //     'title' => __('COD fee', 'woobiz'),
-            //     'description' => __('Insert the additional Biz fee for Cash On Delivery payments.', 'woobiz'),
-            //     'type' => 'price',
-            // ),
-            // 'biz_same_day_delivery_title' => array(
-            //     'title' => __('Same Day Delivery', 'woobiz'),
-            //     'type' => 'title',
-            //     'description' => __('Insert the pricing for same day delivery.', 'woobiz'),
-            // ),
-            // 'biz_same_day_delivery_enabled' => array(
-            //     'title' => __('Enable', 'woobiz'),
-            //     'type' => 'checkbox',
-            //     'description' => __('Allow same region customers to opt for same day delivery.', 'woobiz'),
-            //     'default' => 'yes'
-            // ),
-            // 'biz_same_day_delivery_pricing'  => array(
-            //     'title' => __('Charge per km', 'woobiz'),
-            //     'type' => 'price',
-            // ),
-            // 'biz_same_day_delivery_minimum_charge'  => array(
-            //     'title' => __('Minimum charge', 'woobiz'),
-            //     'type' => 'price',
-            // ),
-            // 'biz_same_day_delivery_pricing_extra_kg'  => array(
-            //     'title' => __('Charge per extra kg', 'woobiz'),
-            //     'type' => 'price',
-            // ),
+            'biz_cash_on_delivery_fee'  => array(
+                'title' => __('COD fee', 'woobiz'),
+                'description' => __('Insert the additional Biz fee for Cash On Delivery payments.', 'woobiz'),
+                'type' => 'price',
+            ),
+            'biz_same_day_delivery_title' => array(
+                'title' => __('Same Day Delivery', 'woobiz'),
+                'type' => 'title',
+                'description' => __('Insert the pricing for same day delivery.', 'woobiz'),
+            ),
+            'biz_same_day_delivery_enabled' => array(
+                'title' => __('Enable', 'woobiz'),
+                'type' => 'checkbox',
+                'description' => __('Allow same region customers to opt for same day delivery.', 'woobiz'),
+                'default' => 'yes'
+            ),
+            'biz_same_day_delivery_pricing'  => array(
+                'title' => __('Charge per km', 'woobiz'),
+                'type' => 'price',
+            ),
+            'biz_same_day_delivery_minimum_charge'  => array(
+                'title' => __('Minimum charge', 'woobiz'),
+                'type' => 'price',
+            ),
+            'biz_same_day_delivery_pricing_extra_kg'  => array(
+                'title' => __('Charge per extra kg', 'woobiz'),
+                'type' => 'price',
+            ),
             'biz_additional_services_title' => array(
                 'title' => __('Additional Services', 'woobiz'),
                 'type' => 'title',
@@ -137,9 +150,17 @@ class Biz_Shipping_Method extends WC_Shipping_Method
         );
     }
 
+
+
+	/**
+	 * Calculate shipping and add Biz Courier rates.
+	 *
+	 * @since    1.0.0
+	 * @param 	 array $package The given package to be delivered.
+	 */
     public function calculate_shipping($package = array())
     {
-        // Weight calculation
+        // Calculate weight.
         $calculated_rate = $this->get_option('biz_delivery_pricing');
         $weight = 0;
         foreach ($package['contents'] as $item) {
@@ -152,20 +173,24 @@ class Biz_Shipping_Method extends WC_Shipping_Method
         }
 
 
-        // Simple rate calculation.
+        // Calculate simple rate.
         $this->add_rate(array(
             'id' => $this->id,
             'label' => __('Simple delivery', 'woobiz'),
             'cost' => $calculated_rate
         ));
 
-        // Extra services rates for the same area.
+        // Calculate rates for extra services.
         if ($this->get_option('biz_zone_type') == 'same-area') {
+
+            // Morning deliveries.
             $this->add_rate(array(
                 'id' => $this->id . '-morning-delivery',
                 'label' => __('Morning delivery (until 10:30 a.m.)', 'woobiz'),
                 'cost' => $calculated_rate + $this->get_option('biz_morning_delivery_fee')
             ));
+
+            // Saturday deliveries.
             $this->add_rate(array(
                 'id' => $this->id . '-saturday-delivery',
                 'label' => __('Saturday delivery', 'woobiz'),
