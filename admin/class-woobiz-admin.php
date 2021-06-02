@@ -242,7 +242,7 @@ class WooBiz_Admin
 	 * @uses 	 update_post_meta()
 	 * @uses 	 delete_post_meta()
 	 */
-	private static function biz_stock_sync($skus)
+	static function biz_stock_sync($skus)
 	{
 		try {
 			// Initialize client.
@@ -492,7 +492,7 @@ class WooBiz_Admin
 	 * @uses 	 get_option()
 	 * @uses 	 updaate_post_meta()
 	 */
-	private static function biz_send_shipment(int $order_id)
+	static function biz_send_shipment(int $order_id)
 	{
 		/**
 		 * Truncate text to the desired character limit.
@@ -705,7 +705,7 @@ class WooBiz_Admin
 	 * @uses 	 __soapCall()
 	 * @param 	 string $voucher The voucher code associated with the Biz shipment.
 	 */
-	private static function biz_shipment_status($voucher)
+	static function biz_shipment_status($voucher)
 	{
 		// Initialize SOAP client.
 		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/full_history.php?wsdl", array(
