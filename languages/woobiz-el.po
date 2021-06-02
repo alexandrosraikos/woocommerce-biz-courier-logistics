@@ -217,11 +217,18 @@ msgstr "Ανίχνευση αποστολής"
 msgid "Tracking Code"
 msgstr "Κωδικός ανίχνευσης"
 
+msgid "Voucher number: "
+msgstr "Κωδικός αποστολής: "
+
 msgid "Status history: "
 msgstr "Ιστορικό: "
 
+msgid "at"
+msgstr "στις"
+
 msgid "Biz Courier status"
 msgstr "Κατάσταση Biz Courier"
+
 
 msgid "This order has not shipped with Biz."
 msgstr "Αυτή η παραγγελία δεν έχει αποσταλεί μέσω Biz."

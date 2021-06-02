@@ -128,10 +128,10 @@ function biz_track_shipment_meta_box_html(string $voucher, array $status_history
 {
 ?>
     <ul>
-        <li class="biz-voucher"><?php echo __("Voucher number: ") . '<div>' . $voucher . '</div>' ?></li>
+        <li class="biz-voucher"><?php echo __("Voucher number: ", 'woobiz') . '<div>' . $voucher . '</div>' ?></li>
         <li>
             <?php
-            _e("Status history: ");
+            _e("Status history: ", 'woobiz');
             ?>
         </li>
         <li>
