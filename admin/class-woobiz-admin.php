@@ -310,6 +310,23 @@ class WooBiz_Admin
 
 					// Update Biz synchronization post metadata.
 					update_post_meta($product_post_id, 'biz_sync', 'not-synced');
+
+					// Update parent product for all valid variations.
+					$wc_product_children_ids = $wc_product->get_children();
+					if (!empty($wc_product_children_ids)) {
+						$valid_children = true;
+						foreach ($wc_product_children_ids as $child_id) {
+							$child_sync_state = get_post_meta($child_id, 'biz_sync');
+							if (isset($child_sync_state)){
+								if (!$child_sync_state) {
+									$valid_children = false;
+								}
+							}
+						}
+						if ($valid_children) {
+							update_post_meta($product_post_id, 'biz_sync', 'synced');
+						}
+					}
 				}
 			}
 		} catch (SoapFault $fault) {
