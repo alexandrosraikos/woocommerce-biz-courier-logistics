@@ -615,7 +615,7 @@ class WooBiz_Admin
 				"Multi_Prod" => implode("#", $shipment_products),
 				"Cash_On_Delivery" => $cash_on_delivery,
 				"Checques_On_Delivery" => "", // Unsupported.
-				"Comments" => $order->get_customer_note() ?? "",
+				"Comments" => ((str_contains($order->get_shipping_method(), "Σαββάτου") || str_contains($order->get_shipping_method(), "Saturday")) ? "Saturday delivery" : "")."\nRecipient comments: ".($order->get_customer_note() ?? "none"),
 				"Charge" => "3", // Unsupported, always 3.
 				"Type" => "2", // Unsupported, always assume parcel.
 				"Relative1" => "", // Unsupported.
