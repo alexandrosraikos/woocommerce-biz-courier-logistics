@@ -202,7 +202,6 @@ class WooBiz
 
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
-		// TODO: Display order Biz tracking code & contact information.
 	}
 
 	/**

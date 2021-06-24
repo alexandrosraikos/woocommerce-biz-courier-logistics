@@ -633,15 +633,9 @@ class WooBiz_Admin
 				"Ins_Amount" => "" // Unsupported.
 			);
 
-			// TODO: REMOVE THIS ----
-			error_log("Shipment data: " . json_encode($shipment_data));
-
 			// Make SOAP call.
 			$response = $client->__soapCall('newShipment', $shipment_data);
-
-			// TODO: REMOVE THIS ----
-			error_log(json_encode($response));
-
+			
 			// Handle error codes from response.
 			switch ($response->Error_Code) {
 				case 0:
