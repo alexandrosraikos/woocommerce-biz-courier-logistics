@@ -28,7 +28,7 @@ You initially have to set up your credentials.
 
 ## Features
 
-### Stock Synchronization
+### Stock Levels Synchronization
 
 If you want to be able to update remaining stock quantities from your Biz warehouse, simply use the same product SKUs that you use in your Biz warehouse and click on _Get stock_ in the _All Products_ page.
 
