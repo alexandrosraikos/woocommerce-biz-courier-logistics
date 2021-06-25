@@ -47,6 +47,8 @@ Save your Biz Courier credentials into _Dashboard > WooCommerce > Settings > Biz
 
 The fastest way to submit your shipment to Biz Courier, straight from the WordPress Dashboard. At each order page, you can click on _Send shipment._
 
+_NOTE: You need to synchronize your stock levels first._
+
 ### Track Shipments
 
 If a shipment is sent from the WordPress Dashboard, you can view the tracking code and the shipment status history directly from the page of the order.
