@@ -14,11 +14,11 @@
 
 
 /**
-     * 	Integration
-     * 	------------
-     *  This section provides the necessary markdown for initialising the custom Biz integration.
-     * 
-     */
+ * 	Integration
+ * 	------------
+ *  This section provides the necessary markdown for initialising the custom Biz integration.
+ * 
+ */
 
 /**
  * Print HTML notice for missing credentials
@@ -68,12 +68,12 @@ function biz_settings_notice_error_html()
 
 
 /**
-     * 	Stock Synchronisation
-     * 	------------
-     *  This section provides all the markdown related to syncing stock 
-     * 	between the WooCommerce store and the items in the connected warehouse.
-     * 
-     */
+ * 	Stock Synchronisation
+ * 	------------
+ *  This section provides all the markdown related to syncing stock 
+ * 	between the WooCommerce store and the items in the connected warehouse.
+ * 
+ */
 
 /**
  * Print HTML button for stock synchronization.
@@ -109,12 +109,12 @@ function biz_stock_sync_column_html($status)
 }
 
 /**
-	 * 	Order Status 
-	 * 	------------
-	 *  This section provides the necessary functionality for displaying
-	 * 	Biz Courier shipment status.
-	 * 
-	 */
+ * 	Order Status 
+ * 	------------
+ *  This section provides the necessary functionality for displaying
+ * 	Biz Courier shipment status.
+ * 
+ */
 
 
 /**
@@ -174,14 +174,33 @@ function biz_send_shipment_meta_box_html()
         <?php _e("This order has not shipped with Biz.", "woobiz") ?>
     </p>
     <button id="biz-send-shipment" class="button save-order button-primary" />
-        <?php _e("Send shipment", "woobiz") ?>
+    <?php _e("Send shipment", "woobiz") ?>
     </button>
     <?php
-	// TODO: Handle all shipment creation errors.
     if (isset($_GET['biz_error'])) {
         if ($_GET['biz_error'] == 'sku-error' || $_GET['biz_error'] == 'package-data-error') {
     ?>
-            <p class="biz-send-shipment error"><?php _e('Some products are not found in the Biz warehouse.', 'woobiz') ?></p>
+            <p class="biz-send-shipment error"><?php _e('Some products were not found in the Biz warehouse.', 'woobiz') ?></p>
+        <?php
+        }
+        if ($_GET['biz_error'] == 'metrics-error') {
+        ?>
+            <p class="biz-send-shipment error"><?php _e('Please make sure all products in the order have their weight & dimensions registered.', 'woobiz') ?></p>
+        <?php
+        }
+        if ($_GET['biz_error'] == 'auth-error') {
+        ?>
+            <p class="biz-send-shipment error"><?php _e('There was an error with your Biz credentials.', 'woobiz') ?></p>
+        <?php
+        }
+        if ($_GET['biz_error'] == 'response-data-error') {
+        ?>
+            <p class="biz-send-shipment error"><?php _e('There was an unexpected error from Biz.', 'woobiz') ?></p>
+        <?php
+        }
+        if ($_GET['biz_error'] == 'recipient-info-error') {
+        ?>
+            <p class="biz-send-shipment error"><?php _e('The order fields are incomplete.', 'woobiz') ?></p>
 <?php
         }
     }

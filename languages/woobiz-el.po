@@ -236,5 +236,17 @@ msgstr "Αυτή η παραγγελία δεν έχει αποσταλεί μέ
 msgid "Send shipment"
 msgstr "Αποστολή παραγγελίας"
 
-msgid "Some products are not found in the Biz warehouse."
+msgid "Some products were not found in the Biz warehouse."
 msgstr "Κάποια προϊόντα δεν βρίσκονται στην αποθήκη Biz."
+
+msgid "Please make sure all products in the order have their weight & dimensions registered."
+msgstr "Πρέπει να έχει καταχωρηθεί βάρος και διαστάσεις σε κάθε προϊόν της παραγγελίας."
+
+msgid "There was an error with your Biz credentials."
+msgstr "Υπήρξε ένα σφάλμα με τα στοιχεία σας Biz Courier."
+
+msgid "There was an unexpected error from Biz."
+msgstr "Προέκυψε ένα αναπάντεχο σφάλμα από την Biz."
+
+msgid "The order fields are incomplete."
+msgstr "Χρειάζονται περισσότερες πληροφορίες για την παραγγελία."
