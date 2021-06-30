@@ -736,7 +736,7 @@ class WooBiz_Admin
 			return array_map(function ($status) {
 				$single_status = array();
 				$single_status['code'] = $status->Status_Code;
-				$single_status['description'] = $status->Status_Description;
+				$single_status['description'] = (get_locale() == 'el') ? $status->Status_Description : $status->Status_Description_En;
 				$single_status['date'] = $status->Status_Date;
 				$single_status['time'] = $status->Status_Time;
 				return $single_status;
