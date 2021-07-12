@@ -84,7 +84,7 @@ function biz_stock_sync_all_button()
 {
 ?>
     <button class="button button-primary woobiz-sync-stock" style="height:32px;">
-        <?php _e("Get stock", "woobiz") ?>
+        <?php _e("Get stock levels", "woobiz") ?>
     </button>
 <?php
 }

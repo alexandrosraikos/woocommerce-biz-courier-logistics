@@ -79,8 +79,8 @@ msgstr "Ο κωδικός πρόσβασής σας για την Biz Courier."
 msgid "Biz Warehouse"
 msgstr "Αποθήκη Biz"
 
-msgid "Get stock"
-msgstr "Ενημέρωση αποθέματος"
+msgid "Get stock levels"
+msgstr "Μέτρηση αποθέματος"
 
 msgid "Pending"
 msgstr "Εκκρεμεί"

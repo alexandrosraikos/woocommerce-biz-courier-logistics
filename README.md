@@ -30,7 +30,9 @@ You initially have to set up your credentials.
 
 ### Stock Levels Synchronization
 
-If you want to be able to update remaining stock quantities from your Biz warehouse, simply use the same product SKUs that you use in your Biz warehouse and click on _Get stock_ in the _All Products_ page.
+If you want to be able to update remaining stock quantities from your Biz warehouse, simply use the same product SKUs that you use in your Biz warehouse and click on _Get stock levels_ in the _All Products_ page.
+
+_Note: This doesn't automatically add products to your WooCommerce catalogue. It only updates stock levels._
 
 ### Shipping Rate Calculation
 
