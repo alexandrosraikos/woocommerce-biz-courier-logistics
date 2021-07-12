@@ -4,7 +4,7 @@
  * Plugin Name:       WooBiz
  * Plugin URI:        https://github.com/alexandrosraikos/woobiz
  * Description:       Ενσωματώστε το WooCommerce με την αποθήκη σας Biz Courier.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 5.7
  * Requires PHP:      7.4
  * WC requires at least: 5.2.2
