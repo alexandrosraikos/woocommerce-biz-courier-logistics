@@ -45,11 +45,13 @@ To enable shipping rate calculation:
 
 Save your Biz Courier credentials into _Dashboard > WooCommerce > Settings > Biz Courier_.
 
+_Note: Consult Biz Courier for your shipping country's list of inaccessible areas._
+
 ### Send Shipments
 
 The fastest way to submit your shipment to Biz Courier, straight from the WordPress Dashboard. At each order page, you can click on _Send shipment._
 
-_NOTE: You need to synchronize your stock levels first._
+_Note: You need to synchronize your stock levels first._
 
 ### Track Shipments
 
