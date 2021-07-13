@@ -59,6 +59,6 @@ If a shipment is sent from the WordPress Dashboard, you can view the tracking co
 
 You can also include the `{biz_tracking_code}` dynamic field in order confirmation emails sent to your customers. To do that, head to _WooCommerce Settings > Emails_.
 
-## Copyright
+## Learn more
 
-© 2021 Alexandros Raikos tou Konstantinou, all rights reserved.
+This documentation will be enriched as more features are added and processes get streamlined. In the meanwhile, if you have any questions about WooBiz, you can [contact me](https://www.araikos.gr/en/contact).
