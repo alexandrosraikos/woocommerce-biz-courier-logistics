@@ -51,7 +51,7 @@ _Note: Consult Biz Courier for your shipping country's list of inaccessible area
 
 ### Send Shipments
 
-The fastest way to submit your shipment to Biz Courier, straight from the WordPress Dashboard. At each order page, you can click on _Send shipment._
+The fastest way to submit your shipment to Biz Courier, straight from WooCommerce. At each order page, you can click on _Send shipment._
 
 _Note: You need to synchronize your stock levels first._
 
