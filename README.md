@@ -20,7 +20,7 @@ Simply setup WordPress with WooCommerce and enable the plugin.
 
 1. Download and setup WordPress from [the official website](https://wordpress.org/).
 1. Download and setup WooCommerce from the WordPress dashboard.
-1. Download the .zip package of Biz Courier & Logistics for WooCommerce from the [releases](https://github.com/alexandrosraikos/Biz Courier & Logistics for WooCommerce/releases) page and install it via the WordPress Dashboard.
+1. Download the .zip package of Biz Courier & Logistics for WooCommerce from the [releases](https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/releases) page and install it via the WordPress Dashboard.
 
 You initially have to set up your credentials.
 
