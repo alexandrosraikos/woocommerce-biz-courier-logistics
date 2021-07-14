@@ -8,8 +8,8 @@
  * @link       https://github.com/alexandrosraikos/woobiz
  * @since      1.0.0
  *
- * @package    WooBiz
- * @subpackage WooBiz/public/partials
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/public/partials
  */
 ?>
 

@@ -9,8 +9,8 @@
  * @link       https://github.com/alexandrosraikos/woobiz
  * @since      1.0.0
  *
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/includes
  */
 
 /**
@@ -20,11 +20,11 @@
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/includes
  * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
-class WooBiz_i18n {
+class WC_Biz_Courier_Logistics_i18n {
 
 
 	/**

@@ -1,19 +1,19 @@
 <?php
 
 /**
- * Plugin Name:       WooBiz
- * Plugin URI:        https://github.com/alexandrosraikos/woobiz
- * Description:       Ενσωματώστε το WooCommerce με την αποθήκη σας Biz Courier.
+ * Plugin Name:       Biz Courier & Logistics for WooCommerce
+ * Plugin URI:        https://github.com/alexandrosraikos/wc-biz-courie-logistics
+ * Description:       Integrate your Biz Courier warehouse with WooCommerce.
  * Version:           1.0.1
  * Requires at least: 5.7
  * Requires PHP:      7.4
  * WC requires at least: 5.2.2
  * WC tested up to: 5.2.2
- * Author:            Αλέξανδρος Ράικος
- * Author URI:        https://www.araikos.gr/
+ * Author:            Alexandros Raikos
+ * Author URI:        https://www.araikos.gr/en/
  * License:           GNU General Public License v3.0
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:       woobiz
+ * Text Domain:       wc-biz-courier-logistics
  * Domain Path:       /languages
  */
 
@@ -27,7 +27,7 @@ if (!defined('WPINC')) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define('WOOBIZ_VERSION', '1.0.0');
+define('WC_BIZ_COURIER_LOGISTICS_VERSION', '1.0.0');
 
 // Check for active WooCommerce.
 if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
@@ -36,24 +36,24 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 	 * The code that runs during plugin activation.
 	 * This action is documented in includes/class-woobiz-activator.php
 	 */
-	function activate_woobiz()
+	function activate_wc_biz_courier_logistics()
 	{
 		require_once plugin_dir_path(__FILE__) . 'includes/class-woobiz-activator.php';
-		WooBiz_Activator::activate();
+		WC_Biz_Courier_Logistics_Activator::activate();
 	}
 
 	/**
 	 * The code that runs during plugin deactivation.
 	 * This action is documented in includes/class-woobiz-deactivator.php
 	 */
-	function deactivate_woobiz()
+	function deactivate_wc_biz_courier_logistics()
 	{
 		require_once plugin_dir_path(__FILE__) . 'includes/class-woobiz-deactivator.php';
-		WooBiz_Deactivator::deactivate();
+		WC_Biz_Courier_Logistics_Deactivator::deactivate();
 	}
 
-	register_activation_hook(__FILE__, 'activate_woobiz');
-	register_deactivation_hook(__FILE__, 'deactivate_woobiz');
+	register_activation_hook(__FILE__, 'activate_wc_biz_courier_logistics');
+	register_deactivation_hook(__FILE__, 'deactivate_wc_biz_courier_logistics');
 
 	/**
 	 * The core plugin class that is used to define internationalization,
@@ -70,11 +70,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 	 *
 	 * @since    1.0.0
 	 */
-	function run_woobiz()
+	function run_wc_biz_courier_logistics()
 	{
 
-		$plugin = new WooBiz();
+		$plugin = new WC_Biz_Courier_Logistics();
 		$plugin->run();
 	}
-	run_woobiz();
+	run_wc_biz_courier_logistics();
 }
