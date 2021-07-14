@@ -92,7 +92,7 @@ class WC_Biz_Courier_Logistics_Admin
 	function biz_integration()
 	{
 		if (!class_exists('Biz_Integration')) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/wc-biz-courier-logistics-integration.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-integration.php';
 		}
 	}
 
@@ -395,7 +395,7 @@ class WC_Biz_Courier_Logistics_Admin
 		));
 
 		// Insert button HTML.
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/class-wc-biz-courier-logistics-admin-display.php';
 		biz_stock_sync_all_button();
 	}
 
@@ -472,7 +472,7 @@ class WC_Biz_Courier_Logistics_Admin
 	function biz_shipping_method()
 	{
 		if (!class_exists('Biz_Shipping_Method')) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/wc-biz-courier-logistics-shipping-method.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-shipping-method.php';
 		}
 	}
 

@@ -105,24 +105,24 @@ class WC_Biz_Courier_Logistics
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/wc-biz-courier-logistics-loader.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/wc-biz-courier-logistics-i18n.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/wc-biz-courier-logistics-admin.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'public/wc-biz-courier-logistics-public.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-wc-biz-courier-logistics-public.php';
 
 		$this->loader = new WC_Biz_Courier_Logistics_Loader();
 	}
