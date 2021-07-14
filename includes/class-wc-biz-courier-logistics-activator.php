@@ -3,11 +3,11 @@
 /**
  * Fired during plugin activation
  *
- * @link       https://github.com/alexandrosraikos/woobiz
+ * @link       https://github.com/alexandrosraikos/wc-biz-courier-logistics
  * @since      1.0.0
  *
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/includes
  */
 
 /**
@@ -16,11 +16,11 @@
  * This class defines all code necessary to run during the plugin's activation.
  *
  * @since      1.0.0
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/includes
  * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
-class WooBiz_Activator {
+class WC_Biz_Courier_Logistics_Activator {
 
 	/**
 	 * Fired during plugin activation.

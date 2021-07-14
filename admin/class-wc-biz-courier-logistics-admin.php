@@ -3,11 +3,11 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://github.com/alexandrosraikos/woobiz
+ * @link       https://github.com/alexandrosraikos/wc-biz-courier-logistics
  * @since      1.0.0
  *
- * @package    WooBiz
- * @subpackage WooBiz/admin
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/admin
  */
 
 /**
@@ -16,11 +16,11 @@
  * Defines the plugin column_name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    WooBiz
- * @subpackage WooBiz/admin
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/admin
  * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
-class WooBiz_Admin
+class WC_Biz_Courier_Logistics_Admin
 {
 
 	/**
@@ -28,9 +28,9 @@ class WooBiz_Admin
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $WooBiz    The ID of this plugin.
+	 * @var      string    $WC_Biz_Courier_Logistics    The ID of this plugin.
 	 */
-	private $WooBiz;
+	private $WC_Biz_Courier_Logistics;
 
 	/**
 	 * The version of this plugin.
@@ -45,12 +45,12 @@ class WooBiz_Admin
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $WooBiz       The column_name of this plugin.
+	 * @param      string    $WC_Biz_Courier_Logistics       The column_name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct($WooBiz, $version)
+	public function __construct($WC_Biz_Courier_Logistics, $version)
 	{
-		$this->WooBiz = $WooBiz;
+		$this->WC_Biz_Courier_Logistics = $WC_Biz_Courier_Logistics;
 		$this->version = $version;
 	}
 
@@ -61,7 +61,7 @@ class WooBiz_Admin
 	 */
 	public function enqueue_styles()
 	{
-		wp_enqueue_style($this->WooBiz, plugin_dir_url(__FILE__) . 'css/woobiz-admin.css', array(), $this->version, 'all');
+		wp_enqueue_style($this->WC_Biz_Courier_Logistics, plugin_dir_url(__FILE__) . 'css/wc-biz-courier-logistics-admin.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -71,7 +71,7 @@ class WooBiz_Admin
 	 */
 	public function enqueue_scripts()
 	{
-		wp_enqueue_script($this->WooBiz, plugin_dir_url(__FILE__) . 'js/woobiz-admin.js', array('jquery'), $this->version, false);
+		wp_enqueue_script($this->WC_Biz_Courier_Logistics, plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin.js', array('jquery'), $this->version, false);
 	}
 
 
@@ -92,7 +92,7 @@ class WooBiz_Admin
 	function biz_integration()
 	{
 		if (!class_exists('Biz_Integration')) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-woobiz-integration.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-integration.php';
 		}
 	}
 
@@ -120,7 +120,7 @@ class WooBiz_Admin
 	 */
 	function biz_settings_notice()
 	{
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 
 		// Check if the administrator is already in the Biz tab.
 		$in_biz_tab = false;
@@ -234,7 +234,7 @@ class WooBiz_Admin
 	 * @param	 array $skus An array of product skus formatted as strings.
 	 * @uses 	 get_option()
 	 * @uses 	 __soapCall()
-	 * @uses 	 WooBiz_Admin::reset_all_sync_status()
+	 * @uses 	 WC_Biz_Courier_Logistics_Admin::reset_all_sync_status()
 	 * @uses 	 in_array()
 	 * @uses 	 wc_get_product_id_by_sku()
 	 * @uses 	 wc_get_product()
@@ -263,7 +263,7 @@ class WooBiz_Admin
 
 			//  Handle authorization error.
 			if ($response[0]->Product_Code == "Wrong Authentication Data") {
-				WooBiz_Admin::reset_all_sync_status();
+				WC_Biz_Courier_Logistics_Admin::reset_all_sync_status();
 				throw new Exception('auth-error');
 			}
 
@@ -339,7 +339,7 @@ class WooBiz_Admin
 	 *
 	 * @since    1.0.0
 	 * @uses 	 wp_verify_nonce()
-	 * @uses 	 WooBiz_Admin::biz_stock_sync()
+	 * @uses 	 WC_Biz_Courier_Logistics_Admin::biz_stock_sync()
 	 */
 	function biz_stock_sync_handler()
 	{
@@ -350,7 +350,7 @@ class WooBiz_Admin
 
 		// Attempt stock synchronization using request SKUs.
 		try {
-			WooBiz_Admin::biz_stock_sync($_POST['product_skus']);
+			WC_Biz_Courier_Logistics_Admin::biz_stock_sync($_POST['product_skus']);
 		} catch (Exception $e) {
 			echo $e->getMessage();
 			error_log("Error contacting Biz Courier - " . $e->getMessage());
@@ -364,7 +364,7 @@ class WooBiz_Admin
 	 * Add Biz Courier remaining stock synchronization button to the All Products page.
 	 *
 	 * @since    1.0.0
-	 * @uses  	 WooBiz_Admin::get_all_related_skus()
+	 * @uses  	 WC_Biz_Courier_Logistics_Admin::get_all_related_skus()
 	 * @uses 	 wp_enqueue_script()
 	 * @uses 	 wp_localize_script()
 	 * @uses 	 wp_create_nonce()
@@ -382,20 +382,20 @@ class WooBiz_Admin
 		$all_skus = array();
 		if (!empty($products)) {
 			foreach ($products as $product) {
-				$all_skus = array_merge($all_skus, WooBiz_Admin::get_all_related_skus($product));
+				$all_skus = array_merge($all_skus, WC_Biz_Courier_Logistics_Admin::get_all_related_skus($product));
 			}
 		}
 
 		// Enqeue & localize synchronization button script.
-		wp_enqueue_script('woobiz-stock-sync', plugin_dir_url(__FILE__) . 'js/woobiz-admin-stock-sync.js', array('jquery'));
-		wp_localize_script('woobiz-stock-sync', "ajax_prop", array(
+		wp_enqueue_script('wc-biz-courier-logistics-stock-sync', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-stock-sync.js', array('jquery'));
+		wp_localize_script('wc-biz-courier-logistics-stock-sync', "ajax_prop", array(
 			"ajax_url" => admin_url('admin-ajax.php'),
 			"nonce" => wp_create_nonce('ajax_stock_sync_validation'),
 			"product_skus" => $all_skus
 		));
 
 		// Insert button HTML.
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/class-wc-biz-courier-logistics-admin-display.php';
 		biz_stock_sync_all_button();
 	}
 
@@ -408,7 +408,7 @@ class WooBiz_Admin
 	 */
 	function add_biz_stock_sync_indicator_column($columns)
 	{
-		$columns['biz_sync'] = __('Biz Warehouse', 'woobiz');
+		$columns['biz_sync'] = __('Biz Warehouse', 'wc-biz-courier-logistics');
 		return $columns;
 	}
 
@@ -423,7 +423,7 @@ class WooBiz_Admin
 	 */
 	function biz_stock_sync_indicator_column($column_name, $product_post_id)
 	{
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 
 		// Ensure Biz Status column.
 		switch ($column_name) {
@@ -472,7 +472,7 @@ class WooBiz_Admin
 	function biz_shipping_method()
 	{
 		if (!class_exists('Biz_Shipping_Method')) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-woobiz-shipping-method.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-shipping-method.php';
 		}
 	}
 
@@ -681,7 +681,7 @@ class WooBiz_Admin
 
 		// Attempt to send shipment using POST data.
 		try {
-			WooBiz_Admin::biz_send_shipment(intval($_POST['order_id']));
+			WC_Biz_Courier_Logistics_Admin::biz_send_shipment(intval($_POST['order_id']));
 		} catch (Exception $e) {
 			echo $e->getMessage();
 			error_log("Error contacting Biz Courier - " . $e->getMessage());
@@ -702,7 +702,7 @@ class WooBiz_Admin
 	function add_biz_email_order_fields($fields, $sent_to_admin, $order)
 	{
 		$fields['biz_tracking_code'] = array(
-			'label' => __('Tracking Code', 'woobiz'),
+			'label' => __('Tracking Code', 'wc-biz-courier-logistics'),
 			'value' => get_post_meta($order->get_id(), '_biz_voucher', true),
 		);
 		return $fields;
@@ -756,7 +756,7 @@ class WooBiz_Admin
 	 */
 	function add_biz_shipment_meta_box()
 	{
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/woobiz-admin-display.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 
 		/**
 		 * Print the metabox.
@@ -780,7 +780,7 @@ class WooBiz_Admin
 			// Handle existing voucher.
 			if (!empty($voucher)) {
 				try {
-					$status_history = WooBiz_Admin::biz_shipment_status($voucher);
+					$status_history = WC_Biz_Courier_Logistics_Admin::biz_shipment_status($voucher);
 					biz_track_shipment_meta_box_html($voucher, $status_history);
 				} catch (Exception $e) {
 					biz_track_shipment_meta_box_error_html($e->getMessage());
@@ -790,8 +790,8 @@ class WooBiz_Admin
 			else {
 				
 				// Enqueue and localize button scripts.
-				wp_enqueue_script('woobiz-send-shipment', plugin_dir_url(__FILE__) . 'js/woobiz-admin-send-shipment.js', array('jquery'));
-				wp_localize_script('woobiz-send-shipment', "ajax_prop", array(
+				wp_enqueue_script('wc-biz-courier-logistics-send-shipment', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-send-shipment.js', array('jquery'));
+				wp_localize_script('wc-biz-courier-logistics-send-shipment', "ajax_prop", array(
 					"ajax_url" => admin_url('admin-ajax.php'),
 					"nonce" => wp_create_nonce('ajax_send_shipment_validation'),
 					"order_id" => $order->get_id()
@@ -806,7 +806,7 @@ class WooBiz_Admin
 		if (get_current_screen()->action != 'add') {
 			
 			// Add the meta box.
-			add_meta_box('woobiz_send_shipment_meta_box', __('Biz Courier status', 'woobiz'), 'biz_shipment_meta_box', 'shop_order', 'side', 'high');
+			add_meta_box('wc-biz-courier-logistics_send_shipment_meta_box', __('Biz Courier status', 'wc-biz-courier-logistics'), 'biz_shipment_meta_box', 'shop_order', 'side', 'high');
 		}
 	}
 }

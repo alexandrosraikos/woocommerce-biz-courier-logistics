@@ -6,11 +6,11 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://github.com/alexandrosraikos/woobiz
+ * @link       https://github.com/alexandrosraikos/wc-biz-courier-logistics
  * @since      1.0.0
  *
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/includes
  */
 
 /**
@@ -23,11 +23,11 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/includes
  * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
-class WooBiz
+class WC_Biz_Courier_Logistics
 {
 
 	/**
@@ -36,7 +36,7 @@ class WooBiz
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      WooBiz_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      WC_Biz_Courier_Logistics_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -45,9 +45,9 @@ class WooBiz
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $WooBiz    The string used to uniquely identify this plugin.
+	 * @var      string    $WC_Biz_Courier_Logistics    The string used to uniquely identify this plugin.
 	 */
-	protected $WooBiz;
+	protected $WC_Biz_Courier_Logistics;
 
 	/**
 	 * The current version of the plugin.
@@ -69,12 +69,12 @@ class WooBiz
 	 */
 	public function __construct()
 	{
-		if (defined('WooBiz_VERSION')) {
-			$this->version = WooBiz_VERSION;
+		if (defined('WC_Biz_Courier_Logistics_VERSION')) {
+			$this->version = WC_Biz_Courier_Logistics_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->WooBiz = 'woobiz';
+		$this->WC_Biz_Courier_Logistics = 'wc-biz-courier-logistics';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -87,10 +87,10 @@ class WooBiz
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - WooBiz_Loader. Orchestrates the hooks of the plugin.
-	 * - WooBiz_i18n. Defines internationalization functionality.
-	 * - WooBiz_Admin. Defines all hooks for the admin area.
-	 * - WooBiz_Public. Defines all hooks for the public side of the site.
+	 * - WC_Biz_Courier_Logistics_Loader. Orchestrates the hooks of the plugin.
+	 * - WC_Biz_Courier_Logistics_i18n. Defines internationalization functionality.
+	 * - WC_Biz_Courier_Logistics_Admin. Defines all hooks for the admin area.
+	 * - WC_Biz_Courier_Logistics_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -105,32 +105,32 @@ class WooBiz
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-woobiz-loader.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-woobiz-i18n.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-woobiz-admin.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-woobiz-public.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-wc-biz-courier-logistics-public.php';
 
-		$this->loader = new WooBiz_Loader();
+		$this->loader = new WC_Biz_Courier_Logistics_Loader();
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the WooBiz_i18n class in order to set the domain and to register the hook
+	 * Uses the WC_Biz_Courier_Logistics_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
@@ -139,7 +139,7 @@ class WooBiz
 	private function set_locale()
 	{
 
-		$plugin_i18n = new WooBiz_i18n();
+		$plugin_i18n = new WC_Biz_Courier_Logistics_i18n();
 
 		$this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
 	}
@@ -154,7 +154,7 @@ class WooBiz
 	private function define_admin_hooks()
 	{
 
-		$plugin_admin = new WooBiz_Admin($this->get_WooBiz(), $this->get_version());
+		$plugin_admin = new WC_Biz_Courier_Logistics_Admin($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
 
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
@@ -198,7 +198,7 @@ class WooBiz
 	private function define_public_hooks()
 	{
 
-		$plugin_public = new WooBiz_Public($this->get_WooBiz(), $this->get_version());
+		$plugin_public = new WC_Biz_Courier_Logistics_Public($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
 
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
@@ -221,16 +221,16 @@ class WooBiz
 	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
 	 */
-	public function get_WooBiz()
+	public function get_WC_Biz_Courier_Logistics()
 	{
-		return $this->WooBiz;
+		return $this->WC_Biz_Courier_Logistics;
 	}
 
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    WooBiz_Loader    Orchestrates the hooks of the plugin.
+	 * @return    WC_Biz_Courier_Logistics_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader()
 	{

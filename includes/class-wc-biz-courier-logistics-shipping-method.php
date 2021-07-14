@@ -6,11 +6,11 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://github.com/alexandrosraikos/woobiz
+ * @link       https://github.com/alexandrosraikos/wc-biz-courier-logistics
  * @since      1.0.0
  *
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/includes
  */
 
 /**
@@ -36,11 +36,11 @@ class Biz_Shipping_Method extends WC_Shipping_Method
     {
         $this->id = 'biz_shipping_method';
         $this->instance_id = absint($instance_id);
-        $this->method_title = __('Biz Courier Shipping', 'woobiz');
-        $this->method_description = __('Allow your customers to receive their products via Biz Courier Shipping.', 'woobiz');
+        $this->method_title = __('Biz Courier Shipping', 'wc-biz-courier-logistics');
+        $this->method_description = __('Allow your customers to receive their products via Biz Courier Shipping.', 'wc-biz-courier-logistics');
         $this->supports = array('shipping_zones' => true, 'instance-settings' => false);
         $this->enabled = isset($this->settings['enabled']) ? $this->settings['enabled'] : 'yes';
-        $this->title = isset($this->settings['title']) ? $this->settings['title'] : __('Biz Courier Shipping', 'woobiz');
+        $this->title = isset($this->settings['title']) ? $this->settings['title'] : __('Biz Courier Shipping', 'wc-biz-courier-logistics');
         $this->init();
     }
 
@@ -68,83 +68,83 @@ class Biz_Shipping_Method extends WC_Shipping_Method
     {
         $this->form_fields = array(
             'enabled' => array(
-                'title' => __('Enable', 'woobiz'),
+                'title' => __('Enable', 'wc-biz-courier-logistics'),
                 'type' => 'checkbox',
-                'description' => __('Allow shipping with Biz Courier.', 'woobiz'),
+                'description' => __('Allow shipping with Biz Courier.', 'wc-biz-courier-logistics'),
                 'default' => 'yes'
             ),
             'biz_cash_on_delivery_fee'  => array(
-                'title' => __('COD fee', 'woobiz'),
-                'description' => __('Insert the additional Biz fee for Cash On Delivery payments.', 'woobiz'),
+                'title' => __('COD fee', 'wc-biz-courier-logistics'),
+                'description' => __('Insert the additional Biz fee for Cash On Delivery payments.', 'wc-biz-courier-logistics'),
                 'type' => 'price',
             ),
             'biz_same_day_delivery_title' => array(
-                'title' => __('Same Day Delivery', 'woobiz'),
+                'title' => __('Same Day Delivery', 'wc-biz-courier-logistics'),
                 'type' => 'title',
-                'description' => __('Insert the pricing for same day delivery.', 'woobiz'),
+                'description' => __('Insert the pricing for same day delivery.', 'wc-biz-courier-logistics'),
             ),
             'biz_same_day_delivery_enabled' => array(
-                'title' => __('Enable', 'woobiz'),
+                'title' => __('Enable', 'wc-biz-courier-logistics'),
                 'type' => 'checkbox',
-                'description' => __('Allow same region customers to opt for same day delivery.', 'woobiz'),
+                'description' => __('Allow same region customers to opt for same day delivery.', 'wc-biz-courier-logistics'),
                 'default' => 'yes'
             ),
             'biz_same_day_delivery_pricing'  => array(
-                'title' => __('Charge per km', 'woobiz'),
+                'title' => __('Charge per km', 'wc-biz-courier-logistics'),
                 'type' => 'price',
             ),
             'biz_same_day_delivery_minimum_charge'  => array(
-                'title' => __('Minimum charge', 'woobiz'),
+                'title' => __('Minimum charge', 'wc-biz-courier-logistics'),
                 'type' => 'price',
             ),
             'biz_same_day_delivery_pricing_extra_kg'  => array(
-                'title' => __('Charge per extra kg', 'woobiz'),
+                'title' => __('Charge per extra kg', 'wc-biz-courier-logistics'),
                 'type' => 'price',
             ),
             'biz_additional_services_title' => array(
-                'title' => __('Additional Services', 'woobiz'),
+                'title' => __('Additional Services', 'wc-biz-courier-logistics'),
                 'type' => 'title',
-                'description' => __('Adjust options for additional services provided by Biz Courier.', 'woobiz'),
+                'description' => __('Adjust options for additional services provided by Biz Courier.', 'wc-biz-courier-logistics'),
             ),
             'biz_sms_notifications' => array(
-                'title' => __('SMS notifications', 'woobiz'),
+                'title' => __('SMS notifications', 'wc-biz-courier-logistics'),
                 'type' => 'checkbox',
-                'description' => __('Update your customers about their Biz shipment status via SMS.', 'woobiz'),
+                'description' => __('Update your customers about their Biz shipment status via SMS.', 'wc-biz-courier-logistics'),
                 'default' => 'no'
             ),
             'biz_morning_delivery_fee'  => array(
-                'title' => __('Morning delivery fee', 'woobiz'),
-                'description' => __('Insert the additional fee amount for morning deliveries.', 'woobiz'),
+                'title' => __('Morning delivery fee', 'wc-biz-courier-logistics'),
+                'description' => __('Insert the additional fee amount for morning deliveries.', 'wc-biz-courier-logistics'),
                 'type' => 'price',
             ),
             'biz_saturday_delivery_fee'  => array(
-                'title' => __('Saturday delivery fee', 'woobiz'),
-                'description' => __('Insert the additional fee amount for deliveries on Saturdays.', 'woobiz'),
+                'title' => __('Saturday delivery fee', 'wc-biz-courier-logistics'),
+                'description' => __('Insert the additional fee amount for deliveries on Saturdays.', 'wc-biz-courier-logistics'),
                 'type' => 'price',
             ),
         );
 
         $this->instance_form_fields = array(
             'biz_zone_type' => array(
-                'title' => __("Shipping zone type", "woobiz"),
+                'title' => __("Shipping zone type", "wc-biz-courier-logistics"),
                 'type' => 'select',
-                'description' => __("Select the type of Biz area covered by this shipping zone.", 'woobiz'),
+                'description' => __("Select the type of Biz area covered by this shipping zone.", 'wc-biz-courier-logistics'),
                 'options' => array(
-                    'same-area' => __('Same area as warehouse', 'woobiz'),
-                    'land-destinations' => __('Land destinations', 'woobiz'),
-                    'island-destinations' => __('Island destinations', 'woobiz'),
-                    'inaccessible-areas' => __('Inaccessible areas', 'woobiz'),
+                    'same-area' => __('Same area as warehouse', 'wc-biz-courier-logistics'),
+                    'land-destinations' => __('Land destinations', 'wc-biz-courier-logistics'),
+                    'island-destinations' => __('Island destinations', 'wc-biz-courier-logistics'),
+                    'inaccessible-areas' => __('Inaccessible areas', 'wc-biz-courier-logistics'),
                 ),
                 'biz_default' => 'same-area'
             ),
             'biz_delivery_pricing'  => array(
-                'title' => __('Delivery pricing', 'woobiz'),
-                'description' => __('Insert the delivery fee amount for up to 2kg.', 'woobiz'),
+                'title' => __('Delivery pricing', 'wc-biz-courier-logistics'),
+                'description' => __('Insert the delivery fee amount for up to 2kg.', 'wc-biz-courier-logistics'),
                 'type' => 'price',
             ),
             'biz_delivery_pricing_extra_kg'  => array(
-                'title' => __('Charge per extra kg', 'woobiz'),
-                'description' => __('Insert the delivery fee amount for every extra kg.', 'woobiz'),
+                'title' => __('Charge per extra kg', 'wc-biz-courier-logistics'),
+                'description' => __('Insert the delivery fee amount for every extra kg.', 'wc-biz-courier-logistics'),
                 'type' => 'price',
             ),
         );
@@ -176,7 +176,7 @@ class Biz_Shipping_Method extends WC_Shipping_Method
         // Calculate simple rate.
         $this->add_rate(array(
             'id' => $this->id,
-            'label' => __('Simple delivery', 'woobiz'),
+            'label' => __('Simple delivery', 'wc-biz-courier-logistics'),
             'cost' => $calculated_rate
         ));
 
@@ -186,14 +186,14 @@ class Biz_Shipping_Method extends WC_Shipping_Method
             // Morning deliveries.
             $this->add_rate(array(
                 'id' => $this->id . '-morning-delivery',
-                'label' => __('Morning delivery (until 10:30 a.m.)', 'woobiz'),
+                'label' => __('Morning delivery (until 10:30 a.m.)', 'wc-biz-courier-logistics'),
                 'cost' => $calculated_rate + $this->get_option('biz_morning_delivery_fee')
             ));
 
             // Saturday deliveries.
             $this->add_rate(array(
                 'id' => $this->id . '-saturday-delivery',
-                'label' => __('Saturday delivery', 'woobiz'),
+                'label' => __('Saturday delivery', 'wc-biz-courier-logistics'),
                 'cost' => $calculated_rate + $this->get_option('biz_saturday_delivery_fee')
             ));
         }

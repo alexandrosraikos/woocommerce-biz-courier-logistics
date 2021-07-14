@@ -1,18 +1,18 @@
-![The WooBiz icon.](doc/icon.png)
+![The Biz Courier & Logistics for WooCommerce icon.](doc/icon.png)
 
-# WooBiz
+# Biz Courier & Logistics for WooCommerce
 
 A plugin designed to integrate WooCommerce with the Biz Courier logistics platform.
 
 ## Getting Started
 
-Read on below to get started with WooBiz.
+Read on below to get started with Biz Courier & Logistics for WooCommerce.
 
 ### Requirements
 
 Recommended requirements for this plugin are PHP 8.0+ (with `soap` extension enabled), WordPress 5.7+, WooCommerce 5.2+.
 
-_WooBiz has not been tested with prior versions of PHP, WordPress or WooCommerce as of yet._
+_Biz Courier & Logistics for WooCommerce has not been tested with prior versions of PHP, WordPress or WooCommerce as of yet._
 
 ### Installation
 
@@ -20,7 +20,7 @@ Simply setup WordPress with WooCommerce and enable the plugin.
 
 1. Download and setup WordPress from [the official website](https://wordpress.org/).
 1. Download and setup WooCommerce from the WordPress dashboard.
-1. Download the .zip package of WooBiz from the [releases](https://github.com/alexandrosraikos/WooBiz/releases) page and install it via the WordPress Dashboard.
+1. Download the .zip package of Biz Courier & Logistics for WooCommerce from the [releases](https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/releases) page and install it via the WordPress Dashboard.
 
 You initially have to set up your credentials.
 
@@ -63,4 +63,4 @@ You can also include the `{biz_tracking_code}` dynamic field in order confirmati
 
 ## Learn more
 
-This documentation will be enriched as more features are added and processes get streamlined. In the meanwhile, if you have any questions about WooBiz, you can [contact me](https://www.araikos.gr/en/contact).
+This documentation will be enriched as more features are added and processes get streamlined. In the meanwhile, if you have any questions about Biz Courier & Logistics for WooCommerce, you can [contact me](https://www.araikos.gr/en/contact).

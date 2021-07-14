@@ -6,11 +6,11 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       https://github.com/alexandrosraikos/woobiz
+ * @link       https://github.com/alexandrosraikos/wc-biz-courier-logistics
  * @since      1.0.0
  *
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/includes
  */
 
 /**
@@ -20,11 +20,11 @@
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/includes
  * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
-class WooBiz_i18n {
+class WC_Biz_Courier_Logistics_i18n {
 
 
 	/**
@@ -35,7 +35,7 @@ class WooBiz_i18n {
 	public function load_plugin_textdomain() {
 
 		load_plugin_textdomain(
-			'woobiz',
+			'wc-biz-courier-logistics',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);

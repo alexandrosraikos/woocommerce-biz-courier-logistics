@@ -3,11 +3,11 @@
 /**
  * Fired during plugin deactivation
  *
- * @link       https://github.com/alexandrosraikos/woobiz
+ * @link       https://github.com/alexandrosraikos/wc-biz-courier-logistics
  * @since      1.0.0
  *
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/includes
  */
 
 /**
@@ -16,11 +16,11 @@
  * This class defines all code necessary to run during the plugin's deactivation.
  *
  * @since      1.0.0
- * @package    WooBiz
- * @subpackage WooBiz/includes
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/includes
  * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
-class WooBiz_Deactivator
+class WC_Biz_Courier_Logistics_Deactivator
 {
 
 	/**
@@ -37,6 +37,6 @@ class WooBiz_Deactivator
 
 		delete_option('wc_biz_inaccessible_areas');
 
-		WooBiz_Admin::reset_all_sync_status();
+		WC_Biz_Courier_Logistics_Admin::reset_all_sync_status();
 	}
 }
