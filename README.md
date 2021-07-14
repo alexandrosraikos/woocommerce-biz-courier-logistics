@@ -1,3 +1,5 @@
+![The WooBiz icon.](doc/icon.png)
+
 # WooBiz
 
 A plugin designed to integrate WooCommerce with the Biz Courier logistics platform.
