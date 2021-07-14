@@ -3,7 +3,7 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       https://github.com/alexandrosraikos/woobiz
+ * @link       https://github.com/alexandrosraikos/wc-biz-courier-logistics
  * @since      1.0.0
  *
  * @package    WC_Biz_Courier_Logistics
@@ -73,7 +73,7 @@ class WC_Biz_Courier_Logistics_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->WC_Biz_Courier_Logistics, plugin_dir_url( __FILE__ ) . 'css/woobiz-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->WC_Biz_Courier_Logistics, plugin_dir_url( __FILE__ ) . 'css/wc-biz-courier-logistics-public.css', array(), $this->version, 'all' );
 
 	}
 
@@ -96,7 +96,7 @@ class WC_Biz_Courier_Logistics_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->WC_Biz_Courier_Logistics, plugin_dir_url( __FILE__ ) . 'js/woobiz-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->WC_Biz_Courier_Logistics, plugin_dir_url( __FILE__ ) . 'js/wc-biz-courier-logistics-public.js', array( 'jquery' ), $this->version, false );
 
 	}
 

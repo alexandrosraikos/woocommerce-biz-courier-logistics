@@ -6,7 +6,7 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       https://github.com/alexandrosraikos/woobiz
+ * @link       https://github.com/alexandrosraikos/wc-biz-courier-logistics
  * @since      1.0.0
  *
  * @package    WC_Biz_Courier_Logistics
@@ -35,7 +35,7 @@ class WC_Biz_Courier_Logistics_i18n {
 	public function load_plugin_textdomain() {
 
 		load_plugin_textdomain(
-			'woobiz',
+			'wc-biz-courier-logistics',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);

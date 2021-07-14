@@ -4,13 +4,15 @@
   // Ensure prepared document.
   $(document).ready(function () {
     // Capture click event.
-    $("button.woobiz-sync-stock").click(function (event) {
+    $("button.wc-biz-courier-logistics-sync-stock").click(function (event) {
       // Prevent default reload.
       event.preventDefault();
 
       // Disable button.
-      $("button.woobiz-sync-stock").prop("disabled", true);
-      $("button.woobiz-sync-stock").addClass("woobiz-loading");
+      $("button.wc-biz-courier-logistics-sync-stock").prop("disabled", true);
+      $("button.wc-biz-courier-logistics-sync-stock").addClass(
+        "wc-biz-courier-logistics-loading"
+      );
 
       // Perform AJAX request.
       $.ajax({

@@ -6,7 +6,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://github.com/alexandrosraikos/woobiz
+ * @link       https://github.com/alexandrosraikos/wc-biz-courier-logistics
  * @since      1.0.0
  *
  * @package    WC_Biz_Courier_Logistics
@@ -37,8 +37,8 @@ class Biz_Integration extends WC_Integration
     {
         global $woocommerce;
         $this->id = 'biz_integration';
-        $this->method_title = __('Biz Courier & Logistics', 'woobiz');
-        $this->method_description = __('An integration for synchronising stock, orders and payment fees with the Biz Courier & Logistics platform.', 'woobiz');
+        $this->method_title = __('Biz Courier & Logistics', 'wc-biz-courier-logistics');
+        $this->method_description = __('An integration for synchronising stock, orders and payment fees with the Biz Courier & Logistics platform.', 'wc-biz-courier-logistics');
 
         $this->init();
     }
@@ -66,33 +66,33 @@ class Biz_Integration extends WC_Integration
     {
         $this->form_fields = array(
 			'section_title' => array(
-				'title'     => __('Biz Courier Credentials', 'woobiz'),
+				'title'     => __('Biz Courier Credentials', 'wc-biz-courier-logistics'),
 				'type'     => 'title',
-				'description'     => __("Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact us</a>.", 'woobiz'),
+				'description'     => __("Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact us</a>.", 'wc-biz-courier-logistics'),
 				'id'       => 'section_title'
 			),
 			'account_number' => array(
-				'title' => __('Account Number', 'woobiz'),
+				'title' => __('Account Number', 'wc-biz-courier-logistics'),
 				'type' => 'decimal',
-				'description' => __('Your account number registered with Biz Courier.', 'woobiz'),
+				'description' => __('Your account number registered with Biz Courier.', 'wc-biz-courier-logistics'),
 				'id'   => 'account_number'
 			),
 			'warehouse_crm' => array(
-				'title' => __('Warehouse CRM Number', 'woobiz'),
+				'title' => __('Warehouse CRM Number', 'wc-biz-courier-logistics'),
 				'type' => 'decimal',
-				'description' => __('Your CRM number for the warehouse location assigned to this store.', 'woobiz'),
+				'description' => __('Your CRM number for the warehouse location assigned to this store.', 'wc-biz-courier-logistics'),
 				'id'   => 'warehouse_crm'
 			),
 			'username' => array(
-				'title' => __('Username', 'woobiz'),
+				'title' => __('Username', 'wc-biz-courier-logistics'),
 				'type' => 'text',
-				'description' => __('Your username registered with Biz Courier.', 'woobiz'),
+				'description' => __('Your username registered with Biz Courier.', 'wc-biz-courier-logistics'),
 				'id'   => 'username'
 			),
 			'password' => array(
-				'title' => __('Password', 'woobiz'),
+				'title' => __('Password', 'wc-biz-courier-logistics'),
 				'type' => 'password',
-				'description' => __('Your Biz Courier merchant password.', 'woobiz'),
+				'description' => __('Your Biz Courier merchant password.', 'wc-biz-courier-logistics'),
 				'id'   => 'password'
 			),
         );

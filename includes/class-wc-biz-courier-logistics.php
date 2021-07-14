@@ -6,7 +6,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://github.com/alexandrosraikos/woobiz
+ * @link       https://github.com/alexandrosraikos/wc-biz-courier-logistics
  * @since      1.0.0
  *
  * @package    WC_Biz_Courier_Logistics
@@ -74,7 +74,7 @@ class WC_Biz_Courier_Logistics
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->WC_Biz_Courier_Logistics = 'woobiz';
+		$this->WC_Biz_Courier_Logistics = 'wc-biz-courier-logistics';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -105,24 +105,24 @@ class WC_Biz_Courier_Logistics
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-woobiz-loader.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/wc-biz-courier-logistics-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-woobiz-i18n.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/wc-biz-courier-logistics-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-woobiz-admin.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/wc-biz-courier-logistics-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-woobiz-public.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/wc-biz-courier-logistics-public.php';
 
 		$this->loader = new WC_Biz_Courier_Logistics_Loader();
 	}

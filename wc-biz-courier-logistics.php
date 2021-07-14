@@ -34,21 +34,21 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
 	/**
 	 * The code that runs during plugin activation.
-	 * This action is documented in includes/class-woobiz-activator.php
+	 * This action is documented in includes/wc-biz-courier-logistics-activator.php
 	 */
 	function activate_wc_biz_courier_logistics()
 	{
-		require_once plugin_dir_path(__FILE__) . 'includes/class-woobiz-activator.php';
+		require_once plugin_dir_path(__FILE__) . 'includes/wc-biz-courier-logistics-activator.php';
 		WC_Biz_Courier_Logistics_Activator::activate();
 	}
 
 	/**
 	 * The code that runs during plugin deactivation.
-	 * This action is documented in includes/class-woobiz-deactivator.php
+	 * This action is documented in includes/wc-biz-courier-logistics-deactivator.php
 	 */
 	function deactivate_wc_biz_courier_logistics()
 	{
-		require_once plugin_dir_path(__FILE__) . 'includes/class-woobiz-deactivator.php';
+		require_once plugin_dir_path(__FILE__) . 'includes/wc-biz-courier-logistics-deactivator.php';
 		WC_Biz_Courier_Logistics_Deactivator::deactivate();
 	}
 
@@ -59,7 +59,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 	 * The core plugin class that is used to define internationalization,
 	 * admin-specific hooks, and public-facing site hooks.
 	 */
-	require plugin_dir_path(__FILE__) . 'includes/class-woobiz.php';
+	require plugin_dir_path(__FILE__) . 'includes/wc-biz-courier-logistics.php';
 
 	/**
 	 * Begins execution of the plugin.
