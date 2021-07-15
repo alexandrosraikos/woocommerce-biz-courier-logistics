@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-The index below indicates the versions of WooBiz which are still actively supported.
+The index below indicates the versions of Biz Courier & Logistics for WooCommerce which are still actively supported.
 
 | Version | Supported          |
 | ------- | ------------------ |

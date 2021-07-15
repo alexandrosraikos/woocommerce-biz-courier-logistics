@@ -1,11 +1,11 @@
-# ENGLISH (EN) translation for WooBiz.
+# ENGLISH (EN) translation for Biz Courier & Logistics for WooCommerce.
 # Copyright (C) 2021, Alexandros Raikos tou Konstantinou.
-# This file is distributed under the same license as the WooBiz package.
+# This file is distributed under the same license as the Biz Courier & Logistics for WooCommerce package.
 # Alexandros Raikos <alexandros@araikos.gr>, 2021.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: WooBiz 1.0.0\n"
+"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-10 17:11-0600\n"
 "PO-Revision-Date: 2021-05-10 23:18+0300\n"

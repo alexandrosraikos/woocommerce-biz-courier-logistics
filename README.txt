@@ -1,4 +1,4 @@
-=== WooBiz ===
+=== Biz Courier & Logistics for  WooCommerce ===
 Contributors: alexandrosraikos
 Donate link: https://github.com/sponsors/alexandrosraikos
 Tags: woocommerce, shipping
@@ -48,7 +48,7 @@ You can also include the `{biz_tracking_code}` dynamic field in order confirmati
 
 ## Learn more
 
-This documentation will be enriched as more features are added and processes get streamlined. In the meanwhile, if you have any questions about WooBiz, you can [contact me](https://www.araikos.gr/en/contact).
+This documentation will be enriched as more features are added and processes get streamlined. In the meanwhile, if you have any questions about Biz Courier & Logistics for WooCommerce, you can [contact me](https://www.araikos.gr/en/contact).
 
 == Changelog ==
 
@@ -56,7 +56,7 @@ This documentation will be enriched as more features are added and processes get
 This update includes UI corrections, documentation updates, and code cleanup.
 
 = 1.0.0 =
-This is the initial release version of WooBiz.
+This is the initial release version of Biz Courier & Logistics for WooCommerce.
 
 Main features:
 
