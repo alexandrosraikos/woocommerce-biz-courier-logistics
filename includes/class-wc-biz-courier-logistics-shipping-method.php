@@ -73,6 +73,18 @@ class Biz_Shipping_Method extends WC_Shipping_Method
                 'description' => __('Allow shipping with Biz Courier.', 'wc-biz-courier-logistics'),
                 'default' => 'yes'
             ),
+            'automatic_shipment_creation' => array(
+                'title' => __('Automatic shipment creation', 'wc-biz-courier-logistics'),
+                'type' => 'checkbox',
+                'description' => __('Automatically send Biz shipments when orders enter Processing status.', 'wc-biz-courier-logistics'),
+                'default' => 'no'
+            ),
+            'automatic_shipment_cancellation' => array(
+                'title' => __('Automatic shipment cancellation', 'wc-biz-courier-logistics'),
+                'type' => 'checkbox',
+                'description' => __('Automatically cancel Biz shipments when orders enter Failed or Cancelled status.', 'wc-biz-courier-logistics'),
+                'default' => 'no'
+            ),
             'biz_cash_on_delivery_fee'  => array(
                 'title' => __('COD fee', 'wc-biz-courier-logistics'),
                 'description' => __('Insert the additional Biz fee for Cash On Delivery payments.', 'wc-biz-courier-logistics'),
@@ -112,10 +124,22 @@ class Biz_Shipping_Method extends WC_Shipping_Method
                 'description' => __('Update your customers about their Biz shipment status via SMS.', 'wc-biz-courier-logistics'),
                 'default' => 'no'
             ),
+            'biz_morning_delivery'  => array(
+                'title' => __('Morning delivery', 'wc-biz-courier-logistics'),
+                'description' => __('Check the box if you would like the morning delivery option enabled in same area deliveries.', 'wc-biz-courier-logistics'),
+                'type' => 'checkbox',
+                'default' => 'no'
+            ),
             'biz_morning_delivery_fee'  => array(
                 'title' => __('Morning delivery fee', 'wc-biz-courier-logistics'),
                 'description' => __('Insert the additional fee amount for morning deliveries.', 'wc-biz-courier-logistics'),
                 'type' => 'price',
+            ),
+            'biz_saturday_delivery'  => array(
+                'title' => __('Saturday delivery', 'wc-biz-courier-logistics'),
+                'description' => __('Check the box if you would like the Saturday delivery option enabled in same area deliveries.', 'wc-biz-courier-logistics'),
+                'type' => 'checkbox',
+                'default' => 'no'
             ),
             'biz_saturday_delivery_fee'  => array(
                 'title' => __('Saturday delivery fee', 'wc-biz-courier-logistics'),
@@ -183,19 +207,24 @@ class Biz_Shipping_Method extends WC_Shipping_Method
         // Calculate rates for extra services.
         if ($this->get_option('biz_zone_type') == 'same-area') {
 
-            // Morning deliveries.
-            $this->add_rate(array(
-                'id' => $this->id . '-morning-delivery',
-                'label' => __('Morning delivery (until 10:30 a.m.)', 'wc-biz-courier-logistics'),
-                'cost' => $calculated_rate + $this->get_option('biz_morning_delivery_fee')
-            ));
+            if($this->get_option('biz_morning_delivery') == 'yes') {
+                // Morning deliveries.
+                $this->add_rate(array(
+                    'id' => $this->id . '-morning-delivery',
+                    'label' => __('Morning delivery (until 10:30 a.m.)', 'wc-biz-courier-logistics'),
+                    'cost' => $calculated_rate + $this->get_option('biz_morning_delivery_fee')
+                ));
+            }
 
-            // Saturday deliveries.
-            $this->add_rate(array(
-                'id' => $this->id . '-saturday-delivery',
-                'label' => __('Saturday delivery', 'wc-biz-courier-logistics'),
-                'cost' => $calculated_rate + $this->get_option('biz_saturday_delivery_fee')
-            ));
+            if($this->get_option('biz_saturday_delivery') == 'yes') {
+
+                // Saturday deliveries.
+                $this->add_rate(array(
+                    'id' => $this->id . '-saturday-delivery',
+                    'label' => __('Saturday delivery', 'wc-biz-courier-logistics'),
+                    'cost' => $calculated_rate + $this->get_option('biz_saturday_delivery_fee')
+                ));
+            }
         }
     }
 }

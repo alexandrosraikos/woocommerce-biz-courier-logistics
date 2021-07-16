@@ -77,6 +77,7 @@ ul.biz-shipment-status {
   padding: 10px;
   background-color: rgb(224, 234, 245);
   border-radius: 7px;
+  margin: 10px 0;
 }
 
 .biz-shipment-status .status-description {
@@ -91,4 +92,8 @@ ul.biz-shipment-status {
 .biz-shipment-status.error {
   font-weight: bold;
   color: #a44;
+}
+
+.biz-shipment-modification button {
+  margin: 0 5px 5px 0 !important;
 }

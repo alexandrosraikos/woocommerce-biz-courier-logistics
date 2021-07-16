@@ -129,6 +129,10 @@ function biz_track_shipment_meta_box_html(string $voucher, array $status_history
 ?>
     <ul>
         <li class="biz-voucher"><?php echo __("Voucher number: ", 'wc-biz-courier-logistics') . '<div>' . $voucher . '</div>' ?></li>
+        <li class="biz-shipment-modification">
+            <button class="button" id="biz-modify-shipment"><?php _e("Modify shipment", "wc-biz-courier-logistics") ?></button>
+            <button class="components-button is-destructive" id="biz-cancel-shipment"><?php _e("Cancel shipment", "wc-biz-courier-logistics") ?></button>
+        </li>
         <li>
             <?php
             _e("Status history: ", 'wc-biz-courier-logistics');
@@ -136,9 +140,10 @@ function biz_track_shipment_meta_box_html(string $voucher, array $status_history
         </li>
         <li>
             <?php
-            foreach ($status_history as $status) {
+            foreach (array_reverse($status_history) as $status) {
                 echo '<ul class="biz-shipment-status">';
                 echo '<li class="status-description">' . $status['description'] . '</li>';
+                echo '<li class="status-action">' . $status['action'] . '</li>';
                 echo '<li class="status-date">' . $status['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $status['time'] . '</li>';
                 echo '</ul>';
             }
