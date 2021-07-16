@@ -52,6 +52,9 @@ This documentation will be enriched as more features are added and processes get
 
 == Changelog ==
 
+= 1.1.0 =
+**TBD**
+
 = 1.0.1 =
 This update includes UI corrections, documentation updates, and code cleanup.
 
