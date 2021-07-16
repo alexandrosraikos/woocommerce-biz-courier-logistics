@@ -621,7 +621,7 @@ class WC_Biz_Courier_Logistics_Admin
 				"Relative1" => "", // Unsupported.
 				"Relative2" => "", // Unsupported.
 				"Delivery_Time_To" => "", // Unsupported.
-				"SMS" => $biz_shipping_settings['biz_sms_notifications'] ? "1" : "0",
+				"SMS" => ($biz_shipping_settings['biz_sms_notifications'] == "yes") ? "1" : "0",
 				"Special_Treatment" => "", // Unsupported.
 				"Protocol" => "", // Unsupported.
 				"Morning_Delivery" => (str_contains($order->get_shipping_method(), "Πρωινή") || str_contains($order->get_shipping_method(), "Morning")) ? "yes" : "",
