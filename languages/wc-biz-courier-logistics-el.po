@@ -100,6 +100,18 @@ msgstr "Εκτός"
 msgid "Biz Courier Shipping"
 msgstr "Αποστολές Biz Courier"
 
+msgid "Automatic shipment creation"
+msgstr "Αυτόματη δημιουργία αποστολής"
+
+msgid "Automatically send Biz shipments when orders enter Processing status."
+msgstr "Αυτόματη δημιουργία αποστολής Biz όταν μία παραγγελία τίθεται \"Σε επεξεργασία\"."
+
+msgid "Automatic shipment cancellation"
+msgstr "Αυτόματη ακύρωση αποστολής"
+
+msgid "Automatically cancel Biz shipments when orders enter Failed or Cancelled status."
+msgstr "Αυτόματη ακύρωση αποστολής Biz όταν μία παραγγελία τίθεται ως \"Ακυρωμένη\" ή \"Αποτυχημένη\"."
+
 msgid "Simple delivery"
 msgstr "Απλή παράδοση"
 
@@ -229,8 +241,17 @@ msgstr "Κωδικός ανίχνευσης"
 msgid "Voucher number: "
 msgstr "Κωδικός αποστολής: "
 
+msgid "Modify shipment"
+msgstr "Επεξεργασία παράδοσης"
+
+msgid "Cancel shipment"
+msgstr "Ακύρωση παράδοσης"
+
 msgid "Status history: "
-msgstr "Ιστορικό: "
+msgstr "Ιστορικό κατάστασης: "
+
+msgid "Modification history: "
+msgstr "Ιστορικό τροποποιήσεων: "
 
 msgid "at"
 msgstr "στις"
@@ -238,6 +259,8 @@ msgstr "στις"
 msgid "Biz Courier status"
 msgstr "Κατάσταση Biz Courier"
 
+msgid "The shipment was successfully registered to Biz Courier."
+msgstr "Η παράδοση καταχωρήθηκε με επιτυχία στην Biz Courier."
 
 msgid "This order has not shipped with Biz."
 msgstr "Αυτή η παραγγελία δεν έχει αποσταλεί μέσω Biz."
@@ -259,3 +282,21 @@ msgstr "Προέκυψε ένα αναπάντεχο σφάλμα από την 
 
 msgid "The order fields are incomplete."
 msgstr "Χρειάζονται περισσότερες πληροφορίες για την παραγγελία."
+
+msgid "Are you sure you want to cancel this Biz shipment? If you want to send it again, you will receive a new tracking code."
+msgstr "Σίγουρα επιθυμείτε ακύρωση της παράδοσης Biz; Αν επιθυμείτε να την ξαναστείλετε, θα λάβετε νέο κωδικό αποστολής."
+
+msgid "Please insert the message you want to send to Biz about the shipment."
+msgstr "Εισάγετε παρακάτω το μήνυμα που θέλετε να στείλετε στην Biz σχετικά με την παράδοση."
+
+msgid "Order got cancelled, please cancel the shipment."
+msgstr "Η παραγγελία ακυρώθηκε, παρακαλώ ακυρώστε την παράδοση."
+
+msgid "The Biz shipment with tracking code %s was cancelled."
+msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε."
+
+msgid "Message sent to Biz: "
+msgstr "Μήνυμα εστάλη στην Biz: "
+
+msgid " (modification id: "
+msgstr " (αναγνωριστικό τροποποίησης: "

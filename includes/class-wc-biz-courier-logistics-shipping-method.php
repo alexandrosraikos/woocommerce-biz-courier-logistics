@@ -73,6 +73,18 @@ class Biz_Shipping_Method extends WC_Shipping_Method
                 'description' => __('Allow shipping with Biz Courier.', 'wc-biz-courier-logistics'),
                 'default' => 'yes'
             ),
+            'automatic_shipment_creation' => array(
+                'title' => __('Automatic shipment creation', 'wc-biz-courier-logistics'),
+                'type' => 'checkbox',
+                'description' => __('Automatically send Biz shipments when orders enter Processing status.', 'wc-biz-courier-logistics'),
+                'default' => 'no'
+            ),
+            'automatic_shipment_cancellation' => array(
+                'title' => __('Automatic shipment cancellation', 'wc-biz-courier-logistics'),
+                'type' => 'checkbox',
+                'description' => __('Automatically cancel Biz shipments when orders enter Failed or Cancelled status.', 'wc-biz-courier-logistics'),
+                'default' => 'no'
+            ),
             'biz_cash_on_delivery_fee'  => array(
                 'title' => __('COD fee', 'wc-biz-courier-logistics'),
                 'description' => __('Insert the additional Biz fee for Cash On Delivery payments.', 'wc-biz-courier-logistics'),
