@@ -395,7 +395,7 @@ class WC_Biz_Courier_Logistics_Admin
 		));
 
 		// Insert button HTML.
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/class-wc-biz-courier-logistics-admin-display.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 		biz_stock_sync_all_button();
 	}
 
