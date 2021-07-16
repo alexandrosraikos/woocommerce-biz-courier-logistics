@@ -1,5 +1,3 @@
-![The Biz Courier & Logistics for WooCommerce icon.](doc/icon.png)
-
 # Biz Courier & Logistics for WooCommerce
 
 A plugin designed to integrate WooCommerce with the Biz Courier logistics platform.
@@ -64,3 +62,11 @@ You can also include the `{biz_tracking_code}` dynamic field in order confirmati
 ## Learn more
 
 This documentation will be enriched as more features are added and processes get streamlined. In the meanwhile, if you have any questions about Biz Courier & Logistics for WooCommerce, you can [contact me](https://www.araikos.gr/en/contact).
+
+## Legal notice
+
+I am in no way affiliated with Biz Courier Services. This is a third party plugin developed and provided free of charge under [The Unlicense](https://unlicense.org) within the boundaries of nominative fair use to assist users and businesses in connecting with the Biz Courier Services API (see [Web Services for eShops](https://www.bizcourier.eu/WebServices)). All of the services provided to you by Biz Courier Services are subject to their [Terms & Conditions](https://www.bizcourier.eu/faq/usefulinformation.html) and you should always use their official software for your logistics operations, alongside any complementary solutions utilising their available APIs such as this plugin ("Biz Courier & Logistics for WooCommerce").
+
+The name "Biz Courier" is a trademark of Biz Courier Services and any references made within this repository is purely for internal reference and functionality purposes (i.e. PHP `class` names, PHP `function` names, etc.), as well as a direct delineation of named functionalities offered by the official Biz Courier Services Web API.
+
+If you are a representative of Biz Courier Services and would like to pose concerns regarding possible trademark infringement, please [contact me](https://www.araikos.gr/en/contact) directly.
