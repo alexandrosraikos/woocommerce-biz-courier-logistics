@@ -18,13 +18,17 @@ Simply setup WordPress with WooCommerce and enable the plugin.
 
 1. Download and setup WordPress from [the official website](https://wordpress.org/).
 1. Download and setup WooCommerce from the WordPress dashboard.
-1. Download the .zip package of Biz Courier & Logistics for WooCommerce from the [releases](https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/releases) page and install it via the WordPress Dashboard.
+1. Download the `wc-biz-courier-logistics.zip` package of Biz Courier & Logistics for WooCommerce from the latest release in the [releases](https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/releases) page and install it via the WordPress Dashboard.
 
 You initially have to set up your credentials.
 
 1. Login to the WordPress Dashboard
 1. Go to _WooCommerce Settings > Integration > Biz Courier & Logistics_.
 1. Register the credentials that were provided to you by Biz Courier.
+
+### Upgrade
+
+To upgrade, simply delete and reinstall using the method above.
 
 ## Features
 
@@ -47,23 +51,35 @@ Save your Biz Courier credentials into _Dashboard > WooCommerce > Settings > Biz
 
 _Note: Consult Biz Courier for your shipping country's list of inaccessible areas._
 
-### Send Shipments
+### Manage Shipments
 
-The fastest way to submit your shipment to Biz Courier, straight from WooCommerce. At each order page, you can click on _Send shipment._
+#### Send
+
+The fastest way to submit your shipment to Biz Courier, straight from WooCommerce. At each order page, you can click on _Send shipment_.
 
 _Note: You need to synchronize your stock levels first._
 
-### Track Shipments
+#### Track
 
 If a shipment is sent from the WordPress Dashboard, you can view the tracking code and the shipment status history directly from the page of the order.
 
 You can also include the `{biz_tracking_code}` dynamic field in order confirmation emails sent to your customers. To do that, head to _WooCommerce Settings > Emails_.
 
-## Learn more
+#### Modify
 
-This documentation will be enriched as more features are added and processes get streamlined. In the meanwhile, if you have any questions about Biz Courier & Logistics for WooCommerce, you can [contact me](https://www.araikos.gr/en/contact).
+You can send shipment modification instructions directly to Biz Courier. Simply head to your order, make sure you have submitted a Biz shipment for that order, and click on _Modify shipment_. You can also view your history of modifications in the order's notes.
 
-## Legal notice
+#### Cancel
+
+You can cancel Biz Courier shipments by heading to your order and clicking _Cancel shipment_.
+
+## Frequently Asked Questions
+
+_Why is this plugin not part of the WordPress.org plugin directory_?
+
+Unfortunately this WordPress plugin cannot be featured in the WordPress plugin directory, due to the strict guidelines regarding the mentions of trademarks (see _Legal Disclaimer_ below) and usage of GPLv2 or later as the open source license.
+
+## Legal Disclaimer
 
 I am in no way affiliated with Biz Courier Services. This is a third party plugin developed and provided free of charge under [The Unlicense](https://unlicense.org) use to assist users and businesses in connecting with the Biz Courier Services API (see [Web Services for eShops](https://www.bizcourier.eu/WebServices)). All of the services provided to you by Biz Courier Services are subject to their [Terms & Conditions](https://www.bizcourier.eu/faq/usefulinformation.html) and you should always use their official software for your logistics operations, alongside any complementary solutions utilising their available APIs such as this plugin ("Biz Courier & Logistics for WooCommerce").
 
