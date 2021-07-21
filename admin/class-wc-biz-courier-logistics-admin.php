@@ -276,8 +276,8 @@ class WC_Biz_Courier_Logistics_Admin
 					$product_post = get_post($product_post_id);
 					$wc_product = wc_get_product($product_post->ID);
 
-					// Check for active stock management.
-					if ($wc_product->managing_stock()) {
+					// Check for active stock management & compatible type.
+					if ($wc_product->managing_stock() && !$wc_product->is_type('virtual')) {
 
 						// Update remaining stock quantity.
 						wc_update_product_stock($wc_product, $biz_product->Remaining_Quantity, 'set');
@@ -564,6 +564,10 @@ class WC_Biz_Courier_Logistics_Admin
 					// Handle each item included in the order.
 					foreach ($items as $item) {
 						$product = wc_get_product($item->get_product_id());
+
+						if ($product->is_type('virtual')) {
+							continue;
+						}
 
 						// Check for active Biz synchronization status.
 						if (get_post_meta($product->get_id(), 'biz_sync', true) == 'synced') {
