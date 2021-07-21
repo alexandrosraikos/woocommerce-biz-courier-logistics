@@ -599,6 +599,17 @@ class WC_Biz_Courier_Logistics_Admin
 						$cash_on_delivery = number_format($cash_on_delivery, 2);
 					}
 
+					// Create SMS notification setting.
+					$sms_notification = "0";
+					if (isset($order->get_billing_phone())) {
+						$sms_notification = ($biz_shipping_settings['biz_sms_notifications'] == "yes") ? "1" : "0"; 
+					} 
+					else {
+						if ($biz_shipping_settings['biz_sms_notifications'] == "yes") {
+							throw new Exception('sms-error');
+						}
+					}
+
 					// Prepare SOAP query.
 					$shipment_data = array(
 						'Code' => $biz_settings['account_number'],
@@ -628,7 +639,7 @@ class WC_Biz_Courier_Logistics_Admin
 						"Relative1" => "", // Unsupported.
 						"Relative2" => "", // Unsupported.
 						"Delivery_Time_To" => "", // Unsupported.
-						"SMS" => ($biz_shipping_settings['biz_sms_notifications'] == "yes") ? "1" : "0",
+						"SMS" => ,
 						"Special_Treatment" => "", // Unsupported.
 						"Protocol" => "", // Unsupported.
 						"Morning_Delivery" => (str_contains($order->get_shipping_method(), "Πρωινή") || str_contains($order->get_shipping_method(), "Morning")) ? "yes" : "",
