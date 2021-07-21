@@ -92,7 +92,7 @@ class WC_Biz_Courier_Logistics_Admin
 	function biz_integration()
 	{
 		if (!class_exists('Biz_Integration')) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-integration.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-integration.php';
 		}
 	}
 
@@ -472,7 +472,7 @@ class WC_Biz_Courier_Logistics_Admin
 	function biz_shipping_method()
 	{
 		if (!class_exists('Biz_Shipping_Method')) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-shipping-method.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipping-method.php';
 		}
 	}
 
@@ -601,7 +601,8 @@ class WC_Biz_Courier_Logistics_Admin
 
 					// Create SMS notification setting.
 					$sms_notification = "0";
-					if (isset($order->get_billing_phone())) {
+					$billing_phone = $order->get_billing_phone();
+					if (isset($billing_phone)) {
 						$sms_notification = ($biz_shipping_settings['biz_sms_notifications'] == "yes") ? "1" : "0"; 
 					} 
 					else {
@@ -639,7 +640,7 @@ class WC_Biz_Courier_Logistics_Admin
 						"Relative1" => "", // Unsupported.
 						"Relative2" => "", // Unsupported.
 						"Delivery_Time_To" => "", // Unsupported.
-						"SMS" => ,
+						"SMS" => $sms_notification,
 						"Special_Treatment" => "", // Unsupported.
 						"Protocol" => "", // Unsupported.
 						"Morning_Delivery" => (str_contains($order->get_shipping_method(), "Πρωινή") || str_contains($order->get_shipping_method(), "Morning")) ? "yes" : "",
