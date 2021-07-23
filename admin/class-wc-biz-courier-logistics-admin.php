@@ -965,6 +965,7 @@ class WC_Biz_Courier_Logistics_Admin
 				// Print HTML.
 				biz_send_shipment_meta_box_html();
 			}
+			// TODO@alexandrosraikos also add a post-cancellation metabox.
 		}
 
 		// Ensure the administrator is on the "Edit" screen and not "Add".
