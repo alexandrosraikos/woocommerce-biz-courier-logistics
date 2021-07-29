@@ -210,3 +210,14 @@ function biz_send_shipment_meta_box_html()
         }
     }
 }
+
+/**
+ * Print errors in HTML for the shipment tracking meta box.
+ *
+ * @since    1.0.0
+ * @param    string $error The associated error code.
+ */
+function biz_track_shipment_meta_box_cancelled_html()
+{
+    echo '<p class="biz-shipment-status error">' . __("The Biz Courier shipment was cancelled.", "wc-biz-courier-logistics") . '</p>';
+}

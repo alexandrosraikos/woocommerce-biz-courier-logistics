@@ -301,6 +301,12 @@ msgstr "Εισάγετε παρακάτω το μήνυμα που θέλετε 
 msgid "The Biz shipment with tracking code %s was cancelled. The cancellation code is: %s."
 msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε. Ο κωδικός ακύρωσης είναι: %s."
 
+msgid "The Biz shipment with tracking code %s was cancelled."
+msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε."
+
+msgid "The Biz Courier shipment was cancelled."
+msgstr "Η παράδοση μέσω Biz ακυρώθηκε."
+
 msgid "Message sent to Biz: "
 msgstr "Μήνυμα εστάλη στην Biz: "
 
