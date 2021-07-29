@@ -187,16 +187,8 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('wp_ajax_biz_send_shipment', $plugin_admin, 'biz_send_shipment_handler');
 		$this->loader->add_action('wp_ajax_biz_modify_shipment', $plugin_admin, 'biz_modify_shipment_handler');
 
-		// Automate shipment functionality.
-		$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
-		if (isset($biz_shipping_settings['automatic_shipment_creation']) && $biz_shipping_settings['automatic_shipment_creation'] != 'disabled') {
-			$this->loader->add_action('woocommerce_order_status_'.substr($biz_shipping_settings['automatic_shipment_creation'], 3), $plugin_admin, 'biz_send_shipment');
-		}
-		if (isset($biz_shipping_settings['automatic_shipment_cancellation']) && $biz_shipping_settings['automatic_shipment_cancellation'] != 'disabled') {
-			$this->loader->add_action('woocommerce_order_status_'.substr($biz_shipping_settings['automatic_shipment_cancellation'], 3), $plugin_admin, 'WC_Biz_Courier_Logistics_Admin::biz_cancel_shipment');
-		}
+		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'biz_order_changed_handler',10, 3);
 
-		
 		$this->loader->add_filter('woocommerce_email_order_meta_fields', $plugin_admin, 'add_biz_email_order_fields', 10, 3);
 	}
 

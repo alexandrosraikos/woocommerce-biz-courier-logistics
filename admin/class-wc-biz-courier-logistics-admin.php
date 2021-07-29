@@ -280,7 +280,11 @@ class WC_Biz_Courier_Logistics_Admin
 					if ($wc_product->managing_stock() && !$wc_product->is_type('virtual')) {
 
 						// Update remaining stock quantity.
-						wc_update_product_stock($wc_product, $biz_product->Remaining_Quantity, 'set');
+						if ($biz_product->Remaining_Quantity >= 0) {
+							wc_update_product_stock($wc_product, $biz_product->Remaining_Quantity, 'set');
+						} else {
+							wc_update_product_stock($wc_product, 0, 'set');
+						}
 
 						// Update Biz synchronization post metadata.
 						update_post_meta($product_post_id, 'biz_sync', 'synced');
@@ -816,7 +820,6 @@ class WC_Biz_Courier_Logistics_Admin
 				add_post_meta($order->get_id(), '_biz_status', 'cancelled');
 				$order->add_order_note(sprintf(__("The Biz shipment with tracking code %s was cancelled."), $voucher, $response->ActId));
 			} else {
-				error_log(json_encode($response));
 				throw new Exception($response->Error);
 			}
 		} catch (SoapFault $fault) {
@@ -844,12 +847,37 @@ class WC_Biz_Courier_Logistics_Admin
 				WC_Biz_Courier_Logistics_Admin::biz_modify_shipment(intval($_POST['order_id']), $_POST['shipment_modification_message'], false);
 			}
 		} catch (Exception $e) {
-			echo $e->getMessage();
 			error_log("Error contacting Biz Courier - " . $e->getMessage());
 		}
 
 		// Return success.
 		die();
+	}
+
+
+	/**
+	 * Handles shipment modification on order change.
+	 *
+	 * @since    1.0.0
+	 */
+	function biz_order_changed_handler($id, $from, $to)
+	{
+		// Automate shipment functionality.
+		$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
+
+		// Automatic creation.
+		if (isset($biz_shipping_settings['automatic_shipment_creation'])) {
+			if ($biz_shipping_settings['automatic_shipment_creation'] != 'disabled' && $biz_shipping_settings['automatic_shipment_creation'] != 'disabled' && substr($biz_shipping_settings['automatic_shipment_creation'], 3) == $to) {
+				WC_Biz_Courier_Logistics_Admin::biz_send_shipment($id);
+			}
+		}
+
+		// Automatic cancellation.
+		if (isset($biz_shipping_settings['automatic_shipment_cancellation'])) {
+			if ($biz_shipping_settings['automatic_shipment_cancellation'] != 'disabled' && $biz_shipping_settings['automatic_shipment_cancellation'] != 'disabled' && substr($biz_shipping_settings['automatic_shipment_cancellation'], 3) == $to) {
+				WC_Biz_Courier_Logistics_Admin::biz_cancel_shipment($id);
+			}
+		}
 	}
 
 	/**
