@@ -103,17 +103,26 @@ msgstr "Αποστολές Biz Courier"
 msgid "Automatic shipment creation"
 msgstr "Αυτόματη δημιουργία αποστολής"
 
-msgid "Automatically send Biz shipments when orders enter Processing status."
-msgstr "Αυτόματη δημιουργία αποστολής Biz όταν μία παραγγελία τίθεται \"Σε επεξεργασία\"."
+msgid "Automatically send Biz shipments when orders enter the selected status."
+msgstr "Αυτόματη δημιουργία αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση."
+
+msgid "Disable"
+msgstr "Απενεργοποίηση"
 
 msgid "Automatic shipment cancellation"
 msgstr "Αυτόματη ακύρωση αποστολής"
 
-msgid "Automatically cancel Biz shipments when orders enter Failed or Cancelled status."
-msgstr "Αυτόματη ακύρωση αποστολής Biz όταν μία παραγγελία τίθεται ως \"Ακυρωμένη\" ή \"Αποτυχημένη\"."
+msgid "Automatically cancel Biz shipments when orders enter the selected status."
+msgstr "Αυτόματη ακύρωση αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση."
 
 msgid "Simple delivery"
 msgstr "Απλή παράδοση"
+
+msgid "SMS notifications"
+msgstr "Ειδοποιήσεις μέσω SMS"
+
+msgid "Inform your customers about their Biz shipment status via SMS."
+msgstr "Ενημερώστε τους πελάτες σας μέσω SMS για την κατάσταση της παράδοσης."
 
 msgid "Morning delivery"
 msgstr "Πρωινή παράδοση"
@@ -289,11 +298,14 @@ msgstr "Σίγουρα επιθυμείτε ακύρωση της παράδοσ
 msgid "Please insert the message you want to send to Biz about the shipment."
 msgstr "Εισάγετε παρακάτω το μήνυμα που θέλετε να στείλετε στην Biz σχετικά με την παράδοση."
 
-msgid "Order got cancelled, please cancel the shipment."
-msgstr "Η παραγγελία ακυρώθηκε, παρακαλώ ακυρώστε την παράδοση."
+msgid "The Biz shipment with tracking code %s was cancelled. The cancellation code is: %s."
+msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε. Ο κωδικός ακύρωσης είναι: %s."
 
 msgid "The Biz shipment with tracking code %s was cancelled."
 msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε."
+
+msgid "The Biz Courier shipment was cancelled."
+msgstr "Η παράδοση μέσω Biz ακυρώθηκε."
 
 msgid "Message sent to Biz: "
 msgstr "Μήνυμα εστάλη στην Biz: "

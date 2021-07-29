@@ -55,7 +55,9 @@ class Biz_Shipping_Method extends WC_Shipping_Method
         $this->init_form_fields();
         $this->init_instance_settings();
         $this->init_settings();
+
         add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
+        
     }
 
 
@@ -66,6 +68,10 @@ class Biz_Shipping_Method extends WC_Shipping_Method
 	 */
     function init_form_fields()
     {
+        $statuses = array_merge(array(
+            'disabled' => __('Disable','wc-biz-courier-logistics')), wc_get_order_statuses()
+        );
+
         $this->form_fields = array(
             'enabled' => array(
                 'title' => __('Enable', 'wc-biz-courier-logistics'),
@@ -75,15 +81,17 @@ class Biz_Shipping_Method extends WC_Shipping_Method
             ),
             'automatic_shipment_creation' => array(
                 'title' => __('Automatic shipment creation', 'wc-biz-courier-logistics'),
-                'type' => 'checkbox',
-                'description' => __('Automatically send Biz shipments when orders enter Processing status.', 'wc-biz-courier-logistics'),
-                'default' => 'no'
+                'type' => 'select',
+                'description' => __('Automatically send Biz shipments when orders enter the selected status.', 'wc-biz-courier-logistics'),
+                'default' => 'disabled',
+                'options' => $statuses
             ),
             'automatic_shipment_cancellation' => array(
                 'title' => __('Automatic shipment cancellation', 'wc-biz-courier-logistics'),
-                'type' => 'checkbox',
-                'description' => __('Automatically cancel Biz shipments when orders enter Failed or Cancelled status.', 'wc-biz-courier-logistics'),
-                'default' => 'no'
+                'type' => 'select',
+                'description' => __('Automatically cancel Biz shipments when orders enter the selected status.', 'wc-biz-courier-logistics'),
+                'default' => 'disabled',
+                'options' => $statuses
             ),
             'biz_cash_on_delivery_fee'  => array(
                 'title' => __('COD fee', 'wc-biz-courier-logistics'),
@@ -121,7 +129,7 @@ class Biz_Shipping_Method extends WC_Shipping_Method
             'biz_sms_notifications' => array(
                 'title' => __('SMS notifications', 'wc-biz-courier-logistics'),
                 'type' => 'checkbox',
-                'description' => __('Update your customers about their Biz shipment status via SMS.', 'wc-biz-courier-logistics'),
+                'description' => __('Inform your customers about their Biz shipment status via SMS.', 'wc-biz-courier-logistics'),
                 'default' => 'no'
             ),
             'biz_morning_delivery'  => array(
