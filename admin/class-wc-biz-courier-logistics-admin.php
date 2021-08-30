@@ -642,7 +642,7 @@ class WC_Biz_Courier_Logistics_Admin
 						"Prod" => explode(":", $shipment_products[0])[0],
 						"Pieces" => explode(":", $shipment_products[0])[1],
 						"Multi_Prod" => implode("#", $shipment_products),
-						"Cash_On_Delivery" => $cash_on_delivery,
+						"Cash_On_Delivery" => $cash_on_delivery ?? '',
 						"Checques_On_Delivery" => "", // Unsupported.
 						"Comments" => ((str_contains($order->get_shipping_method(), "Σαββάτου") || str_contains($order->get_shipping_method(), "Saturday")) ? "Saturday delivery" : "") . "\nRecipient comments: " . ($order->get_customer_note() ?? "none"),
 						"Charge" => "3", // Unsupported, always 3.
@@ -661,6 +661,8 @@ class WC_Biz_Courier_Logistics_Admin
 						"Con_Call" => "0", // Unsupported.
 						"Ins_Amount" => "" // Unsupported.
 					);
+
+					error_log(json_encode($shipment_data));
 
 					// Make SOAP call.
 					$response = $client->__soapCall('newShipment', $shipment_data);
