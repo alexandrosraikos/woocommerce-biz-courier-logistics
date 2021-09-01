@@ -277,7 +277,7 @@ class WC_Biz_Courier_Logistics_Admin
 					$wc_product = wc_get_product($product_post->ID);
 
 					// Check for active stock management & compatible type.
-					if ($wc_product->managing_stock() && !$wc_product->is_type('virtual')) {
+					if ($wc_product->managing_stock() && !$wc_product->is_virtual()) {
 
 						// Update remaining stock quantity.
 						if ($biz_product->Remaining_Quantity >= 0) {
@@ -290,7 +290,7 @@ class WC_Biz_Courier_Logistics_Admin
 						update_post_meta($product_post_id, '_biz_sync', 'synced');
 					} 
 					// Else mark as disabled.
-					elseif ($wc_product->is_type('virtual') || !$wc_product->managing_stock()) {
+					elseif ($wc_product->is_virtual() || !$wc_product->managing_stock()) {
 						update_post_meta($product_post_id, '_biz_sync', 'disabled');
 					}
 					// else {
@@ -457,7 +457,7 @@ class WC_Biz_Courier_Logistics_Admin
 				$synced_children = true;
 				if (!empty($children_ids)) {
 					foreach ($children_ids as $child_id) {
-						if (get_post_meta($child_id, '_biz_sync', true) == 'not-synced') {
+						if (get_post_meta($child_id, '_biz_sync', true) == 'not-synced' && wc_get_product($child_id)->is_virtual()) {
 							$synced_children = false;
 						}
 					}
@@ -581,7 +581,7 @@ class WC_Biz_Courier_Logistics_Admin
 					foreach ($items as $item) {
 						$product = wc_get_product($item->get_product_id());
 
-						if ($product->is_type('virtual')) {
+						if ($product->is_virtual()) {
 							continue;
 						} elseif ($product->get_stock_quantity() <= 0) {
 							throw new Exception('stock-error');
