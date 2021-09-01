@@ -104,6 +104,9 @@ function biz_stock_sync_column_html($status)
         case 'not-synced';
             $label = __("Not found", "wc-biz-courier-logistics");
             break;
+        case 'disabled';
+            $label = __("Disabled", "wc-biz-courier-logistics");
+            break;
     endswitch;
     echo '<div class="biz_sync-indicator ' . $status . '">' . $label . '</div>';
 }

@@ -208,7 +208,7 @@ class WC_Biz_Courier_Logistics_Admin
 		// Delete all synchronisation indicators.
 		if (!empty($products)) {
 			foreach ($products as $product) {
-				delete_post_meta($product->get_id(), 'biz_sync');
+				delete_post_meta($product->get_id(), '_biz_sync');
 			}
 		}
 
@@ -221,7 +221,7 @@ class WC_Biz_Courier_Logistics_Admin
 		// Delete all synchronisation indicators.
 		if (!empty($variations)) {
 			foreach ($variations as $variation) {
-				delete_post_meta($variation->get_id(), 'biz_sync');
+				delete_post_meta($variation->get_id(), '_biz_sync');
 			}
 		}
 	}
@@ -287,12 +287,17 @@ class WC_Biz_Courier_Logistics_Admin
 						}
 
 						// Update Biz synchronization post metadata.
-						update_post_meta($product_post_id, 'biz_sync', 'synced');
-					} else {
-
-						// Delete Biz synchronization post metadata.
-						delete_post_meta($product_post_id, 'biz_sync');
+						update_post_meta($product_post_id, '_biz_sync', 'synced');
+					} 
+					// Else mark as disabled.
+					elseif ($wc_product->is_type('virtual') || !$wc_product->managing_stock()) {
+						update_post_meta($product_post_id, '_biz_sync', 'disabled');
 					}
+					// else {
+
+					// 	// Delete Biz synchronization post metadata.
+					// 	delete_post_meta($product_post_id, '_biz_sync');
+					// }
 				}
 			}
 
@@ -313,14 +318,14 @@ class WC_Biz_Courier_Logistics_Admin
 					$wc_product = wc_get_product($product_post->ID);
 
 					// Update Biz synchronization post metadata.
-					update_post_meta($product_post_id, 'biz_sync', 'not-synced');
+					update_post_meta($product_post_id, '_biz_sync', 'not-synced');
 
 					// Update parent product for all valid variations.
 					$wc_product_children_ids = $wc_product->get_children();
 					if (!empty($wc_product_children_ids)) {
 						$valid_children = true;
 						foreach ($wc_product_children_ids as $child_id) {
-							$child_sync_state = get_post_meta($child_id, 'biz_sync');
+							$child_sync_state = get_post_meta($child_id, '_biz_sync');
 							if (isset($child_sync_state)) {
 								if (!$child_sync_state) {
 									$valid_children = false;
@@ -328,7 +333,7 @@ class WC_Biz_Courier_Logistics_Admin
 							}
 						}
 						if ($valid_children) {
-							update_post_meta($product_post_id, 'biz_sync', 'synced');
+							update_post_meta($product_post_id, '_biz_sync', 'synced');
 						}
 					}
 				}
@@ -382,7 +387,9 @@ class WC_Biz_Courier_Logistics_Admin
 			return;
 		}
 		// Get SKUs from all products.
-		$products = wc_get_products(array());
+		$products = wc_get_products(array(
+			'limit' => -1,
+		));
 		$all_skus = array();
 		if (!empty($products)) {
 			foreach ($products as $product) {
@@ -437,8 +444,12 @@ class WC_Biz_Courier_Logistics_Admin
 
 				// Get product synchronisation status.
 				$product = wc_get_product($product_post_id);
+
 				if ($product->managing_stock() && $product->get_sku() != null) {
-					$status = get_post_meta($product_post_id, 'biz_sync', true);
+					$status = get_post_meta($product_post_id, '_biz_sync', true);
+				}
+				elseif (!$product->managing_stock()) {
+					$status = 'disabled';
 				}
 
 				// Get children variations' synchronization status.
@@ -446,7 +457,7 @@ class WC_Biz_Courier_Logistics_Admin
 				$synced_children = true;
 				if (!empty($children_ids)) {
 					foreach ($children_ids as $child_id) {
-						if (get_post_meta($child_id, 'biz_sync', true) == 'not-synced') {
+						if (get_post_meta($child_id, '_biz_sync', true) == 'not-synced') {
 							$synced_children = false;
 						}
 					}
@@ -511,7 +522,7 @@ class WC_Biz_Courier_Logistics_Admin
 	 * @uses 	 wc_get_product()
 	 * @uses 	 get_post_meta()
 	 * @uses 	 get_option()
-	 * @uses 	 updaate_post_meta()
+	 * @uses 	 update_post_meta()
 	 */
 	static function biz_send_shipment(int $order_id, bool $automated = true)
 	{
@@ -577,7 +588,7 @@ class WC_Biz_Courier_Logistics_Admin
 						}
 
 						// Check for active Biz synchronization status.
-						if (get_post_meta($product->get_id(), 'biz_sync', true) == 'synced') {
+						if (get_post_meta($product->get_id(), '_biz_sync', true) == 'synced') {
 							array_push($shipment_products, $product->get_sku() . ":" . $item->get_quantity());
 
 							// Calculate total dimensions.

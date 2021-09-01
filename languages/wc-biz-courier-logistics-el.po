@@ -89,7 +89,10 @@ msgid "Found"
 msgstr "Βρέθηκε"
 
 msgid "Not found"
-msgstr "Εκτός"
+msgstr "Δε βρέθηκε"
+
+msgid "Disabled"
+msgstr "Εκτός αποθήκης"
 
 
 # Shipping Method
