@@ -189,7 +189,7 @@ function biz_send_shipment_meta_box_html()
     </button>
     <?php
     if (isset($_GET['biz_error'])) {
-        if ($_GET['biz_error'] == 'sku-error' || $_GET['biz_error'] == 'package-data-error') {
+        if ($_GET['biz_error'] == 'sku-error' || $_GET['biz_error'] == 'biz-package-data-error') {
     ?>
             <p class="biz-send-shipment error"><?php _e('Some products were not found in the Biz warehouse.', 'wc-biz-courier-logistics') ?></p>
         <?php
@@ -199,19 +199,24 @@ function biz_send_shipment_meta_box_html()
             <p class="biz-send-shipment error"><?php _e('Please make sure all products in the order have their weight & dimensions registered.', 'wc-biz-courier-logistics') ?></p>
         <?php
         }
-        if ($_GET['biz_error'] == 'auth-error') {
+        if ($_GET['biz_error'] == 'biz-auth-error') {
         ?>
             <p class="biz-send-shipment error"><?php _e('There was an error with your Biz credentials.', 'wc-biz-courier-logistics') ?></p>
         <?php
         }
-        if ($_GET['biz_error'] == 'response-data-error') {
+        if ($_GET['biz_error'] == 'biz-response-data-error') {
         ?>
             <p class="biz-send-shipment error"><?php _e('There was an unexpected error from Biz.', 'wc-biz-courier-logistics') ?></p>
         <?php
         }
-        if ($_GET['biz_error'] == 'recipient-info-error') {
+        if ($_GET['biz_error'] == 'recipient-info-error' || $_GET['biz_error'] == 'biz-recipient-info-error') {
         ?>
-            <p class="biz-send-shipment error"><?php _e('The order fields are incomplete.', 'wc-biz-courier-logistics') ?></p>
+            <p class="biz-send-shipment error"><?php _e("There was a problem with the recipient's information. Make sure you have filled in all the necessary fields.", 'wc-biz-courier-logistics') ?></p>
+        <?php
+        }
+        if ($_GET['biz_error'] == 'stock-error') {
+        ?>
+            <p class="biz-send-shipment error"><?php _e("There isn't enough stock to ship the products.", 'wc-biz-courier-logistics') ?></p>
 <?php
         }
     }

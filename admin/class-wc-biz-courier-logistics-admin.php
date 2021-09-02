@@ -398,8 +398,6 @@ class WC_Biz_Courier_Logistics_Admin
 				return $bp->Remaining_Quantity;
 			}, $response));
 
-			error_log(json_encode($retrieved_quantities));
-
 			// Compare with each product in the synchronization call.
 			foreach ($skus as $sku) {
 
@@ -562,7 +560,7 @@ class WC_Biz_Courier_Logistics_Admin
 						if ($status == 'synced' && $child_status == 'not-synced') {
 							$status = 'partial';
 							continue;
-						} 
+						}
 						if ($status == 'not-synced' && $child_status == 'synced') {
 							$status = 'partial';
 							continue;
@@ -731,10 +729,24 @@ class WC_Biz_Courier_Logistics_Admin
 						$cash_on_delivery = number_format($cash_on_delivery, 2);
 					}
 
+					$first_name = $order->get_shipping_first_name();
+					$last_name = $order->get_shipping_last_name();
+					$phone = $order->get_shipping_phone();
+					$email = $order->get_billing_email();
+					$address_one = $order->get_shipping_address_1();
+					$address_two = $order->get_shipping_address_2();
+					$country = $order->get_shipping_country();
+					$city = $order->get_shipping_city();
+					$postcode = $order->get_shipping_postcode();
+
+					// Check for complete information.
+					if (!isset($last_name) || !isset($first_name) || !isset($address_one) || !isset($country) || !isset($city) || !isset($postcode)) {
+						throw new Exception('recipient-info-error');
+					}
+
 					// Create SMS notification setting.
 					$sms_notification = "0";
-					$billing_phone = $order->get_billing_phone();
-					if (isset($billing_phone)) {
+					if (isset($phone)) {
 						$sms_notification = ($biz_shipping_settings['biz_sms_notifications'] == "yes") ? "1" : "0";
 					} else {
 						if ($biz_shipping_settings['biz_sms_notifications'] == "yes") {
@@ -748,14 +760,14 @@ class WC_Biz_Courier_Logistics_Admin
 						'CRM' => $biz_settings['warehouse_crm'],
 						'User' => $biz_settings['username'],
 						'Pass' => $biz_settings['password'],
-						"R_Name" => truncate_field($order->get_shipping_last_name() . " " . $order->get_shipping_first_name()),
-						"R_Address" => truncate_field($order->get_shipping_address_1() . " " . $order->get_shipping_address_2()),
-						"R_Area_Code" => $order->get_shipping_country(),
-						"R_Area" => truncate_field($order->get_shipping_city()),
-						"R_PC" => $order->get_shipping_postcode(),
-						"R_Phone1" => $order->get_billing_phone(),
+						"R_Name" => truncate_field($last_name . " " . $first_name),
+						"R_Address" => truncate_field($address_one . " " . $address_two),
+						"R_Area_Code" => $country,
+						"R_Area" => truncate_field($city),
+						"R_PC" => $postcode,
+						"R_Phone1" => $phone,
 						"R_Phone2" => "",
-						"R_Email" => truncate_field($order->get_billing_email(), 60),
+						"R_Email" => truncate_field($email, 60),
 						"Length" => $total_order_volume['length'], // cm int
 						"Width" => $total_order_volume['width'], // cm int
 						"Height" => $total_order_volume['height'], // cm int
@@ -765,7 +777,7 @@ class WC_Biz_Courier_Logistics_Admin
 						"Multi_Prod" => implode("#", $shipment_products),
 						"Cash_On_Delivery" => $cash_on_delivery ?? '',
 						"Checques_On_Delivery" => "", // Unsupported.
-						"Comments" => ((str_contains($order->get_shipping_method(), "Σαββάτου") || str_contains($order->get_shipping_method(), "Saturday")) ? "Saturday delivery" : "") . "\nRecipient comments: " . ($order->get_customer_note() ?? "none"),
+						"Comments" => ((str_contains($order->get_shipping_method(), "Σαββάτου") || str_contains($order->get_shipping_method(), "Saturday")) ? "Saturday delivery" : "") . " Recipient comments: " . ($order->get_customer_note() ?? "none"),
 						"Charge" => "3", // Unsupported, always 3.
 						"Type" => "2", // Unsupported, always assume parcel.
 						"Relative1" => "", // Unsupported.
@@ -783,8 +795,6 @@ class WC_Biz_Courier_Logistics_Admin
 						"Ins_Amount" => "" // Unsupported.
 					);
 
-					error_log(json_encode($shipment_data));
-
 					// Make SOAP call.
 					$response = $client->__soapCall('newShipment', $shipment_data);
 
@@ -798,11 +808,11 @@ class WC_Biz_Courier_Logistics_Admin
 								}
 								$order->add_order_note(__('The shipment was successfully registered to Biz Courier.', 'wc-biz-courier-logistics'));
 							} else {
-								throw new Exception('response-data-error');
+								throw new Exception('biz-response-data-error');
 							}
 							break;
 						case 1:
-							throw new Exception('auth-error');
+							throw new Exception('biz-auth-error');
 						case 2:
 						case 3:
 						case 4:
@@ -810,12 +820,12 @@ class WC_Biz_Courier_Logistics_Admin
 						case 6:
 						case 10:
 						case 11:
-							throw new Exception('recipient-info-error');
+							throw new Exception('biz-recipient-info-error');
 						case 7:
 						case 8:
 						case 9:
 						case 12:
-							throw new Exception('package-data-error');
+							throw new Exception('biz-package-data-error');
 					}
 				}
 			} catch (SoapFault $fault) {

@@ -301,8 +301,11 @@ msgstr "Υπήρξε ένα σφάλμα με τα στοιχεία σας Biz C
 msgid "There was an unexpected error from Biz."
 msgstr "Προέκυψε ένα αναπάντεχο σφάλμα από την Biz."
 
-msgid "The order fields are incomplete."
-msgstr "Χρειάζονται περισσότερες πληροφορίες για την παραγγελία."
+msgid "There was a problem with the recipient's information. Make sure you have filled in all the necessary fields."
+msgstr "Υπήρξε ένα πρόβλημα με της πληροφορίες του παραλήπτη. Ελέγξτε τις πληροφορίες αποστολής που έχετε εισάγει."
+
+msgid "There isn't enough stock to ship the products."
+msgstr "Δεν υπάρχει επαρκές απόθεμα για τη παράδοση."
 
 msgid "Are you sure you want to cancel this Biz shipment? If you want to send it again, you will receive a new tracking code."
 msgstr "Σίγουρα επιθυμείτε ακύρωση της παράδοσης Biz; Αν επιθυμείτε να την ξαναστείλετε, θα λάβετε νέο κωδικό αποστολής."
