@@ -301,8 +301,32 @@ msgstr "Υπήρξε ένα σφάλμα με τα στοιχεία σας Biz C
 msgid "There was an unexpected error from Biz."
 msgstr "Προέκυψε ένα αναπάντεχο σφάλμα από την Biz."
 
-msgid "There was a problem with the recipient's information. Make sure you have filled in all the necessary fields."
-msgstr "Υπήρξε ένα πρόβλημα με της πληροφορίες του παραλήπτη. Ελέγξτε τις πληροφορίες αποστολής που έχετε εισάγει."
+msgid "There was a problem with the recipient's information. Make sure you have filled in all the necessary fields:"
+msgstr "Υπήρξε ένα πρόβλημα με της πληροφορίες του παραλήπτη. Ελέγξτε τις πληροφορίες αποστολής που έχετε εισάγει:"
+
+msgid "First name"
+msgstr "Όνομα"
+
+msgid "Last name"
+msgstr "Επώνυμο"
+
+msgid "Phone number"
+msgstr "Αριθμός τηλεφώνου"
+
+msgid "E-mail address"
+msgstr "Διεύθυνση e-mail"
+
+msgid "Address line #1"
+msgstr "Γραμμή διεύθυνσης #1"
+
+msgid "City"
+msgstr "Πόλη"
+
+msgid "Postal code"
+msgstr "Ταχυδρομικός κώδικας"
+
+msgid "Country"
+msgstr "Χώρα"
 
 msgid "There isn't enough stock to ship the products."
 msgstr "Δεν υπάρχει επαρκές απόθεμα για τη παράδοση."
@@ -321,6 +345,9 @@ msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευ
 
 msgid "The Biz Courier shipment was cancelled."
 msgstr "Η παράδοση μέσω Biz ακυρώθηκε."
+
+msgid "Resend shipment"
+msgstr "Επανάληψη αποστολής παραγγελίας"
 
 msgid "Message sent to Biz: "
 msgstr "Μήνυμα εστάλη στην Biz: "

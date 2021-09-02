@@ -91,6 +91,11 @@ button.biz-loading {
   color: #a44;
 }
 
+ul.biz-send-shipment.error {
+  list-style-type: circle;
+  padding-left: 20px;
+}
+
 .biz-voucher div {
   font-weight: bold;
   font-size: 20px;
