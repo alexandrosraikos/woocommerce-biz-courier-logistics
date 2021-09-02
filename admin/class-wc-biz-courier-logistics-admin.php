@@ -390,40 +390,15 @@ class WC_Biz_Courier_Logistics_Admin
 				throw new Exception('auth-error');
 			}
 
-			// Compare with each product already in warehouse.
-			foreach ($response as $biz_product) {
-				if (in_array($biz_product->Product_Code, $skus)) {
-
-					// Get the product using the SKU / Biz Product Code.
-					$product_post_id = wc_get_product_id_by_sku($biz_product->Product_Code);
-					$product_post = get_post($product_post_id);
-					$wc_product = wc_get_product($product_post->ID);
-
-					// Check for active stock syncing.
-					if (get_post_meta($product_post_id, '_biz_stock_sync', true)) {
-
-						// Update remaining stock quantity.
-						if ($biz_product->Remaining_Quantity >= 0) {
-							wc_update_product_stock($wc_product, $biz_product->Remaining_Quantity, 'set');
-						} else {
-							wc_update_product_stock($wc_product, 0, 'set');
-						}
-
-						// Update Biz synchronization post metadata.
-						update_post_meta($product_post_id, '_biz_stock_sync_status', 'synced');
-					}
-				}
-			}
-
 			// Extract SKUs.
 			$retrieved_skus = array_map(function ($bp) {
 				return $bp->Product_Code;
 			}, $response);
-			$retrieved_quantities = array_map(function ($bp) {
+			$retrieved_quantities = array_combine($retrieved_skus, array_map(function ($bp) {
 				return $bp->Remaining_Quantity;
-			}, $response);
+			}, $response));
 
-			$i = 0;
+			error_log(json_encode($retrieved_quantities));
 
 			// Compare with each product in the synchronization call.
 			foreach ($skus as $sku) {
@@ -440,8 +415,8 @@ class WC_Biz_Courier_Logistics_Admin
 						$wc_product = wc_get_product($product_post->ID);
 
 						// Update remaining stock quantity.
-						if ($retrieved_quantities[$i] >= 0) {
-							wc_update_product_stock($wc_product, $retrieved_quantities[$i], 'set');
+						if ($retrieved_quantities[$sku] >= 0) {
+							wc_update_product_stock($wc_product, $retrieved_quantities[$sku], 'set');
 						} else {
 							wc_update_product_stock($wc_product, 0, 'set');
 						}
@@ -586,14 +561,15 @@ class WC_Biz_Courier_Logistics_Admin
 						$child_status = get_post_meta($child_id, '_biz_stock_sync_status', true);
 						if ($status == 'synced' && $child_status == 'not-synced') {
 							$status = 'partial';
-							break;
-						} elseif ($status == 'not-synced' && $child_status == 'synced') {
+							continue;
+						} 
+						if ($status == 'not-synced' && $child_status == 'synced') {
 							$status = 'partial';
-							break;
+							continue;
 						}
 						if ($child_status == 'pending') {
 							$status = 'pending';
-							break;
+							continue;
 						}
 					}
 				};
