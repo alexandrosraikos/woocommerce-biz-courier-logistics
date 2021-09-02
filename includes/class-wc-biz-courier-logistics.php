@@ -193,6 +193,9 @@ class WC_Biz_Courier_Logistics
 
 		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'biz_order_changed_handler',10, 3);
 
+		// TODO @alexandrosraikos: #4 Create shipment checking cron job.
+		// TODO @alexandrosraikos: #17 Add corresponding order note.
+
 		$this->loader->add_filter('woocommerce_email_order_meta_fields', $plugin_admin, 'add_biz_email_order_fields', 10, 3);
 	}
 

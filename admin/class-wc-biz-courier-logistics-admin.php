@@ -226,10 +226,19 @@ class WC_Biz_Courier_Logistics_Admin
 		}
 	}
 
+	/**
+	 * 
+	 * Display Biz Warehouse option to include each product in the stock synchronisation process.
+	 *
+	 * @since    1.2.0
+	 * @uses 	 get_post_meta()
+	 * @uses 	 biz_stock_sync_column_html()
+	 */
 	function biz_product_inventory_options()
 	{
-		global $woocommerce, $post;
+		global $post;
 
+		// Print the checkbox.
 		echo '<div class="product_biz_stock_sync">';
 		woocommerce_wp_checkbox(
 			array(
@@ -241,6 +250,7 @@ class WC_Biz_Courier_Logistics_Admin
 		);
 		echo '</div>';
 
+		// Print additional stock synchronisation status.
 		if (get_post_meta($post->ID, '_biz_stock_sync', true) == 'yes') {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 
@@ -252,6 +262,16 @@ class WC_Biz_Courier_Logistics_Admin
 		}
 	}
 
+
+	/**
+	 * 
+	 * Handle product option persistence for the Biz warehouse stock synchronisation.
+	 *
+	 * @since    1.2.0
+	 * @uses 	 get_post_meta()
+	 * @uses 	 update_post_meta()
+	 * @uses 	 delete_post_meta()
+	 */
 	function biz_save_product_inventory_options($post_id)
 	{
 		$product = wc_get_product($post_id);
@@ -273,6 +293,15 @@ class WC_Biz_Courier_Logistics_Admin
 		}
 	}
 
+
+	/**
+	 * 
+	 * Display Biz Warehouse option to include each product variation in the stock synchronisation process.
+	 *
+	 * @since    1.2.0
+	 * @uses 	 get_post_meta()
+	 * @uses 	 biz_stock_sync_column_html()
+	 */
 	function biz_variation_inventory_options($loop, $variation_data, $variation)
 	{
 ?>
@@ -290,6 +319,15 @@ class WC_Biz_Courier_Logistics_Admin
 		}
 	}
 
+
+	/**
+	 * 
+	 * Handle product variation option persistence for the Biz warehouse stock synchronisation.
+	 *
+	 * @since    1.2.0
+	 * @uses 	 update_post_meta()
+	 * @uses 	 delete_post_meta()
+	 */
 	function biz_save_variation_inventory_options($variation_id, $i)
 	{
 		$variation = wc_get_product($variation_id);
@@ -298,9 +336,6 @@ class WC_Biz_Courier_Logistics_Admin
 		if (!empty($_POST['_biz_stock_sync'][$i])) {
 			update_post_meta($variation_id, '_biz_stock_sync', $_POST['_biz_stock_sync'][$i] == 'on' ? 'yes' : 'no');
 			update_post_meta($variation_id, '_biz_stock_sync_status', 'pending');
-			// if ($variation->is_type('variation')) {
-			// 	update_post_meta($variation->get_parent_id(), '_biz_stock_sync_status', 'pending');
-			// }
 		}
 		// If stock sync is disabled.
 		else {
@@ -311,9 +346,6 @@ class WC_Biz_Courier_Logistics_Admin
 		// If SKU changed.
 		if ($_POST['variable_sku'][$i] != $variation->get_sku()) {
 			update_post_meta($variation_id, '_biz_stock_sync_status', 'pending');
-			// if ($variation->is_type('variation')) {
-			// 	update_post_meta($variation->get_parent_id(), '_biz_stock_sync_status', 'pending');
-			// }
 		}
 	}
 
@@ -380,15 +412,6 @@ class WC_Biz_Courier_Logistics_Admin
 						// Update Biz synchronization post metadata.
 						update_post_meta($product_post_id, '_biz_stock_sync_status', 'synced');
 					}
-					// Else mark as disabled.
-					// elseif ($wc_product->is_virtual() || !$wc_product->managing_stock()) {
-					// 	update_post_meta($product_post_id, '_biz_stock_sync_status', 'disabled');
-					// }
-					// else {
-
-					// 	// Delete Biz synchronization post metadata.
-					// 	delete_post_meta($product_post_id, '_biz_stock_sync_status');
-					// }
 				}
 			}
 
@@ -436,29 +459,7 @@ class WC_Biz_Courier_Logistics_Admin
 						$wc_product = wc_get_product($product_post->ID);
 						// Update Biz synchronization post metadata.
 						update_post_meta($product_post_id, '_biz_stock_sync_status', 'not-synced');
-
-						// if ($wc_product->is_type('variation')) {
-
-						// 	update_post_meta($wc_product->get_parent_id(), '_biz_stock_sync_status', 'not-synced');
-						// }
 					}
-
-					// // Update parent product for all valid variations.
-					// $wc_product_children_ids = $wc_product->get_children();
-					// if (!empty($wc_product_children_ids)) {
-					// 	$valid_children = true;
-					// 	foreach ($wc_product_children_ids as $child_id) {
-					// 		$child_sync_state = get_post_meta($child_id, '_biz_stock_sync_status');
-					// 		if (isset($child_sync_state)) {
-					// 			if (!$child_sync_state) {
-					// 				$valid_children = false;
-					// 			}
-					// 		}
-					// 	}
-					// 	if ($valid_children) {
-					// 		update_post_meta($product_post_id, '_biz_stock_sync_status', 'synced');
-					// 	}
-					// }
 				}
 			}
 		} catch (SoapFault $fault) {
@@ -493,6 +494,7 @@ class WC_Biz_Courier_Logistics_Admin
 
 		// Attempt stock synchronization using all SKUs.
 		try {
+			// TODO @alexandrosraikos: #15 Redesign stock level syncing process and test.
 			WC_Biz_Courier_Logistics_Admin::biz_stock_sync($all_skus);
 		} catch (Exception $e) {
 			echo $e->getMessage();
@@ -526,7 +528,6 @@ class WC_Biz_Courier_Logistics_Admin
 		wp_localize_script('wc-biz-courier-logistics-stock-sync', "ajax_prop", array(
 			"ajax_url" => admin_url('admin-ajax.php'),
 			"nonce" => wp_create_nonce('ajax_stock_sync_validation'),
-			// "product_skus" => $all_skus
 		));
 
 		// Insert button HTML.
@@ -583,11 +584,10 @@ class WC_Biz_Courier_Logistics_Admin
 							continue;
 						}
 						$child_status = get_post_meta($child_id, '_biz_stock_sync_status', true);
-						if (  $status == 'synced' && $child_status == 'not-synced') {
+						if ($status == 'synced' && $child_status == 'not-synced') {
 							$status = 'partial';
 							break;
-						}
-						elseif ( $status == 'not-synced' && $child_status == 'synced') {
+						} elseif ($status == 'not-synced' && $child_status == 'synced') {
 							$status = 'partial';
 							break;
 						}
@@ -673,6 +673,8 @@ class WC_Biz_Courier_Logistics_Admin
 		// Get Biz credentials and shipping settings.
 		$biz_settings = get_option('woocommerce_biz_integration_settings');
 		$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
+
+		// TODO @alexandrosraikos : #22 Check recipient fields for validity.
 
 		// Automated process check.
 		if (($automated && $biz_shipping_settings['automatic_shipment_creation'] == 'yes') || $automated == false) {
@@ -1114,6 +1116,7 @@ class WC_Biz_Courier_Logistics_Admin
 			// Handle existing voucher.
 			if (!empty($voucher)) {
 				if (get_post_meta($order->get_id(), '_biz_status', true) == "cancelled") {
+					// TODO @alexandrosraikos : #21 Add submission button to the cancellation metabox.
 					biz_track_shipment_meta_box_cancelled_html();
 				} else {
 					try {
