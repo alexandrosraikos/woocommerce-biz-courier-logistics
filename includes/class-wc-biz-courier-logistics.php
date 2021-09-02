@@ -169,6 +169,10 @@ class WC_Biz_Courier_Logistics
 		/** 
 		 *  Custom Stock Synchronization.
 		 */
+		$this->loader->add_action('woocommerce_product_options_inventory_product_data', $plugin_admin, 'biz_product_inventory_options');
+		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'biz_save_product_inventory_options',10,1);
+		$this->loader->add_action('woocommerce_variation_options', $plugin_admin, 'biz_variation_inventory_options',10,3);
+		$this->loader->add_action('woocommerce_save_product_variation', $plugin_admin, 'biz_save_variation_inventory_options',10,2);
 		$this->loader->add_action('wp_ajax_biz_stock_sync', $plugin_admin, 'biz_stock_sync_handler');
 		$this->loader->add_action('manage_posts_extra_tablenav', $plugin_admin, 'add_biz_stock_sync_all_button', 20, 1);
 		$this->loader->add_filter('manage_edit-product_columns', $plugin_admin, 'add_biz_stock_sync_indicator_column');

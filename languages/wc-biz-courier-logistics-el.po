@@ -79,6 +79,9 @@ msgstr "Ο κωδικός πρόσβασής σας για την Biz Courier."
 msgid "Biz Warehouse"
 msgstr "Αποθήκη Biz"
 
+msgid "Biz status"
+msgstr "Κατάσταση Biz"
+
 msgid "Get stock levels"
 msgstr "Μέτρηση αποθέματος"
 
@@ -91,8 +94,14 @@ msgstr "Βρέθηκε"
 msgid "Not found"
 msgstr "Δε βρέθηκε"
 
+msgid "Partially found"
+msgstr "Βρέθηκε μερικώς"
+
 msgid "Disabled"
 msgstr "Εκτός αποθήκης"
+
+msgid "Select this option if the product is stored in your Biz warehouse."
+msgstr "Ενεργοποιήστε αυτή την επιλογή αν το προϊόν βρίσκεται στην Biz αποθήκη σας."
 
 
 # Shipping Method

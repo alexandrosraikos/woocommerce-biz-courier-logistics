@@ -208,7 +208,7 @@ class WC_Biz_Courier_Logistics_Admin
 		// Delete all synchronisation indicators.
 		if (!empty($products)) {
 			foreach ($products as $product) {
-				delete_post_meta($product->get_id(), '_biz_sync');
+				delete_post_meta($product->get_id(), '_biz_stock_sync_status');
 			}
 		}
 
@@ -221,8 +221,99 @@ class WC_Biz_Courier_Logistics_Admin
 		// Delete all synchronisation indicators.
 		if (!empty($variations)) {
 			foreach ($variations as $variation) {
-				delete_post_meta($variation->get_id(), '_biz_sync');
+				delete_post_meta($variation->get_id(), '_biz_stock_sync_status');
 			}
+		}
+	}
+
+	function biz_product_inventory_options()
+	{
+		global $woocommerce, $post;
+
+		echo '<div class="product_biz_stock_sync">';
+		woocommerce_wp_checkbox(
+			array(
+				'id' => '_biz_stock_sync',
+				'label' => __('Biz Warehouse', 'wc-biz-courier-logistics'),
+				'description' => __('Select this option if the product is stored in your Biz warehouse.', 'wc-biz-courier-logistics'),
+				'value' => get_post_meta($post->ID, '_biz_stock_sync', true)
+			)
+		);
+		echo '</div>';
+
+		if (get_post_meta($post->ID, '_biz_stock_sync', true) == 'yes') {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+
+			echo '<div class="biz_sync-indicator-container"><div class="biz_sync-indicator-title">' . __('Biz status', 'wc-biz-courier-logistics') . ': </div>';
+
+			biz_stock_sync_column_html(get_post_meta($post->ID, '_biz_stock_sync_status', true));
+
+			echo '</div>';
+		}
+	}
+
+	function biz_save_product_inventory_options($post_id)
+	{
+		$product = wc_get_product($post_id);
+
+		// On SKU modification.
+		if ($_POST['_sku'] != $product->get_sku()) {
+			if (get_post_meta($post_id, '_biz_stock_sync', true) == 'yes') {
+				update_post_meta($post_id, '_biz_stock_sync_status', 'pending');
+			}
+		}
+
+		// On stock sync preference change.
+		if (!empty($_POST['_biz_stock_sync'])) {
+			update_post_meta($post_id, '_biz_stock_sync', $_POST['_biz_stock_sync']);
+			update_post_meta($post_id, '_biz_stock_sync_status', 'pending');
+		} else {
+			update_post_meta($post_id, '_biz_stock_sync', 'no');
+			delete_post_meta($post_id, '_biz_stock_sync_status');
+		}
+	}
+
+	function biz_variation_inventory_options($loop, $variation_data, $variation)
+	{
+?>
+		<label class="tips" data-tip="<?php _e('Select this option if the product is stored in your Biz warehouse.', 'wc-biz-courier-logistics'); ?>">
+			<?php _e('Biz Warehouse', 'wc-biz-courier-logistics'); ?>
+			<input type="checkbox" class="checkbox variable_checkbox" name="_biz_stock_sync[<?php echo esc_attr($loop); ?>]" <?php echo (get_post_meta($variation->ID, '_biz_stock_sync', true) == 'yes' ? 'checked' : ''); ?> />
+		</label>
+<?php
+		if (get_post_meta($variation->ID, '_biz_stock_sync', true) == 'yes') {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+
+			echo '<div class="biz_sync-variation-indicator-title">' . __('Biz status', 'wc-biz-courier-logistics') . ': </div>';
+
+			biz_stock_sync_column_html(get_post_meta($variation->ID, '_biz_stock_sync_status', true));
+		}
+	}
+
+	function biz_save_variation_inventory_options($variation_id, $i)
+	{
+		$variation = wc_get_product($variation_id);
+
+		// If stock sync is enabled.
+		if (!empty($_POST['_biz_stock_sync'][$i])) {
+			update_post_meta($variation_id, '_biz_stock_sync', $_POST['_biz_stock_sync'][$i] == 'on' ? 'yes' : 'no');
+			update_post_meta($variation_id, '_biz_stock_sync_status', 'pending');
+			// if ($variation->is_type('variation')) {
+			// 	update_post_meta($variation->get_parent_id(), '_biz_stock_sync_status', 'pending');
+			// }
+		}
+		// If stock sync is disabled.
+		else {
+			update_post_meta($variation_id, '_biz_stock_sync', 'no');
+			delete_post_meta($variation_id, '_biz_stock_sync_status');
+		}
+
+		// If SKU changed.
+		if ($_POST['variable_sku'][$i] != $variation->get_sku()) {
+			update_post_meta($variation_id, '_biz_stock_sync_status', 'pending');
+			// if ($variation->is_type('variation')) {
+			// 	update_post_meta($variation->get_parent_id(), '_biz_stock_sync_status', 'pending');
+			// }
 		}
 	}
 
@@ -276,8 +367,8 @@ class WC_Biz_Courier_Logistics_Admin
 					$product_post = get_post($product_post_id);
 					$wc_product = wc_get_product($product_post->ID);
 
-					// Check for active stock management & compatible type.
-					if ($wc_product->managing_stock() && !$wc_product->is_virtual()) {
+					// Check for active stock syncing.
+					if (get_post_meta($product_post_id, '_biz_stock_sync', true)) {
 
 						// Update remaining stock quantity.
 						if ($biz_product->Remaining_Quantity >= 0) {
@@ -287,55 +378,87 @@ class WC_Biz_Courier_Logistics_Admin
 						}
 
 						// Update Biz synchronization post metadata.
-						update_post_meta($product_post_id, '_biz_sync', 'synced');
-					} 
-					// Else mark as disabled.
-					elseif ($wc_product->is_virtual() || !$wc_product->managing_stock()) {
-						update_post_meta($product_post_id, '_biz_sync', 'disabled');
+						update_post_meta($product_post_id, '_biz_stock_sync_status', 'synced');
 					}
+					// Else mark as disabled.
+					// elseif ($wc_product->is_virtual() || !$wc_product->managing_stock()) {
+					// 	update_post_meta($product_post_id, '_biz_stock_sync_status', 'disabled');
+					// }
 					// else {
 
 					// 	// Delete Biz synchronization post metadata.
-					// 	delete_post_meta($product_post_id, '_biz_sync');
+					// 	delete_post_meta($product_post_id, '_biz_stock_sync_status');
 					// }
 				}
 			}
 
+			// Extract SKUs.
+			$retrieved_skus = array_map(function ($bp) {
+				return $bp->Product_Code;
+			}, $response);
+			$retrieved_quantities = array_map(function ($bp) {
+				return $bp->Remaining_Quantity;
+			}, $response);
+
+			$i = 0;
+
 			// Compare with each product in the synchronization call.
 			foreach ($skus as $sku) {
 
-				// Extract SKUs.
-				$retrieved_skus = array_map(function ($bp) {
-					return $bp->Product_Code;
-				}, $response);
-
 				// Check for warehouse availability.
-				if (!in_array($sku, $retrieved_skus)) {
+				if (in_array($sku, $retrieved_skus)) {
+
+					// Get the product using the SKU / Biz Product Code.
+					$product_post_id = wc_get_product_id_by_sku($sku);
+
+					// Check for active stock syncing.
+					if (get_post_meta($product_post_id, '_biz_stock_sync', true)) {
+						$product_post = get_post($product_post_id);
+						$wc_product = wc_get_product($product_post->ID);
+
+						// Update remaining stock quantity.
+						if ($retrieved_quantities[$i] >= 0) {
+							wc_update_product_stock($wc_product, $retrieved_quantities[$i], 'set');
+						} else {
+							wc_update_product_stock($wc_product, 0, 'set');
+						}
+
+						// Update Biz synchronization post metadata.
+						update_post_meta($product_post_id, '_biz_stock_sync_status', 'synced');
+					}
+				} elseif (!in_array($sku, $retrieved_skus)) {
 
 					// Get the product using the SKU.
 					$product_post_id = wc_get_product_id_by_sku($sku);
-					$product_post = get_post($product_post_id);
-					$wc_product = wc_get_product($product_post->ID);
 
-					// Update Biz synchronization post metadata.
-					update_post_meta($product_post_id, '_biz_sync', 'not-synced');
+					if (get_post_meta($product_post_id, '_biz_stock_sync', true)) {
+						$product_post = get_post($product_post_id);
+						$wc_product = wc_get_product($product_post->ID);
+						// Update Biz synchronization post metadata.
+						update_post_meta($product_post_id, '_biz_stock_sync_status', 'not-synced');
 
-					// Update parent product for all valid variations.
-					$wc_product_children_ids = $wc_product->get_children();
-					if (!empty($wc_product_children_ids)) {
-						$valid_children = true;
-						foreach ($wc_product_children_ids as $child_id) {
-							$child_sync_state = get_post_meta($child_id, '_biz_sync');
-							if (isset($child_sync_state)) {
-								if (!$child_sync_state) {
-									$valid_children = false;
-								}
-							}
-						}
-						if ($valid_children) {
-							update_post_meta($product_post_id, '_biz_sync', 'synced');
-						}
+						// if ($wc_product->is_type('variation')) {
+
+						// 	update_post_meta($wc_product->get_parent_id(), '_biz_stock_sync_status', 'not-synced');
+						// }
 					}
+
+					// // Update parent product for all valid variations.
+					// $wc_product_children_ids = $wc_product->get_children();
+					// if (!empty($wc_product_children_ids)) {
+					// 	$valid_children = true;
+					// 	foreach ($wc_product_children_ids as $child_id) {
+					// 		$child_sync_state = get_post_meta($child_id, '_biz_stock_sync_status');
+					// 		if (isset($child_sync_state)) {
+					// 			if (!$child_sync_state) {
+					// 				$valid_children = false;
+					// 			}
+					// 		}
+					// 	}
+					// 	if ($valid_children) {
+					// 		update_post_meta($product_post_id, '_biz_stock_sync_status', 'synced');
+					// 	}
+					// }
 				}
 			}
 		} catch (SoapFault $fault) {
@@ -357,9 +480,20 @@ class WC_Biz_Courier_Logistics_Admin
 			die("Unverified request to synchronise stock.");
 		}
 
-		// Attempt stock synchronization using request SKUs.
+		// Get SKUs from all products.
+		$products = wc_get_products(array(
+			'limit' => -1,
+		));
+		$all_skus = array();
+		if (!empty($products)) {
+			foreach ($products as $product) {
+				$all_skus = array_merge($all_skus, WC_Biz_Courier_Logistics_Admin::get_all_related_skus($product));
+			}
+		}
+
+		// Attempt stock synchronization using all SKUs.
 		try {
-			WC_Biz_Courier_Logistics_Admin::biz_stock_sync($_POST['product_skus']);
+			WC_Biz_Courier_Logistics_Admin::biz_stock_sync($all_skus);
 		} catch (Exception $e) {
 			echo $e->getMessage();
 			error_log("Error contacting Biz Courier - " . $e->getMessage());
@@ -386,23 +520,13 @@ class WC_Biz_Courier_Logistics_Admin
 		if ('product' != $current_screen->post_type) {
 			return;
 		}
-		// Get SKUs from all products.
-		$products = wc_get_products(array(
-			'limit' => -1,
-		));
-		$all_skus = array();
-		if (!empty($products)) {
-			foreach ($products as $product) {
-				$all_skus = array_merge($all_skus, WC_Biz_Courier_Logistics_Admin::get_all_related_skus($product));
-			}
-		}
 
 		// Enqeue & localize synchronization button script.
 		wp_enqueue_script('wc-biz-courier-logistics-stock-sync', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-stock-sync.js', array('jquery'));
 		wp_localize_script('wc-biz-courier-logistics-stock-sync', "ajax_prop", array(
 			"ajax_url" => admin_url('admin-ajax.php'),
 			"nonce" => wp_create_nonce('ajax_stock_sync_validation'),
-			"product_skus" => $all_skus
+			// "product_skus" => $all_skus
 		));
 
 		// Insert button HTML.
@@ -445,26 +569,34 @@ class WC_Biz_Courier_Logistics_Admin
 				// Get product synchronisation status.
 				$product = wc_get_product($product_post_id);
 
-				if ($product->managing_stock() && $product->get_sku() != null) {
-					$status = get_post_meta($product_post_id, '_biz_sync', true);
-				}
-				elseif (!$product->managing_stock()) {
+				if (get_post_meta($product_post_id, '_biz_stock_sync', true) == 'yes') {
+					$status = get_post_meta($product_post_id, '_biz_stock_sync_status', true);
+				} else {
 					$status = 'disabled';
 				}
 
 				// Get children variations' synchronization status.
 				$children_ids = $product->get_children();
-				$synced_children = true;
 				if (!empty($children_ids)) {
 					foreach ($children_ids as $child_id) {
-						if (get_post_meta($child_id, '_biz_sync', true) == 'not-synced' && wc_get_product($child_id)->is_virtual()) {
-							$synced_children = false;
+						if (get_post_meta($child_id, '_biz_stock_sync', true) == 'no') {
+							continue;
+						}
+						$child_status = get_post_meta($child_id, '_biz_stock_sync_status', true);
+						if (  $status == 'synced' && $child_status == 'not-synced') {
+							$status = 'partial';
+							break;
+						}
+						elseif ( $status == 'not-synced' && $child_status == 'synced') {
+							$status = 'partial';
+							break;
+						}
+						if ($child_status == 'pending') {
+							$status = 'pending';
+							break;
 						}
 					}
 				};
-
-				// Update product status.
-				$status = ($synced_children) ? ($status) : ("not-synced");
 
 				// Show HTML.
 				biz_stock_sync_column_html($status);
@@ -588,7 +720,7 @@ class WC_Biz_Courier_Logistics_Admin
 						}
 
 						// Check for active Biz synchronization status.
-						if (get_post_meta($product->get_id(), '_biz_sync', true) == 'synced') {
+						if (get_post_meta($product->get_id(), '_biz_stock_sync_status', true) == 'synced') {
 							array_push($shipment_products, $product->get_sku() . ":" . $item->get_quantity());
 
 							// Calculate total dimensions.
