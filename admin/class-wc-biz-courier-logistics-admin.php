@@ -983,6 +983,35 @@ class WC_Biz_Courier_Logistics_Admin
 		die();
 	}
 
+	function biz_add_shipment_voucher($order_id, $voucher) {
+
+	}
+
+	/**
+	 * Handles manual voucher addition AJAX requests from authorized users.
+	 *
+	 * @since    1.2.0
+	 */
+	function biz_add_shipment_voucher_handler() {
+
+		// Verify WordPress generated nonce.
+		if (!wp_verify_nonce($_POST['nonce'], 'ajax_add_shipment_voucher_validation')) {
+			die("Unverified request to modify shipment.");
+		}
+
+		try {
+			// Validate voucher.
+			WC_Biz_Courier_Logistics_Admin::biz_shipment_status($_POST['voucher']);
+			update_post_meta($_POST['order_id'], '_biz_voucher', $_POST['voucher']);
+			update_post_meta($_POST['order_id'], '_biz_status', 'sent');
+		}
+		catch (Exception $e) {
+			echo $e->getMessage();
+		}
+		
+		die();
+	}
+
 
 	/**
 	 * Handles shipment modification on order change.
@@ -1095,15 +1124,23 @@ class WC_Biz_Courier_Logistics_Admin
 			$order = wc_get_order($post->ID);
 			$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
 
-			function prepare_script_send_shipment($order_id)
+			function prepare_scripts_new_shipment($order_id)
 			{
-
-				// Enqueue and localize button scripts.
+				// Enqueue and localize send new shipment.
 				wp_enqueue_script('wc-biz-courier-logistics-send-shipment', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-send-shipment.js', array('jquery'));
 				wp_localize_script('wc-biz-courier-logistics-send-shipment', "ajax_prop", array(
 					"ajax_url" => admin_url('admin-ajax.php'),
 					"nonce" => wp_create_nonce('ajax_send_shipment_validation'),
 					"order_id" => $order_id
+				));
+
+				// Enqueue and localize add voucher.
+				wp_enqueue_script('wc-biz-courier-logistics-add-shipment-voucher', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-add-shipment-voucher.js', array('jquery'));
+				wp_localize_script('wc-biz-courier-logistics-add-shipment-voucher', "ajax_prop_two", array(
+					"ajax_url" => admin_url('admin-ajax.php'),
+					"nonce" => wp_create_nonce('ajax_add_shipment_voucher_validation'),
+					"order_id" => $order_id,
+					"add_voucher_message" => __("Insert the shipment's voucher number from Biz Courier in the field below.", "wc-biz-courier-logistics")
 				));
 			}
 
@@ -1111,7 +1148,7 @@ class WC_Biz_Courier_Logistics_Admin
 			if (!empty($voucher)) {
 
 				if (get_post_meta($order->get_id(), '_biz_status', true) == "cancelled") {
-					prepare_script_send_shipment($order->get_id());
+					prepare_scripts_new_shipment($order->get_id());
 					biz_track_shipment_meta_box_cancelled_html();
 				} else {
 
@@ -1135,7 +1172,7 @@ class WC_Biz_Courier_Logistics_Admin
 			}
 			// Show "Send Shipment" meta box.
 			else {
-				prepare_script_send_shipment($order->get_id());
+				prepare_scripts_new_shipment($order->get_id());
 
 				// Print HTML.
 				biz_send_shipment_meta_box_html();

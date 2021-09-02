@@ -188,8 +188,11 @@ class WC_Biz_Courier_Logistics
 		 *  Order and shipment interactivity.
 		 */
 		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_shipment_meta_box');
+		
 		$this->loader->add_action('wp_ajax_biz_send_shipment', $plugin_admin, 'biz_send_shipment_handler');
 		$this->loader->add_action('wp_ajax_biz_modify_shipment', $plugin_admin, 'biz_modify_shipment_handler');
+		// TODO @alexandrosraikos: #19 add pre-existing voucher handler and button.
+		$this->loader->add_action('wp_ajax_biz_add_shipment_voucher', $plugin_admin, 'biz_add_shipment_voucher_handler');
 
 		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'biz_order_changed_handler',10, 3);
 

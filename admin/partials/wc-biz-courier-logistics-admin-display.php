@@ -196,6 +196,11 @@ function biz_send_shipment_errors_html()
             <p class="biz-send-shipment error"><?php _e('There was an unexpected error from Biz.', 'wc-biz-courier-logistics') ?></p>
         <?php
         }
+        if ($_GET['biz_error'] == 'voucher-error') {
+        ?>
+            <p class="biz-send-shipment error"><?php _e("This voucher number doesn't exist.", 'wc-biz-courier-logistics') ?></p>
+        <?php
+        }
         if ($_GET['biz_error'] == 'recipient-info-error' || $_GET['biz_error'] == 'biz-recipient-info-error') {
         ?>
             <p class="biz-send-shipment error"><?php _e("There was a problem with the recipient's information. Make sure you have filled in all the necessary fields:", 'wc-biz-courier-logistics') ?>
@@ -234,6 +239,9 @@ function biz_send_shipment_meta_box_html()
     </p>
     <button id="biz-send-shipment" class="button save-order button-primary" />
     <?php _e("Send shipment", "wc-biz-courier-logistics") ?>
+    </button>
+    <button id="biz-add-shipment-voucher" class="button">
+        <?php _e("Add existing voucher number","wc-biz-courier-logistics") ?>
     </button>
 <?php
     biz_send_shipment_errors_html();

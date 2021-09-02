@@ -289,6 +289,15 @@ msgstr "Αυτή η παραγγελία δεν έχει αποσταλεί μέ
 msgid "Send shipment"
 msgstr "Αποστολή παραγγελίας"
 
+msgid "Add existing voucher number"
+msgstr "Προσθήκη κωδικού αποστολής"
+
+msgid "Insert the shipment's voucher number from Biz Courier in the field below."
+msgstr "Εισάγετε τον κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
+
+msgid "This voucher number doesn't exist."
+msgstr "Αυτός ο κωδικός αποστολής δεν υπάρχει."
+
 msgid "Some products were not found in the Biz warehouse."
 msgstr "Κάποια προϊόντα δεν βρίσκονται στην αποθήκη Biz."
 

@@ -96,6 +96,10 @@ ul.biz-send-shipment.error {
   padding-left: 20px;
 }
 
+#biz-add-shipment-voucher {
+  margin-top: 10px;
+}
+
 .biz-voucher div {
   font-weight: bold;
   font-size: 20px;
