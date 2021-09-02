@@ -467,7 +467,6 @@ class WC_Biz_Courier_Logistics_Admin
 
 		// Attempt stock synchronization using all SKUs.
 		try {
-			// TODO @alexandrosraikos: #15 Redesign stock level syncing process and test.
 			WC_Biz_Courier_Logistics_Admin::biz_stock_sync($all_skus);
 		} catch (Exception $e) {
 			echo $e->getMessage();
@@ -648,8 +647,6 @@ class WC_Biz_Courier_Logistics_Admin
 		$biz_settings = get_option('woocommerce_biz_integration_settings');
 		$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
 		
-		// TODO @alexandrosraikos : #22 Check recipient fields for validity.
-
 		// Automated process check.
 		if (($automated && $biz_shipping_settings['automatic_shipment_creation'] == 'yes') || $automated == false) {
 			try {
