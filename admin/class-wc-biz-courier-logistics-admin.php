@@ -673,7 +673,6 @@ class WC_Biz_Courier_Logistics_Admin
 
 				// Check for pre-existing voucher.
 				$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
-				error_log($voucher);
 				if (($voucher == false && get_post_meta($order->get_id(), '_biz_status', true) != 'cancelled') || isset($voucher) && get_post_meta($order->get_id(), '_biz_status', true) == 'cancelled') {
 
 					// Check for existing items in order.
@@ -784,11 +783,10 @@ class WC_Biz_Courier_Logistics_Admin
 						"Ins_Amount" => "" // Unsupported.
 					);
 
-					error_log(json_encode($shipment_data));
 
 					// Make SOAP call.
 					$response = $client->__soapCall('newShipment', $shipment_data);
-					error_log(json_encode($response));
+
 					// Handle error codes from response.
 					switch ($response->Error_Code) {
 						case 0:
@@ -1184,15 +1182,42 @@ class WC_Biz_Courier_Logistics_Admin
 		}
 	}
 
-	function biz_cron_order_status_checking_interval($schedules) {
-		$schedules['five_minutes'] = array(
-			'interval' => 10,
-			'display' => 'Every 5 minutes.'
-		);
-		return $schedules;
-	}
 
+	/**
+	 * Check for cancelled orders.
+	 *
+	 * @since    1.2.0
+	 */
 	function biz_cron_order_status_checking() {
-		error_log("Hi! ".json_encode(time()));
+		$orders = wc_get_orders(array(
+			'status' => array('wc-processing'),
+			'return' => 'ids'
+		));
+		foreach ($orders as $order_id) {
+			$status = get_post_meta($order_id, '_biz_status', true);
+			if (isset($status)) {
+				if ($status == 'sent') {
+					$voucher = get_post_meta($order_id, '_biz_voucher', true);
+					if (isset($voucher)) {
+						try {
+							$report = WC_Biz_Courier_Logistics_Admin::biz_shipment_status($voucher);
+							if ($report[count($report)-1]['code'] == 'AKY') {
+								error_log('Cancelling order: ');
+								$order = wc_get_order($order_id);
+								error_log(json_encode($order));
+								$order->update_status('cancelled', __('The shipment was cancelled by Biz Courier.', 'wc-biz-courier-logistics'));
+								update_post_meta($order_id, '_biz_status', 'cancelled');
+							}
+						}
+						catch (Exception $e) {
+							error_log("Unable to retrieve shipment status: ".$e->getMessage());
+						}
+					}
+					else {
+						error_log("Unable to retrieve shipment status: voucher-incorrect");
+					}
+				}
+			}
+		}
 	}
 }

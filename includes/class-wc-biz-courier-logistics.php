@@ -196,11 +196,19 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'biz_order_changed_handler',10, 3);
 
 		// TODO @alexandrosraikos: #4 Create shipment checking cron job.
-		$this->loader->add_filter('cron_schedules', $plugin_admin, 'biz_cron_order_status_checking_interval', 10, 1);
-		if (!wp_next_scheduled('biz_cron_order_status_checking_hook')) {
-			wp_schedule_event(time(), 'five_minutes', 'biz_cron_order_status_checking_hook');
+		// Shipment automatic updating - cron job.
+		function biz_cron_order_status_checking_interval($schedules) {
+			$schedules['ten_minutes'] = array(
+				'interval' => 20,
+				'display' => 'Every 10 minutes.'
+			);
+			return $schedules;
 		}
+		add_filter('cron_schedules',  'biz_cron_order_status_checking_interval');
 		$this->loader->add_action('biz_cron_order_status_checking_hook', $plugin_admin, 'biz_cron_order_status_checking');
+		if (!wp_next_scheduled('biz_cron_order_status_checking_hook')) {
+			wp_schedule_event(time(), 'ten_minutes', 'biz_cron_order_status_checking_hook');
+		}
 
 		// TODO @alexandrosraikos: #17 Add corresponding order note.
 
