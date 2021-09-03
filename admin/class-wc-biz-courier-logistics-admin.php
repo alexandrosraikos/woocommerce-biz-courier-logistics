@@ -727,7 +727,7 @@ class WC_Biz_Courier_Logistics_Admin
 
 					$first_name = $order->get_shipping_first_name();
 					$last_name = $order->get_shipping_last_name();
-					$phone = $order->get_shipping_phone();
+					$phone = $biz_shipping_settings['biz_billing_phone_usage'] == 'no' ? $order->get_shipping_phone() : $order->get_billing_phone();
 					$email = $order->get_billing_email();
 					$address_one = $order->get_shipping_address_1();
 					$address_two = $order->get_shipping_address_2();
@@ -1182,5 +1182,17 @@ class WC_Biz_Courier_Logistics_Admin
 			// Add the meta box.
 			add_meta_box('wc-biz-courier-logistics_send_shipment_meta_box', __('Biz Courier status', 'wc-biz-courier-logistics'), 'biz_shipment_meta_box', 'shop_order', 'side', 'high');
 		}
+	}
+
+	function biz_cron_order_status_checking_interval($schedules) {
+		$schedules['five_minutes'] = array(
+			'interval' => 10,
+			'display' => 'Every 5 minutes.'
+		);
+		return $schedules;
+	}
+
+	function biz_cron_order_status_checking() {
+		error_log("Hi! ".json_encode(time()));
 	}
 }

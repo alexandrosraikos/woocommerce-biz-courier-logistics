@@ -201,6 +201,11 @@ function biz_send_shipment_errors_html()
             <p class="biz-send-shipment error"><?php _e("This voucher number doesn't exist.", 'wc-biz-courier-logistics') ?></p>
         <?php
         }
+        if ($_GET['biz_error'] == 'no-products-error') {
+        ?>
+            <p class="biz-send-shipment error"><?php _e("There are no products in this order.", 'wc-biz-courier-logistics') ?></p>
+        <?php
+        }
         if ($_GET['biz_error'] == 'recipient-info-error' || $_GET['biz_error'] == 'biz-recipient-info-error') {
         ?>
             <p class="biz-send-shipment error"><?php _e("There was a problem with the recipient's information. Make sure you have filled in all the necessary fields:", 'wc-biz-courier-logistics') ?>

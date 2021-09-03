@@ -72,7 +72,7 @@ class WC_Biz_Courier_Logistics
 		if (defined('WC_Biz_Courier_Logistics_VERSION')) {
 			$this->version = WC_Biz_Courier_Logistics_VERSION;
 		} else {
-			$this->version = '1.0.0';
+			$this->version = '1.2.0';
 		}
 		$this->WC_Biz_Courier_Logistics = 'wc-biz-courier-logistics';
 
@@ -196,6 +196,12 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'biz_order_changed_handler',10, 3);
 
 		// TODO @alexandrosraikos: #4 Create shipment checking cron job.
+		$this->loader->add_filter('cron_schedules', $plugin_admin, 'biz_cron_order_status_checking_interval', 10, 1);
+		if (!wp_next_scheduled('biz_cron_order_status_checking_hook')) {
+			wp_schedule_event(time(), 'five_minutes', 'biz_cron_order_status_checking_hook');
+		}
+		$this->loader->add_action('biz_cron_order_status_checking_hook', $plugin_admin, 'biz_cron_order_status_checking');
+
 		// TODO @alexandrosraikos: #17 Add corresponding order note.
 
 		$this->loader->add_filter('woocommerce_email_order_meta_fields', $plugin_admin, 'add_biz_email_order_fields', 10, 3);

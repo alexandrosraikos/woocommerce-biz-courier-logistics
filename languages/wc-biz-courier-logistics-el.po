@@ -133,6 +133,12 @@ msgstr "Απλή παράδοση"
 msgid "SMS notifications"
 msgstr "Ειδοποιήσεις μέσω SMS"
 
+msgid "Use billing phone"
+msgstr "Χρήση αριθμού τηλεφώνου χρέωσης"
+
+msgid "Submit the recipient's billing phone number instead of the shipping phone number to Biz."
+msgstr "Χρησιμοποιείστε τον αριθμό τηλεφώνου χρέωσης αντί για τον αριθμό τηλεφώνου αποστολής όταν αποστέλλετε μία νέα παράδοση στη Biz."
+
 msgid "Inform your customers about their Biz shipment status via SMS."
 msgstr "Ενημερώστε τους πελάτες σας μέσω SMS για την κατάσταση της παράδοσης."
 
@@ -297,6 +303,9 @@ msgstr "Εισάγετε τον κωδικό αποστολής από την Bi
 
 msgid "This voucher number doesn't exist."
 msgstr "Αυτός ο κωδικός αποστολής δεν υπάρχει."
+
+msgid "There are no products in this order."
+msgstr "Δεν υπάρχουν προϊόντα σε αυτή την παραγγελία."
 
 msgid "Some products were not found in the Biz warehouse."
 msgstr "Κάποια προϊόντα δεν βρίσκονται στην αποθήκη Biz."
