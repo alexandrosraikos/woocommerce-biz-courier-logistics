@@ -32,11 +32,7 @@ class WC_Biz_Courier_Logistics_Deactivator
 	 */
 	public static function deactivate()
 	{	
-		
 		delete_option('woocommerce_biz_integration_settings');
-
-		delete_option('wc_biz_inaccessible_areas');
-
 		WC_Biz_Courier_Logistics_Admin::reset_all_sync_status();
 	}
 }
