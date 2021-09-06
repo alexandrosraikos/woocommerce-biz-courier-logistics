@@ -40,8 +40,8 @@ msgstr "Μία ενσωμάτωση για να συγχρονίζετε το α
 msgid "Biz Courier Credentials"
 msgstr "Στοιχεία Biz Courier"
 
-msgid "Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact us</a>."
-msgstr "Εισάγετε τα στοιχεία σας Biz Courier στα παρακάτω πεδία. Αν δεν έχετε εγγραφεί ακόμη, <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">επικοινωνήστε μαζί μας</a>."
+msgid "Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact Biz</a>."
+msgstr "Εισάγετε τα στοιχεία σας Biz Courier στα παρακάτω πεδία. Αν δεν έχετε εγγραφεί ακόμη, <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">επικοινωνήστε με την Biz</a>."
 
 msgid  "Account Number"
 msgstr "Αριθμός λογαριασμού"
@@ -70,6 +70,17 @@ msgstr "Κωδικός πρόσβασης"
 msgid "Your Biz Courier merchant password."
 msgstr "Ο κωδικός πρόσβασής σας για την Biz Courier."
 
+msgid "General"
+msgstr "Γενικά"
+
+msgid "Choose your optimal working settings for integrating Biz Courier & Logistics with your WooCommerce shop."
+msgstr "Επιλέξτε τις κατάλληλες ρυθμίσεις για να ενσωματώσετε την Biz Courier & Logistics με το κατάστημά σας WooCommerce."
+
+msgid "Automatic order status updates"
+msgstr "Αυτόματη ενημέρωση κατάστασης παραγγελιών"
+
+msgid "Update Processing shipment status automatically to Completed or Cancelled, based on Biz Courier data."
+msgstr "Αυτόματη ενημέρωση παραγγελιών υπό Επεξεργασία σε Ολοκληρωμένες ή Ακυρωμένες, βάσει δεδομένων της Biz Courier."
 
 # Stock Synchronization
 # ------
@@ -271,6 +282,9 @@ msgstr "Κωδικός αποστολής: "
 msgid "Modify shipment"
 msgstr "Επεξεργασία παράδοσης"
 
+msgid "Edit voucher"
+msgstr "Επεξεργασία κωδικού αποστολής"
+
 msgid "Cancel shipment"
 msgstr "Ακύρωση παράδοσης"
 
@@ -300,6 +314,9 @@ msgstr "Προσθήκη κωδικού αποστολής"
 
 msgid "Insert the shipment's voucher number from Biz Courier in the field below."
 msgstr "Εισάγετε τον κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
+
+msgid "Insert the new shipment voucher number from Biz Courier in the field below."
+msgstr "Εισάγετε τον νέο κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
 
 msgid "This voucher number doesn't exist."
 msgstr "Αυτός ο κωδικός αποστολής δεν υπάρχει."
@@ -360,6 +377,9 @@ msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευ
 
 msgid "The shipment was cancelled by Biz Courier."
 msgstr "Η παράδοση ακυρώθηκε από την Biz Courier."
+
+msgid "The shipment was delivered successfully by Biz Courier."
+msgstr "Η αποστολή παραδόθηκε επιτυχώς από την Biz Courier."
 
 msgid "The Biz shipment with tracking code %s was cancelled."
 msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε."

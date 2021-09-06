@@ -65,10 +65,10 @@ class Biz_Integration extends WC_Integration
     public function init_form_fields()
     {
         $this->form_fields = array(
-			'section_title' => array(
+			'credentials_section_title' => array(
 				'title'     => __('Biz Courier Credentials', 'wc-biz-courier-logistics'),
 				'type'     => 'title',
-				'description'     => __("Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact us</a>.", 'wc-biz-courier-logistics'),
+				'description'     => __("Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact Biz</a>.", 'wc-biz-courier-logistics'),
 				'id'       => 'section_title'
 			),
 			'account_number' => array(
@@ -95,6 +95,18 @@ class Biz_Integration extends WC_Integration
 				'description' => __('Your Biz Courier merchant password.', 'wc-biz-courier-logistics'),
 				'id'   => 'password'
 			),
+			'general_section_title' => array(
+				'title'     => __('General', 'wc-biz-courier-logistics'),
+				'type'     => 'title',
+				'description'     => __("Choose your optimal working settings for integrating Biz Courier & Logistics with your WooCommerce shop.", 'wc-biz-courier-logistics'),
+				'id'       => 'section_title'
+			),
+            'automatic_order_status_updating' => array(
+                'title' => __('Automatic order status updates', 'wc-biz-courier-logistics'),
+                'type' => 'checkbox',
+                'description' => __("Update Processing shipment status automatically to Completed or Cancelled, based on Biz Courier data.", 'wc-biz-courier-logistics'),
+                'default' => 'no'
+            ),
         );
     }
 }

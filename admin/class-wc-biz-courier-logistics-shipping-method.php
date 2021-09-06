@@ -71,7 +71,6 @@ class Biz_Shipping_Method extends WC_Shipping_Method
         $statuses = array_merge(array(
             'disabled' => __('Disable','wc-biz-courier-logistics')), wc_get_order_statuses()
         );
-        // TODO @alexandrosraikos: Add billing phone number usage option when shipping phone number isn't available.
         $this->form_fields = array(
             'enabled' => array(
                 'title' => __('Enable', 'wc-biz-courier-logistics'),

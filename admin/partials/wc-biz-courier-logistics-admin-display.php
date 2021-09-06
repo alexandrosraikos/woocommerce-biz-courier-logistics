@@ -130,15 +130,31 @@ function biz_stock_sync_column_html($status)
  * @param string $voucher The current Biz shipment voucher.
  * @param array $status_history The array containing the status history of the shipment.
  */
-function biz_track_shipment_meta_box_html(string $voucher, array $status_history)
+function biz_track_shipment_meta_box_html(string $voucher, array $status_history, bool $completed = false)
 {
 ?>
     <ul>
         <li class="biz-voucher"><?php echo __("Voucher number: ", 'wc-biz-courier-logistics') . '<div>' . $voucher . '</div>' ?></li>
         <li class="biz-shipment-modification">
-            <button class="button" id="biz-modify-shipment"><?php _e("Modify shipment", "wc-biz-courier-logistics") ?></button>
-            <button class="components-button is-destructive" id="biz-cancel-shipment"><?php _e("Cancel shipment", "wc-biz-courier-logistics") ?></button>
+            <?php if (!$completed) { ?>
+                <button class="button" id="biz-modify-shipment"><?php _e("Modify shipment", "wc-biz-courier-logistics") ?></button>
+            <?php } ?>
+            
+            <button class="button" id="biz-edit-shipment-voucher"><?php _e("Edit voucher", "wc-biz-courier-logistics") ?></button>
+
+            <?php if (!$completed) { ?>
+                <button class="components-button is-destructive" id="biz-cancel-shipment"><?php _e("Cancel shipment", "wc-biz-courier-logistics") ?></button>
+            <?php } ?>
         </li>
+        <?php
+        if (isset($_GET['biz_error'])) {
+            if ($_GET['biz_error'] == 'voucher-error') {
+        ?>
+                <p class="biz-send-shipment error"><?php _e("This voucher number doesn't exist.", 'wc-biz-courier-logistics') ?></p>
+        <?php
+            }
+        }
+        ?>
         <li>
             <?php
             _e("Status history: ", 'wc-biz-courier-logistics');
@@ -169,7 +185,10 @@ function biz_track_shipment_meta_box_html(string $voucher, array $status_history
 function biz_track_shipment_meta_box_error_html(string $error)
 {
     if ($error == 'voucher-error') {
-        echo '<p class="biz-shipment-status error">' . __("The Biz Courier voucher is invalid, please contact support.", "wc-biz-courier-logistics") . '</p>';
+    ?>
+        <p class="biz-shipment-status error"> <?php _e("The Biz Courier voucher is invalid, please contact support.", "wc-biz-courier-logistics") ?></p>
+        <button class="button" id="biz-edit-shipment-voucher"><?php _e("Edit voucher", "wc-biz-courier-logistics") ?></button>
+        <?php
     }
 }
 
@@ -177,7 +196,7 @@ function biz_send_shipment_errors_html()
 {
     if (isset($_GET['biz_error'])) {
         if ($_GET['biz_error'] == 'sku-error' || $_GET['biz_error'] == 'biz-package-data-error') {
-    ?>
+        ?>
             <p class="biz-send-shipment error"><?php _e('Some products were not found in the Biz warehouse.', 'wc-biz-courier-logistics') ?></p>
         <?php
         }
@@ -219,7 +238,7 @@ function biz_send_shipment_errors_html()
                 <li><?php _e("Postal code", 'wc-biz-courier-logistics') ?></li>
                 <li><?php _e("Country", 'wc-biz-courier-logistics') ?></li>
             </ul>
-        </p>
+            </p>
 
         <?php
         }
@@ -246,7 +265,7 @@ function biz_send_shipment_meta_box_html()
     <?php _e("Send shipment", "wc-biz-courier-logistics") ?>
     </button>
     <button id="biz-add-shipment-voucher" class="button">
-        <?php _e("Add existing voucher number","wc-biz-courier-logistics") ?>
+        <?php _e("Add existing voucher number", "wc-biz-courier-logistics") ?>
     </button>
 <?php
     biz_send_shipment_errors_html();
