@@ -10,7 +10,7 @@ Read on below to get started with Biz Courier & Logistics for WooCommerce.
 
 Recommended requirements for this plugin are PHP 8.0+ (with `soap` extension enabled), WordPress 5.7+, WooCommerce 5.2+.
 
-_Biz Courier & Logistics for WooCommerce has not been tested with prior versions of PHP, WordPress or WooCommerce as of yet._
+_Biz Courier & Logistics for WooCommerce has not been tested with prior versions of PHP, WordPress or WooCommerce._
 
 ### Installation
 
@@ -34,7 +34,7 @@ To upgrade, simply delete and reinstall using the method above.
 
 ### Stock Levels Synchronization
 
-If you want to be able to update remaining stock quantities from your Biz warehouse, simply use the same product SKUs that you use in your Biz warehouse, enable stock management and click on _Get stock levels_ in the _All Products_ page.
+If you want to be able to update remaining stock quantities from your Biz warehouse, simply use the same product SKUs that you use in your Biz warehouse, enable the "Biz Warehouse" option on the product or variation you wish to synchronise and click on _Get stock levels_ in the _All Products_ page.
 
 _Note: This doesn't automatically add products to your WooCommerce catalogue. It only updates stock levels._
 
@@ -55,15 +55,15 @@ _Note: Consult Biz Courier for your shipping country's list of inaccessible area
 
 #### Send
 
-The fastest way to submit your shipment to Biz Courier, straight from WooCommerce. At each order page, you can click on _Send shipment_.
+The fastest way to submit your shipment to Biz Courier, straight from WooCommerce. At each order page, you can click on _Send shipment_. You can also manually add and edit shipment voucher numbers.
 
-_Note: You need to synchronize your stock levels first._
+_Note: You need to synchronize your stock levels first for Biz Warehouse enabled products in the order._
 
 #### Track
 
 If a shipment is sent from the WordPress Dashboard, you can view the tracking code and the shipment status history directly from the page of the order.
 
-You can also include the `{biz_tracking_code}` dynamic field in order confirmation emails sent to your customers. To do that, head to _WooCommerce Settings > Emails_.
+You can also enable automatic order status updates to change `processing` order statuses to `completed` or `cancelled`, based on Biz Courier data.
 
 #### Modify
 
