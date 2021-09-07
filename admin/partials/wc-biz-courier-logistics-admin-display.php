@@ -285,6 +285,9 @@ function biz_track_shipment_meta_box_cancelled_html()
     <button id="biz-send-shipment" class="button save-order button-primary" />
     <?php _e("Resend shipment", "wc-biz-courier-logistics") ?>
     </button>
+    <button id="biz-add-shipment-voucher" class="button">
+        <?php _e("Add existing voucher number", "wc-biz-courier-logistics") ?>
+    </button>
 <?php
     biz_send_shipment_errors_html();
 }

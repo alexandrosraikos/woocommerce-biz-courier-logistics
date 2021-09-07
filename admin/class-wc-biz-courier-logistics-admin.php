@@ -647,8 +647,9 @@ class WC_Biz_Courier_Logistics_Admin
 		$biz_settings = get_option('woocommerce_biz_integration_settings');
 		$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
 
+
 		// Automated process check.
-		if (($automated && $biz_shipping_settings['automatic_shipment_creation'] == 'yes') || $automated == false) {
+		if (($automated && $biz_shipping_settings['automatic_shipment_creation'] == 'yes') && get_post_meta($order_id, '_biz_status', true) != 'sent' || $automated == false) {
 			try {
 				// Initialize client.
 				$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl", array(
@@ -935,7 +936,6 @@ class WC_Biz_Courier_Logistics_Admin
 
 			// Make SOAP call.
 			$response = $client->__soapCall('actionShipment', $modification_data);
-
 			// Handle error codes from response.
 			if ($response->Error == 0) {
 				update_post_meta($order->get_id(), '_biz_status', 'cancelled');
@@ -1048,7 +1048,7 @@ class WC_Biz_Courier_Logistics_Admin
 
 		// Automatic cancellation.
 		if (isset($biz_shipping_settings['automatic_shipment_cancellation'])) {
-			if ($biz_shipping_settings['automatic_shipment_cancellation'] != 'disabled' && $biz_shipping_settings['automatic_shipment_cancellation'] != 'disabled' && substr($biz_shipping_settings['automatic_shipment_cancellation'], 3) == $to) {
+			if ($biz_shipping_settings['automatic_shipment_cancellation'] != 'disabled' && get_post_meta($id, '_biz_status', true) == 'sent' && substr($biz_shipping_settings['automatic_shipment_cancellation'], 3) == $to) {
 				WC_Biz_Courier_Logistics_Admin::biz_cancel_shipment($id);
 			}
 		}
@@ -1238,7 +1238,7 @@ class WC_Biz_Courier_Logistics_Admin
 				if (isset($status)) {
 					if ($status == 'sent') {
 						$voucher = get_post_meta($order_id, '_biz_voucher', true);
-						if (isset($voucher)) {
+						if (!empty($voucher)) {
 							try {
 								$report = WC_Biz_Courier_Logistics_Admin::biz_shipment_status($voucher);
 								if ($report[count($report) - 1]['code'] == 'AKY') {
