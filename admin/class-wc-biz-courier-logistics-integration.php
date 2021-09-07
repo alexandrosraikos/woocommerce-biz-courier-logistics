@@ -64,6 +64,10 @@ class Biz_Integration extends WC_Integration
 	 */
     public function init_form_fields()
     {
+        $statuses = array_merge(array(
+            'disabled' => __('Disable','wc-biz-courier-logistics')), wc_get_order_statuses()
+        );
+
         $this->form_fields = array(
 			'credentials_section_title' => array(
 				'title'     => __('Biz Courier Credentials', 'wc-biz-courier-logistics'),
@@ -106,6 +110,20 @@ class Biz_Integration extends WC_Integration
                 'type' => 'checkbox',
                 'description' => __("Update Processing shipment status automatically to Completed or Cancelled, based on Biz Courier data.", 'wc-biz-courier-logistics'),
                 'default' => 'no'
+            ),
+            'automatic_shipment_creation' => array(
+                'title' => __('Automatic shipment creation', 'wc-biz-courier-logistics'),
+                'type' => 'select',
+                'description' => __('Automatically send Biz shipments when orders enter the selected status.', 'wc-biz-courier-logistics'),
+                'default' => 'disabled',
+                'options' => $statuses
+            ),
+            'automatic_shipment_cancellation' => array(
+                'title' => __('Automatic shipment cancellation', 'wc-biz-courier-logistics'),
+                'type' => 'select',
+                'description' => __('Automatically cancel Biz shipments when orders enter the selected status.', 'wc-biz-courier-logistics'),
+                'default' => 'disabled',
+                'options' => $statuses
             ),
         );
     }

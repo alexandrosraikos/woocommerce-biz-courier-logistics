@@ -629,7 +629,7 @@ class WC_Biz_Courier_Logistics_Admin
 	 * @uses 	 get_option()
 	 * @uses 	 update_post_meta()
 	 */
-	static function biz_send_shipment(int $order_id, bool $automated = true)
+	static function biz_send_shipment(int $order_id)
 	{
 		/**
 		 * Truncate text to the desired character limit.
@@ -647,182 +647,180 @@ class WC_Biz_Courier_Logistics_Admin
 		$biz_settings = get_option('woocommerce_biz_integration_settings');
 		$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
 
+		// Get order object.
+		$order = wc_get_order($order_id);
 
-		// Automated process check.
-		if (($automated && $biz_shipping_settings['automatic_shipment_creation'] == 'yes') && get_post_meta($order_id, '_biz_status', true) != 'sent' || $automated == false) {
-			try {
-				// Initialize client.
-				$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl", array(
-					'trace' => 1,
-					'encoding' => 'UTF-8',
-				));
+		try {
+			// Initialize client.
+			$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl", array(
+				'trace' => 1,
+				'encoding' => 'UTF-8',
+			));
 
-				// Initialize Biz item format array in product_code:quantity format.
-				$shipment_products = array();
+			// Initialize Biz item format array in product_code:quantity format.
+			$shipment_products = array();
 
-				// Initialize total volume array.
-				$total_order_volume = array(
-					'width' => 0,
-					'height' => 0,
-					'length' => 0,
-					'weight' => 0
-				);
+			// Initialize total volume array.
+			$total_order_volume = array(
+				'width' => 0,
+				'height' => 0,
+				'length' => 0,
+				'weight' => 0
+			);
 
-				// Get order and items.
-				$order = wc_get_order($order_id);
-				$items = $order->get_items();
+			// Get order items.
+			$items = $order->get_items();
 
-				// Check for pre-existing voucher.
-				$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
-				if (($voucher == false && get_post_meta($order->get_id(), '_biz_status', true) != 'cancelled') || isset($voucher) && get_post_meta($order->get_id(), '_biz_status', true) == 'cancelled') {
+			// Check for pre-existing voucher.
+			$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
+			if (($voucher == false && get_post_meta($order->get_id(), '_biz_status', true) != 'cancelled') || isset($voucher) && get_post_meta($order->get_id(), '_biz_status', true) == 'cancelled') {
 
-					// Check for existing items in order.
-					if (empty($items)) {
-						throw new Exception('no-products-error');
+				// Check for existing items in order.
+				if (empty($items)) {
+					throw new Exception('no-products-error');
+				}
+
+				// Handle each item included in the order.
+				foreach ($items as $item) {
+					$product = wc_get_product($item->get_product_id());
+
+					if ($product->is_virtual()) {
+						continue;
+					} elseif ($product->get_stock_quantity() <= 0) {
+						throw new Exception('stock-error');
 					}
 
-					// Handle each item included in the order.
-					foreach ($items as $item) {
-						$product = wc_get_product($item->get_product_id());
+					// Check for active Biz synchronization status.
+					if (get_post_meta($product->get_id(), '_biz_stock_sync_status', true) == 'synced') {
+						array_push($shipment_products, $product->get_sku() . ":" . $item->get_quantity());
 
-						if ($product->is_virtual()) {
-							continue;
-						} elseif ($product->get_stock_quantity() <= 0) {
-							throw new Exception('stock-error');
-						}
-
-						// Check for active Biz synchronization status.
-						if (get_post_meta($product->get_id(), '_biz_stock_sync_status', true) == 'synced') {
-							array_push($shipment_products, $product->get_sku() . ":" . $item->get_quantity());
-
-							// Calculate total dimensions.
-							if (
-								$product->get_width() != "" &&
-								$product->get_height() != "" &&
-								$product->get_length() != "" &&
-								$product->get_weight() != ""
-							) {
-								$total_order_volume['width'] += $product->get_width() * $item->get_quantity();
-								$total_order_volume['height'] += $product->get_height() * $item->get_quantity();
-								$total_order_volume['length'] += $product->get_length() * $item->get_quantity();
-								$total_order_volume['weight'] += $product->get_weight() * $item->get_quantity();
-							} else {
-								throw new Exception('metrics-error');
-							}
+						// Calculate total dimensions.
+						if (
+							$product->get_width() != "" &&
+							$product->get_height() != "" &&
+							$product->get_length() != "" &&
+							$product->get_weight() != ""
+						) {
+							$total_order_volume['width'] += $product->get_width() * $item->get_quantity();
+							$total_order_volume['height'] += $product->get_height() * $item->get_quantity();
+							$total_order_volume['length'] += $product->get_length() * $item->get_quantity();
+							$total_order_volume['weight'] += $product->get_weight() * $item->get_quantity();
 						} else {
-							throw new Exception('sku-error');
+							throw new Exception('metrics-error');
 						}
-					}
-
-					// Check Biz item list sufficiency.
-					if (empty($shipment_products)) {
-						throw new Exception('products-error');
-					}
-
-					// Get Cash On Delivery amount.
-					if ($order->get_payment_method() == 'cod') {
-						$cash_on_delivery = $order->get_total();
-						$cash_on_delivery = number_format($cash_on_delivery, 2);
-					}
-
-					$first_name = $order->get_shipping_first_name();
-					$last_name = $order->get_shipping_last_name();
-					$phone = $biz_shipping_settings['biz_billing_phone_usage'] == 'no' ? $order->get_shipping_phone() : $order->get_billing_phone();
-					$email = $order->get_billing_email();
-					$address_one = $order->get_shipping_address_1();
-					$address_two = $order->get_shipping_address_2();
-					$country = $order->get_shipping_country();
-					$city = $order->get_shipping_city();
-					$postcode = $order->get_shipping_postcode();
-
-					// Check for complete information.
-					if (empty($last_name) || empty($first_name) || empty($address_one) || empty($country) || empty($city) || empty($postcode) || empty($phone)) {
-						throw new Exception('recipient-info-error');
-					}
-
-					// Create SMS + phone notification setting.
-					$sms_notification = ($biz_shipping_settings['biz_sms_notifications'] == "yes") ? "1" : "0";
-
-					// Prepare SOAP query.
-					$shipment_data = array(
-						'Code' => $biz_settings['account_number'],
-						'CRM' => $biz_settings['warehouse_crm'],
-						'User' => $biz_settings['username'],
-						'Pass' => $biz_settings['password'],
-						"R_Name" => truncate_field($last_name . " " . $first_name),
-						"R_Address" => truncate_field($address_one . " " . $address_two),
-						"R_Area_Code" => $country,
-						"R_Area" => truncate_field($city),
-						"R_PC" => $postcode,
-						"R_Phone1" => $phone,
-						"R_Phone2" => "",
-						"R_Email" => truncate_field($email, 60),
-						"Length" => $total_order_volume['length'], // cm int
-						"Width" => $total_order_volume['width'], // cm int
-						"Height" => $total_order_volume['height'], // cm int
-						"Weight" => $total_order_volume['weight'], // kg int
-						"Prod" => explode(":", $shipment_products[0])[0],
-						"Pieces" => explode(":", $shipment_products[0])[1],
-						"Multi_Prod" => implode("#", $shipment_products),
-						"Cash_On_Delivery" => $cash_on_delivery ?? '',
-						"Checques_On_Delivery" => "", // Unsupported.
-						"Comments" => ((str_contains($order->get_shipping_method(), "Σαββάτου") || str_contains($order->get_shipping_method(), "Saturday")) ? "Saturday delivery" : "") . " Recipient comments: " . ($order->get_customer_note() ?? "none"),
-						"Charge" => "3", // Unsupported, always 3.
-						"Type" => "2", // Unsupported, always assume parcel.
-						"Relative1" => "", // Unsupported.
-						"Relative2" => "", // Unsupported.
-						"Delivery_Time_To" => "", // Unsupported.
-						"SMS" => $sms_notification,
-						"Special_Treatment" => "", // Unsupported.
-						"Protocol" => "", // Unsupported.
-						"Morning_Delivery" => (str_contains($order->get_shipping_method(), "Πρωινή") || str_contains($order->get_shipping_method(), "Morning")) ? "yes" : "",
-						"Buy_Amount" => "", // Unsupported.
-						"Pick_Up" => "", // Unsupported.
-						"Service_Type" => "", // Unsupported.
-						"Relabel" => "", // Unsupported.
-						"Con_Call" => "0", // Unsupported.
-						"Ins_Amount" => "" // Unsupported.
-					);
-
-
-					// Make SOAP call.
-					$response = $client->__soapCall('newShipment', $shipment_data);
-
-					// Handle error codes from response.
-					switch ($response->Error_Code) {
-						case 0:
-							if (isset($response->Voucher)) {
-								// Set order status.
-								update_post_meta($order_id, '_biz_status', 'sent');
-								update_post_meta($order->get_id(), '_biz_voucher', $response->Voucher);
-								if ($order->get_status() != 'processing') {
-									$order->update_status('processing');
-								}
-								$order->add_order_note(__('The shipment was successfully registered to Biz Courier.', 'wc-biz-courier-logistics'));
-							} else {
-								throw new Exception('biz-response-data-error');
-							}
-							break;
-						case 1:
-							throw new Exception('biz-auth-error');
-						case 2:
-						case 3:
-						case 4:
-						case 5:
-						case 6:
-						case 10:
-						case 11:
-							throw new Exception('biz-recipient-info-error');
-						case 7:
-						case 8:
-						case 9:
-						case 12:
-							throw new Exception('biz-package-data-error');
+					} else {
+						throw new Exception('sku-error');
 					}
 				}
-			} catch (SoapFault $fault) {
-				throw new Exception('conn-error');
+
+				// Check Biz item list sufficiency.
+				if (empty($shipment_products)) {
+					throw new Exception('products-error');
+				}
+
+				// Get Cash On Delivery amount.
+				if ($order->get_payment_method() == 'cod') {
+					$cash_on_delivery = $order->get_total();
+					$cash_on_delivery = number_format($cash_on_delivery, 2);
+				}
+
+				$first_name = $order->get_shipping_first_name();
+				$last_name = $order->get_shipping_last_name();
+				$phone = ($biz_shipping_settings['biz_billing_phone_usage'] ?? 'no') == 'no' ? $order->get_shipping_phone() : $order->get_billing_phone();
+				$email = $order->get_billing_email();
+				$address_one = $order->get_shipping_address_1();
+				$address_two = $order->get_shipping_address_2();
+				$country = $order->get_shipping_country();
+				$city = $order->get_shipping_city();
+				$postcode = $order->get_shipping_postcode();
+
+				// Check for complete information.
+				if (empty($last_name) || empty($first_name) || empty($address_one) || empty($country) || empty($city) || empty($postcode) || empty($phone)) {
+					throw new Exception('recipient-info-error');
+				}
+
+				// Create SMS + phone notification setting.
+				$sms_notification = ($biz_shipping_settings['biz_sms_notifications'] == "yes") ? "1" : "0";
+
+				// Prepare SOAP query.
+				$shipment_data = array(
+					'Code' => $biz_settings['account_number'],
+					'CRM' => $biz_settings['warehouse_crm'],
+					'User' => $biz_settings['username'],
+					'Pass' => $biz_settings['password'],
+					"R_Name" => truncate_field($last_name . " " . $first_name),
+					"R_Address" => truncate_field($address_one . " " . $address_two),
+					"R_Area_Code" => $country,
+					"R_Area" => truncate_field($city),
+					"R_PC" => $postcode,
+					"R_Phone1" => $phone,
+					"R_Phone2" => "",
+					"R_Email" => truncate_field($email, 60),
+					"Length" => $total_order_volume['length'], // cm int
+					"Width" => $total_order_volume['width'], // cm int
+					"Height" => $total_order_volume['height'], // cm int
+					"Weight" => $total_order_volume['weight'], // kg int
+					"Prod" => explode(":", $shipment_products[0])[0],
+					"Pieces" => explode(":", $shipment_products[0])[1],
+					"Multi_Prod" => implode("#", $shipment_products),
+					"Cash_On_Delivery" => $cash_on_delivery ?? '',
+					"Checques_On_Delivery" => "", // Unsupported.
+					"Comments" => ((str_contains($order->get_shipping_method(), "Σαββάτου") || str_contains($order->get_shipping_method(), "Saturday")) ? "Saturday delivery" : "") . " Recipient comments: " . ($order->get_customer_note() ?? "none"),
+					"Charge" => "3", // Unsupported, always 3.
+					"Type" => "2", // Unsupported, always assume parcel.
+					"Relative1" => "", // Unsupported.
+					"Relative2" => "", // Unsupported.
+					"Delivery_Time_To" => "", // Unsupported.
+					"SMS" => $sms_notification,
+					"Special_Treatment" => "", // Unsupported.
+					"Protocol" => "", // Unsupported.
+					"Morning_Delivery" => (str_contains($order->get_shipping_method(), "Πρωινή") || str_contains($order->get_shipping_method(), "Morning")) ? "yes" : "",
+					"Buy_Amount" => "", // Unsupported.
+					"Pick_Up" => "", // Unsupported.
+					"Service_Type" => "", // Unsupported.
+					"Relabel" => "", // Unsupported.
+					"Con_Call" => "0", // Unsupported.
+					"Ins_Amount" => "" // Unsupported.
+				);
+
+
+				// Make SOAP call.
+				$response = $client->__soapCall('newShipment', $shipment_data);
+
+				// Handle error codes from response.
+				switch ($response->Error_Code) {
+					case 0:
+						if (isset($response->Voucher)) {
+							// Set order status.
+							update_post_meta($order_id, '_biz_status', 'sent');
+							update_post_meta($order->get_id(), '_biz_voucher', $response->Voucher);
+							if ($order->get_status() != 'processing') {
+								$order->update_status('processing');
+							}
+							$order->add_order_note(__('The shipment was successfully registered to Biz Courier.', 'wc-biz-courier-logistics'));
+						} else {
+							throw new Exception('biz-response-data-error');
+						}
+						break;
+					case 1:
+						throw new Exception('biz-auth-error');
+					case 2:
+					case 3:
+					case 4:
+					case 5:
+					case 6:
+					case 10:
+					case 11:
+						throw new Exception('biz-recipient-info-error');
+					case 7:
+					case 8:
+					case 9:
+					case 12:
+						throw new Exception('biz-package-data-error');
+				}
 			}
+		} catch (SoapFault $fault) {
+			throw new Exception('conn-error');
 		}
 	}
 
@@ -1004,6 +1002,29 @@ class WC_Biz_Courier_Logistics_Admin
 	}
 
 	/**
+	 * Handles manual voucher deletion AJAX requests from authorized users.
+	 *
+	 * @since    1.2.0
+	 */
+	function biz_delete_shipment_voucher_handler()
+	{
+
+		// Verify WordPress generated nonce.
+		if (!wp_verify_nonce($_POST['nonce'], 'ajax_delete_shipment_voucher_validation')) {
+			die("Unverified request to delete shipment voucher.");
+		}
+
+		try {
+			delete_post_meta($_POST['order_id'], '_biz_voucher');
+			delete_post_meta($_POST['order_id'], '_biz_status');
+		} catch (Exception $e) {
+			echo $e->getMessage();
+		}
+
+		die();
+	}
+
+	/**
 	 * Handles manual voucher editing AJAX requests from authorized users.
 	 *
 	 * @since    1.2.0
@@ -1013,7 +1034,7 @@ class WC_Biz_Courier_Logistics_Admin
 
 		// Verify WordPress generated nonce.
 		if (!wp_verify_nonce($_POST['nonce'], 'ajax_edit_shipment_voucher_validation')) {
-			die("Unverified request to modify shipment.");
+			die("Unverified request to edit shipment voucher.");
 		}
 
 		try {
@@ -1037,18 +1058,22 @@ class WC_Biz_Courier_Logistics_Admin
 	function biz_order_changed_handler($id, $from, $to)
 	{
 		// Automate shipment functionality.
-		$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
+		$biz_settings = get_option('woocommerce_biz_integration_settings');
 
 		// Automatic creation.
-		if (isset($biz_shipping_settings['automatic_shipment_creation'])) {
-			if ($biz_shipping_settings['automatic_shipment_creation'] != 'disabled' && $biz_shipping_settings['automatic_shipment_creation'] != 'disabled' && substr($biz_shipping_settings['automatic_shipment_creation'], 3) == $to) {
-				WC_Biz_Courier_Logistics_Admin::biz_send_shipment($id);
+		if (isset($biz_settings['automatic_shipment_creation'])) {
+			if ($biz_settings['automatic_shipment_creation'] != 'disabled' && substr($biz_settings['automatic_shipment_creation'], 3) == $to) {
+				try {
+					WC_Biz_Courier_Logistics_Admin::biz_send_shipment($id);
+				} catch (Exception $e) {
+					error_log("Error automatically creating a shipment: " . $e->getMessage());
+				}
 			}
 		}
 
 		// Automatic cancellation.
-		if (isset($biz_shipping_settings['automatic_shipment_cancellation'])) {
-			if ($biz_shipping_settings['automatic_shipment_cancellation'] != 'disabled' && get_post_meta($id, '_biz_status', true) == 'sent' && substr($biz_shipping_settings['automatic_shipment_cancellation'], 3) == $to) {
+		if (isset($biz_settings['automatic_shipment_cancellation'])) {
+			if ($biz_settings['automatic_shipment_cancellation'] != 'disabled' && get_post_meta($id, '_biz_status', true) == 'sent' && substr($biz_settings['automatic_shipment_cancellation'], 3) == $to) {
 				WC_Biz_Courier_Logistics_Admin::biz_cancel_shipment($id);
 			}
 		}
@@ -1179,6 +1204,15 @@ class WC_Biz_Courier_Logistics_Admin
 					"nonce" => wp_create_nonce('ajax_edit_shipment_voucher_validation'),
 					"order_id" => $order_id,
 					"edit_voucher_message" => __("Insert the new shipment voucher number from Biz Courier in the field below.", "wc-biz-courier-logistics")
+				));
+
+				// Enqueue and localize add voucher.
+				wp_enqueue_script('wc-biz-courier-logistics-delete-shipment-voucher', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-delete-shipment-voucher.js', array('jquery'));
+				wp_localize_script('wc-biz-courier-logistics-delete-shipment-voucher', "ajax_prop_three", array(
+					"ajax_url" => admin_url('admin-ajax.php'),
+					"nonce" => wp_create_nonce('ajax_delete_shipment_voucher_validation'),
+					"order_id" => $order_id,
+					"delete_confirmation" => __("Are you sure you want to delete the shipment voucher from this order?", "wc-biz-courier-logistics")
 				));
 			}
 

@@ -288,6 +288,9 @@ msgstr "Επεξεργασία κωδικού αποστολής"
 msgid "Cancel shipment"
 msgstr "Ακύρωση παράδοσης"
 
+msgid "Delete voucher"
+msgstr "Διαγραφή κωδικού αποστολής"
+
 msgid "Status history: "
 msgstr "Ιστορικό κατάστασης: "
 
@@ -317,6 +320,9 @@ msgstr "Εισάγετε τον κωδικό αποστολής από την Bi
 
 msgid "Insert the new shipment voucher number from Biz Courier in the field below."
 msgstr "Εισάγετε τον νέο κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
+
+msgid "Are you sure you want to delete the shipment voucher from this order?"
+msgstr "Είστε σίγουρος/η πως θέλετε να διαγράψετε αυτόν τον κωδικό αποστολής από την παραγγελία;"
 
 msgid "This voucher number doesn't exist."
 msgstr "Αυτός ο κωδικός αποστολής δεν υπάρχει."
