@@ -119,6 +119,14 @@ ul.biz-shipment-status {
   margin: 10px 0;
 }
 
+ul.biz-shipment-status.good {
+  background-color: #afe487;
+}
+
+ul.biz-shipment-status.bad {
+  background-color: #e2a4a4;
+}
+
 .biz-shipment-status .status-level {
   font-size: 10px;
   opacity: 0.8;
@@ -140,9 +148,11 @@ ul.biz-shipment-status {
 
 .biz-shipment-status .actions {
   background-color: rgb(240, 240, 240);
-  border-radius: 7px;
+  border-bottom-right-radius: 7px;
+  border-top-right-radius: 7px;
   margin: 10px 0;
   padding: 10px;
+  border-left: 2px solid #0068ae;
 }
 
 .biz-shipment-status .status-date,

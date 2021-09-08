@@ -285,6 +285,15 @@ msgstr "Επεξεργασία παράδοσης"
 msgid "Edit voucher"
 msgstr "Επεξεργασία κωδικού αποστολής"
 
+msgid "The newly connected shipment was already completed."
+msgstr "Η νέα παράδοση με την οποία συνδεθήκατε ήταν ήδη ολοκληρωμένη."
+
+msgid "The newly connected shipment was already cancelled."
+msgstr "Η νέα παράδοση με την οποία συνδεθήκατε ήταν ήδη ακυρωμένη."
+
+msgid "The newly connected shipment is pending delivery."
+msgstr "Εκκρεμεί η παράδοση της νέας συνδεδεμένης σας αποστολής Biz."
+
 msgid "Cancel shipment"
 msgstr "Ακύρωση παράδοσης"
 

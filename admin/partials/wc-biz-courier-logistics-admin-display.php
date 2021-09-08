@@ -174,15 +174,16 @@ function biz_track_shipment_meta_box_html(string $voucher, array $status_history
         <li>
             <?php
             foreach (array_reverse($status_history) as $status) {
-                echo '<ul class="biz-shipment-status">';
+                echo '<ul class="biz-shipment-status ' . $status['outlook'] . '">';
                 echo '<li class="status-level">' . __($status['level'], 'wc-biz-courier-logistics') . '</li>';
                 echo '<li class="status-description">' . $status['description'] . '</li>';
                 echo '<li class="status-comments">' . ((!empty($status['comments'])) ? $status['comments'] : __('No other comments.', 'wc-biz-courier-logistics')) . '</li>';
                 if (!empty($status['actions'])) {
                     echo '<ul class="actions">';
+                    echo '<div>' . __('Actions:', 'wc-biz-courier-logistics') . '<hr/></div>';
                     foreach ($status['actions'] as $action) {
                         echo '<li class="action-description">' . $action['description'] . '</li>';
-                        echo '<li class="action-date">' . $action['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $action['time'] . '</li>';
+                        echo '<li class="action-date">' . $action['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $action['time'] . '</li><hr/>';
                     }
                     echo '</ul>';
                 }
@@ -297,10 +298,14 @@ function biz_send_shipment_meta_box_html()
  * @since    1.0.0
  * @param    string $error The associated error code.
  */
-function biz_track_shipment_meta_box_cancelled_html()
+function biz_track_shipment_meta_box_cancelled_html($voucher = "")
 {
     echo '<p class="biz-shipment-status">' . __("The Biz Courier shipment was cancelled.", "wc-biz-courier-logistics") . '</p>';
 ?>
+    <ul>
+        <li class="biz-voucher"><?php echo __("Voucher number: ", 'wc-biz-courier-logistics') . '<div>' . $voucher . '</div>' ?></li>
+        <li class="biz-shipment-modification">
+    </ul>
 
     <button id="biz-send-shipment" class="button save-order button-primary" />
     <?php _e("Resend shipment", "wc-biz-courier-logistics") ?>
