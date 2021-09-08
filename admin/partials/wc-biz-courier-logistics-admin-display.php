@@ -145,19 +145,29 @@ function biz_track_shipment_meta_box_html(string $voucher, array $status_history
             <?php if (!$completed) { ?>
                 <button class="components-button is-destructive" id="biz-cancel-shipment"><?php _e("Cancel shipment", "wc-biz-courier-logistics") ?></button>
             <?php } ?>
-            
+
         </li>
         <?php
         if (isset($_GET['biz_error'])) {
             if ($_GET['biz_error'] == 'voucher-error') {
         ?>
                 <p class="biz-send-shipment error"><?php _e("This voucher number doesn't exist.", 'wc-biz-courier-logistics') ?></p>
-        <?php
+            <?php
             }
         }
-        ?>
+
+        if (!empty(end($status_history)['last_mile_tracking_number'])) {
+            ?>
+            <li class="biz-shipment-partner">
+                <?php
+                echo '<div class="title">' . __('Partner tracking number:', 'wc-biz-courier-logistics') . '</div>';
+                echo '<div class="tracking-number">' . end($status_history)['last_mile_tracking_number'] . '</div>';
+                ?>
+            </li>
+        <?php } ?>
         <li>
             <?php
+
             _e("Status history: ", 'wc-biz-courier-logistics');
             ?>
         </li>
@@ -165,8 +175,17 @@ function biz_track_shipment_meta_box_html(string $voucher, array $status_history
             <?php
             foreach (array_reverse($status_history) as $status) {
                 echo '<ul class="biz-shipment-status">';
+                echo '<li class="status-level">' . __($status['level'], 'wc-biz-courier-logistics') . '</li>';
                 echo '<li class="status-description">' . $status['description'] . '</li>';
-                echo '<li class="status-action">' . $status['action'] . '</li>';
+                echo '<li class="status-comments">' . ((!empty($status['comments'])) ? $status['comments'] : __('No other comments.', 'wc-biz-courier-logistics')) . '</li>';
+                if (!empty($status['actions'])) {
+                    echo '<ul class="actions">';
+                    foreach ($status['actions'] as $action) {
+                        echo '<li class="action-description">' . $action['description'] . '</li>';
+                        echo '<li class="action-date">' . $action['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $action['time'] . '</li>';
+                    }
+                    echo '</ul>';
+                }
                 echo '<li class="status-date">' . $status['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $status['time'] . '</li>';
                 echo '</ul>';
             }

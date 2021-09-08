@@ -726,7 +726,7 @@ class WC_Biz_Courier_Logistics_Admin
 
 				$first_name = $order->get_shipping_first_name();
 				$last_name = $order->get_shipping_last_name();
-				$phone = ($biz_shipping_settings['biz_billing_phone_usage'] ?? 'no') == 'no' ? $order->get_shipping_phone() : $order->get_billing_phone();
+				$phone = ($biz_shipping_settings['biz_billing_phone_usage'] ?? 'no') == 'no' ? $order->get_shipping_phone() : (!empty($order->get_shipping_phone()) ? $order->get_shipping_phone() : $order->get_billing_phone());
 				$email = $order->get_billing_email();
 				$address_one = $order->get_shipping_address_1();
 				$address_two = $order->get_shipping_address_2();
@@ -937,10 +937,10 @@ class WC_Biz_Courier_Logistics_Admin
 			// Handle error codes from response.
 			if ($response->Error == 0) {
 				update_post_meta($order->get_id(), '_biz_status', 'cancelled');
-				$order->add_order_note(sprintf(__("The Biz shipment with tracking code %s was cancelled. The cancellation code is: %s."), $voucher, $response->ActId));
+				$order->update_status('cancelled', sprintf(__("The Biz shipment with tracking code %s was cancelled. The cancellation code is: %s."), $voucher, $response->ActId), true);
 			} elseif ($response->Error == 1) {
 				update_post_meta($order->get_id(), '_biz_status', 'cancelled');
-				$order->add_order_note(sprintf(__("The Biz shipment with tracking code %s was cancelled."), $voucher, $response->ActId));
+				$order->update_status('cancelled', sprintf(__("The Biz shipment with tracking code %s was cancelled."), $voucher, $response->ActId), true);
 			} else {
 				throw new Exception($response->Error);
 			}
@@ -1106,13 +1106,36 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	static function biz_shipment_status($voucher)
 	{
-		// Initialize SOAP client.
-		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/full_history.php?wsdl", array(
-			'encoding' => 'UTF-8',
-		));
-
-		// Attempt to get the status history from Biz.
+		// Get all available shipment statuses.
 		try {
+			// Initialize client.
+			$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/TrackEvntSrv.php?wsdl", array(
+				'trace' => 1,
+				'encoding' => 'UTF-8',
+			));
+
+			$biz_settings = get_option('woocommerce_biz_integration_settings');
+
+			// Make SOAP call.
+			$available_statuses = $client->__soapCall('TrackEvntSrv', array(
+				'Code' => $biz_settings['account_number'],
+				'CRM' => $biz_settings['warehouse_crm'],
+				'User' => $biz_settings['username'],
+				'Pass' => $biz_settings['password'],
+			));
+
+			$available_status_levels = array();
+
+			foreach ($available_statuses as $available_status) {
+				$available_status_levels[$available_status->Status_Code] = $available_status->Level;
+			}
+
+			// error_log(print_r($available_statuses,true));
+
+			// Get specific order status history from Biz.
+			$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/full_history.php?wsdl", array(
+				'encoding' => 'UTF-8',
+			));
 			$response = $client->__soapCall("full_status", array("Voucher" => $voucher));
 
 			// Check for invalid voucher.
@@ -1120,18 +1143,52 @@ class WC_Biz_Courier_Logistics_Admin
 				throw new Exception("voucher-error");
 			}
 
+			$grouped_statuses = array();
+
+			foreach ($response as $status) {
+				$i = $status->Status_Date.'-'.$status->Status_Time.'-'.$status->Status_Code;
+				if (!isset($grouped_statuses[$i])) {
+					$grouped_statuses[$i] = array(
+						'code' => $status->Status_Code,
+						'level' => $available_status_levels[$status->Status_Code],
+						'description' => (get_locale() == 'el') ? $status->Status_Description : $status->Status_Description_En,
+						'comments' => $status->Status_Comments,
+						'date' => $status->Status_Date,
+						'time' => $status->Status_Time,
+						'actions' => array(),
+						'last_mile_tracking_number' => $status->Part_Tracking_Num ?? ''
+					);
+				}
+				if (isset($status->Action_Description)) {
+					array_push($grouped_statuses[$i]['actions'], array(
+						'description' =>  (get_locale() == 'el') ? $status->Action_Description : $status->Action_Description_En,
+						'time' => $status->Action_Date,
+						'date' => $status->Action_Time,
+					));
+				}
+			}
+
+			return $grouped_statuses;
+
 			// Return a simplified array.
-			return array_map(function ($status) {
-				$single_status = array();
-				$single_status['code'] = $status->Status_Code;
-				$single_status['description'] = (get_locale() == 'el') ? $status->Status_Description : $status->Status_Description_En;
-				$single_status['action'] = (get_locale() == 'el') ? $status->Action_Description : $status->Action_Description_En;
-				$single_status['date'] = $status->Action_Time;
-				$single_status['time'] = $status->Action_Date;
-				return $single_status;
-			}, $response);
+			// return array_map(function ($status) use ($available_status_levels) {
+			// 	$single_status = array();
+			// 	$single_status['code'] = $status->Status_Code;
+			// 	$single_status['level'] = $available_status_levels[$status->Status_Code];
+			// 	$single_status['description'] = (get_locale() == 'el') ? $status->Status_Description : $status->Status_Description_En;
+			// 	$single_status['action'] = (get_locale() == 'el') ? $status->Action_Description : $status->Action_Description_En;
+			// 	$single_status['action_date'] = $status->Action_Time;
+			// 	$single_status['action_time'] = $status->Action_Date;
+			// 	$single_status['date'] = $status->Status_Date;
+			// 	$single_status['time'] = $status->Status_Time;
+			// 	return $single_status;
+			// }, $response);
 		} catch (SoapFault $fault) {
 			throw new Exception('conn-error');
+		}
+
+		foreach ($response as $status) {
+			error_log(json_encode($status));
 		}
 	}
 
@@ -1161,9 +1218,6 @@ class WC_Biz_Courier_Logistics_Admin
 		 */
 		function biz_shipment_meta_box($post)
 		{
-			// Get order and any voucher data.
-			$order = wc_get_order($post->ID);
-			$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
 
 			function prepare_scripts_new_shipment($order_id)
 			{
@@ -1216,21 +1270,31 @@ class WC_Biz_Courier_Logistics_Admin
 				));
 			}
 
+			// Get order and any voucher data.
+			$order = wc_get_order($post->ID);
+			$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
+			$status = get_post_meta($order->get_id(), '_biz_status', true);
+
 			// Handle existing voucher.
 			if (!empty($voucher)) {
 
-				if (get_post_meta($order->get_id(), '_biz_status', true) == "cancelled") {
-					prepare_scripts_new_shipment($order->get_id());
+				// Backwards compatible state.
+				if (empty($status)) {
+					update_post_meta($order->get_id(), '_biz_status', 'sent');
+				}
+
+				if ($status == "cancelled") {
 
 					// Print HTML.
+					prepare_scripts_new_shipment($order->get_id());
 					biz_track_shipment_meta_box_cancelled_html();
-				} else {
-					prepare_scripts_existing_shipment($order->get_id());
+				} elseif ($status == "sent" || $status == "completed") {
 
 					// Check status and print HTML.
+					prepare_scripts_existing_shipment($order->get_id());
 					try {
 						$status_history = WC_Biz_Courier_Logistics_Admin::biz_shipment_status($voucher);
-						biz_track_shipment_meta_box_html($voucher, $status_history, get_post_meta($order->get_id(), '_biz_status', true) == 'completed');
+						biz_track_shipment_meta_box_html($voucher, $status_history, $status == 'completed');
 					} catch (Exception $e) {
 						biz_track_shipment_meta_box_error_html($e->getMessage());
 					}
@@ -1280,7 +1344,7 @@ class WC_Biz_Courier_Logistics_Admin
 									$order->update_status('cancelled', __('The shipment was cancelled by Biz Courier.', 'wc-biz-courier-logistics'));
 									update_post_meta($order_id, '_biz_status', 'cancelled');
 								}
-								if ($report[count($report) - 1]['code'] == 'ΠΡΔ') {
+								if ($report[count($report) - 1]['code'] == 'ΠΡΔ' || $report[count($report) - 1]['code'] == 'COD') {
 									$order = wc_get_order($order_id);
 									$order->update_status('completed', __('The shipment was delivered successfully by Biz Courier.', 'wc-biz-courier-logistics'));
 									update_post_meta($order_id, '_biz_status', 'completed');

@@ -297,6 +297,12 @@ msgstr "Ιστορικό κατάστασης: "
 msgid "Modification history: "
 msgstr "Ιστορικό τροποποιήσεων: "
 
+msgid "Final"
+msgstr "Τελικό"
+
+msgid "No other comments."
+msgstr "Κανένα άλλο σχόλιο."
+
 msgid "at"
 msgstr "στις"
 

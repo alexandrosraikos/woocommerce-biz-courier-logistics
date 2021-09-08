@@ -7,6 +7,10 @@
       // Prevent default reload.
       event.preventDefault();
 
+      // Disable button.
+      $("#biz-edit-shipment-voucher").prop("disabled", true);
+      $("#biz-edit-shipment-voucher").addClass("biz-loading");
+
       var message = prompt(ajax_prop_two.edit_voucher_message);
       if (message != null) {
         // Perform AJAX request.
@@ -33,6 +37,10 @@
           },
           dataType: "json",
         });
+      } else {
+        // Re-enable button.
+        $("#biz-edit-shipment-voucher").prop("disabled", false);
+        $("#biz-edit-shipment-voucher").removeClass("biz-loading");
       }
     });
   });

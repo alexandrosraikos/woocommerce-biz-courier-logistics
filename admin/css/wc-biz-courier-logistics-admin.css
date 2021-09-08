@@ -107,6 +107,11 @@ ul.biz-send-shipment.error {
   margin-bottom: 5px;
 }
 
+.biz-shipment-partner .tracking-number {
+  font-weight: bold;
+  font-size: 18px;
+}
+
 ul.biz-shipment-status {
   padding: 10px;
   background-color: rgb(224, 234, 245);
@@ -114,11 +119,34 @@ ul.biz-shipment-status {
   margin: 10px 0;
 }
 
-.biz-shipment-status .status-description {
+.biz-shipment-status .status-level {
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+.biz-shipment-status .status-description,
+.biz-shipment-status .actions .action-description {
   font-weight: bold;
 }
 
-.biz-shipment-status .status-date {
+.biz-shipment-status .status-description {
+  font-size: 18px;
+}
+
+.biz-shipment-status .status-comments {
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.biz-shipment-status .actions {
+  background-color: rgb(240, 240, 240);
+  border-radius: 7px;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.biz-shipment-status .status-date,
+.biz-shipment-status .actions .action-date {
   font-size: 12px;
   opacity: 0.8;
 }
