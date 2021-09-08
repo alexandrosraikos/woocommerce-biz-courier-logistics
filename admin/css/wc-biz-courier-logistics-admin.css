@@ -127,9 +127,11 @@ ul.biz-shipment-status.bad {
   background-color: #e2a4a4;
 }
 
-.biz-shipment-status .status-level {
+.biz-shipment-status .status-level,
+.biz-shipment-status .actions .title {
   font-size: 10px;
   opacity: 0.8;
+  text-transform: uppercase;
 }
 
 .biz-shipment-status .status-description,

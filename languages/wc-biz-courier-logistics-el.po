@@ -312,6 +312,9 @@ msgstr "Τελικό"
 msgid "No other comments."
 msgstr "Κανένα άλλο σχόλιο."
 
+msgid "Actions:"
+msgstr "Ενέργειες:"
+
 msgid "at"
 msgstr "στις"
 

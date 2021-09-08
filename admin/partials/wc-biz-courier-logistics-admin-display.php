@@ -180,10 +180,10 @@ function biz_track_shipment_meta_box_html(string $voucher, array $status_history
                 echo '<li class="status-comments">' . ((!empty($status['comments'])) ? $status['comments'] : __('No other comments.', 'wc-biz-courier-logistics')) . '</li>';
                 if (!empty($status['actions'])) {
                     echo '<ul class="actions">';
-                    echo '<div>' . __('Actions:', 'wc-biz-courier-logistics') . '<hr/></div>';
+                    echo '<div class="title">' . __('Actions:', 'wc-biz-courier-logistics') . '</div>';
                     foreach ($status['actions'] as $action) {
-                        echo '<li class="action-description">' . $action['description'] . '</li>';
-                        echo '<li class="action-date">' . $action['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $action['time'] . '</li><hr/>';
+                        echo '<hr/><li class="action-description">' . $action['description'] . '</li>';
+                        echo '<li class="action-date">' . $action['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $action['time'] . '</li>';
                     }
                     echo '</ul>';
                 }
