@@ -1143,10 +1143,11 @@ class WC_Biz_Courier_Logistics_Admin
 			$available_status_levels = array();
 
 			foreach ($available_statuses as $available_status) {
-				$available_status_levels[$available_status->Status_Code] = $available_status->Level;
+				$available_status_levels[$available_status->Status_Code] = array(
+					'level' => $available_status->Level,
+					'description' => $available_status->Comments
+				);
 			}
-
-			// error_log(print_r($available_statuses,true));
 
 			// Get specific order status history from Biz.
 			$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/full_history.php?wsdl", array(
@@ -1166,7 +1167,8 @@ class WC_Biz_Courier_Logistics_Admin
 				if (!isset($grouped_statuses[$i])) {
 					$grouped_statuses[$i] = array(
 						'code' => $status->Status_Code,
-						'level' => $available_status_levels[$status->Status_Code] ?? '',
+						'level' => $available_status_levels[$status->Status_Code]['level'] ?? '',
+						'level-description' => $available_status_levels[$status->Status_Code]['description'],
 						'outlook' => ($available_status_levels[$status->Status_Code] != 'Final' ? '' : (($status->Status_Code == 'ΠΡΔ' || $status->Status_Code == 'COD' || $status->Status_Code == 'OK') ? 'good' : 'bad') ),
 						'description' => (get_locale() == 'el') ? $status->Status_Description : $status->Status_Description_En,
 						'comments' => $status->Status_Comments,
@@ -1184,8 +1186,6 @@ class WC_Biz_Courier_Logistics_Admin
 					));
 				}
 			}
-
-			error_log(json_encode($grouped_statuses));
 
 			return $grouped_statuses;
 		} catch (SoapFault $fault) {
@@ -1348,6 +1348,7 @@ class WC_Biz_Courier_Logistics_Admin
 									$order = wc_get_order($order_id);
 									$order->update_status('cancelled', __('The shipment was cancelled by Biz Courier.', 'wc-biz-courier-logistics'));
 									update_post_meta($order_id, '_biz_status', 'cancelled');
+									update_post_meta($order_id, '_biz_failure_delivery_note', $report['level-description']);
 								}
 								if (end($report)['code'] == 'ΠΡΔ' || end($report)['code'] == 'COD' || end($report)['code'] == 'OK') {
 									$order = wc_get_order($order_id);
