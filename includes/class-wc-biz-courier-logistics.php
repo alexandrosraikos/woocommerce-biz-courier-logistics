@@ -200,7 +200,7 @@ class WC_Biz_Courier_Logistics
 		// Shipment automatic updating - cron job.
 		function biz_cron_order_status_checking_interval($schedules) {
 			$schedules['ten_minutes'] = array(
-				'interval' => 60,
+				'interval' => 600,
 				'display' => 'Every 10 minutes.'
 			);
 			return $schedules;
