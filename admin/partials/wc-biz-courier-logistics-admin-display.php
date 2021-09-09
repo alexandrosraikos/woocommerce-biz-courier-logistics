@@ -143,7 +143,7 @@ function biz_track_shipment_meta_box_html(string $voucher, array $status_history
             <button class="button" id="biz-edit-shipment-voucher"><?php _e("Edit voucher", "wc-biz-courier-logistics") ?></button>
             <button class="components-button is-destructive" id="biz-delete-shipment-voucher"><?php _e("Delete voucher", "wc-biz-courier-logistics") ?></button>
             <?php if (!$completed) { ?>
-                <button class="components-button is-destructive" id="biz-cancel-shipment"><?php _e("Cancel shipment", "wc-biz-courier-logistics") ?></button>
+                <button class="components-button is-destructive" id="biz-cancel-shipment"><?php _e("Request shipment cancellation", "wc-biz-courier-logistics") ?></button>
             <?php } ?>
 
         </li>

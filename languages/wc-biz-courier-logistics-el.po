@@ -294,8 +294,8 @@ msgstr "Η νέα παράδοση με την οποία συνδεθήκατε
 msgid "The newly connected shipment is pending delivery."
 msgstr "Εκκρεμεί η παράδοση της νέας συνδεδεμένης σας αποστολής Biz."
 
-msgid "Cancel shipment"
-msgstr "Ακύρωση παράδοσης"
+msgid "Request shipment cancellation"
+msgstr "Αίτηση ακύρωσης παράδοσης"
 
 msgid "Delete voucher"
 msgstr "Διαγραφή κωδικού αποστολής"
@@ -305,6 +305,9 @@ msgstr "Ιστορικό κατάστασης: "
 
 msgid "Modification history: "
 msgstr "Ιστορικό τροποποιήσεων: "
+
+msgid "Delivery status update"
+msgstr "Ενημέρωση κατάστασης παράδοσης"
 
 msgid "Final"
 msgstr "Τελικό"
@@ -390,8 +393,8 @@ msgstr "Χώρα"
 msgid "There isn't enough stock to ship the products."
 msgstr "Δεν υπάρχει επαρκές απόθεμα για τη παράδοση."
 
-msgid "Are you sure you want to cancel this Biz shipment? If you want to send it again, you will receive a new tracking code."
-msgstr "Σίγουρα επιθυμείτε ακύρωση της παράδοσης Biz; Αν επιθυμείτε να την ξαναστείλετε, θα λάβετε νέο κωδικό αποστολής."
+msgid "Are you sure you want to request the cancellation of this Biz shipment? If you want to send it again, you will receive a new tracking code."
+msgstr "Σίγουρα επιθυμείτε να στείλετε αίτηση ακύρωσης αυτής της παράδοσης Biz; Αν επιθυμείτε να την ξαναστείλετε, θα λάβετε νέο κωδικό αποστολής."
 
 msgid "Please insert the message you want to send to Biz about the shipment."
 msgstr "Εισάγετε παρακάτω το μήνυμα που θέλετε να στείλετε στην Biz σχετικά με την παράδοση."
