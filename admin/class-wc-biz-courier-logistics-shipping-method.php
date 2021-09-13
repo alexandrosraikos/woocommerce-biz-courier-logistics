@@ -71,27 +71,12 @@ class Biz_Shipping_Method extends WC_Shipping_Method
         $statuses = array_merge(array(
             'disabled' => __('Disable','wc-biz-courier-logistics')), wc_get_order_statuses()
         );
-
         $this->form_fields = array(
             'enabled' => array(
                 'title' => __('Enable', 'wc-biz-courier-logistics'),
                 'type' => 'checkbox',
                 'description' => __('Allow shipping with Biz Courier.', 'wc-biz-courier-logistics'),
                 'default' => 'yes'
-            ),
-            'automatic_shipment_creation' => array(
-                'title' => __('Automatic shipment creation', 'wc-biz-courier-logistics'),
-                'type' => 'select',
-                'description' => __('Automatically send Biz shipments when orders enter the selected status.', 'wc-biz-courier-logistics'),
-                'default' => 'disabled',
-                'options' => $statuses
-            ),
-            'automatic_shipment_cancellation' => array(
-                'title' => __('Automatic shipment cancellation', 'wc-biz-courier-logistics'),
-                'type' => 'select',
-                'description' => __('Automatically cancel Biz shipments when orders enter the selected status.', 'wc-biz-courier-logistics'),
-                'default' => 'disabled',
-                'options' => $statuses
             ),
             'biz_cash_on_delivery_fee'  => array(
                 'title' => __('COD fee', 'wc-biz-courier-logistics'),
@@ -130,6 +115,12 @@ class Biz_Shipping_Method extends WC_Shipping_Method
                 'title' => __('SMS notifications', 'wc-biz-courier-logistics'),
                 'type' => 'checkbox',
                 'description' => __('Inform your customers about their Biz shipment status via SMS.', 'wc-biz-courier-logistics'),
+                'default' => 'no'
+            ),
+            'biz_billing_phone_usage' => array(
+                'title' => __('Use billing phone', 'wc-biz-courier-logistics'),
+                'type' => 'checkbox',
+                'description' => __("Submit the recipient's billing phone number instead of the shipping phone number to Biz.", 'wc-biz-courier-logistics'),
                 'default' => 'no'
             ),
             'biz_morning_delivery'  => array(

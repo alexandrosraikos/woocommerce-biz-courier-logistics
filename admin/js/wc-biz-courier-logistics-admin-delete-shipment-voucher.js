@@ -1,27 +1,24 @@
 (function ($) {
   "use strict";
 
-  // Ensure prepared document.
-  $(document).ready(function () {
-    // Capture click event.
-    $("button.wc-biz-courier-logistics-sync-stock").click(function (event) {
-      // Prevent default reload.
-      event.preventDefault();
+  $("#biz-delete-shipment-voucher").click(function (event) {
+    // Prevent default reload.
+    event.preventDefault();
 
+    if (confirm(ajax_prop_three.delete_confirmation)) {
       // Disable button.
-      $("button.wc-biz-courier-logistics-sync-stock").prop("disabled", true);
-      $("button.wc-biz-courier-logistics-sync-stock").addClass(
-        "wc-biz-courier-logistics-loading"
-      );
+      $("#biz-delete-shipment-voucher").prop("disabled", true);
+      $("#biz-delete-shipment-voucher").addClass("biz-loading");
 
       // Perform AJAX request.
       $.ajax({
-        url: ajax_prop.ajax_url,
+        url: ajax_prop_three.ajax_url,
         type: "post",
         data: {
-          action: "biz_stock_sync",
-          nonce: ajax_prop.nonce,
-          // product_skus: ajax_prop.product_skus,
+          action: "biz_delete_shipment_voucher",
+          nonce: ajax_prop_three.nonce,
+          order_id: ajax_prop_three.order_id,
+          shipment_modification_message: "cancel",
         },
         // Handle response.
         complete: function (response) {
@@ -37,6 +34,6 @@
         },
         dataType: "json",
       });
-    });
+    }
   });
 })(jQuery);

@@ -40,8 +40,8 @@ msgstr "Μία ενσωμάτωση για να συγχρονίζετε το α
 msgid "Biz Courier Credentials"
 msgstr "Στοιχεία Biz Courier"
 
-msgid "Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact us</a>."
-msgstr "Εισάγετε τα στοιχεία σας Biz Courier στα παρακάτω πεδία. Αν δεν έχετε εγγραφεί ακόμη, <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">επικοινωνήστε μαζί μας</a>."
+msgid "Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact Biz</a>."
+msgstr "Εισάγετε τα στοιχεία σας Biz Courier στα παρακάτω πεδία. Αν δεν έχετε εγγραφεί ακόμη, <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">επικοινωνήστε με την Biz</a>."
 
 msgid  "Account Number"
 msgstr "Αριθμός λογαριασμού"
@@ -70,6 +70,17 @@ msgstr "Κωδικός πρόσβασης"
 msgid "Your Biz Courier merchant password."
 msgstr "Ο κωδικός πρόσβασής σας για την Biz Courier."
 
+msgid "General"
+msgstr "Γενικά"
+
+msgid "Choose your optimal working settings for integrating Biz Courier & Logistics with your WooCommerce shop."
+msgstr "Επιλέξτε τις κατάλληλες ρυθμίσεις για να ενσωματώσετε την Biz Courier & Logistics με το κατάστημά σας WooCommerce."
+
+msgid "Automatic order status updates"
+msgstr "Αυτόματη ενημέρωση κατάστασης παραγγελιών"
+
+msgid "Update Processing shipment status automatically to Completed or Cancelled, based on Biz Courier data."
+msgstr "Αυτόματη ενημέρωση παραγγελιών υπό Επεξεργασία σε Ολοκληρωμένες ή Ακυρωμένες, βάσει δεδομένων της Biz Courier."
 
 # Stock Synchronization
 # ------
@@ -78,6 +89,9 @@ msgstr "Ο κωδικός πρόσβασής σας για την Biz Courier."
 
 msgid "Biz Warehouse"
 msgstr "Αποθήκη Biz"
+
+msgid "Biz status"
+msgstr "Κατάσταση Biz"
 
 msgid "Get stock levels"
 msgstr "Μέτρηση αποθέματος"
@@ -89,7 +103,16 @@ msgid "Found"
 msgstr "Βρέθηκε"
 
 msgid "Not found"
-msgstr "Εκτός"
+msgstr "Δε βρέθηκε"
+
+msgid "Partially found"
+msgstr "Βρέθηκε μερικώς"
+
+msgid "Disabled"
+msgstr "Εκτός αποθήκης"
+
+msgid "Select this option if the product is stored in your Biz warehouse."
+msgstr "Ενεργοποιήστε αυτή την επιλογή αν το προϊόν βρίσκεται στην Biz αποθήκη σας."
 
 
 # Shipping Method
@@ -120,6 +143,12 @@ msgstr "Απλή παράδοση"
 
 msgid "SMS notifications"
 msgstr "Ειδοποιήσεις μέσω SMS"
+
+msgid "Use billing phone"
+msgstr "Χρήση αριθμού τηλεφώνου χρέωσης"
+
+msgid "Submit the recipient's billing phone number instead of the shipping phone number to Biz."
+msgstr "Χρησιμοποιείστε τον αριθμό τηλεφώνου χρέωσης αντί για τον αριθμό τηλεφώνου αποστολής όταν αποστέλλετε μία νέα παράδοση στη Biz."
 
 msgid "Inform your customers about their Biz shipment status via SMS."
 msgstr "Ενημερώστε τους πελάτες σας μέσω SMS για την κατάσταση της παράδοσης."
@@ -253,14 +282,41 @@ msgstr "Κωδικός αποστολής: "
 msgid "Modify shipment"
 msgstr "Επεξεργασία παράδοσης"
 
-msgid "Cancel shipment"
-msgstr "Ακύρωση παράδοσης"
+msgid "Edit voucher"
+msgstr "Επεξεργασία κωδικού αποστολής"
+
+msgid "The newly connected shipment was already completed."
+msgstr "Η νέα παράδοση με την οποία συνδεθήκατε ήταν ήδη ολοκληρωμένη."
+
+msgid "The newly connected shipment was already cancelled."
+msgstr "Η νέα παράδοση με την οποία συνδεθήκατε ήταν ήδη ακυρωμένη."
+
+msgid "The newly connected shipment is pending delivery."
+msgstr "Εκκρεμεί η παράδοση της νέας συνδεδεμένης σας αποστολής Biz."
+
+msgid "Request shipment cancellation"
+msgstr "Αίτηση ακύρωσης παράδοσης"
+
+msgid "Delete voucher"
+msgstr "Διαγραφή κωδικού αποστολής"
 
 msgid "Status history: "
 msgstr "Ιστορικό κατάστασης: "
 
 msgid "Modification history: "
 msgstr "Ιστορικό τροποποιήσεων: "
+
+msgid "Delivery status update"
+msgstr "Ενημέρωση κατάστασης παράδοσης"
+
+msgid "Final"
+msgstr "Τελικό"
+
+msgid "No other comments."
+msgstr "Κανένα άλλο σχόλιο."
+
+msgid "Actions:"
+msgstr "Ενέργειες:"
 
 msgid "at"
 msgstr "στις"
@@ -277,6 +333,24 @@ msgstr "Αυτή η παραγγελία δεν έχει αποσταλεί μέ
 msgid "Send shipment"
 msgstr "Αποστολή παραγγελίας"
 
+msgid "Add existing voucher number"
+msgstr "Προσθήκη κωδικού αποστολής"
+
+msgid "Insert the shipment's voucher number from Biz Courier in the field below."
+msgstr "Εισάγετε τον κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
+
+msgid "Insert the new shipment voucher number from Biz Courier in the field below."
+msgstr "Εισάγετε τον νέο κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
+
+msgid "Are you sure you want to delete the shipment voucher from this order?"
+msgstr "Είστε σίγουρος/η πως θέλετε να διαγράψετε αυτόν τον κωδικό αποστολής από την παραγγελία;"
+
+msgid "This voucher number doesn't exist."
+msgstr "Αυτός ο κωδικός αποστολής δεν υπάρχει."
+
+msgid "There are no products in this order."
+msgstr "Δεν υπάρχουν προϊόντα σε αυτή την παραγγελία."
+
 msgid "Some products were not found in the Biz warehouse."
 msgstr "Κάποια προϊόντα δεν βρίσκονται στην αποθήκη Biz."
 
@@ -289,11 +363,38 @@ msgstr "Υπήρξε ένα σφάλμα με τα στοιχεία σας Biz C
 msgid "There was an unexpected error from Biz."
 msgstr "Προέκυψε ένα αναπάντεχο σφάλμα από την Biz."
 
-msgid "The order fields are incomplete."
-msgstr "Χρειάζονται περισσότερες πληροφορίες για την παραγγελία."
+msgid "There was a problem with the recipient's information. Make sure you have filled in all the necessary fields:"
+msgstr "Υπήρξε ένα πρόβλημα με της πληροφορίες του παραλήπτη. Ελέγξτε τις πληροφορίες αποστολής που έχετε εισάγει:"
 
-msgid "Are you sure you want to cancel this Biz shipment? If you want to send it again, you will receive a new tracking code."
-msgstr "Σίγουρα επιθυμείτε ακύρωση της παράδοσης Biz; Αν επιθυμείτε να την ξαναστείλετε, θα λάβετε νέο κωδικό αποστολής."
+msgid "First name"
+msgstr "Όνομα"
+
+msgid "Last name"
+msgstr "Επώνυμο"
+
+msgid "Phone number"
+msgstr "Αριθμός τηλεφώνου"
+
+msgid "E-mail address"
+msgstr "Διεύθυνση e-mail"
+
+msgid "Address line #1"
+msgstr "Γραμμή διεύθυνσης #1"
+
+msgid "City"
+msgstr "Πόλη"
+
+msgid "Postal code"
+msgstr "Ταχυδρομικός κώδικας"
+
+msgid "Country"
+msgstr "Χώρα"
+
+msgid "There isn't enough stock to ship the products."
+msgstr "Δεν υπάρχει επαρκές απόθεμα για τη παράδοση."
+
+msgid "Are you sure you want to request the cancellation of this Biz shipment? If you want to send it again, you will receive a new tracking code."
+msgstr "Σίγουρα επιθυμείτε να στείλετε αίτηση ακύρωσης αυτής της παράδοσης Biz; Αν επιθυμείτε να την ξαναστείλετε, θα λάβετε νέο κωδικό αποστολής."
 
 msgid "Please insert the message you want to send to Biz about the shipment."
 msgstr "Εισάγετε παρακάτω το μήνυμα που θέλετε να στείλετε στην Biz σχετικά με την παράδοση."
@@ -301,11 +402,20 @@ msgstr "Εισάγετε παρακάτω το μήνυμα που θέλετε 
 msgid "The Biz shipment with tracking code %s was cancelled. The cancellation code is: %s."
 msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε. Ο κωδικός ακύρωσης είναι: %s."
 
+msgid "The shipment was cancelled by Biz Courier."
+msgstr "Η παράδοση ακυρώθηκε από την Biz Courier."
+
+msgid "The shipment was delivered successfully by Biz Courier."
+msgstr "Η αποστολή παραδόθηκε επιτυχώς από την Biz Courier."
+
 msgid "The Biz shipment with tracking code %s was cancelled."
 msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε."
 
 msgid "The Biz Courier shipment was cancelled."
 msgstr "Η παράδοση μέσω Biz ακυρώθηκε."
+
+msgid "Resend shipment"
+msgstr "Επανάληψη αποστολής παραγγελίας"
 
 msgid "Message sent to Biz: "
 msgstr "Μήνυμα εστάλη στην Biz: "

@@ -30,22 +30,47 @@ div.biz-notice {
   width: 10ch;
 }
 
-.column-biz_sync .biz_sync-indicator::before {
+.biz_sync-indicator::before {
   content: "";
   display: inline-block;
   height: 10px;
   width: 10px;
   margin-right: 5px;
-  background-color: gray;
+  background-color: rgb(3, 92, 194);
   border-radius: 20px;
 }
 
-.column-biz_sync .biz_sync-indicator.synced::before {
+.biz_sync-indicator.synced::before {
   background-color: #7ad03a;
 }
 
-.column-biz_sync .biz_sync-indicator.not-synced::before {
+.biz_sync-indicator.not-synced::before {
   background-color: #a44;
+}
+
+.biz_sync-indicator.partial::before {
+  background-color: rgb(194, 117, 3);
+}
+
+.biz_sync-indicator.disabled::before {
+  background-color: gray;
+}
+
+.biz_sync-indicator-container {
+  margin: 0 0 12px 12px;
+}
+
+.biz_sync-indicator-title {
+  display: inline-block;
+  width: 150px;
+  margin-right: 0 !important;
+}
+
+.biz_sync-indicator-title,
+.biz_sync-variation-indicator-title {
+  font-weight: bold;
+  margin-right: 7px;
+  float: left;
 }
 
 button.biz-loading {
@@ -66,11 +91,25 @@ button.biz-loading {
   color: #a44;
 }
 
+ul.biz-send-shipment.error {
+  list-style-type: circle;
+  padding-left: 20px;
+}
+
+#biz-add-shipment-voucher {
+  margin-top: 10px;
+}
+
 .biz-voucher div {
   font-weight: bold;
   font-size: 20px;
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.biz-shipment-partner .tracking-number {
+  font-weight: bold;
+  font-size: 18px;
 }
 
 ul.biz-shipment-status {
@@ -80,11 +119,46 @@ ul.biz-shipment-status {
   margin: 10px 0;
 }
 
-.biz-shipment-status .status-description {
+ul.biz-shipment-status.good {
+  background-color: #afe487;
+}
+
+ul.biz-shipment-status.bad {
+  background-color: #e2a4a4;
+}
+
+.biz-shipment-status .status-level,
+.biz-shipment-status .actions .title {
+  font-size: 10px;
+  opacity: 0.8;
+  text-transform: uppercase;
+}
+
+.biz-shipment-status .status-description,
+.biz-shipment-status .actions .action-description {
   font-weight: bold;
 }
 
-.biz-shipment-status .status-date {
+.biz-shipment-status .status-description {
+  font-size: 18px;
+}
+
+.biz-shipment-status .status-comments {
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.biz-shipment-status .actions {
+  background-color: rgb(240, 240, 240);
+  border-bottom-right-radius: 7px;
+  border-top-right-radius: 7px;
+  margin: 10px 0;
+  padding: 10px;
+  border-left: 2px solid #0068ae;
+}
+
+.biz-shipment-status .status-date,
+.biz-shipment-status .actions .action-date {
   font-size: 12px;
   opacity: 0.8;
 }
