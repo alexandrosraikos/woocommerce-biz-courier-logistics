@@ -71,7 +71,7 @@ You can send shipment modification instructions directly to Biz Courier. Simply 
 
 #### Cancel
 
-You can cancel Biz Courier shipments by heading to your order and clicking _Cancel shipment_.
+You can request cancellation of a Biz Courier shipment by heading to your order and clicking _Request shipment cancellation_.
 
 ## Frequently Asked Questions
 
