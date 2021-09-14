@@ -644,23 +644,6 @@ class WC_Biz_Courier_Logistics_Admin
 	}
 
 	/**
-	 * Add tracking code field to e-mail order confirmation.
-	 *
-	 * @since    1.0.0
-	 * @uses 	 get_post_meta()
-	 * @param 	 array $fields The active list of email fields handled by WooCommerce.
-	 * @param 	 WC_Order $order The current WooCommerce order.
-	 */
-	function add_biz_email_order_fields($fields, $sent_to_admin, $order)
-	{
-		$fields['biz_tracking_code'] = array(
-			'label' => __('Tracking Code', 'wc-biz-courier-logistics'),
-			'value' => get_post_meta($order->get_id(), '_biz_voucher', true),
-		);
-		return $fields;
-	}
-
-	/**
 	 * Add Biz Courier connection indicator metabox to a single order.
 	 *
 	 * @since    1.0.0

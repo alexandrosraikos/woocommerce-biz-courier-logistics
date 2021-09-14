@@ -69,11 +69,7 @@ class WC_Biz_Courier_Logistics
 	 */
 	public function __construct()
 	{
-		if (defined('WC_Biz_Courier_Logistics_VERSION')) {
-			$this->version = WC_Biz_Courier_Logistics_VERSION;
-		} else {
-			$this->version = '1.2.0';
-		}
+		$this->version = '1.2.0';
 		$this->WC_Biz_Courier_Logistics = 'wc-biz-courier-logistics';
 
 		$this->load_dependencies();
@@ -210,8 +206,6 @@ class WC_Biz_Courier_Logistics
 		if (!wp_next_scheduled('biz_cron_order_status_checking_hook')) {
 			wp_schedule_event(time(), 'ten_minutes', 'biz_cron_order_status_checking_hook');
 		}
-
-		$this->loader->add_filter('woocommerce_email_order_meta_fields', $plugin_admin, 'add_biz_email_order_fields', 10, 3);
 	}
 
 	/**
