@@ -119,11 +119,12 @@ ul.biz-shipment-status {
   margin: 10px 0;
 }
 
-ul.biz-shipment-status.good {
+ul.biz-shipment-status.sent {
   background-color: #afe487;
 }
 
-ul.biz-shipment-status.bad {
+ul.biz-shipment-status.cancelled,
+ul.biz-shipment-status.failed {
   background-color: #e2a4a4;
 }
 

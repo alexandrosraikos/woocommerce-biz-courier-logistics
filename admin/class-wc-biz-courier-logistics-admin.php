@@ -1042,19 +1042,23 @@ class WC_Biz_Courier_Logistics_Admin
 			$report = WC_Biz_Courier_Logistics_Admin::biz_shipment_status($_POST['voucher']);
 			update_post_meta($_POST['order_id'], '_biz_voucher', $_POST['voucher']);
 			if (end($report)['level'] == 'Final') {
-				if (end($report)['outlook'] == 'good') {
+				if (end($report)['outlook'] == 'sent') {
 					update_post_meta($_POST['order_id'], '_biz_status', 'completed');
 					$order = wc_get_order($_POST['order_id']);
 					$order->update_status("completed", __("The newly connected shipment was already completed.", 'wc-biz-courier-logistics'));
-				} elseif (end($report)['outlook'] == 'bad') {
+				} elseif (end($report)['outlook'] == 'cancelled') {
 					update_post_meta($_POST['order_id'], '_biz_status', 'cancelled');
 					$order = wc_get_order($_POST['order_id']);
 					$order->update_status("cancelled", __("The newly connected shipment was already cancelled.", 'wc-biz-courier-logistics'));
-				} else {
-					update_post_meta($_POST['order_id'], '_biz_status', 'sent');
+				} elseif (end($report)['outlook'] == 'failed') {
+					update_post_meta($_POST['order_id'], '_biz_status', 'cancelled');
 					$order = wc_get_order($_POST['order_id']);
-					$order->update_status("processing", __("The newly connected shipment is pending.", 'wc-biz-courier-logistics'));
+					$order->update_status("failed", __("The newly connected shipment had already failed.", 'wc-biz-courier-logistics'));
 				}
+			} else {
+				update_post_meta($_POST['order_id'], '_biz_status', 'sent');
+				$order = wc_get_order($_POST['order_id']);
+				$order->update_status("processing", __("The newly connected shipment is pending.", 'wc-biz-courier-logistics'));
 			}
 		} catch (Exception $e) {
 			echo $e->getMessage();
@@ -1138,6 +1142,8 @@ class WC_Biz_Courier_Logistics_Admin
 				'Pass' => $biz_settings['password'],
 			));
 
+			error_log(print_r($available_statuses, true));
+
 			$available_status_levels = array();
 			foreach ($available_statuses as $available_status) {
 				$available_status_levels[$available_status->Status_Code] = array(
@@ -1169,12 +1175,19 @@ class WC_Biz_Courier_Logistics_Admin
 				if (empty($status_code)) {
 					$status_code = 'NONE';
 				}
+
+				$status_outlook = '';
+				if($available_status_levels[$status_code]['level'] == 'Final') {
+					if($status_code == 'ΠΡΔ' || $status_code == 'COD' || $status_code == 'OK') $status_outlook = 'sent';
+					elseif($status_code == 'AKY') $status_outlook = 'cancelled';
+					else $status_outlook = 'failed';
+				}
 				if (!isset($grouped_statuses[$i])) {
 					$grouped_statuses[$i] = array(
-						'code' => $status->Status_Code,
+						'code' => $status_code,
 						'level' => $available_status_levels[$status_code]['level'] ?? '',
 						'level-description' => $available_status_levels[$status_code]['description'],
-						'outlook' => ($available_status_levels[$status_code]['level'] != 'Final') ? '' : (($status_code == 'ΠΡΔ' || $status_code == 'COD' || $status_code == 'OK') ? 'good' : 'bad'),
+						'outlook' => $status_outlook,
 						'description' => (get_locale() == 'el') ? $status->Status_Description : $status->Status_Description_En,
 						'comments' => $status->Status_Comments,
 						'date' => $status->Status_Date,
@@ -1346,16 +1359,22 @@ class WC_Biz_Courier_Logistics_Admin
 							try {
 								$report = WC_Biz_Courier_Logistics_Admin::biz_shipment_status($voucher);
 								if (end($report)['level'] == 'Final') {
-									if (end($report)['outlook'] == 'bad') {
+									if (end($report)['outlook'] == 'sent') {
+										$order = wc_get_order($order_id);
+										$order->update_status('completed', __('The shipment was delivered successfully by Biz Courier.', 'wc-biz-courier-logistics'));
+										update_post_meta($order_id, '_biz_status', 'completed');
+									}
+									if (end($report)['outlook'] == 'cancelled') {
 										$order = wc_get_order($order_id);
 										$order->update_status('cancelled', __('The shipment was cancelled by Biz Courier.', 'wc-biz-courier-logistics'));
 										update_post_meta($order_id, '_biz_status', 'cancelled');
 										update_post_meta($order_id, '_biz_failure_delivery_note', end($report)['level-description']. ' Comments: '.end($report)['comments']);
 									}
-									if (end($report)['outlook'] == 'good') {
+									if (end($report)['outlook'] == 'failed') {
 										$order = wc_get_order($order_id);
-										$order->update_status('completed', __('The shipment was delivered successfully by Biz Courier.', 'wc-biz-courier-logistics'));
-										update_post_meta($order_id, '_biz_status', 'completed');
+										$order->update_status('failed', __('The shipment was cancelled by Biz Courier.', 'wc-biz-courier-logistics'));
+										update_post_meta($order_id, '_biz_status', 'cancelled');
+										update_post_meta($order_id, '_biz_failure_delivery_note', end($report)['level-description']. ' Comments: '.end($report)['comments']);
 									}
 								}
 							} catch (Exception $e) {
