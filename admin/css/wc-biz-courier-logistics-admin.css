@@ -86,6 +86,7 @@ button.biz-loading {
 	 * 
 	 */
 
+.biz-voucher a,
 .biz-voucher span {
   font-weight: bold;
   font-family: monospace;

@@ -832,7 +832,12 @@ class WC_Biz_Courier_Logistics_Admin
 		switch($column) {
 			case 'biz-voucher':
 				$voucher = get_post_meta($post_id,'_biz_voucher',true);
-				echo '<span>'.($voucher)?:"-".'</span>';
+				if (empty($voucher)) {
+					echo '<span>-</span>';
+				}
+				else {
+					echo '<a href="https://trackit.bizcourier.eu/app/'.get_locale().'/'.$voucher.'" target="blank">'.$voucher.'</a>';
+				}
 			break;
 		}
 	}
