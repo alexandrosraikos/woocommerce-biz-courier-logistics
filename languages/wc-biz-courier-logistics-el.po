@@ -288,8 +288,8 @@ msgstr "Ενέργειες παράδοσης: "
 msgid "You must change the order status to \"Processing\" in order to perform more actions on this shipment."
 msgstr "Πρέπει να αλλάξετε την κατάσταση της παραγγελίας σε \"Σε επεξεργασία\" για να πραγματοποιήσετε περαιτέρω ενέργειες σε αυτή την παράδοση."
 
-msgid "This shipment has reached a %s state. You must change the order status to reflect that change."
-msgstr "Αυτή η παράδοση %s. Πρέπει να αλλάξετε την κατάσταση της παραγγελίας."
+msgid "This shipment has reached a %s state. You must change the order status to reflect that change. You can also enable automatic order status updates in <em>WooCoomece Settings > Integrations > Biz Courier & Logistics</em>."
+msgstr "Αυτή η παράδοση %s. Πρέπει να αλλάξετε την κατάσταση της παραγγελίας. Μπορείτε επίσης να ενεργοποιήσετε την αυτόματη ενημέρωση κατάστασης παραγγελιών στις <em>Ρυθμίσεις WooCoomerce > Ενσωμάτωση > Biz Courier & Logistics</em>."
 
 msgid "This shipment has reached a %s state. You cannot perform further actions."
 msgstr "Αυτή η παράδοση %s. Δεν μπορείτε να εκτελέσετε άλλες ενέργειες."
@@ -378,11 +378,23 @@ msgstr "Εισάγετε τον κωδικό αποστολής από την Bi
 msgid "Insert the new shipment voucher number from Biz Courier in the field below."
 msgstr "Εισάγετε τον νέο κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
 
+msgid "An error was encountered by Biz Courier while processing the voucher. Is it a valid shipment voucher?"
+msgstr ""
+
 msgid "Are you sure you want to delete the shipment voucher from this order?"
 msgstr "Είστε σίγουρος/η πως θέλετε να διαγράψετε αυτόν τον κωδικό αποστολής από την παραγγελία;"
 
-msgid "This voucher number doesn't exist."
-msgstr "Αυτός ο κωδικός αποστολής δεν υπάρχει."
+msgid "This voucher was not found. Please provide a valid shipment voucher."
+msgstr "Αυτός ο κωδικός παράδοσης δεν βρέθηκε. Εισάγετε έναν έγκυρο κωδικό παράδοσης."
+
+msgid "The voucher number couldn't be retrieved."
+msgstr "Ο κωδικός παράδοσης δεν μπορούσε να αναγνωσθεί."
+
+msgid "An unknown error occured while processing shipment modification information."
+msgstr "Ένα άγνωστο σφάλμα προέκυψε κατά την επεξεργασία των πληροφοριών επεξεργασίας της παράδοσης."
+
+msgid "An unknown Biz error occured while processing shipment modification information."
+msgstr "Ένα άγνωστο σφάλμα προέκυψε από την Biz κατά την επεξεργασία των πληροφοριών επεξεργασίας της παράδοσης."
 
 msgid "There are no products in this order."
 msgstr "Δεν υπάρχουν προϊόντα σε αυτή την παραγγελία."
@@ -425,6 +437,9 @@ msgstr "Υπήρξε ένα πρόβλημα κατά τη σύνδεση με �
 
 msgid "There was a problem with the recipient's information. Make sure you have filled in all the necessary fields: First name, last name, phone number, e-mail address, address line #1, city, postal code and country."
 msgstr "Υπήρξε ένα πρόβλημα με της πληροφορίες του παραλήπτη. Ελέγξτε τις πληροφορίες αποστολής που έχετε εισάγει: Όνομα, επώνυμο, αριθμός τηλεφώνου, διεύθυνση e-mail, γραμμή διεύθυνσης #1, πόλη/περιοχή, ταχυδρομικός κώδικας και χώρα."
+
+msgid "This shipment has reached a %s state. The order status will be updated automatically in a few minutes. You can disable automatic order status updates in <em>WooCoomece Settings > Integrations > Biz Courier & Logistics</em>."
+msgstr "Η παράδοση %s. Η κατάσταση της παραγγελίας θα ενημερωθεί αυτόματα σε λίγα λεπτά. Μπορείτε να απενεργοποιήσετε την αυτόματη ενημέρωση κατάστασης παραγγελιών στις <em>Ρυθμίσεις WooCoomerce > Ενσωματώσεις > Biz Courier & Logistics</em>."
 
 msgid "There isn't enough stock to ship some products."
 msgstr "Δεν υπάρχει επαρκές απόθεμα κάποιων τεμαχίων για τη παράδοση."

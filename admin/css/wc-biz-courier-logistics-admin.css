@@ -105,6 +105,15 @@ ul#wc-biz-courier-logistics-metabox .biz-notice {
   font-weight: normal;
   border-radius: 5px;
   margin: 0 0 10px 0;
+  background: #daf0ff;
+}
+
+ul#wc-biz-courier-logistics-metabox .biz-warning {
+  font-size: 10px;
+  padding: 5px 10px;
+  font-weight: normal;
+  border-radius: 5px;
+  margin: 0 0 10px 0;
   background: #fffdda;
 }
 

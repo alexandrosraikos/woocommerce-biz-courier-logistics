@@ -435,6 +435,6 @@ function biz_conclude_order_status($order_id, $report = null) : bool
 		return true;
 
 	} catch (\Exception $e) {
-		throw new UnexpectedValueException("There is no report data for this order.");
+		throw new $e;
 	}
 }
