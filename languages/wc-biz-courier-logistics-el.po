@@ -279,6 +279,33 @@ msgstr "Κωδικός ανίχνευσης"
 msgid "Voucher number: "
 msgstr "Κωδικός αποστολής: "
 
+msgid "Shipment actions: "
+msgstr "Ενέργειες παράδοσης: "
+
+msgid "You must change the order status to \"Processing\" in order to perform more actions on this shipment."
+msgstr "Πρέπει να αλλάξετε την κατάσταση της παραγγελίας σε \"Σε επεξεργασία\" για να πραγματοποιήσετε περαιτέρω ενέργειες σε αυτή την παράδοση."
+
+msgid "This shipment has reached a %s state. You must change the order status to reflect that change."
+msgstr "Αυτή η παράδοση %s. Πρέπει να αλλάξετε την κατάσταση της παραγγελίας."
+
+msgid "This shipment has reached a %s state. You cannot perform further actions."
+msgstr "Αυτή η παράδοση %s. Δεν μπορείτε να εκτελέσετε άλλες ενέργειες."
+
+msgid "This shipment was completed. There are no more actions to perform."
+msgstr "Αυτή η παράδοση ολοκληρώθηκε. Δεν χρειάζονται περαιτέρω ενέργειες."
+
+msgid "cancelled"
+msgstr "ακυρώθηκε"
+
+msgid "failed"
+msgstr "απέτυχε"
+
+msgid "completed"
+msgstr "ολοκληρώθηκε"
+
+msgid "Synchronize order status"
+msgstr "Συγχρονισμός κατάστασης"
+
 msgid "Modify shipment"
 msgstr "Επεξεργασία παράδοσης"
 

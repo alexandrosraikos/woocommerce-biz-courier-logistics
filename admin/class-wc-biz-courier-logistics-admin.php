@@ -572,7 +572,7 @@ class WC_Biz_Courier_Logistics_Admin
 		} catch (ErrorException $e) {
 			die(json_encode([
 				'error_code' => $e->getMessage(),
-				'error_description' => 'An error was encountered by Biz Courier while processing the voucher.'
+				'error_description' => 'An error was encountered by Biz Courier while processing the voucher. Is it a valid shipment voucher?'
 			]));
 		} catch (SoapFault $f) {
 			die(json_encode([
@@ -702,6 +702,40 @@ class WC_Biz_Courier_Logistics_Admin
 	}
 
 
+
+	/**
+	 * Handles manual voucher deletion AJAX requests from authorized users.
+	 *
+	 * @since    1.2.0
+	 */
+	function biz_synchronize_order_handler()
+	{
+
+		// Verify WordPress generated nonce.
+		if (!wp_verify_nonce($_POST['nonce'], 'ajax_synchronize_order_validation')) {
+			die(json_encode([
+				'error-code' => 'auth-error',
+				'error-description' => 'Unverified request to edit the shipment voucher.'
+			]));
+		}
+
+		try {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
+			if (biz_conclude_order_status($_POST['order_id'])) die("OK");
+		} catch (ErrorException $e) {
+			die(json_encode([
+				'error_code' => $e->getMessage(),
+				'error_description' => 'An error was encountered by Biz Courier while processing the voucher. Is it a valid shipment voucher?'
+			]));
+		} catch (SoapFault $f) {
+			die(json_encode([
+				'error_code' => 'connection-error',
+				'error_description' => 'There was a connection error while trying to contact Biz Courier. More information: ' . $f->getMessage()
+			]));
+		}
+	}
+
+
 	/**
 	 * Add Biz Courier connection indicator metabox to a single order.
 	 *
@@ -728,7 +762,6 @@ class WC_Biz_Courier_Logistics_Admin
 		 */
 		function biz_shipment_meta_box($post)
 		{
-
 			function prepare_scripts_new_shipment($order_id)
 			{
 				// Enqueue and localize send new shipment.
@@ -749,6 +782,7 @@ class WC_Biz_Courier_Logistics_Admin
 				wp_localize_script('wc-biz-courier-logistics-existing-shipment', "ajax_prop", array(
 					"ajax_url" => admin_url('admin-ajax.php'),
 					"modify_shipment_nonce" => wp_create_nonce('ajax_modify_shipment_validation'),
+					"synchronize_order_nonce" => wp_create_nonce('ajax_synchronize_order_validation'),
 					"edit_shipment_voucher_nonce" => wp_create_nonce('ajax_edit_shipment_voucher_validation'),
 					"delete_shipment_voucher_nonce" => wp_create_nonce('ajax_delete_shipment_voucher_validation'),
 					"order_id" => $order_id,
@@ -764,7 +798,9 @@ class WC_Biz_Courier_Logistics_Admin
 			$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
 			try {
 				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
-				$report = biz_shipment_status($voucher);
+				if (!empty($voucher)) {
+					$report = biz_shipment_status($voucher);
+				}
 			} catch (ErrorException $e) {
 				die(json_encode([
 					'error_code' => $e->getMessage(),
@@ -778,7 +814,7 @@ class WC_Biz_Courier_Logistics_Admin
 			}
 			if (!empty($voucher)) prepare_scripts_existing_shipment($order->get_id());
 			else prepare_scripts_new_shipment($order->get_id());
-			biz_shipment_status_tracking_metabox_html($order->get_status(), $voucher, $report);
+			biz_shipment_status_tracking_metabox_html($order->get_status(), $voucher ?? null, $report ?? null);
 		}
 
 		// Ensure the administrator is on the "Edit" screen and not "Add".

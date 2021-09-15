@@ -189,6 +189,7 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('wp_ajax_biz_add_shipment_voucher', $plugin_admin, 'biz_add_shipment_voucher_handler');
 		$this->loader->add_action('wp_ajax_biz_edit_shipment_voucher', $plugin_admin, 'biz_edit_shipment_voucher_handler');
 		$this->loader->add_action('wp_ajax_biz_delete_shipment_voucher', $plugin_admin, 'biz_delete_shipment_voucher_handler');
+		$this->loader->add_action('wp_ajax_biz_synchronize_order', $plugin_admin, 'biz_synchronize_order_handler');
 		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'biz_order_changed_handler',10, 3);
 
 		// Shipment automatic updating - cron job.

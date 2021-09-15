@@ -86,7 +86,7 @@ function biz_stock_sync_all_button()
     <button class="button button-primary wc-biz-courier-logistics-sync-stock" style="height:32px;">
         <?php _e("Get stock levels", "wc-biz-courier-logistics") ?>
     </button>
-<?php
+    <?php
 }
 
 /**
@@ -121,143 +121,6 @@ function biz_stock_sync_column_html($status)
  * 	Biz Courier shipment status.
  * 
  */
-
-
-/**
- * Print HTML for the shipment tracking meta box.
- *
- * @since    1.0.0
- * @param string $voucher The current Biz shipment voucher.
- * @param array $status_history The array containing the status history of the shipment.
- */
-function biz_track_shipment_meta_box_html(string $voucher, array $status_history, bool $completed = false)
-{
-?>
-    <ul>
-        <li class="biz-voucher"><?php echo __("Voucher number: ", 'wc-biz-courier-logistics') . '<div>' . $voucher . '</div>' ?></li>
-        <li class="biz-shipment-modification">
-            <?php if (!$completed) { ?>
-                <button class="button" id="biz-modify-shipment"><?php _e("Modify shipment", "wc-biz-courier-logistics") ?></button>
-            <?php } ?>
-
-            <button class="button" id="biz-edit-shipment-voucher"><?php _e("Edit voucher", "wc-biz-courier-logistics") ?></button>
-            <button class="components-button is-destructive" id="biz-delete-shipment-voucher"><?php _e("Delete voucher", "wc-biz-courier-logistics") ?></button>
-            <?php if (!$completed) { ?>
-                <button class="components-button is-destructive" id="biz-cancel-shipment"><?php _e("Request shipment cancellation", "wc-biz-courier-logistics") ?></button>
-            <?php } ?>
-
-        </li>
-        <?php
-        if (isset($_GET['biz_error'])) {
-            if ($_GET['biz_error'] == 'voucher-error') {
-        ?>
-                <p class="biz-send-shipment error"><?php _e("This voucher number doesn't exist.", 'wc-biz-courier-logistics') ?></p>
-            <?php
-            }
-        }
-
-        if (!empty(end($status_history)['last_mile_tracking_number'])) {
-            ?>
-            <li class="biz-shipment-partner">
-                <?php
-                echo '<div class="title">' . __('Partner tracking number:', 'wc-biz-courier-logistics') . '</div>';
-                echo '<div class="tracking-number">' . end($status_history)['last_mile_tracking_number'] . '</div>';
-                ?>
-            </li>
-        <?php } ?>
-        <li>
-            <?php
-
-            _e("Status history: ", 'wc-biz-courier-logistics');
-            ?>
-        </li>
-        <li>
-            <?php
-            foreach (array_reverse($status_history) as $status) {
-                echo '<ul class="biz-shipment-status ' . $status['outlook'] . '">';
-                echo '<li class="status-level">' . __($status['level'], 'wc-biz-courier-logistics') . '</li>';
-                echo '<li class="status-description">' . $status['description'] . '</li>';
-                echo '<li class="status-comments">' . ((!empty($status['comments'])) ? $status['comments'] : __('No other comments.', 'wc-biz-courier-logistics')) . '</li>';
-                if (!empty($status['actions'])) {
-                    echo '<ul class="actions">';
-                    echo '<div class="title">' . __('Actions:', 'wc-biz-courier-logistics') . '</div>';
-                    foreach ($status['actions'] as $action) {
-                        echo '<hr/><li class="action-description">' . $action['description'] . '</li>';
-                        echo '<li class="action-date">' . $action['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $action['time'] . '</li>';
-                    }
-                    echo '</ul>';
-                }
-                echo '<li class="status-date">' . $status['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $status['time'] . '</li>';
-                echo '</ul>';
-            }
-            ?>
-        </li>
-    </ul>
-    <!-- <button id="wc-biz-courier-logistics-track-shipment" class="button save-order button-primary" /><?php _e("Track shipment", "wc-biz-courier-logistics") ?></button> -->
-    <?php
-}
-
-/**
- * Print errors in HTML for the shipment tracking meta box.
- *
- * @since    1.0.0
- * @param    string $error The associated error code.
- */
-function biz_track_shipment_meta_box_error_html(string $error)
-{
-    if ($error == 'voucher-error') {
-    ?>
-        <p class="biz-shipment-status error"> <?php _e("The Biz Courier voucher is invalid, please contact support.", "wc-biz-courier-logistics") ?></p>
-        <button class="button" id="biz-edit-shipment-voucher"><?php _e("Edit voucher", "wc-biz-courier-logistics") ?></button>
-    <?php
-    }
-}
-
-/**
- * Print HTML for the shipment sending meta box.
- *
- * @since    1.0.0
- */
-function biz_send_shipment_meta_box_html()
-{
-    ?>
-    <p class="wc-biz-courier-logistics-order-indicator not-synchronized">
-        <?php _e("This order has not shipped with Biz.", "wc-biz-courier-logistics") ?>
-    </p>
-    <button id="biz-send-shipment" class="button save-order button-primary" />
-    <?php _e("Send shipment", "wc-biz-courier-logistics") ?>
-    </button>
-    <button id="biz-add-shipment-voucher" class="button">
-        <?php _e("Add existing voucher number", "wc-biz-courier-logistics") ?>
-    </button>
-<?php
-    biz_shipment_errors_html();
-}
-
-/**
- * Print errors in HTML for the shipment tracking meta box.
- *
- * @since    1.0.0
- * @param    string $error The associated error code.
- */
-function biz_track_shipment_meta_box_cancelled_html($voucher = "")
-{
-    echo '<p class="biz-shipment-status">' . __("The Biz Courier shipment was cancelled.", "wc-biz-courier-logistics") . '</p>';
-?>
-    <ul>
-        <li class="biz-voucher"><?php echo __("Voucher number: ", 'wc-biz-courier-logistics') . '<div>' . $voucher . '</div>' ?></li>
-        <li class="biz-shipment-modification">
-    </ul>
-
-    <button id="biz-send-shipment" class="button save-order button-primary" />
-    <?php _e("Resend shipment", "wc-biz-courier-logistics") ?>
-    </button>
-    <button id="biz-add-shipment-voucher" class="button">
-        <?php _e("Add existing voucher number", "wc-biz-courier-logistics") ?>
-    </button>
-    <?php
-    biz_shipment_errors_html();
-}
 
 function biz_shipment_errors_html()
 {
@@ -323,9 +186,10 @@ function biz_shipment_errors_html()
  *
  * @since    1.0.0
  * @param    string $status The associated order status.
- * @param    string $voucher The order's voucher, defaults to null.
+ * @param    string $voucher The order's voucher, defaults to null if not present.
+ * @param    array $report The shipment's status history, defaults to null if not present.
  */
-function biz_shipment_status_tracking_metabox_html(string $status, string $voucher = null, array $report = null)
+function biz_shipment_status_tracking_metabox_html(string $order_status, string $voucher = null, array $report = null)
 {
     ?>
     <ul id="wc-biz-courier-logistics-metabox">
@@ -346,31 +210,67 @@ function biz_shipment_status_tracking_metabox_html(string $status, string $vouch
         ?>
             <li class="biz-voucher">
                 <?php echo __("Voucher number: ", 'wc-biz-courier-logistics') . '<div>' . $voucher . '</div>' ?>
-            </li>
-            <li class="biz-shipment-modification">
-                <?php
-                // Show shipment modification buttons if still pending.
-                if (
-                    end($report)['level'] == 'final' &&
-                    $status != "processing" &&
-                    !empty($voucher)
-                ) {
-                ?> <button class="button" id="biz-modify-shipment">
-                        <?php _e("Modify shipment", "wc-biz-courier-logistics") ?>
-                    </button>
-                    <button class="components-button is-destructive" id="biz-cancel-shipment">
-                        <?php _e("Request shipment cancellation", "wc-biz-courier-logistics") ?>
-                    </button>
-                <?php
-                }
-                ?>
-                <button class="button" id="biz-edit-shipment-voucher">
+                <button id="biz-edit-shipment-voucher">
                     <?php _e("Edit voucher", "wc-biz-courier-logistics") ?>
                 </button>
-                <button class="components-button is-destructive" id="biz-delete-shipment-voucher">
+                <button id="biz-delete-shipment-voucher">
                     <?php _e("Delete voucher", "wc-biz-courier-logistics") ?>
                 </button>
+            </li>
+            <li class="biz-shipment-modification">
+                <div id="biz-shipment-actions-title">
+                    <?php echo __("Shipment actions: ", 'wc-biz-courier-logistics') ?>
+                </div>
+                <?php
 
+                // Shipment modification actions.
+                if (end($report)['level'] != 'Final') {
+                    if ($order_status == "processing") {
+                ?>
+                        <button class="button" id="biz-modify-shipment">
+                            <?php _e("Modify shipment", "wc-biz-courier-logistics") ?>
+                        </button>
+                        <button class="button" id="biz-cancel-shipment">
+                            <?php _e("Request shipment cancellation", "wc-biz-courier-logistics") ?>
+                        </button>
+                    <?php
+                    } else {
+                    ?>
+                        <div class="biz-notice">
+                            <?php _e('You must change the order status to "Processing" in order to perform more actions on this shipment.', 'wc-biz-courier-logistics') ?>
+                        </div>
+                        <button class="button" id="biz-synchronize-order">
+                            <?php _e("Synchronize order status", "wc-biz-courier-logistics") ?>
+                        </button>
+                    <?php
+                    }
+                } else {
+                    if ($order_status != end($report)['conclusion']) {
+                    ?>
+                        <div class="biz-notice">
+                            <?php echo sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
+                        </div>
+                        <button class="button" id="biz-synchronize-order">
+                            <?php _e("Synchronize order status", "wc-biz-courier-logistics") ?>
+                        </button>
+                        <?php
+                    } else {
+                        if (end($report)['conclusion'] != "completed") {
+                        ?>
+                            <div class="biz-error">
+                            <?php echo sprintf(__("This shipment has reached a %s state. You cannot perform further actions.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
+                            </div>
+                        <?php
+                        } else {
+                        ?>
+                            <div class="biz-success">
+                                <?php _e('This shipment was completed. There are no more actions to perform.', 'wc-biz-courier-logistics') ?>
+                            </div>
+                <?php
+                        }
+                    }
+                }
+                ?>
             </li>
             <?php
 
@@ -397,12 +297,12 @@ function biz_shipment_status_tracking_metabox_html(string $status, string $vouch
             <?php
             if (!empty($report)) {
             ?>
-                <li>
+                <li id="biz-shipment-status-history">
                     <?php
                     foreach (array_reverse($report) as $status) {
                         echo '<ul class="biz-shipment-status ' . $status['conclusion'] . '">';
                         echo '<li class="status-level">' . __($status['level'], 'wc-biz-courier-logistics') . '</li>';
-                        echo '<li class="status-description">' . $status['description'] . '</li>';
+                        echo '<li class="status-description">' . $status['description'] . (($status['level'] == "Final") ? file_get_contents(plugin_dir_path(dirname(__FILE__)) . 'svg/' . $status['conclusion'] . '.svg') : "") . '</li>';
                         echo '<li class="status-comments">' . ((!empty($status['comments'])) ? $status['comments'] : __('No other comments.', 'wc-biz-courier-logistics')) . '</li>';
                         if (!empty($status['actions'])) {
                             echo '<ul class="actions">';

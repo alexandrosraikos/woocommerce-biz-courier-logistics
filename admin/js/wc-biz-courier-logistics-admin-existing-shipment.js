@@ -26,7 +26,7 @@
           type: "post",
           data: {
             action: "biz_modify_shipment",
-            modify_shipment_nonce: ajax_prop.nonce,
+            nonce: ajax_prop.modify_shipment_nonce,
             order_id: ajax_prop.order_id,
             shipment_modification_message: message,
           },
@@ -156,6 +156,35 @@
           dataType: "json",
         });
       }
+    });
+
+    // Capture click event for order synchronization.
+    $("#biz-synchronize-order").click(function (event) {
+      // Prevent default reload.
+      event.preventDefault();
+      // Disable button.
+      $("#biz-synchronize-order").prop("disabled", true);
+      $("#biz-synchronize-order").addClass("biz-loading");
+
+      // Perform AJAX request.
+      $.ajax({
+        url: ajax_prop.ajax_url,
+        type: "post",
+        data: {
+          action: "biz_synchronize_order",
+          nonce: ajax_prop.synchronize_order_nonce,
+          order_id: ajax_prop.order_id,
+        },
+        // Handle response.
+        complete: function (response) {
+          if (response.responseText === "OK") {
+            window.location.reload();
+          } else {
+            showError(JSON.parse(response.responseText));
+          }
+        },
+        dataType: "json",
+      });
     });
   });
 })(jQuery);

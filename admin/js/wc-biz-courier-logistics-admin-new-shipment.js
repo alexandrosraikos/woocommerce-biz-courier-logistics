@@ -47,8 +47,8 @@
       $("#biz-add-shipment-voucher").prop("disabled", true);
       $("#biz-add-shipment-voucher").addClass("biz-loading");
 
-      var message = prompt(ajax_prop.add_voucher_message);
-      if (message != null) {
+      var voucher = prompt(ajax_prop.add_voucher_message);
+      if (voucher != null) {
         // Perform AJAX request.
         $.ajax({
           url: ajax_prop.ajax_url,
@@ -57,7 +57,7 @@
             action: "biz_add_shipment_voucher",
             nonce: ajax_prop.add_shipment_voucher_nonce,
             order_id: ajax_prop.order_id,
-            message: message,
+            voucher: voucher,
           },
           // Handle response.
           complete: function (response) {
@@ -65,6 +65,9 @@
               window.location.reload();
             } else {
               showError(JSON.parse(response.responseText));
+              // Re-enable button.
+              $("#biz-add-shipment-voucher").prop("disabled", false);
+              $("#biz-add-shipment-voucher").removeClass("biz-loading");
             }
           },
           dataType: "json",

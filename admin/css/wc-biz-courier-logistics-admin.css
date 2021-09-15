@@ -88,20 +88,80 @@ button.biz-loading {
 
 ul#wc-biz-courier-logistics-metabox .biz-error {
   font-size: 10px;
-  padding: 7px;
+  padding: 5px 10px;
   border-radius: 5px;
   background: #ffdada;
+}
+
+ul#wc-biz-courier-logistics-metabox .biz-notice {
+  font-size: 10px;
+  padding: 5px 10px;
+  font-weight: normal;
+  border-radius: 5px;
+  margin: 0 0 10px 0;
+  background: #fffdda;
+}
+
+ul#wc-biz-courier-logistics-metabox .biz-success {
+  font-size: 10px;
+  padding: 5px 10px;
+  font-weight: normal;
+  border-radius: 5px;
+  margin: 0 0 10px 0;
+  background: #daffdd;
+}
+
+ul#wc-biz-courier-logistics-metabox > li {
+  margin: 10px 0;
+}
+
+#biz-shipment-actions-title {
+  margin-bottom: 8px;
+}
+
+#biz-cancel-shipment.button {
+  border-color: var(--wc-red);
+  color: var(--wc-red);
 }
 
 #biz-add-shipment-voucher {
   margin-top: 10px;
 }
 
+#biz-edit-shipment-voucher,
+#biz-delete-shipment-voucher {
+  border: none;
+  padding: 0;
+  background: none;
+  text-decoration: underline;
+}
+
+#biz-edit-shipment-voucher {
+  color: var(--wp-admin-theme-color);
+}
+
+#biz-delete-shipment-voucher {
+  color: var(--wc-red);
+}
+
+#biz-edit-shipment-voucher:hover,
+#biz-delete-shipment-voucher:hover {
+  cursor: pointer;
+}
+
+#biz-edit-shipment-voucher.loading,
+#biz-delete-shipment-voucher.loading,
+#biz-add-shipment-voucher.loading {
+  pointer-events: none;
+  border: rgb(240, 240, 240);
+  color: rgb(240, 240, 240);
+}
+
 .biz-voucher div {
   font-weight: bold;
-  font-size: 20px;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  font-size: 24px;
+  font-family: monospace;
+  margin: 5px 0;
 }
 
 .biz-shipment-partner .tracking-number {
@@ -109,26 +169,23 @@ ul#wc-biz-courier-logistics-metabox .biz-error {
   font-size: 18px;
 }
 
+#biz-shipment-status-history {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
 ul.biz-shipment-status {
   padding: 10px;
-  background-color: rgb(224, 234, 245);
-  border-radius: 7px;
-  margin: 10px 0;
-}
-
-ul.biz-shipment-status.sent {
-  background-color: #afe487;
-}
-
-ul.biz-shipment-status.cancelled,
-ul.biz-shipment-status.failed {
-  background-color: #e2a4a4;
+  border-left: 1px solid rgb(3, 92, 194);
+  border-bottom: 1px solid rgb(240, 240, 240);
+  margin: 0;
 }
 
 .biz-shipment-status .status-level,
 .biz-shipment-status .actions .title {
-  font-size: 10px;
+  font-size: 8px;
   opacity: 0.8;
+  margin-bottom: 3px;
   text-transform: uppercase;
 }
 
@@ -138,21 +195,39 @@ ul.biz-shipment-status.failed {
 }
 
 .biz-shipment-status .status-description {
-  font-size: 18px;
+  font-size: 14px;
+}
+
+.biz-shipment-status .status-description svg {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  margin-bottom: -2px;
+  margin-left: 6px;
+}
+
+.biz-shipment-status.completed .status-description svg path {
+  fill: var(--wc-green);
+}
+
+.biz-shipment-status.cancelled .status-description svg path {
+  fill: var(--wc-orange);
+}
+
+.biz-shipment-status.failed .status-description svg path {
+  fill: var(--wc-red);
 }
 
 .biz-shipment-status .status-comments {
   font-family: monospace;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .biz-shipment-status .actions {
   background-color: rgb(240, 240, 240);
-  border-bottom-right-radius: 7px;
-  border-top-right-radius: 7px;
+  border-radius: 7px;
   margin: 10px 0;
   padding: 10px;
-  border-left: 2px solid #0068ae;
 }
 
 .biz-shipment-status .status-date,

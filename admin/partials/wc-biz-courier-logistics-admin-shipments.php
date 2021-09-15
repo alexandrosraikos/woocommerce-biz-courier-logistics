@@ -401,20 +401,21 @@ function biz_shipment_status($voucher): array
 function biz_conclude_order_status($order_id, $report = null) : bool
 {
 	try {
-		$report ??= biz_shipment_status(get_post_meta($order_id, '_biz_voucher', true));
-
+		if (!isset($report)){
+		$report = biz_shipment_status(get_post_meta($order_id, '_biz_voucher', true));
+		}
 		if (end($report)['level'] == 'Final') {
-			if (end($report)['outlook'] == 'sent') {
+			if (end($report)['conclusion'] == 'completed') {
 
 				// Handle completed shipment status.
 				$order = wc_get_order($order_id);
 				$order->update_status("completed", __("The newly connected shipment was already completed.", 'wc-biz-courier-logistics'));
-			} elseif (end($report)['outlook'] == 'cancelled') {
+			} elseif (end($report)['conclusion'] == 'cancelled') {
 
 				// Handle cancelled shipment status.
 				$order = wc_get_order($order_id);
 				$order->update_status("cancelled", __("The newly connected shipment was already cancelled.", 'wc-biz-courier-logistics'));
-			} elseif (end($report)['outlook'] == 'failed') {
+			} elseif (end($report)['conclusion'] == 'failed') {
 
 				// Handle failed shipment status.
 				$order = wc_get_order($order_id);
@@ -427,13 +428,13 @@ function biz_conclude_order_status($order_id, $report = null) : bool
 		else {
 
 			// Handle pending shipment status.
-			$order = wc_get_order($_POST['order_id']);
+			$order = wc_get_order($order_id);
 			$order->update_status("processing", __("The newly connected shipment is pending.", 'wc-biz-courier-logistics'));
 		}
 		
 		return true;
 
 	} catch (\Exception $e) {
-		throw new Exception("There is no report data for this order.");
+		throw new UnexpectedValueException("There is no report data for this order.");
 	}
 }
