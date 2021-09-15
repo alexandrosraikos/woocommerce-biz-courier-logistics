@@ -86,14 +86,11 @@ button.biz-loading {
 	 * 
 	 */
 
-.biz-send-shipment.error {
-  font-weight: bold;
-  color: #a44;
-}
-
-ul.biz-send-shipment.error {
-  list-style-type: circle;
-  padding-left: 20px;
+ul#wc-biz-courier-logistics-metabox .biz-error {
+  font-size: 10px;
+  padding: 7px;
+  border-radius: 5px;
+  background: #ffdada;
 }
 
 #biz-add-shipment-voucher {
