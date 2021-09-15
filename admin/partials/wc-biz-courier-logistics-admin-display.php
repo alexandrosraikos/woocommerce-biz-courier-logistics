@@ -189,11 +189,19 @@ function biz_shipment_errors_html()
  * @param    string $voucher The order's voucher, defaults to null if not present.
  * @param    array $report The shipment's status history, defaults to null if not present.
  */
-function biz_shipment_status_tracking_metabox_html(string $order_status, string $voucher = null, array $report = null)
+function biz_shipment_status_tracking_metabox_html(string $order_status, string $voucher = null, array $report = null, $internal_error = null)
 {
     ?>
     <ul id="wc-biz-courier-logistics-metabox">
         <?php
+        if (!empty($internal_error)) {
+            ?>
+            <li class="biz-error">
+                <?php echo $internal_error; ?>
+            </li>
+            <?php
+        }
+        
         if (empty($voucher)) {
         ?>
             <p class="wc-biz-courier-logistics-order-indicator not-synchronized">
@@ -307,7 +315,7 @@ function biz_shipment_status_tracking_metabox_html(string $order_status, string 
                         if (!empty($status['actions'])) {
                             echo '<ul class="actions">';
                             echo '<div class="title">' . __('Actions:', 'wc-biz-courier-logistics') . '</div>';
-                            foreach ($status['actions'] as $action) {
+                            foreach (array_reverse($status['actions']) as $action) {
                                 echo '<hr/><li class="action-description">' . $action['description'] . '</li>';
                                 echo '<li class="action-date">' . $action['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $action['time'] . '</li>';
                             }

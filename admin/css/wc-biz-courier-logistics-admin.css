@@ -86,6 +86,11 @@ button.biz-loading {
 	 * 
 	 */
 
+.biz-voucher span {
+  font-weight: bold;
+  font-family: monospace;
+}
+
 ul#wc-biz-courier-logistics-metabox .biz-error {
   font-size: 10px;
   padding: 5px 10px;
