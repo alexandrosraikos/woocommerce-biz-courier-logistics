@@ -195,13 +195,13 @@ function biz_shipment_status_tracking_metabox_html(string $order_status, string 
     <ul id="wc-biz-courier-logistics-metabox">
         <?php
         if (!empty($internal_error)) {
-            ?>
+        ?>
             <li class="biz-error">
                 <?php echo $internal_error; ?>
             </li>
-            <?php
+        <?php
         }
-        
+
         if (empty($voucher)) {
         ?>
             <p class="wc-biz-courier-logistics-order-indicator not-synchronized">
@@ -250,33 +250,49 @@ function biz_shipment_status_tracking_metabox_html(string $order_status, string 
                         <button class="button" id="biz-synchronize-order">
                             <?php _e("Synchronize order status", "wc-biz-courier-logistics") ?>
                         </button>
-                    <?php
+                        <?php
                     }
                 } else {
                     if ($order_status != end($report)['conclusion']) {
                         $biz_settings = get_option('woocommerce_biz_integration_settings');
                         if ($biz_settings['automatic_order_status_updating'] == 'yes') {
-                            ?>
-                            <div class="biz-notice">
-                            <?php echo sprintf(__("This shipment has reached a %s state. The order status will be updated automatically in a few minutes. You can disable automatic order status updates in <em>WooCoomece Settings > Integrations > Biz Courier & Logistics</em>.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
-                            </div>
+                            if ($order_status == 'processing') {
+                        ?>
+                                <div class="biz-notice">
+                                    <?php echo sprintf(__("This shipment has reached a %s state. The order status will be updated automatically in a few minutes. You can disable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
+                                </div>
                             <?php
-                        }
-                        else {
-                    ?>
-                        <div class="biz-warning">
-                            <?php echo sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change. You can also enable automatic order status updates in <em>WooCoomece Settings > Integrations > Biz Courier & Logistics</em>.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
-                        </div>
-                        <button class="button" id="biz-synchronize-order">
-                            <?php _e("Synchronize order status", "wc-biz-courier-logistics") ?>
-                        </button>
-                        <?php
+                            } else {
+                            ?>
+                                <div class="biz-warning">
+                                    <?php echo sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
+                                </div>
+                            <?php
+                            }
+                        } else {
+                            if ($order_status =='processing') {
+                                ?>
+                                <div class="biz-warning">
+                                    <?php echo sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change. You can also enable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
+                                </div>
+                                <button class="button" id="biz-synchronize-order">
+                                    <?php _e("Synchronize order status", "wc-biz-courier-logistics") ?>
+                                </button>
+                                <?php
+                            }   
+                            else {
+                            ?>
+                                <div class="biz-warning">
+                                    <?php echo sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
+                                </div>
+                            <?php
+                            }
                         }
                     } else {
                         if (end($report)['conclusion'] != "completed") {
                         ?>
                             <div class="biz-error">
-                            <?php echo sprintf(__("This shipment has reached a %s state. You cannot perform further actions.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
+                                <?php echo sprintf(__("This shipment has reached a %s state. You cannot perform further actions.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
                             </div>
                         <?php
                         } else {

@@ -779,8 +779,7 @@ class WC_Biz_Courier_Logistics_Admin
 		// Automatic cancellation.
 		if (($biz_settings['automatic_shipment_cancellation'] ?? 'disabled') != 'disabled') {
 			if (
-				substr($biz_settings['automatic_shipment_cancellation'], 3) == $to &&
-				substr($biz_settings['automatic_shipment_cancellation'], 3) != $from
+				substr($biz_settings['automatic_shipment_cancellation'], 3) == $to
 			) {
 				try {
 					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
@@ -796,7 +795,8 @@ class WC_Biz_Courier_Logistics_Admin
 							$error_description = __("An unknown error occured while processing shipment modification information.", 'wc-biz-courier-logistics');
 					}
 				} catch (ErrorException $e) {
-					$error_description = __('An unknown Biz error occured while processing shipment modification information.', 'wc-biz-courier-logistics');
+					// Unknown happens when cancelling an already cancelled order.
+					// $error_description = __('An unknown Biz error occured while processing shipment modification information.', 'wc-biz-courier-logistics');
 				} catch (SoapFault $f) {
 					$error_description = __('There was a connection error while trying to contact Biz Courier. More information: ', 'wc-biz-courier-logistics') . $f->getMessage();
 				}
