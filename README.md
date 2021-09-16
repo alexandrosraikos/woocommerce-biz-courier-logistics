@@ -12,24 +12,6 @@ Recommended requirements for this plugin are PHP 8.0+ (with `soap` extension ena
 
 _Biz Courier & Logistics for WooCommerce has not been tested with prior versions of PHP, WordPress or WooCommerce._
 
-### Installation
-
-Simply setup WordPress with WooCommerce and enable the plugin.
-
-1. Download and setup WordPress from [the official website](https://wordpress.org/).
-1. Download and setup WooCommerce from the WordPress dashboard.
-1. Download the `wc-biz-courier-logistics.zip` package of Biz Courier & Logistics for WooCommerce from the latest release in the [releases](https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/releases) page and install it via the WordPress Dashboard.
-
-You initially have to set up your credentials.
-
-1. Login to the WordPress Dashboard
-1. Go to _WooCommerce Settings > Integration > Biz Courier & Logistics_.
-1. Register the credentials that were provided to you by Biz Courier.
-
-### Upgrade
-
-To upgrade, simply delete and reinstall using the method above.
-
 ## Features
 
 ### Stock Levels Synchronization
@@ -47,9 +29,9 @@ To enable shipping rate calculation:
 1. Create your WooCommerce Shipping Zones and add the Biz Courier shipping method.
 1. Adjust pricing for each zone depending on your contract.
 
-Save your Biz Courier credentials into _Dashboard > WooCommerce > Settings > Biz Courier_.
+Save your Biz Courier credentials into _Dashboard > WooCommerce Settings > Integration > Biz Courier & Logistics_.
 
-_Note: Consult Biz Courier for your shipping country's list of inaccessible areas._
+_Note: Consult Biz Courier for your shipping country's list of inaccessible areas and their postal codes._
 
 ### Manage Shipments
 
@@ -57,9 +39,11 @@ _Note: Consult Biz Courier for your shipping country's list of inaccessible area
 
 The fastest way to submit your shipment to Biz Courier, straight from WooCommerce. At each order page, you can click on _Send shipment_. You can also manually add and edit shipment voucher numbers.
 
+You also have the option to enable automatic shipment sending when your order enters a specified state in _WooCommerce Settings > Shipping > Biz Courier Shipping_.
+
 _Note: You need to synchronize your stock levels first for Biz Warehouse enabled products in the order._
 
-#### Track
+#### Tracking & automatic status updates
 
 If a shipment is sent from the WordPress Dashboard, you can view the tracking code and the shipment status history directly from the page of the order.
 
@@ -72,6 +56,28 @@ You can send shipment modification instructions directly to Biz Courier. Simply 
 #### Cancel
 
 You can request cancellation of a Biz Courier shipment by heading to your order and clicking _Request shipment cancellation_.
+
+You also have the option to enable automatic shipment cancellation requests when your order enters a specified state in _WooCommerce Settings > Shipping > Biz Courier Shipping_.
+
+### Installation
+
+Simply setup WordPress with WooCommerce and enable the plugin.
+
+1. Download and setup WordPress from [the official website](https://wordpress.org/).
+1. Download and setup WooCommerce from the WordPress dashboard.
+1. Download the `wc-biz-courier-logistics.zip` package of Biz Courier & Logistics for WooCommerce from the latest release in the [releases](https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/releases) page and install it via the WordPress Dashboard.
+
+You initially have to set up your credentials.
+
+1. Login to the WordPress Dashboard
+1. Go to _WooCommerce Settings > Integration > Biz Courier & Logistics_.
+1. Register the credentials that were provided to you by Biz Courier.
+
+Then you can set up your shipping options in _WooCommerce Settings > Shipping > Biz Courier Shipping_.
+
+### Upgrade
+
+To upgrade, simply download the latest `wc-biz-courier-logistics.zip` package of Biz Courier & Logistics for WooCommerce from the latest release in the [releases](https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/releases) page and install it via the WordPress Dashboard.
 
 ## Frequently Asked Questions
 
