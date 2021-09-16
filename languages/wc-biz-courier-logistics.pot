@@ -1,0 +1,535 @@
+# ENGLISH (EN) translation for Biz Courier & Logistics for WooCommerce.
+# Copyright (C) 2021, Alexandros Raikos tou Konstantinou.
+# This file is distributed under the same license as the Biz Courier & Logistics for WooCommerce package.
+# Alexandros Raikos <alexandros@araikos.gr>, 2021.
+#
+msgid ""
+msgstr ""
+
+msgid "Integrate your Biz Courier warehouse with WooCommerce."
+msgstr ""
+
+msgid "Alexandros Raikos"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Documentation"
+msgstr ""
+
+msgid "Support"
+msgstr ""
+
+msgid "Donate via GitHub Sponsors"
+msgstr ""
+
+# Integration
+# ------
+# This section provides the necessary translations for initialising the custom Biz integration.
+msgid ""
+"Please setup your Biz Courier credentials in <a href='%s'>WooCommerce "
+"Settings</a>."
+msgstr ""
+
+msgid ""
+"Your Biz Courier credentials are invalid. Please setup your Biz Courier "
+"credentials in <a href='%s'>WooCommerce Settings</a>."
+msgstr ""
+
+msgid "There was an error contacting Biz Courier, please try again later."
+msgstr ""
+
+msgid "Biz Courier & Logistics"
+msgstr ""
+
+msgid ""
+"An integration for synchronising stock, orders and payment fees with the Biz "
+"Courier & Logistics platform."
+msgstr ""
+
+msgid "Biz Courier Credentials"
+msgstr ""
+
+msgid ""
+"Insert your Biz Courier credentials here. If you are still unregistered with "
+"Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" "
+"target=\"blank\">contact Biz</a>."
+msgstr ""
+
+msgid "Account Number"
+msgstr ""
+
+msgid "Your account number registered with Biz Courier."
+msgstr ""
+
+msgid "Your head CRM number registered with Biz Courier."
+msgstr ""
+
+msgid "Warehouse CRM Number"
+msgstr ""
+
+msgid "Your CRM number for the warehouse location assigned to this store."
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Your username registered with Biz Courier."
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Your Biz Courier merchant password."
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid ""
+"Choose your optimal working settings for integrating Biz Courier & Logistics "
+"with your WooCommerce shop."
+msgstr ""
+
+msgid "Automatic order status updates"
+msgstr ""
+
+msgid ""
+"Update Processing shipment status automatically to Completed or Cancelled, "
+"based on Biz Courier data."
+msgstr ""
+
+# Stock Synchronization
+# ------
+# This section provides all the translations related to syncing stock 
+# between the WooCommerce store and the items in the connected warehouse.
+msgid "Biz Warehouse"
+msgstr ""
+
+msgid "Biz status"
+msgstr ""
+
+msgid "Get stock levels"
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Found"
+msgstr ""
+
+msgid "Not found"
+msgstr ""
+
+msgid "Partially found"
+msgstr ""
+
+msgid "Disabled"
+msgstr ""
+
+msgid "Select this option if the product is stored in your Biz warehouse."
+msgstr ""
+
+# Shipping Method
+# ------
+# This section provides the necessary translations for initialising 
+# the custom Biz shipping method.
+msgid "Biz Courier Shipping"
+msgstr ""
+
+msgid "Automatic shipment creation"
+msgstr ""
+
+msgid "Automatically send Biz shipments when orders enter the selected status."
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
+msgid "Automatic shipment cancellation"
+msgstr ""
+
+msgid ""
+"Automatically cancel Biz shipments when orders enter the selected status."
+msgstr ""
+
+msgid "Simple delivery"
+msgstr ""
+
+msgid "SMS notifications"
+msgstr ""
+
+msgid "Use billing phone"
+msgstr ""
+
+msgid ""
+"Submit the recipient's billing phone number instead of the shipping phone "
+"number to Biz."
+msgstr ""
+
+msgid "Inform your customers about their Biz shipment status via SMS."
+msgstr ""
+
+msgid "Morning delivery"
+msgstr ""
+
+msgid ""
+"Check the box if you would like the morning delivery option enabled in same "
+"area deliveries."
+msgstr ""
+
+msgid "Morning delivery (until 10:30 a.m.)"
+msgstr ""
+
+msgid "Saturday delivery"
+msgstr ""
+
+msgid ""
+"Check the box if you would like the Saturday delivery option enabled in same "
+"area deliveries."
+msgstr ""
+
+msgid ""
+"Allow your customers to receive their products via Biz Courier Shipping."
+msgstr ""
+
+msgid "Enable"
+msgstr ""
+
+msgid "Allow shipping with Biz Courier."
+msgstr ""
+
+msgid "COD fee"
+msgstr ""
+
+msgid "Insert the additional Biz fee for Cash On Delivery payments."
+msgstr ""
+
+msgid "Shipping Warehouses"
+msgstr ""
+
+msgid "Warehouse Location"
+msgstr ""
+
+msgid "Insert the agreed upon prices for Biz Courier Shipping."
+msgstr ""
+
+msgid "Shipping zone type"
+msgstr ""
+
+msgid "Select the type of Biz area covered by this shipping zone."
+msgstr ""
+
+msgid "Same area as warehouse"
+msgstr ""
+
+msgid "Delivery pricing"
+msgstr ""
+
+msgid "Insert the delivery fee amount for up to 2kg."
+msgstr ""
+
+msgid "Insert the delivery fee amount for every extra kg."
+msgstr ""
+
+msgid "Charge per extra kg"
+msgstr ""
+
+msgid "Land destinations"
+msgstr ""
+
+msgid "Insert the price for domestic land destinations."
+msgstr ""
+
+msgid "Island destinations"
+msgstr ""
+
+msgid "Insert the price for domestic island destinations."
+msgstr ""
+
+msgid "Inaccessible areas"
+msgstr ""
+
+msgid "Insert the price for domestic inaccessible destinations."
+msgstr ""
+
+msgid "Same Day Delivery"
+msgstr ""
+
+msgid "Insert the pricing for same day delivery."
+msgstr ""
+
+msgid "Allow same region customers to opt for same day delivery."
+msgstr ""
+
+msgid "Charge per km"
+msgstr ""
+
+msgid "Minimum charge"
+msgstr ""
+
+msgid "Additional Services"
+msgstr ""
+
+msgid "Adjust options for additional services provided by Biz Courier."
+msgstr ""
+
+msgid "Morning delivery fee"
+msgstr ""
+
+msgid "Insert the additional fee amount for morning deliveries."
+msgstr ""
+
+msgid "Saturday delivery fee"
+msgstr ""
+
+msgid "Insert the additional fee amount for deliveries on Saturdays."
+msgstr ""
+
+# Order Status
+# ------
+# This section provides the necessary translations for mapping, managing and displaying
+# WooCommerce orders and their status to Biz Courier Shipments.
+msgid "Biz shipment voucher"
+msgstr ""
+
+msgid "Track shipment"
+msgstr ""
+
+msgid "Tracking Code"
+msgstr ""
+
+msgid "Voucher number: "
+msgstr ""
+
+msgid "Shipment actions: "
+msgstr ""
+
+msgid ""
+"You must change the order status to \"Processing\" in order to perform more "
+"actions on this shipment."
+msgstr ""
+
+msgid ""
+"This shipment has reached a %s state. You must change the order status to "
+"reflect that change. You can also enable automatic order status updates in "
+"<em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>."
+msgstr ""
+
+msgid ""
+"This shipment has reached a %s state. You must change the order status to "
+"reflect that change."
+msgstr ""
+
+msgid ""
+"This shipment has reached a %s state. You cannot perform further actions."
+msgstr ""
+
+msgid "This shipment was completed. There are no more actions to perform."
+msgstr ""
+
+msgid "cancelled"
+msgstr ""
+
+msgid "failed"
+msgstr ""
+
+msgid "completed"
+msgstr ""
+
+msgid "There was a problem processing the submitted order information."
+msgstr ""
+
+msgid "This order could not be submitted due to existing data."
+msgstr ""
+
+msgid "Synchronize order status"
+msgstr ""
+
+msgid "Modify shipment"
+msgstr ""
+
+msgid "Edit voucher"
+msgstr ""
+
+msgid "The newly connected shipment was already completed."
+msgstr ""
+
+msgid "The newly connected shipment was already cancelled."
+msgstr ""
+
+msgid "The newly connected shipment is pending delivery."
+msgstr ""
+
+msgid "Request shipment cancellation"
+msgstr ""
+
+msgid "Delete voucher"
+msgstr ""
+
+msgid "Status history: "
+msgstr ""
+
+msgid "Modification history: "
+msgstr ""
+
+msgid "Delivery status update"
+msgstr ""
+
+msgid "Final"
+msgstr ""
+
+msgid "No other comments."
+msgstr ""
+
+msgid "Actions:"
+msgstr ""
+
+msgid "at"
+msgstr ""
+
+msgid "Biz Courier status"
+msgstr ""
+
+msgid "The shipment was successfully registered to Biz Courier."
+msgstr ""
+
+msgid "This order has not shipped with Biz."
+msgstr ""
+
+msgid "Send shipment"
+msgstr ""
+
+msgid "Add existing voucher number"
+msgstr ""
+
+msgid ""
+"Insert the shipment's voucher number from Biz Courier in the field below."
+msgstr ""
+
+msgid ""
+"Insert the new shipment voucher number from Biz Courier in the field below."
+msgstr ""
+
+msgid ""
+"An error was encountered by Biz Courier while processing the voucher. Is it "
+"a valid shipment voucher?"
+msgstr ""
+
+msgid "Are you sure you want to delete the shipment voucher from this order?"
+msgstr ""
+
+msgid "This voucher was not found. Please provide a valid shipment voucher."
+msgstr ""
+
+msgid "The voucher number couldn't be retrieved."
+msgstr ""
+
+msgid ""
+"An unknown error occured while processing shipment modification information."
+msgstr ""
+
+msgid ""
+"An unknown Biz error occured while processing shipment modification "
+"information."
+msgstr ""
+
+msgid "There are no products in this order."
+msgstr ""
+
+msgid "Some products were not found in the Biz warehouse."
+msgstr ""
+
+msgid ""
+"Please make sure all products in the order have their weight & dimensions "
+"registered."
+msgstr ""
+
+msgid "There was an error with your Biz credentials."
+msgstr ""
+
+msgid "An unknown error occured while processing order information."
+msgstr ""
+
+msgid "An unknown error occured after processing order information."
+msgstr ""
+
+msgid "A voucher already exists for this order."
+msgstr ""
+
+msgid "There was an unexpected error from Biz."
+msgstr ""
+
+msgid ""
+"There was a problem registering recipient information with Biz. Please check "
+"your recipient information entries."
+msgstr ""
+
+msgid ""
+"There was a problem with your order's items while submitting their "
+"information to Biz."
+msgstr ""
+
+msgid ""
+"Response from Biz could not be read, please check your warehouse shipments "
+"from their official application."
+msgstr ""
+
+msgid "An unknown Biz error occured after submitting the shipment information."
+msgstr ""
+
+msgid ""
+"There was a connection error while trying to contact Biz Courier. More "
+"information: "
+msgstr ""
+
+msgid ""
+"There was a problem with the recipient's information. Make sure you have "
+"filled in all the necessary fields: First name, last name, phone number, e-"
+"mail address, address line #1, city, postal code and country."
+msgstr ""
+
+msgid ""
+"This shipment has reached a %s state. The order status will be updated "
+"automatically in a few minutes. You can disable automatic order status "
+"updates in <em>WooCoomerce Settings > Integrations > Biz Courier & "
+"Logistics</em>."
+msgstr ""
+
+msgid "There isn't enough stock to ship some products."
+msgstr ""
+
+msgid ""
+"Are you sure you want to request the cancellation of this Biz shipment? If "
+"you want to send it again, you will receive a new tracking code."
+msgstr ""
+
+msgid "Please insert the message you want to send to Biz about the shipment."
+msgstr ""
+
+msgid ""
+"The Biz shipment with tracking code %s was cancelled. The cancellation code "
+"is: %s."
+msgstr ""
+
+msgid "The shipment was cancelled by Biz Courier."
+msgstr ""
+
+msgid "The shipment was delivered successfully by Biz Courier."
+msgstr ""
+
+msgid "The Biz shipment with tracking code %s was cancelled."
+msgstr ""
+
+msgid "The Biz Courier shipment was cancelled."
+msgstr ""
+
+msgid "Resend shipment"
+msgstr ""
+
+msgid "Message sent to Biz: "
+msgstr ""
+
+msgid " (modification id: "
+msgstr ""
