@@ -409,6 +409,7 @@ function biz_conclude_order_status($order_id, $report = null) : bool
 
 				// Handle completed shipment status.
 				$order = wc_get_order($order_id);
+				// TODO @alexandrosraikos: Conditionalize order note (cron syncing, manual syncing, adding voucher).
 				$order->update_status("completed", __("The newly connected shipment was already completed.", 'wc-biz-courier-logistics'));
 			} elseif (end($report)['conclusion'] == 'cancelled') {
 
