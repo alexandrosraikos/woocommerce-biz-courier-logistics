@@ -200,7 +200,7 @@ class WC_Biz_Courier_Logistics
 		function biz_cron_order_status_checking_interval($schedules) {
 			$schedules['ten_minutes'] = array(
 				'interval' => 300,
-				'display' => 'Every 10 minutes.'
+				'display' => 'Every 5 minutes.'
 			);
 			return $schedules;
 		}
