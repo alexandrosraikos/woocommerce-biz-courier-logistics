@@ -154,6 +154,8 @@ class WC_Biz_Courier_Logistics
 
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+		$this->loader->add_filter('plugin_action_links_wc-biz-courier-logistics/wc-biz-courier-logistics.php', $plugin_admin, 'biz_plugin_action_links');
+		$this->loader->add_filter('plugin_row_meta', $plugin_admin, 'biz_plugin_row_meta', 10, 2);
 
 		/**
 		 *  Biz Courier Integration.

@@ -18,6 +18,24 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: el\n"
 
+msgid "Integrate your Biz Courier warehouse with WooCommerce."
+msgstr "Συνδέστε την αποθήκη σας Biz με το WooCommerce."
+
+msgid "Alexandros Raikos"
+msgstr "Αλέξανδρος Ράικος"
+
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+
+msgid "Documentation"
+msgstr "Τεκμηρίωση"
+
+msgid "Support"
+msgstr "Υποστήριξη"
+
+msgid "Donate via GitHub Sponsors"
+msgstr "Δωρεά μέσω GitHub Sponsors"
+
 # Integration
 # ------
 # This section provides the necessary translations for initialising the custom Biz integration.

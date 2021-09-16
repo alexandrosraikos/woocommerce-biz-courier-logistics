@@ -74,6 +74,43 @@ class WC_Biz_Courier_Logistics_Admin
 		wp_enqueue_script($this->WC_Biz_Courier_Logistics, plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin.js', array('jquery'), $this->version, false);
 	}
 
+	/**
+	 * Add plugin action links.
+	 *
+	 * Add a link to the settings page on the plugins.php page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array  $links List of existing plugin action links.
+	 * @return array         List of modified plugin action links.
+	 */
+	function biz_plugin_action_links($actions)
+	{
+		return array_merge(array(
+			'<a href="' . esc_url(admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')) . '">' . __('Settings', 'wc-biz-courier-logistics') . '</a>'
+		), $actions);
+	}
+
+	/**
+	 * Add plugin action links.
+	 *
+	 * Add a link to the settings page on the plugins.php page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array  $links List of existing plugin row meta links.
+	 * @return array         List of modified plugin row meta links.
+	 */
+	function biz_plugin_row_meta($links, $file)
+	{
+		if (strpos($file,'wc-biz-courier-logistics.php')) {
+			$links[] = '<a href="https://github.com/sponsors/alexandrosraikos" target="blank">'.__('Donate via GitHub Sponsors','wc-biz-courier-logistics').'</a>';
+			$links[] = '<a href="https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/blob/main/README.md" target="blank">'.__('Documentation','wc-biz-courier-logistics').'</a>';
+			$links[] = '<a href="https://www.araikos.gr/en/contact/" target="blank">'.__('Support','wc-biz-courier-logistics').'</a>';
+		}
+		return $links;
+	}
+
 
 	/**
 	 * 	Integration
@@ -849,12 +886,8 @@ class WC_Biz_Courier_Logistics_Admin
 	{
 		switch ($column) {
 			case 'biz-voucher':
-				$voucher = get_post_meta($post_id, '_biz_voucher', true);
-				if (empty($voucher)) {
-					echo '<span>-</span>';
-				} else {
-					echo '<a href="https://trackit.bizcourier.eu/app/' . get_locale() . '/' . $voucher . '" target="blank">' . $voucher . '</a>';
-				}
+				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+				biz_order_voucher_column_html(get_post_meta($post_id, '_biz_voucher', true));
 				break;
 		}
 	}
@@ -973,9 +1006,9 @@ class WC_Biz_Courier_Logistics_Admin
 						require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
 						biz_conclude_order_status($order_id);
 					} catch (ErrorException $e) {
-							$error_description = __('This voucher was not found. Please provide a valid shipment voucher.', 'wc-biz-courier-logistics');
+						$error_description = __('This voucher was not found. Please provide a valid shipment voucher.', 'wc-biz-courier-logistics');
 					} catch (SoapFault $f) {
-							$error_description = __('There was a connection error while trying to contact Biz Courier. More information: ', 'wc-biz-courier-logistics') . $f->getMessage();
+						$error_description = __('There was a connection error while trying to contact Biz Courier. More information: ', 'wc-biz-courier-logistics') . $f->getMessage();
 					}
 					if (!empty($error_description)) update_post_meta($id, '_biz_internal_error', $error_description);
 				}

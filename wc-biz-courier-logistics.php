@@ -2,7 +2,6 @@
 
 /**
  * Plugin Name:       Biz Courier & Logistics for WooCommerce
- * Plugin URI:        https://github.com/alexandrosraikos/wc-biz-courie-logistics
  * Description:       Integrate your Biz Courier warehouse with WooCommerce.
  * Version:           1.2.1
  * Requires at least: 5.7
