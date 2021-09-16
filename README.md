@@ -1,16 +1,6 @@
 # Biz Courier & Logistics for WooCommerce
 
-A plugin designed to integrate WooCommerce with the Biz Courier logistics platform.
-
-## Getting Started
-
-Read on below to get started with Biz Courier & Logistics for WooCommerce.
-
-### Requirements
-
-Recommended requirements for this plugin are PHP 8.0+ (with `soap` extension enabled), WordPress 5.7+, WooCommerce 5.2+.
-
-_Biz Courier & Logistics for WooCommerce has not been tested with prior versions of PHP, WordPress or WooCommerce._
+A plugin designed to integrate WooCommerce with the Biz Courier & Logistics platform.
 
 ## Features
 
@@ -75,21 +65,31 @@ You initially have to set up your credentials.
 
 Then you can set up your shipping options in _WooCommerce Settings > Shipping > Biz Courier Shipping_.
 
+## Getting Started
+
+Read on below to get started with Biz Courier & Logistics for WooCommerce.
+
+### Requirements
+
+Recommended requirements for this plugin are PHP 8.0+ (with `soap` extension enabled), WordPress 5.7+, WooCommerce 5.2+.
+
+_Biz Courier & Logistics for WooCommerce has not been tested with prior versions of PHP, WordPress or WooCommerce._
+
 ### Upgrade
 
 To upgrade, simply download the latest `wc-biz-courier-logistics.zip` package of Biz Courier & Logistics for WooCommerce from the latest release in the [releases](https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/releases) page and install it via the WordPress Dashboard.
 
 ## Frequently Asked Questions
 
-_Which languages are supported by this plugin_?
-
-Currently, Biz Courier & Logistics for WooCommerce supports English :us: and Greek :greece:.
-
-_Why is this plugin not part of the WordPress.org plugin directory_?
+**Why is this plugin not part of the WordPress.org plugin directory?**
 
 Unfortunately this WordPress plugin cannot be featured in the WordPress plugin directory, due to the strict guidelines regarding the mentions of trademarks (see _Legal Disclaimer_ below) and usage of GPLv2 or later as the open source license.
 
-_What can I do to ensure the future of this plugin_?
+**Which languages are supported by this plugin?**
+
+Currently, Biz Courier & Logistics for WooCommerce supports English :us: and Greek :greece:.
+
+**What can I do to ensure the future of this plugin?**
 
 You got me, this isn't a frequently asked question, but it's an important one if this plugin has really helped you. Although I do try to keep this plugin stable and constantly up to date, I usually do it at the expense of my spare time. Consider supporting me with a donation through [GitHub Sponsors](https://github.com/sponsors/alexandrosraikos), so that I can be allowed to pour more time and care into it.
 
