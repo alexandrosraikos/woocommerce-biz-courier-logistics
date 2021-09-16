@@ -86,7 +86,7 @@ function biz_stock_sync_all_button()
     <button class="button button-primary wc-biz-courier-logistics-sync-stock" style="height:32px;">
         <?php _e("Get stock levels", "wc-biz-courier-logistics") ?>
     </button>
-    <?php
+<?php
 }
 
 /**
@@ -122,61 +122,18 @@ function biz_stock_sync_column_html($status)
  * 
  */
 
-function biz_shipment_errors_html()
+/**
+ * Print HTML column order voucher.
+ *
+ * @since    1.0.0
+ * @param string $voucher The order's voucher.
+ */
+function biz_order_voucher_column_html($voucher)
 {
-    if (isset($_GET['biz_error'])) {
-        if ($_GET['biz_error'] == 'sku-error' || $_GET['biz_error'] == 'biz-package-data-error') {
-    ?>
-            <p class="biz-send-shipment error"><?php _e('Some products were not found in the Biz warehouse.', 'wc-biz-courier-logistics') ?></p>
-        <?php
-        }
-        if ($_GET['biz_error'] == 'metrics-error') {
-        ?>
-            <p class="biz-send-shipment error"><?php _e('Please make sure all products in the order have their weight & dimensions registered.', 'wc-biz-courier-logistics') ?></p>
-        <?php
-        }
-        if ($_GET['biz_error'] == 'biz-auth-error') {
-        ?>
-            <p class="biz-send-shipment error"><?php _e('There was an error with your Biz credentials.', 'wc-biz-courier-logistics') ?></p>
-        <?php
-        }
-        if ($_GET['biz_error'] == 'biz-response-data-error') {
-        ?>
-            <p class="biz-send-shipment error"><?php _e('There was an unexpected error from Biz.', 'wc-biz-courier-logistics') ?></p>
-        <?php
-        }
-        if ($_GET['biz_error'] == 'voucher-error') {
-        ?>
-            <p class="biz-send-shipment error"><?php _e("This voucher number doesn't exist.", 'wc-biz-courier-logistics') ?></p>
-        <?php
-        }
-        if ($_GET['biz_error'] == 'no-products-error') {
-        ?>
-            <p class="biz-send-shipment error"><?php _e("There are no products in this order.", 'wc-biz-courier-logistics') ?></p>
-        <?php
-        }
-        if ($_GET['biz_error'] == 'recipient-info-error' || $_GET['biz_error'] == 'biz-recipient-info-error') {
-        ?>
-            <p class="biz-send-shipment error"><?php _e("There was a problem with the recipient's information. Make sure you have filled in all the necessary fields:", 'wc-biz-courier-logistics') ?>
-            <ul class="biz-send-shipment error">
-                <li><?php _e("First name", 'wc-biz-courier-logistics') ?></li>
-                <li><?php _e("Last name", 'wc-biz-courier-logistics') ?></li>
-                <li><?php _e("Phone number", 'wc-biz-courier-logistics') ?></li>
-                <li><?php _e("E-mail address", 'wc-biz-courier-logistics') ?></li>
-                <li><?php _e("Address line #1", 'wc-biz-courier-logistics') ?></li>
-                <li><?php _e("City", 'wc-biz-courier-logistics') ?></li>
-                <li><?php _e("Postal code", 'wc-biz-courier-logistics') ?></li>
-                <li><?php _e("Country", 'wc-biz-courier-logistics') ?></li>
-            </ul>
-            </p>
-
-        <?php
-        }
-        if ($_GET['biz_error'] == 'stock-error') {
-        ?>
-            <p class="biz-send-shipment error"><?php _e("There isn't enough stock to ship the products.", 'wc-biz-courier-logistics') ?></p>
-    <?php
-        }
+    if (empty($voucher)) {
+        echo '<span>-</span>';
+    } else {
+        echo '<a href="https://trackit.bizcourier.eu/app/' . get_locale() . '/' . $voucher . '" target="blank">' . $voucher . '</a>';
     }
 }
 
@@ -188,12 +145,15 @@ function biz_shipment_errors_html()
  * @param    string $status The associated order status.
  * @param    string $voucher The order's voucher, defaults to null if not present.
  * @param    array $report The shipment's status history, defaults to null if not present.
+ * @param    string $internal_error A description of a past internal error to display asynchronously.
  */
 function biz_shipment_status_tracking_metabox_html(string $order_status, string $voucher = null, array $report = null, $internal_error = null)
 {
-    ?>
+?>
     <ul id="wc-biz-courier-logistics-metabox">
         <?php
+
+        // Show internal error.
         if (!empty($internal_error)) {
         ?>
             <li class="biz-error">
@@ -202,6 +162,7 @@ function biz_shipment_status_tracking_metabox_html(string $order_status, string 
         <?php
         }
 
+        // For non-synchronised orders.
         if (empty($voucher)) {
         ?>
             <p class="wc-biz-courier-logistics-order-indicator not-synchronized">
@@ -214,7 +175,10 @@ function biz_shipment_status_tracking_metabox_html(string $order_status, string 
                 <?php _e("Add existing voucher number", "wc-biz-courier-logistics") ?>
             </button>
         <?php
-        } else {
+        }
+
+        // For synchronised orders.
+        else {
         ?>
             <li class="biz-voucher">
                 <?php echo __("Voucher number: ", 'wc-biz-courier-logistics') . '<div>' . $voucher . '</div>' ?>
@@ -270,17 +234,16 @@ function biz_shipment_status_tracking_metabox_html(string $order_status, string 
                             <?php
                             }
                         } else {
-                            if ($order_status =='processing') {
-                                ?>
+                            if ($order_status == 'processing') {
+                            ?>
                                 <div class="biz-warning">
                                     <?php echo sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change. You can also enable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
                                 </div>
                                 <button class="button" id="biz-synchronize-order">
                                     <?php _e("Synchronize order status", "wc-biz-courier-logistics") ?>
                                 </button>
-                                <?php
-                            }   
-                            else {
+                            <?php
+                            } else {
                             ?>
                                 <div class="biz-warning">
                                     <?php echo sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
@@ -290,7 +253,7 @@ function biz_shipment_status_tracking_metabox_html(string $order_status, string 
                         }
                     } else {
                         if (end($report)['conclusion'] != "completed") {
-                        ?>
+                            ?>
                             <div class="biz-error">
                                 <?php echo sprintf(__("This shipment has reached a %s state. You cannot perform further actions.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
                             </div>
@@ -308,9 +271,6 @@ function biz_shipment_status_tracking_metabox_html(string $order_status, string 
             </li>
             <?php
 
-            // Show error message from the middleware.
-            biz_shipment_errors_html();
-
             // Show last mile tracking number, if available.
             if (!empty($report)) {
                 if (!empty(end($report)['last_mile_tracking_number'])) {
@@ -319,18 +279,18 @@ function biz_shipment_status_tracking_metabox_html(string $order_status, string 
                         <div class="title"><?php _e('Partner tracking number:', 'wc-biz-courier-logistics') ?></div>
                         <div class="tracking-number"> <?php echo end($report)['last_mile_tracking_number'] ?></div>
                     </li>
-            <?php
+                <?php
                 }
             }
-            ?>
-            <li>
-                <?php
-                _e("Status history: ", 'wc-biz-courier-logistics');
-                ?>
-            </li>
-            <?php
+
+            // Show status history data.
             if (!empty($report)) {
-            ?>
+                ?>
+                <li>
+                    <?php
+                    _e("Status history: ", 'wc-biz-courier-logistics');
+                    ?>
+                </li>
                 <li id="biz-shipment-status-history">
                     <?php
                     foreach (array_reverse($report) as $status) {
