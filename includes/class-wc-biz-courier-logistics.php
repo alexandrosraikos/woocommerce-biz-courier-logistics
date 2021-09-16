@@ -69,11 +69,7 @@ class WC_Biz_Courier_Logistics
 	 */
 	public function __construct()
 	{
-		if (defined('WC_Biz_Courier_Logistics_VERSION')) {
-			$this->version = WC_Biz_Courier_Logistics_VERSION;
-		} else {
-			$this->version = '1.2.0';
-		}
+		$this->version = '1.2.0';
 		$this->WC_Biz_Courier_Logistics = 'wc-biz-courier-logistics';
 
 		$this->load_dependencies();
@@ -158,6 +154,8 @@ class WC_Biz_Courier_Logistics
 
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+		$this->loader->add_filter('plugin_action_links_wc-biz-courier-logistics/wc-biz-courier-logistics.php', $plugin_admin, 'biz_plugin_action_links');
+		$this->loader->add_filter('plugin_row_meta', $plugin_admin, 'biz_plugin_row_meta', 10, 2);
 
 		/**
 		 *  Biz Courier Integration.
@@ -188,20 +186,21 @@ class WC_Biz_Courier_Logistics
 		 *  Order and shipment interactivity.
 		 */
 		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_shipment_meta_box');
-
+		$this->loader->add_filter('manage_edit-shop_order_columns', $plugin_admin, 'add_biz_order_voucher_column');
+		$this->loader->add_action('manage_shop_order_posts_custom_column', $plugin_admin, 'biz_order_voucher_column', 10, 2);
 		$this->loader->add_action('wp_ajax_biz_send_shipment', $plugin_admin, 'biz_send_shipment_handler');
 		$this->loader->add_action('wp_ajax_biz_modify_shipment', $plugin_admin, 'biz_modify_shipment_handler');
 		$this->loader->add_action('wp_ajax_biz_add_shipment_voucher', $plugin_admin, 'biz_add_shipment_voucher_handler');
 		$this->loader->add_action('wp_ajax_biz_edit_shipment_voucher', $plugin_admin, 'biz_edit_shipment_voucher_handler');
 		$this->loader->add_action('wp_ajax_biz_delete_shipment_voucher', $plugin_admin, 'biz_delete_shipment_voucher_handler');
-
+		$this->loader->add_action('wp_ajax_biz_synchronize_order', $plugin_admin, 'biz_synchronize_order_handler');
 		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'biz_order_changed_handler',10, 3);
 
 		// Shipment automatic updating - cron job.
 		function biz_cron_order_status_checking_interval($schedules) {
 			$schedules['ten_minutes'] = array(
-				'interval' => 600,
-				'display' => 'Every 10 minutes.'
+				'interval' => 300,
+				'display' => 'Every 5 minutes.'
 			);
 			return $schedules;
 		}
@@ -210,8 +209,6 @@ class WC_Biz_Courier_Logistics
 		if (!wp_next_scheduled('biz_cron_order_status_checking_hook')) {
 			wp_schedule_event(time(), 'ten_minutes', 'biz_cron_order_status_checking_hook');
 		}
-
-		$this->loader->add_filter('woocommerce_email_order_meta_fields', $plugin_admin, 'add_biz_email_order_fields', 10, 3);
 	}
 
 	/**

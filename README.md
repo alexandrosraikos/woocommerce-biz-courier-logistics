@@ -1,34 +1,6 @@
 # Biz Courier & Logistics for WooCommerce
 
-A plugin designed to integrate WooCommerce with the Biz Courier logistics platform.
-
-## Getting Started
-
-Read on below to get started with Biz Courier & Logistics for WooCommerce.
-
-### Requirements
-
-Recommended requirements for this plugin are PHP 8.0+ (with `soap` extension enabled), WordPress 5.7+, WooCommerce 5.2+.
-
-_Biz Courier & Logistics for WooCommerce has not been tested with prior versions of PHP, WordPress or WooCommerce._
-
-### Installation
-
-Simply setup WordPress with WooCommerce and enable the plugin.
-
-1. Download and setup WordPress from [the official website](https://wordpress.org/).
-1. Download and setup WooCommerce from the WordPress dashboard.
-1. Download the `wc-biz-courier-logistics.zip` package of Biz Courier & Logistics for WooCommerce from the latest release in the [releases](https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/releases) page and install it via the WordPress Dashboard.
-
-You initially have to set up your credentials.
-
-1. Login to the WordPress Dashboard
-1. Go to _WooCommerce Settings > Integration > Biz Courier & Logistics_.
-1. Register the credentials that were provided to you by Biz Courier.
-
-### Upgrade
-
-To upgrade, simply delete and reinstall using the method above.
+A plugin designed to integrate WooCommerce with the Biz Courier & Logistics platform.
 
 ## Features
 
@@ -47,9 +19,9 @@ To enable shipping rate calculation:
 1. Create your WooCommerce Shipping Zones and add the Biz Courier shipping method.
 1. Adjust pricing for each zone depending on your contract.
 
-Save your Biz Courier credentials into _Dashboard > WooCommerce > Settings > Biz Courier_.
+Save your Biz Courier credentials into _Dashboard > WooCommerce Settings > Integration > Biz Courier & Logistics_.
 
-_Note: Consult Biz Courier for your shipping country's list of inaccessible areas._
+_Note: Consult Biz Courier for your shipping country's list of inaccessible areas and their postal codes._
 
 ### Manage Shipments
 
@@ -57,13 +29,15 @@ _Note: Consult Biz Courier for your shipping country's list of inaccessible area
 
 The fastest way to submit your shipment to Biz Courier, straight from WooCommerce. At each order page, you can click on _Send shipment_. You can also manually add and edit shipment voucher numbers.
 
+You also have the option to enable automatic shipment sending when your order enters a specified state in _WooCommerce Settings > Shipping > Biz Courier Shipping_.
+
 _Note: You need to synchronize your stock levels first for Biz Warehouse enabled products in the order._
 
-#### Track
+#### Tracking & automatic status updates
 
 If a shipment is sent from the WordPress Dashboard, you can view the tracking code and the shipment status history directly from the page of the order.
 
-You can also enable automatic order status updates to change `processing` order statuses to `completed` or `cancelled`, based on Biz Courier data.
+You can also enable automatic order status updates to change `processing` order statuses to `completed`, `cancelled`, or `failed` based on Biz Courier data.
 
 #### Modify
 
@@ -73,11 +47,51 @@ You can send shipment modification instructions directly to Biz Courier. Simply 
 
 You can request cancellation of a Biz Courier shipment by heading to your order and clicking _Request shipment cancellation_.
 
+You also have the option to enable automatic shipment cancellation requests when your order enters a specified state in _WooCommerce Settings > Shipping > Biz Courier Shipping_.
+
+### Installation
+
+Simply setup WordPress with WooCommerce and enable the plugin.
+
+1. Download and setup WordPress from [the official website](https://wordpress.org/).
+1. Download and setup WooCommerce from the WordPress dashboard.
+1. Download the `wc-biz-courier-logistics.zip` package of Biz Courier & Logistics for WooCommerce from the latest release in the [releases](https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/releases) page and install it via the WordPress Dashboard.
+
+You initially have to set up your credentials.
+
+1. Login to the WordPress Dashboard
+1. Go to _WooCommerce Settings > Integration > Biz Courier & Logistics_.
+1. Register the credentials that were provided to you by Biz Courier.
+
+Then you can set up your shipping options in _WooCommerce Settings > Shipping > Biz Courier Shipping_.
+
+## Getting Started
+
+Read on below to get started with Biz Courier & Logistics for WooCommerce.
+
+### Requirements
+
+Recommended requirements for this plugin are PHP 8.0+ (with `soap` extension enabled), WordPress 5.7+, WooCommerce 5.2+.
+
+_Biz Courier & Logistics for WooCommerce has not been tested with prior versions of PHP, WordPress or WooCommerce._
+
+### Upgrade
+
+To upgrade, simply download the latest `wc-biz-courier-logistics.zip` package of Biz Courier & Logistics for WooCommerce from the latest release in the [releases](https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/releases) page and install it via the WordPress Dashboard.
+
 ## Frequently Asked Questions
 
-_Why is this plugin not part of the WordPress.org plugin directory_?
+**Why is this plugin not part of the WordPress.org plugin directory?**
 
 Unfortunately this WordPress plugin cannot be featured in the WordPress plugin directory, due to the strict guidelines regarding the mentions of trademarks (see _Legal Disclaimer_ below) and usage of GPLv2 or later as the open source license.
+
+**Which languages are supported by this plugin?**
+
+Currently, Biz Courier & Logistics for WooCommerce supports English :us: and Greek :greece:.
+
+**What can I do to ensure the future of this plugin?**
+
+You got me, this isn't a frequently asked question, but it's an important one if this plugin has really helped you. Although I do try to keep this plugin stable and constantly up to date, I usually do it at the expense of my spare time. Consider supporting me with a donation through [GitHub Sponsors](https://github.com/sponsors/alexandrosraikos), so that I can be allowed to pour more time and care into it.
 
 ## Legal Disclaimer
 
