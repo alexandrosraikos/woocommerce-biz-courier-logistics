@@ -37,7 +37,7 @@ _Note: You need to synchronize your stock levels first for Biz Warehouse enabled
 
 If a shipment is sent from the WordPress Dashboard, you can view the tracking code and the shipment status history directly from the page of the order.
 
-You can also enable automatic order status updates to change `processing` order statuses to `completed` or `cancelled`, based on Biz Courier data.
+You can also enable automatic order status updates to change `processing` order statuses to `completed`, `cancelled`, or `failed` based on Biz Courier data.
 
 #### Modify
 

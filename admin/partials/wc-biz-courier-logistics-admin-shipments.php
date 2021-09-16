@@ -415,6 +415,8 @@ function biz_conclude_order_status($order_id, $report = null) : bool
 				// Handle cancelled shipment status.
 				$order = wc_get_order($order_id);
 				$order->update_status("cancelled", __("The newly connected shipment was already cancelled.", 'wc-biz-courier-logistics'));
+				// Add delivery failure note.
+				update_post_meta($order_id, '_biz_failure_delivery_note', end($report)['level-description'] . ' '.__('Other comments:','wc-biz-courier-logistics').' ' . end($report)['comments'] ?? '-');
 			} elseif (end($report)['conclusion'] == 'failed') {
 
 				// Handle failed shipment status.
@@ -422,7 +424,7 @@ function biz_conclude_order_status($order_id, $report = null) : bool
 				$order->update_status("failed", __("The newly connected shipment had already failed.", 'wc-biz-courier-logistics'));
 
 				// Add delivery failure note.
-				update_post_meta($order_id, '_biz_failure_delivery_note', end($report)['level-description'] . ' Comments: ' . end($report)['comments']);
+				update_post_meta($order_id, '_biz_failure_delivery_note', end($report)['level-description'] . ' '.__('Other comments:','wc-biz-courier-logistics').' ' . end($report)['comments'] ?? '-');
 			}
 		}
 		else {
