@@ -103,10 +103,10 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	function biz_plugin_row_meta($links, $file)
 	{
-		if (strpos($file,'wc-biz-courier-logistics.php')) {
-			$links[] = '<a href="https://github.com/sponsors/alexandrosraikos" target="blank">'.__('Donate via GitHub Sponsors','wc-biz-courier-logistics').'</a>';
-			$links[] = '<a href="https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/blob/main/README.md" target="blank">'.__('Documentation','wc-biz-courier-logistics').'</a>';
-			$links[] = '<a href="https://www.araikos.gr/en/contact/" target="blank">'.__('Support','wc-biz-courier-logistics').'</a>';
+		if (strpos($file, 'wc-biz-courier-logistics.php')) {
+			$links[] = '<a href="https://github.com/sponsors/alexandrosraikos" target="blank">' . __('Donate via GitHub Sponsors', 'wc-biz-courier-logistics') . '</a>';
+			$links[] = '<a href="https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/blob/main/README.md" target="blank">' . __('Documentation', 'wc-biz-courier-logistics') . '</a>';
+			$links[] = '<a href="https://www.araikos.gr/en/contact/" target="blank">' . __('Support', 'wc-biz-courier-logistics') . '</a>';
 		}
 		return $links;
 	}
