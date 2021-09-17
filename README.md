@@ -51,6 +51,16 @@ You can request cancellation of a Biz Courier shipment by heading to your order 
 
 You also have the option to enable automatic shipment cancellation requests when your order enters a specified state in _WooCommerce Settings > Shipping > Biz Courier Shipping_.
 
+## Getting Started
+
+Read on below to get started with Biz Courier & Logistics for WooCommerce.
+
+### Requirements
+
+Recommended requirements for this plugin are PHP 8.0+ (with `soap` extension enabled), WordPress 5.7+, WooCommerce 5.2+.
+
+_Biz Courier & Logistics for WooCommerce has not been tested with prior versions of PHP, WordPress or WooCommerce._
+
 ### Installation
 
 Simply setup WordPress with WooCommerce and enable the plugin.
@@ -66,16 +76,6 @@ You initially have to set up your credentials.
 1. Register the credentials that were provided to you by Biz Courier.
 
 Then you can set up your shipping options in _WooCommerce Settings > Shipping > Biz Courier Shipping_.
-
-## Getting Started
-
-Read on below to get started with Biz Courier & Logistics for WooCommerce.
-
-### Requirements
-
-Recommended requirements for this plugin are PHP 8.0+ (with `soap` extension enabled), WordPress 5.7+, WooCommerce 5.2+.
-
-_Biz Courier & Logistics for WooCommerce has not been tested with prior versions of PHP, WordPress or WooCommerce._
 
 ### Upgrade
 
