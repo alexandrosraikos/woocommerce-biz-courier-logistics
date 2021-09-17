@@ -1,4 +1,4 @@
-# Translation template for Biz Courier & Logistics for WooCommerce.
+# Template translation file for Biz Courier & Logistics for WooCommerce.
 # Copyright (C) 2021, Alexandros Raikos tou Konstantinou.
 # This file is distributed under the same license as the Biz Courier & Logistics for WooCommerce package.
 # Alexandros Raikos <alexandros@araikos.gr>, 2021.
@@ -6,438 +6,574 @@
 msgid ""
 msgstr ""
 
-msgid "PLUGIN_DESCRIPTION"
+msgctxt "PLUGIN_DESCRIPTION"
+msgid "Integrate your Biz Courier warehouse with WooCommerce."
 msgstr ""
 
-msgid "PLUGIN_AUTHOR"
+msgctxt "PLUGIN_AUTHOR"
+msgid "Alexandros Raikos"
 msgstr ""
 
-msgid "PLUGIN_ACTION"
+msgctxt "PLUGIN_ACTION"
+msgid "Settings"
 msgstr ""
 
-msgid "PLUGIN_LINK_1"
+msgctxt "PLUGIN_LINK_1"
+msgid "Documentation"
 msgstr ""
 
-msgid "PLUGIN_LINK_2"
+msgctxt "PLUGIN_LINK_2"
+msgid "Support"
 msgstr ""
 
-msgid "PLUGIN_LINK_3"
+msgctxt "PLUGIN_LINK_3"
+msgid "Donate via GitHub Sponsors"
 msgstr ""
 
 # Integration
 # ------
 # This section provides the necessary translations for initialising the custom Biz integration.
-msgid "SETTINGS_INTEGRATION_SETUP_PROMPT"
+msgctxt "SETTINGS_INTEGRATION_SETUP_PROMPT"
+msgid "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_SETUP_NOTICE"
+msgctxt "SETTINGS_INTEGRATION_SETUP_NOTICE"
+msgid "Your Biz Courier credentials are invalid. Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_SETUP_ERROR"
+msgctxt "SETTINGS_INTEGRATION_SETUP_ERROR"
+msgid "There was an error contacting Biz Courier, please try again later."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_TITLE"
+msgctxt "SETTINGS_INTEGRATION_TITLE"
+msgid "Biz Courier & Logistics"
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_DESCRIPTION"
+msgctxt "SETTINGS_INTEGRATION_DESCRIPTION"
+msgid "An integration for synchronising stock, orders and payment fees with the Biz Courier & Logistics platform."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_CREDENTIALS_TITLE"
+msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_TITLE"
+msgid "Biz Courier Credentials"
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_CREDENTIALS_DESCRIPTION"
+msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_DESCRIPTION"
+msgid "Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact Biz</a>."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_CREDENTIALS_ACCOUNT_NUMBER"
+msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_ACCOUNT_NUMBER"
+msgid "Account Number"
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_CREDENTIALS_ACCOUNT_NUMBER_DESCRIPTION"
+msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_ACCOUNT_NUMBER_DESCRIPTION"
+msgid "Your account number registered with Biz Courier."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_CREDENTIALS_CRM_NUMBER"
+msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_CRM_NUMBER"
+msgid "Warehouse CRM Number"
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_CREDENTIALS_CRM_NUMBER_DESCRIPTION"
+msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_CRM_NUMBER_DESCRIPTION"
+msgid "Your CRM number for the warehouse location assigned to this store."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_CREDENTIALS_USERNAME"
+msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_USERNAME"
+msgid "Username"
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_CREDENTIALS_USERNAME_DESCRIPTION"
+msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_USERNAME_DESCRIPTION"
+msgid "Your username registered with Biz Courier."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_CREDENTIALS_PASSWORD"
+msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_PASSWORD"
+msgid "Password"
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_CREDENTIALS_PASSWORD_DESCRIPTION"
+msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_PASSWORD_DESCRIPTION"
+msgid "Your Biz Courier merchant password."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_GENERAL_TITLE"
+msgctxt "SETTINGS_INTEGRATION_GENERAL_TITLE"
+msgid "General"
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_GENERAL_DESCRIPTION"
+msgctxt "SETTINGS_INTEGRATION_GENERAL_DESCRIPTION"
+msgid "Choose your optimal working settings for integrating Biz Courier & Logistics with your WooCommerce shop."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_STATUS_UPDATES_TITLE"
+msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_STATUS_UPDATES_TITLE"
+msgid "Automatic order status updates"
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_STATUS_UPDATES_DESCRIPTION"
+msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_STATUS_UPDATES_DESCRIPTION"
+msgid "Update Processing shipment status automatically to Completed or Cancelled, based on Biz Courier data."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CREATION_TITLE"
+msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CREATION_TITLE"
+msgid "Automatic shipment creation"
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CREATION_DESCRIPTION"
+msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CREATION_DESCRIPTION"
+msgid "Automatically send Biz shipments when orders enter the selected status."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CANCELLATION_TITLE"
+msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CANCELLATION_TITLE"
+msgid "Automatic shipment cancellation"
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CANCELLATION_DESCRIPTION"
+msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CANCELLATION_DESCRIPTION"
+msgid "Automatically cancel Biz shipments when orders enter the selected status."
 msgstr ""
 
-msgid "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_ACTIONS_DISABLED_STATUS"
+msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_ACTIONS_DISABLED_STATUS"
+msgid "Disable"
 msgstr ""
 
 # Stock Synchronization
 # ------
 # This section provides all the translations related to syncing stock 
 # between the WooCommerce store and the items in the connected warehouse.
-msgid "PRODUCT_WAREHOUSE_SYNC_TITLE"
+msgctxt "PRODUCT_WAREHOUSE_SYNC_TITLE"
+msgid "Biz Warehouse"
 msgstr ""
 
-msgid "PRODUCT_WAREHOUSE_SYNC_DESCRIPTION"
+msgctxt "PRODUCT_WAREHOUSE_SYNC_DESCRIPTION"
+msgid "Select this option if the product is stored in your Biz warehouse."
 msgstr ""
 
-msgid "PRODUCT_WAREHOUSE_SYNC_STATUS_TITLE"
+msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_TITLE"
+msgid "Biz status"
 msgstr ""
 
-msgid "PRODUCT_WAREHOUSE_SYNC_STATUS_PENDING"
+msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_PENDING"
+msgid "Pending"
 msgstr ""
 
-msgid "PRODUCT_WAREHOUSE_SYNC_STATUS_FOUND"
+msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_FOUND"
+msgid "Found"
 msgstr ""
 
-msgid "PRODUCT_WAREHOUSE_SYNC_STATUS_NOT_FOUND"
+msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_NOT_FOUND"
+msgid "Not found"
 msgstr ""
 
-msgid "PRODUCT_WAREHOUSE_SYNC_STATUS_PARTIALLY_FOUND"
+msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_PARTIALLY_FOUND"
+msgid "Partially found"
 msgstr ""
 
-msgid "PRODUCT_WAREHOUSE_SYNC_STATUS_DISABLED"
+msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_DISABLED"
+msgid "Disabled"
 msgstr ""
 
-msgid "ALL_PRODUCTS_SYNC_BUTTON"
+msgctxt "ALL_PRODUCTS_SYNC_BUTTON"
+msgid "Get stock levels"
 msgstr ""
 
-msgid "ALL_PRODUCTS_COLUMN_SYNC_INDICATOR_TITLE"
+msgctxt "ALL_PRODUCTS_COLUMN_SYNC_INDICATOR_TITLE"
+msgid "Biz Warehouse"
 msgstr ""
 
 # Shipping Method
 # ------
 # This section provides the necessary translations for initialising 
 # the custom Biz shipping method.
-msgid "SETTINGS_SHIPPING_TITLE"
+msgctxt "SETTINGS_SHIPPING_TITLE"
+msgid "Biz Courier Shipping"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_DESCRIPTION"
+msgid "Allow your customers to receive their products via Biz Courier Shipping."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ENABLE_TITLE"
+msgctxt "SETTINGS_SHIPPING_ENABLE_TITLE"
+msgid "Enable"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ENABLE_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_ENABLE_DESCRIPTION"
+msgid "Allow shipping with Biz Courier."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_COD_FEE_TITLE"
+msgctxt "SETTINGS_SHIPPING_COD_FEE_TITLE"
+msgid "COD fee"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_COD_FEE_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_COD_FEE_DESCRIPTION"
+msgid "Insert the additional Biz fee for Cash On Delivery payments."
 msgstr ""
 
 # --- General shipping settings.
-msgid "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_TITLE"
+# FIX ALL FIELDS IN PHP
+msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_TITLE"
+msgid "Same Day Delivery"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_DESCRIPTION"
+msgid "Allow same region customers to opt for same day delivery."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_ENABLE_TITLE"
+msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_ENABLE_TITLE"
+msgid "Enable"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_ENABLE_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_ENABLE_DESCRIPTION"
+msgid "Allow same region customers to opt for same day delivery."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_DESCRIPTION"
+msgid "Insert the pricing for same day delivery."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_PER_KM"
+msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_PER_KM"
+msgid "Charge per km"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_MINIMUM_CHARGE"
+msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_MINIMUM_CHARGE"
+msgid "Minimum charge"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_TITLE"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_TITLE"
+msgid "Additional Services"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_DESCRIPTION"
+msgid "Adjust options for additional services provided by Biz Courier."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SMS_TITLE"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SMS_TITLE"
+msgid "SMS notifications"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SMS_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SMS_DESCRIPTION"
+msgid "Inform your customers about their Biz shipment status via SMS."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_BILLING_PHONE_USAGE_TITLE"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_BILLING_PHONE_USAGE_TITLE"
+msgid "Use billing phone"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_BILLING_PHONE_USAGE_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_BILLING_PHONE_USAGE_DESCRIPTION"
+msgid "Submit the recipient's billing phone number instead of the shipping phone number to Biz."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_MORNING_DELIVERY_TITLE"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_MORNING_DELIVERY_TITLE"
+msgid "Morning delivery"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_MORNING_DELIVERY_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_MORNING_DELIVERY_DESCRIPTION"
+msgid "Check the box if you would like the morning delivery option enabled in same area deliveries."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_MORNING_DELIVERY_FEE_TITLE"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_MORNING_DELIVERY_FEE_TITLE"
+msgid "Morning delivery fee"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_MORNING_DELIVERY_FEE_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_MORNING_DELIVERY_FEE_DESCRIPTION"
+msgid "Insert the additional fee amount for morning deliveries."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SATURDAY_DELIVERY_TITLE"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SATURDAY_DELIVERY_TITLE"
+msgid "Saturday delivery"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SATURDAY_DELIVERY_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SATURDAY_DELIVERY_DESCRIPTION"
+msgid "Check the box if you would like the Saturday delivery option enabled in same area deliveries."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SATURDAY_DELIVERY_FEE_TITLE"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SATURDAY_DELIVERY_FEE_TITLE"
+msgid "Saturday delivery fee"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SATURDAY_DELIVERY_FEE_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SATURDAY_DELIVERY_FEE_DESCRIPTION"
+msgid "Insert the additional fee amount for deliveries on Saturdays."
 msgstr ""
 
 # --- Instance shipping settings.
-msgid "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_TITLE"
+msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_TITLE"
+msgid "Shipping zone type"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_DESCRIPTION"
+msgid "Select the type of Biz area covered by this shipping zone."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_SAME_AREA_OPTION"
+msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_SAME_AREA_OPTION"
+msgid "Same area as warehouse"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_LAND_DESTINATIONS_OPTION"
+msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_LAND_DESTINATIONS_OPTION"
+msgid "Land destinations"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_ISLAND_DESTINATIONS_OPTION"
+msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_ISLAND_DESTINATIONS_OPTION"
+msgid "Island destinations"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_INACCESSIBLE_AREAS_OPTION"
+msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_INACCESSIBLE_AREAS_OPTION"
+msgid "Inaccessible areas"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_INSTANCE_DELIVERY_FEE_TITLE"
+msgctxt "SETTINGS_SHIPPING_INSTANCE_DELIVERY_FEE_TITLE"
+msgid "Delivery pricing"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_INSTANCE_DELIVERY_FEE_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_INSTANCE_DELIVERY_FEE_DESCRIPTION"
+msgid "Insert the delivery fee amount for up to 2kg."
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_INSTANCE_EXTRA_KG_CHARGE_TITLE"
+msgctxt "SETTINGS_SHIPPING_INSTANCE_EXTRA_KG_CHARGE_TITLE"
+msgid "Charge per extra kg"
 msgstr ""
 
-msgid "SETTINGS_SHIPPING_INSTANCE_EXTRA_KG_CHARGE_DESCRIPTION"
+msgctxt "SETTINGS_SHIPPING_INSTANCE_EXTRA_KG_CHARGE_DESCRIPTION"
+msgid "Insert the delivery fee amount for every extra kg."
 msgstr ""
 
-msgid "CHECKOUT_SHIPPING_OPTION_SIMPLE_DELIVERY"
+msgctxt "CHECKOUT_SHIPPING_OPTION_SIMPLE_DELIVERY"
+msgid "Simple delivery"
 msgstr ""
 
-msgid "CHECKOUT_SHIPPING_OPTION_MORNING_DELIVERY"
+msgctxt "CHECKOUT_SHIPPING_OPTION_MORNING_DELIVERY"
+msgid "Morning delivery (until 10:30 a.m.)"
 msgstr ""
 
 # Order Status
 # ------
 # This section provides the necessary translations for mapping, managing and displaying
 # WooCommerce orders and their status to Biz Courier Shipments.
-msgid "ALL_ORDERS_SHIPMENT_VOUCHER_COLUMN_TITLE"
+msgctxt "ALL_ORDERS_SHIPMENT_VOUCHER_COLUMN_TITLE"
+msgid "Biz shipment voucher"
 msgstr ""
 
-msgid "ORDER_METABOX_TITLE"
+msgctxt "ORDER_METABOX_TITLE"
+msgid "Biz Courier status"
 msgstr ""
 
-msgid "ORDER_METABOX_NO_SHIPMENT_MESSAGE"
+msgctxt "ORDER_METABOX_NO_SHIPMENT_MESSAGE"
+msgid "This order has not shipped with Biz."
 msgstr ""
 
-msgid "ORDER_METABOX_SEND_SHIPMENT_BUTTON"
+msgctxt "ORDER_METABOX_SEND_SHIPMENT_BUTTON"
+msgid "Send shipment"
 msgstr ""
 
-msgid "ORDER_METABOX_SEND_SHIPMENT_SUCCESS_ORDER_NOTE"
+msgctxt "ORDER_METABOX_SEND_SHIPMENT_SUCCESS_ORDER_NOTE"
+msgid "The shipment was successfully registered to Biz Courier."
 msgstr ""
 
-msgid "ORDER_METABOX_ADD_VOUCHER_BUTTON"
+msgctxt "ORDER_METABOX_ADD_VOUCHER_BUTTON"
+msgid "Add existing voucher number"
 msgstr ""
 
-msgid "ORDER_METABOX_ADD_VOUCHER_PROMPT"
+msgctxt "ORDER_METABOX_ADD_VOUCHER_PROMPT"
+msgid "Insert the shipment's voucher number from Biz Courier in the field below."
 msgstr ""
 
-msgid "ORDER_METABOX_VOUCHER_TITLE"
+msgctxt "ORDER_METABOX_VOUCHER_TITLE"
+msgid "Voucher number: "
 msgstr ""
 
-msgid "ORDER_METABOX_VOUCHER_EDIT_ACTION"
+msgctxt "ORDER_METABOX_VOUCHER_EDIT_ACTION"
+msgid "Edit voucher"
 msgstr ""
 
-msgid "ORDER_METABOX_VOUCHER_EDIT_PROMPT"
+msgctxt "ORDER_METABOX_VOUCHER_EDIT_PROMPT"
+msgid "Insert the new shipment voucher number from Biz Courier in the field below."
 msgstr ""
 
-msgid "ORDER_METABOX_VOUCHER_DELETE_ACTION"
+msgctxt "ORDER_METABOX_VOUCHER_DELETE_ACTION"
+msgid "Delete voucher"
 msgstr ""
 
-msgid "ORDER_METABOX_VOUCHER_DELETE_PROMPT"
+msgctxt "ORDER_METABOX_VOUCHER_DELETE_CONFIRMATION"
+msgid "Are you sure you want to delete the shipment voucher from this order?"
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_TITLE"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_TITLE"
+msgid "Shipment actions: "
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_BUTTON"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_BUTTON"
+msgid "Modify shipment"
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_PROMPT"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_PROMPT"
+msgid "Please insert the message you want to send to Biz about the shipment."
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_NOTE_PREPEND"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_NOTE_PREPEND"
+msgid "Message sent to Biz: "
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_NOTE_MODIFICATION_IDENTIFIER"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_NOTE_IDENTIFIER"
+msgid " (modification id: "
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_CANCEL_BUTTON"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_CANCEL_BUTTON"
+msgid "Request shipment cancellation"
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_CANCEL_PROMPT"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_CANCEL_PROMPT"
+msgid "Are you sure you want to request the cancellation of this Biz shipment? If you want to send it again, you will receive a new tracking code."
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_CANCEL_NOTE"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_CANCEL_NOTE"
+msgid "The Biz shipment with tracking code %s was cancelled."
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_CANCEL_NOTE_WITH_CODE"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_CANCEL_NOTE_WITH_CODE"
+msgid "The Biz shipment with tracking code %s was cancelled. The cancellation code is: %s."
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_SYNCHRONIZE_BUTTON"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_SYNCHRONIZE_BUTTON"
+msgid "Synchronize order status"
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_IMMUTABLE_STATUS_WARNING"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_IMMUTABLE_STATUS_WARNING"
+msgid "You must change the order status to \"Processing\" in order to perform more actions on this shipment."
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_UPDATE_STATUS_FROM_PROCESSING_WARNING"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_UPDATE_STATUS_FROM_PROCESSING_WARNING"
+msgid "This shipment has reached a %s state. You must change the order status to reflect that change. You can also enable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>."
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_UPDATE_STATUS_FROM_PROCESSING_NOTICE"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_UPDATE_STATUS_FROM_PROCESSING_NOTICE"
+msgid "This shipment has reached a %s state. The order status will be updated automatically in a few minutes. You can disable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>."
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_UPDATE_STATUS_FROM_NON_PROCESSING_WARNING"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_UPDATE_STATUS_FROM_NON_PROCESSING_WARNING"
+msgid "This shipment has reached a %s state. You must change the order status to reflect that change."
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_CANCELLED_NOTICE"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_CANCELLED_NOTICE"
+msgid "This shipment has reached a %s state. You cannot perform further actions."
 msgstr ""
 
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_COMPLETED_NOTICE"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_COMPLETED_NOTICE"
+msgid "This shipment was completed. There are no more actions to perform."
 msgstr ""
 
-msgctxt "in simple past tense"
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_MESSAGE_STATE_CANCELLED"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MESSAGE_STATE_CANCELLED"
+msgid "cancelled"
 msgstr ""
 
-msgctxt "in simple past tense"
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_MESSAGE_STATE_FAILED"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MESSAGE_STATE_FAILED"
+msgid "failed"
 msgstr ""
 
-msgctxt "in simple past tense"
-msgid "ORDER_METABOX_SHIPMENT_ACTIONS_MESSAGE_STATE_COMPLETED"
+msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MESSAGE_STATE_COMPLETED"
+msgid "completed"
 msgstr ""
 
-msgid "ORDER_METABOX_STATUS_HISTORY_TITLE"
+msgctxt "ORDER_METABOX_STATUS_HISTORY_TITLE"
+msgid "Status history: "
 msgstr ""
 
-msgid "ORDER_METABOX_STATUS_GENERIC_DESCRIPTION"
+msgctxt "ORDER_METABOX_STATUS_HISTORY_GENERIC_DESCRIPTION"
+msgid "Delivery status update"
 msgstr ""
 
-msgid "ORDER_METABOX_STATUS_HISTORY_LEVEL_FINAL"
+msgctxt "ORDER_METABOX_STATUS_HISTORY_LEVEL_FINAL"
+msgid "Final"
 msgstr ""
 
-msgid "ORDER_METABOX_STATUS_HISTORY_LEVEL_PENDING"
+msgctxt "ORDER_METABOX_STATUS_HISTORY_LEVEL_PENDING"
+msgid "Pending"
 msgstr ""
 
-msgid "ORDER_METABOX_STATUS_HISTORY_NO_COMMENTS_MESSAGE"
+msgctxt "ORDER_METABOX_STATUS_HISTORY_NO_COMMENTS_MESSAGE"
+msgid "No other comments."
 msgstr ""
 
-msgid "ORDER_METABOX_STATUS_HISTORY_ACTIONS_TITLE"
+msgctxt "ORDER_METABOX_STATUS_HISTORY_ACTIONS_TITLE"
+msgid "Actions:"
 msgstr ""
 
-msgid "ORDER_METABOX_STATUS_HISTORY_DATETIME_DIVIDER"
+msgctxt "ORDER_METABOX_STATUS_HISTORY_DATETIME_DIVIDER"
+msgid "at"
 msgstr ""
 
 # Automated notes
-msgid "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_COMPLETED"
+msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_COMPLETED"
+msgid "The newly connected shipment was already completed."
 msgstr ""
 
-msgid "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_CANCELLED"
+msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_CANCELLED"
+msgid "The newly connected shipment was already cancelled."
 msgstr ""
 
-msgid "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_FAILED"
+msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_FAILED"
+msgid "The newly connected shipment had already failed."
 msgstr ""
 
-msgid "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_PROCESSING"
+msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_PROCESSING"
+msgid "The newly connected shipment is pending delivery."
 msgstr ""
 
 # Error messages
-msgid "ORDER_EDIT_VOUCHER_NOT_FOUND_ERROR"
+msgctxt "ORDER_EDIT_VOUCHER_NOT_FOUND_ERROR"
+msgid "This voucher was not found. Please provide a valid shipment voucher."
 msgstr ""
 
-msgid "ORDER_MODIFY_SHIPMENT_VOUCHER_NOT_FOUND_ERROR"
+msgctxt "ORDER_MODIFY_SHIPMENT_VOUCHER_NOT_FOUND_ERROR"
+msgid "The voucher number couldn't be retrieved."
 msgstr ""
 
-msgid "ORDER_MODIFY_SHIPMENT_UNKNOWN_ERROR"
+msgctxt "ORDER_MODIFY_SHIPMENT_UNKNOWN_ERROR"
+msgid "An unknown error occured while processing shipment modification information."
 msgstr ""
 
-msgid "ORDER_MODIFY_SHIPMENT_UNKNOWN_BIZ_ERROR"
+msgctxt "ORDER_MODIFY_SHIPMENT_UNKNOWN_BIZ_ERROR"
+msgid "An unknown Biz error occured while processing shipment modification information."
 msgstr ""
 
-msgid "ORDER_SEND_SHIPMENT_NO_PRODUCTS_ERROR"
+msgctxt "ORDER_SEND_SHIPMENT_NO_PRODUCTS_ERROR"
+msgid "There are no products in this order."
 msgstr ""
 
-msgid "ORDER_SEND_SHIPMENT_SKU_ERROR"
+msgctxt "ORDER_SEND_SHIPMENT_SKU_ERROR"
+msgid "Some products were not found in the Biz warehouse."
 msgstr ""
 
-msgid "ORDER_SEND_SHIPMENT_METRICS_ERROR"
+msgctxt "ORDER_SEND_SHIPMENT_METRICS_ERROR"
+msgid "Please make sure all products in the order have their weight & dimensions registered."
 msgstr ""
 
-msgid "ORDER_SEND_SHIPMENT_AUTH_ERROR"
+msgctxt "ORDER_SEND_SHIPMENT_AUTH_ERROR"
+msgid "There was an error with your Biz credentials."
 msgstr ""
 
-msgid "ORDER_SEND_SHIPMENT_UNKNOWN_INFORMATION_ERROR"
+msgctxt "ORDER_SEND_SHIPMENT_UNKNOWN_INFORMATION_ERROR"
+msgid "An unknown error occured while processing order information."
 msgstr ""
 
-msgid "ORDER_SEND_SHIPMENT_VOUCHER_ERROR"
+msgctxt "ORDER_SEND_SHIPMENT_VOUCHER_ERROR"
+msgid "A voucher already exists for this order."
 msgstr ""
 
-msgid "ORDER_SEND_SHIPMENT_RECIPIENT_INFORMATION_ERROR"
+msgctxt "ORDER_SEND_SHIPMENT_RECIPIENT_INFORMATION_ERROR"
+msgid "There was a problem with the recipient's information. Make sure you have filled in all the necessary fields: First name, last name, phone number, e-mail address, address line #1, city, postal code and country."
 msgstr ""
 
-msgid "ORDER_SEND_SHIPMENT_BIZ_RECIPIENT_INFORMATION_ERROR"
+msgctxt "ORDER_SEND_SHIPMENT_BIZ_RECIPIENT_INFORMATION_ERROR"
+msgid "There was a problem registering recipient information with Biz. Please check your recipient information entries."
 msgstr ""
 
-msgid "ORDER_SEND_SHIPMENT_BIZ_ITEMS_ERROR"
+msgctxt "ORDER_SEND_SHIPMENT_BIZ_ITEMS_ERROR"
+msgid "There was a problem with your order's items while submitting their information to Biz."
 msgstr ""
 
-msgid "ORDER_SEND_SHIPMENT_UNKNOWN_BIZ_ERROR"
+msgctxt "ORDER_SEND_SHIPMENT_UNKNOWN_BIZ_ERROR"
+msgid "Response from Biz could not be read, please check your warehouse shipments from their official application."
 msgstr ""
 
-msgid "ORDER_SEND_SHIPMENT_UNKNOWN_BIZ_SHIPMENT_INFORMATION_ERROR"
+msgctxt "ORDER_SEND_SHIPMENT_UNKNOWN_BIZ_SHIPMENT_INFORMATION_ERROR"
+msgid "An unknown Biz error occured after submitting the shipment information."
 msgstr ""
 
-msgid "ORDER_SEND_SHIPMENT_STOCK_ERROR"
+msgctxt "ORDER_SEND_SHIPMENT_STOCK_ERROR"
+msgid "There isn't enough stock to ship some products."
 msgstr ""
 
-msgid "ORDER_CONNECTION_ERROR"
+msgctxt "ORDER_CONNECTION_ERROR"
+msgid "There was a connection error while trying to contact Biz Courier. More information: "
 msgstr ""
