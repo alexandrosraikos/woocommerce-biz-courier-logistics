@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Biz Courier & Logistics for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.3.1\n"
+"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.3.0\n"
 "Report-Msgid-Bugs-To: Alexandros Raikos <alexandros@araikos.gr>\n"
 "PO-Revision-Date: 2021-09-17 08:38+0300\n"
 "MIME-Version: 1.0\n"
@@ -14,27 +14,21 @@ msgstr ""
 "Language: el_GR\n"
 "X-Generator: Poedit 3.0\n"
 
-msgctxt "PLUGIN_DESCRIPTION"
 msgid "Integrate your Biz Courier warehouse with WooCommerce."
 msgstr "Συνδέστε την αποθήκη σας Biz με το WooCommerce."
 
-msgctxt "PLUGIN_AUTHOR"
 msgid "Alexandros Raikos"
 msgstr "Αλέξανδρος Ράικος"
 
-msgctxt "PLUGIN_ACTION"
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
-msgctxt "PLUGIN_LINK_1"
 msgid "Documentation"
 msgstr "Τεκμηρίωση"
 
-msgctxt "PLUGIN_LINK_2"
 msgid "Support"
 msgstr "Υποστήριξη"
 
-msgctxt "PLUGIN_LINK_3"
 msgid "Donate via GitHub Sponsors"
 msgstr "Δωρεά μέσω GitHub Sponsors"
 
@@ -42,118 +36,90 @@ msgstr "Δωρεά μέσω GitHub Sponsors"
 # ------
 # This section includes globally used strings.
 
-msgctxt "SETTINGS_ENABLE_TITLE"
 msgid "Enable"
 msgstr "Ενεργοποίηση"
 
-msgctxt "SETTINGS_WAREHOUSE_MANAGEMENT_TITLE"
 msgid "Biz Warehouse"
 msgstr "Αποθήκη Biz"
 
-msgctxt "STATUS_LEVEL_FINAL"
 msgid "Final"
 msgstr "Τελικό"
 
-msgctxt "STATUS_LEVEL_PENDING"
 msgid "Pending"
 msgstr "Εκκρεμεί"
 
 # Integration
 # ------
 # This section provides the necessary translations for initialising the custom Biz integration.
-msgctxt "SETTINGS_INTEGRATION_SETUP_PROMPT"
 msgid "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 msgstr "Πρέπει να ρυθμίσετε τα στοιχεία σας Biz Courier στις <a href='%s'>ρυθμίσεις WooCommerce</a>."
 
-msgctxt "SETTINGS_INTEGRATION_SETUP_NOTICE"
 msgid "Your Biz Courier credentials are invalid. Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 msgstr "Τα στοιχεία σας Biz Courier δεν είναι σωστά. Πρέπει να ρυθμίσετε τα στοιχεία σας Biz Courier στις <a href='%s'>ρυθμίσεις WooCommerce</a>."
 
-msgctxt "SETTINGS_INTEGRATION_SETUP_ERROR"
 msgid "There was an error contacting Biz Courier, please try again later."
 msgstr "Υπήρξε ένα σφάλμα κατά την επικοινωνία με την Biz Courier. Προσπαθήστε ξανά αργότερα."
 
-msgctxt "SETTINGS_INTEGRATION_TITLE"
 msgid "Biz Courier & Logistics"
 msgstr "Biz Courier & Logistics"
 
-msgctxt "SETTINGS_INTEGRATION_DESCRIPTION"
 msgid "An integration for synchronising stock, orders and payment fees with the Biz Courier & Logistics platform."
 msgstr "Μία ενσωμάτωση για να συγχρονίζετε το απόθεμά σας, τις παραγγελίες και τις προμήθειες courier με την πλατφόρμα Biz Courier & Logistics."
 
-msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_TITLE"
 msgid "Biz Courier Credentials"
 msgstr "Στοιχεία Biz Courier"
 
-msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_DESCRIPTION"
 msgid "Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact Biz</a>."
 msgstr "Εισάγετε τα στοιχεία σας Biz Courier στα παρακάτω πεδία. Αν δεν έχετε εγγραφεί ακόμη, <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">επικοινωνήστε με την Biz</a>."
 
-msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_ACCOUNT_NUMBER"
 msgid "Account Number"
 msgstr "Αριθμός λογαριασμού"
 
-msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_ACCOUNT_NUMBER_DESCRIPTION"
 msgid "Your account number registered with Biz Courier."
 msgstr "Ο αριθμός λογαριασμού ο οποίος σας έχει αποσταλεί από την Biz Courier."
 
-msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_CRM_NUMBER"
 msgid "Warehouse CRM Number"
 msgstr "Κωδικός CRM αποθήκης"
 
-msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_CRM_NUMBER_DESCRIPTION"
 msgid "Your CRM number for the warehouse location assigned to this store."
 msgstr "Ο κωδικός CRM της αποθήκης που θέλετε να συνδέσετε με αυτό το κατάστημα."
 
-msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_USERNAME"
 msgid "Username"
 msgstr "Όνομα χρήστη"
 
-msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_USERNAME_DESCRIPTION"
 msgid "Your username registered with Biz Courier."
 msgstr "Το όνομα χρήστη σας για την Biz Courier."
 
-msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_PASSWORD"
 msgid "Password"
 msgstr "Κωδικός πρόσβασης"
 
-msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_PASSWORD_DESCRIPTION"
 msgid "Your Biz Courier merchant password."
 msgstr "Ο κωδικός πρόσβασής σας για την Biz Courier."
 
-msgctxt "SETTINGS_INTEGRATION_GENERAL_TITLE"
 msgid "General"
 msgstr "Γενικά"
 
-msgctxt "SETTINGS_INTEGRATION_GENERAL_DESCRIPTION"
 msgid "Choose your optimal working settings for integrating Biz Courier & Logistics with your WooCommerce shop."
 msgstr "Επιλέξτε τις κατάλληλες ρυθμίσεις για να ενσωματώσετε την Biz Courier & Logistics με το κατάστημά σας WooCommerce."
 
-msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_STATUS_UPDATES_TITLE"
 msgid "Automatic order status updates"
 msgstr "Αυτόματη ενημέρωση κατάστασης παραγγελιών"
 
-msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_STATUS_UPDATES_DESCRIPTION"
 msgid "Update Processing shipment status automatically to Completed or Cancelled, based on Biz Courier data."
 msgstr "Αυτόματη ενημέρωση παραγγελιών υπό Επεξεργασία σε Ολοκληρωμένες ή Ακυρωμένες, βάσει δεδομένων της Biz Courier."
 
-msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CREATION_TITLE"
 msgid "Automatic shipment creation"
 msgstr "Αυτόματη δημιουργία αποστολής"
 
-msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CREATION_DESCRIPTION"
 msgid "Automatically send Biz shipments when orders enter the selected status."
 msgstr "Αυτόματη δημιουργία αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση."
 
-msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CANCELLATION_TITLE"
 msgid "Automatic shipment cancellation"
 msgstr "Αυτόματη ακύρωση αποστολής"
 
-msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CANCELLATION_DESCRIPTION"
 msgid "Automatically cancel Biz shipments when orders enter the selected status."
 msgstr "Αυτόματη ακύρωση αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση."
 
-msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_ACTIONS_DISABLED_STATUS"
 msgid "Disable"
 msgstr "Απενεργοποίηση"
 
@@ -162,31 +128,24 @@ msgstr "Απενεργοποίηση"
 # This section provides all the translations related to syncing stock
 # between the WooCommerce store and the items in the connected warehouse.
 
-msgctxt "PRODUCT_WAREHOUSE_SYNC_DESCRIPTION"
 msgid "Select this option if the product is stored in your Biz warehouse."
 msgstr "Ενεργοποιήστε αυτή την επιλογή αν το προϊόν βρίσκεται στην Biz αποθήκη σας."
 
-msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_TITLE"
 msgid "Biz status"
 msgstr "Κατάσταση Biz"
 
-msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_FOUND"
 msgid "Found"
 msgstr "Βρέθηκε"
 
-msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_NOT_FOUND"
 msgid "Not found"
 msgstr "Δε βρέθηκε"
 
-msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_PARTIALLY_FOUND"
 msgid "Partially found"
 msgstr "Βρέθηκε μερικώς"
 
-msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_DISABLED"
 msgid "Disabled"
 msgstr "Εκτός αποθήκης"
 
-msgctxt "ALL_PRODUCTS_SYNC_BUTTON"
 msgid "Get stock levels"
 msgstr "Μέτρηση αποθέματος"
 
@@ -194,153 +153,116 @@ msgstr "Μέτρηση αποθέματος"
 # ------
 # This section provides the necessary translations for initialising
 # the custom Biz shipping method.
-msgctxt "SETTINGS_SHIPPING_TITLE"
 msgid "Biz Courier Shipping"
 msgstr "Αποστολές Biz Courier"
 
-msgctxt "SETTINGS_SHIPPING_DESCRIPTION"
 msgid "Allow your customers to receive their products via Biz Courier Shipping."
 msgstr "Επιτρέψτε στους πελάτες σας να λάβουν τα προϊόντα τους μέσω της Biz Courier."
 
-msgctxt "SETTINGS_SHIPPING_ENABLE_DESCRIPTION"
 msgid "Allow shipping with Biz Courier."
 msgstr "Ενεργοποιήστε τις αποστολές με Biz Courier."
 
-msgctxt "SETTINGS_SHIPPING_COD_FEE_TITLE"
 msgid "COD fee"
 msgstr "Προμήθεια αντικαταβολής"
 
-msgctxt "SETTINGS_SHIPPING_COD_FEE_DESCRIPTION"
 msgid "Insert the additional Biz fee for Cash On Delivery payments."
 msgstr "Εισάγετε το ποσό χρέωσης αντικαταβολής για αποστολές Biz."
 
 # --- General shipping settings.
-msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_TITLE"
 msgid "Same Day Delivery"
 msgstr "Παράδοση αυθημερόν"
 
-msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_DESCRIPTION"
 msgid "Allow same region customers to opt for same day delivery."
 msgstr "Επιτρέψτε στους πελάτες που βρίσκονται στον ίδιο νομό να ζητήσουν αυθημερόν παράδοση."
 
-msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_PER_KM"
 msgid "Charge per km"
 msgstr "Χρέωση ανα χλμ"
 
-msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_PER_KM_DESCRIPTION"
 msgid "Insert the charge per km for same day deliveries up to 2kg."
 msgstr "Εισάγετε το κόστος παράδοσης αυθημερόν για αποστολές έως 2kg."
 
-msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_MINIMUM_CHARGE"
 msgid "Minimum charge"
 msgstr "Ελάχιστη χρέωση"
 
-msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_MINIMUM_CHARGE_DESCRIPTION"
 msgid "Insert the minimum charge for same day deliveries."
 msgstr "Εισάγετε το ελάχιστο κόστος για αυθημερόν παραδόσεις."
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_TITLE"
 msgid "Additional Services"
 msgstr "Πρόσθετες υπηρεσίες"
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_DESCRIPTION"
 msgid "Adjust options for additional services provided by Biz Courier."
 msgstr "Προσαρμόστε τις ρυθμίσεις των πρόσθετων υπηρεσιών αποστολών Biz Courier."
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SMS_TITLE"
 msgid "SMS notifications"
 msgstr "Ειδοποιήσεις μέσω SMS"
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SMS_DESCRIPTION"
 msgid "Inform your customers about their Biz shipment status via SMS."
 msgstr "Ενημερώστε τους πελάτες σας μέσω SMS για την κατάσταση της παράδοσης."
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_BILLING_PHONE_USAGE_TITLE"
 msgid "Use billing phone"
 msgstr "Χρήση αριθμού τηλεφώνου χρέωσης"
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_BILLING_PHONE_USAGE_DESCRIPTION"
 msgid "Submit the recipient's billing phone number instead of the shipping phone number to Biz."
 msgstr "Χρησιμοποιείστε τον αριθμό τηλεφώνου χρέωσης αντί για τον αριθμό τηλεφώνου αποστολής όταν αποστέλλετε μία νέα παράδοση στη Biz."
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_MORNING_DELIVERY_TITLE"
 msgid "Morning delivery"
 msgstr "Πρωινή παράδοση"
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_MORNING_DELIVERY_DESCRIPTION"
 msgid "Check the box if you would like the morning delivery option enabled in same area deliveries."
 msgstr "Επιλέξτε αν θέλετε να ενεργοποιήσετε τις πρωϊνές παραδόσεις για παραδόσεις εντός νομού αποθήκης."
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_MORNING_DELIVERY_FEE_TITLE"
 msgid "Morning delivery fee"
 msgstr "Κόστος πρωϊνής παράδοσης"
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_MORNING_DELIVERY_FEE_DESCRIPTION"
 msgid "Insert the additional fee amount for morning deliveries."
 msgstr "Προσθέστε το ποσό επιπλέον χρέωσης για πρωϊνές παραδόσεις."
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SATURDAY_DELIVERY_TITLE"
 msgid "Saturday delivery"
 msgstr "Παράδοση εντός Σαββάτου"
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SATURDAY_DELIVERY_DESCRIPTION"
 msgid "Check the box if you would like the Saturday delivery option enabled in same area deliveries."
 msgstr "Επιλέξτε αν θέλετε να ενεργοποιήσετε τις παραδόσεις Σαββάτου για παραδόσεις εντός νομού αποθήκης."
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SATURDAY_DELIVERY_FEE_TITLE"
 msgid "Saturday delivery fee"
 msgstr "Κόστος παράδοσης Σαββάτου"
 
-msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_SATURDAY_DELIVERY_FEE_DESCRIPTION"
 msgid "Insert the additional fee amount for deliveries on Saturdays."
 msgstr "Προσθέστε το ποσό επιπλέον χρέωσης για παραδόσεις εντός Σαββάτου."
 
 # --- Instance shipping settings.
-msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_TITLE"
 msgid "Shipping zone type"
 msgstr "Τύπος ζώνης αποστολών"
 
-msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_DESCRIPTION"
 msgid "Select the type of Biz area covered by this shipping zone."
 msgstr "Επιλέξτε τον τύπο περιοχής Biz που αντιπροσωπεύει αυτή η ζώνη αποστολών."
 
-msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_SAME_AREA_OPTION"
 msgid "Same area as warehouse"
 msgstr "Εντός νομού αποθήκης"
 
-msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_LAND_DESTINATIONS_OPTION"
 msgid "Land destinations"
 msgstr "Χερσαίοι προορισμοί"
 
-msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_ISLAND_DESTINATIONS_OPTION"
 msgid "Island destinations"
 msgstr "Νησιωτικοί προορισμοί"
 
-msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_INACCESSIBLE_AREAS_OPTION"
 msgid "Inaccessible areas"
 msgstr "Δυσπρόσιτες περιοχές"
 
-msgctxt "SETTINGS_SHIPPING_INSTANCE_DELIVERY_FEE_TITLE"
 msgid "Delivery pricing"
 msgstr "Κόστος αποστολής"
 
-msgctxt "SETTINGS_SHIPPING_INSTANCE_DELIVERY_FEE_DESCRIPTION"
 msgid "Insert the delivery fee amount for up to 2kg."
 msgstr "Εισάγετε το ποσό χρέωσης για την αποστολή εώς 2 κιλών (kg)."
 
-msgctxt "SETTINGS_SHIPPING_INSTANCE_EXTRA_KG_CHARGE_TITLE"
 msgid "Charge per extra kg"
 msgstr "Χρέωση ανά επιπλέον κιλό"
 
-msgctxt "SETTINGS_SHIPPING_INSTANCE_EXTRA_KG_CHARGE_DESCRIPTION"
 msgid "Insert the delivery fee amount for every extra kg."
 msgstr "Εισάγετε το ποσό χρέωσης για κάθε επιπλέον κιλό (kg) στην αποστολή."
 
-msgctxt "CHECKOUT_SHIPPING_OPTION_SIMPLE_DELIVERY"
 msgid "Simple delivery"
 msgstr "Απλή παράδοση"
 
-msgctxt "CHECKOUT_SHIPPING_OPTION_MORNING_DELIVERY"
 msgid "Morning delivery (until 10:30 a.m.)"
 msgstr "Πρωινή παράδοση (έως 10:30 π.μ.)"
 
@@ -348,232 +270,175 @@ msgstr "Πρωινή παράδοση (έως 10:30 π.μ.)"
 # ------
 # This section provides the necessary translations for mapping, managing and displaying
 # WooCommerce orders and their status to Biz Courier Shipments.
-msgctxt "ALL_ORDERS_SHIPMENT_VOUCHER_COLUMN_TITLE"
 msgid "Biz shipment voucher"
 msgstr "Κωδικός παράδοσης Biz"
 
-msgctxt "ORDER_METABOX_TITLE"
 msgid "Biz Courier status"
 msgstr "Κατάσταση Biz Courier"
 
-msgctxt "ORDER_METABOX_NO_SHIPMENT_MESSAGE"
 msgid "This order has not shipped with Biz."
 msgstr "Αυτή η παραγγελία δεν έχει αποσταλεί μέσω Biz."
 
-msgctxt "ORDER_METABOX_SEND_SHIPMENT_BUTTON"
 msgid "Send shipment"
 msgstr "Αποστολή παραγγελίας"
 
-msgctxt "ORDER_METABOX_SEND_SHIPMENT_SUCCESS_ORDER_NOTE"
 msgid "The shipment was successfully registered to Biz Courier."
 msgstr "Η παράδοση καταχωρήθηκε με επιτυχία στην Biz Courier."
 
-msgctxt "ORDER_METABOX_ADD_VOUCHER_BUTTON"
 msgid "Add existing voucher number"
 msgstr "Προσθήκη κωδικού αποστολής"
 
-msgctxt "ORDER_METABOX_ADD_VOUCHER_PROMPT"
 msgid "Insert the shipment's voucher number from Biz Courier in the field below."
 msgstr "Εισάγετε τον κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
 
-msgctxt "ORDER_METABOX_VOUCHER_TITLE"
 msgid "Voucher number: "
 msgstr "Κωδικός παράδοσης: "
 
-msgctxt "ORDER_METABOX_VOUCHER_EDIT_ACTION"
 msgid "Edit voucher"
 msgstr "Επεξεργασία κωδικού αποστολής"
 
-msgctxt "ORDER_METABOX_VOUCHER_EDIT_PROMPT"
 msgid "Insert the new shipment voucher number from Biz Courier in the field below."
 msgstr "Εισάγετε τον νέο κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
 
-msgctxt "ORDER_METABOX_VOUCHER_DELETE_ACTION"
 msgid "Delete voucher"
 msgstr "Διαγραφή κωδικού αποστολής"
 
-msgctxt "ORDER_METABOX_VOUCHER_DELETE_PROMPT"
 msgid "Are you sure you want to delete the shipment voucher from this order?"
 msgstr "Είστε σίγουρος/η πως θέλετε να διαγράψετε αυτόν τον κωδικό αποστολής από την παραγγελία;"
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_TITLE"
 msgid "Shipment actions: "
 msgstr "Ενέργειες παράδοσης: "
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_BUTTON"
 msgid "Modify shipment"
 msgstr "Επεξεργασία παράδοσης"
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_PROMPT"
 msgid "Please insert the message you want to send to Biz about the shipment."
 msgstr "Εισάγετε παρακάτω το μήνυμα που θέλετε να στείλετε στην Biz σχετικά με την παράδοση."
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_NOTE_PREPEND"
 msgid "Message sent to Biz: "
 msgstr "Μήνυμα εστάλη στην Biz: "
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_NOTE_MODIFICATION_IDENTIFIER"
 msgid " (modification id: "
 msgstr " (αναγνωριστικό τροποποίησης: "
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_CANCEL_BUTTON"
 msgid "Request shipment cancellation"
 msgstr "Αίτηση ακύρωσης παράδοσης"
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_CANCEL_PROMPT"
 msgid "Are you sure you want to request the cancellation of this Biz shipment? If you want to send it again, you will receive a new tracking code."
 msgstr "Σίγουρα επιθυμείτε να στείλετε αίτηση ακύρωσης αυτής της παράδοσης Biz; Αν επιθυμείτε να την ξαναστείλετε, θα λάβετε νέο κωδικό αποστολής."
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_CANCEL_NOTE"
 msgid "The Biz shipment with tracking code %s was cancelled."
 msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε."
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_CANCEL_NOTE_WITH_CODE"
 msgid "The Biz shipment with tracking code %s was cancelled. The cancellation code is: %s."
 msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε. Ο κωδικός ακύρωσης είναι: %s."
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_SYNCHRONIZE_BUTTON"
 msgid "Synchronize order status"
 msgstr "Συγχρονισμός κατάστασης"
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_IMMUTABLE_STATUS_WARNING"
 msgid "You must change the order status to \"Processing\" in order to perform more actions on this shipment."
 msgstr "Πρέπει να αλλάξετε την κατάσταση της παραγγελίας σε \"Σε επεξεργασία\" για να πραγματοποιήσετε περαιτέρω ενέργειες σε αυτή την παράδοση."
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_UPDATE_STATUS_FROM_PROCESSING_WARNING"
 msgid "This shipment has reached a %s state. You must change the order status to reflect that change. You can also enable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>."
 msgstr "Αυτή η παράδοση %s. Πρέπει να αλλάξετε την κατάσταση της παραγγελίας. Μπορείτε επίσης να ενεργοποιήσετε την αυτόματη ενημέρωση κατάστασης παραγγελιών στις <em>Ρυθμίσεις WooCoomerce > Ενσωμάτωση > Biz Courier & Logistics</em>."
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_UPDATE_STATUS_FROM_PROCESSING_NOTICE"
 msgid "This shipment has reached a %s state. The order status will be updated automatically in a few minutes. You can disable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>."
 msgstr "Η παράδοση %s. Η κατάσταση της παραγγελίας θα ενημερωθεί αυτόματα σε λίγα λεπτά. Μπορείτε να απενεργοποιήσετε την αυτόματη ενημέρωση κατάστασης παραγγελιών στις <em>Ρυθμίσεις WooCoomerce > Ενσωματώσεις > Biz Courier & Logistics</em>."
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_UPDATE_STATUS_FROM_NON_PROCESSING_WARNING"
 msgid "This shipment has reached a %s state. You must change the order status to reflect that change."
 msgstr "Αυτή η παράδοση %s. Πρέπει να αλλάξετε την κατάσταση της παραγγελίας."
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_CANCELLED_NOTICE"
 msgid "This shipment has reached a %s state. You cannot perform further actions."
 msgstr "Αυτή η παράδοση %s. Δεν μπορείτε να εκτελέσετε άλλες ενέργειες."
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_COMPLETED_NOTICE"
 msgid "This shipment was completed. There are no more actions to perform."
 msgstr "Αυτή η παράδοση ολοκληρώθηκε. Δεν χρειάζονται περαιτέρω ενέργειες."
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MESSAGE_STATE_CANCELLED"
 msgid "cancelled"
 msgstr "ακυρώθηκε"
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MESSAGE_STATE_FAILED"
 msgid "failed"
 msgstr "απέτυχε"
 
-msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MESSAGE_STATE_COMPLETED"
 msgid "completed"
 msgstr "ολοκληρώθηκε"
 
-msgctxt "ORDER_METABOX_STATUS_HISTORY_TITLE"
 msgid "Status history: "
 msgstr "Ιστορικό κατάστασης: "
 
-msgctxt "ORDER_METABOX_STATUS_GENERIC_DESCRIPTION"
 msgid "Delivery status update"
 msgstr "Ενημέρωση κατάστασης παράδοσης"
 
-msgctxt "ORDER_METABOX_STATUS_HISTORY_NO_COMMENTS_MESSAGE"
 msgid "No other comments."
 msgstr "Κανένα άλλο σχόλιο."
 
-msgctxt "ORDER_METABOX_STATUS_HISTORY_ACTIONS_TITLE"
 msgid "Actions:"
 msgstr "Ενέργειες:"
 
-msgctxt "ORDER_METABOX_STATUS_HISTORY_DATETIME_DIVIDER"
 msgid "at"
 msgstr "στις"
 
 # Automated notes
-msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_COMPLETED"
 msgid "The connected Biz shipment was completed."
 msgstr "Η συνδεδεμένη παράδοση Biz ολοκληρώθηκε."
 
-msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_CANCELLED"
 msgid "The connected Biz shipment was cancelled."
 msgstr "Η συνδεδεμένη παράδοση Biz ακυρώθηκε."
 
-msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_FAILED"
 msgid "The connected Biz shipment has failed."
 msgstr "Η συνδεδεμένη παράδοση Biz απέτυχε."
 
-msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_PROCESSING"
 msgid "The newly connected shipment is pending delivery."
 msgstr "Εκκρεμεί η παράδοση της νέας συνδεδεμένης σας αποστολής Biz."
 
 # Error messages
-msgctxt "ORDER_EDIT_VOUCHER_NOT_FOUND_ERROR"
 msgid "This voucher was not found. Please provide a valid shipment voucher."
 msgstr "Αυτός ο κωδικός παράδοσης δεν βρέθηκε. Εισάγετε έναν έγκυρο κωδικό παράδοσης."
 
-msgctxt "ORDER_MODIFY_SHIPMENT_VOUCHER_NOT_FOUND_ERROR"
 msgid "The voucher number couldn't be retrieved."
 msgstr "Ο κωδικός παράδοσης δεν μπορούσε να αναγνωσθεί."
 
-msgctxt "ORDER_MODIFY_SHIPMENT_UNKNOWN_ERROR"
 msgid "An unknown error occured while processing shipment modification information."
 msgstr "Ένα άγνωστο σφάλμα προέκυψε κατά την επεξεργασία των πληροφοριών επεξεργασίας της παράδοσης."
 
-msgctxt "ORDER_MODIFY_SHIPMENT_UNKNOWN_BIZ_ERROR"
 msgid "An unknown Biz error occured while processing shipment modification information."
 msgstr "Ένα άγνωστο σφάλμα προέκυψε από την Biz κατά την επεξεργασία των πληροφοριών επεξεργασίας της παράδοσης."
 
-msgctxt "ORDER_SEND_SHIPMENT_NO_PRODUCTS_ERROR"
 msgid "There are no products in this order."
 msgstr "Δεν υπάρχουν προϊόντα σε αυτή την παραγγελία."
 
-msgctxt "ORDER_SEND_SHIPMENT_SKU_ERROR"
 msgid "Some products were not found in the Biz warehouse."
 msgstr "Κάποια προϊόντα δεν βρίσκονται στην αποθήκη Biz."
 
-msgctxt "ORDER_SEND_SHIPMENT_METRICS_ERROR"
 msgid "Please make sure all products in the order have their weight & dimensions registered."
 msgstr "Πρέπει να έχει καταχωρηθεί βάρος και διαστάσεις σε κάθε προϊόν της παραγγελίας."
 
-msgctxt "ORDER_SEND_SHIPMENT_AUTH_ERROR"
 msgid "There was an error with your Biz credentials."
 msgstr "Υπήρξε ένα σφάλμα με τα στοιχεία σας Biz Courier."
 
-msgctxt "ORDER_SEND_SHIPMENT_UNKNOWN_INFORMATION_ERROR"
 msgid "An unknown error occured while processing order information."
 msgstr "Προέκυψε ένα άγνωστο σφάλμα κατά την επεξεργασία των πληροφοριών της παραγγελίας."
 
-msgctxt "ORDER_SEND_SHIPMENT_VOUCHER_ERROR"
 msgid "A voucher already exists for this order."
 msgstr "Ένας κωδικός παράδοσης υπάρχει ήδη για αυτή την παραγγελία."
 
-msgctxt "ORDER_SEND_SHIPMENT_RECIPIENT_INFORMATION_ERROR"
 msgid "There was a problem with the recipient's information. Make sure you have filled in all the necessary fields: First name, last name, phone number, e-mail address, address line #1, city, postal code and country."
 msgstr "Υπήρξε ένα πρόβλημα με της πληροφορίες του παραλήπτη. Ελέγξτε τις πληροφορίες αποστολής που έχετε εισάγει: Όνομα, επώνυμο, αριθμός τηλεφώνου, διεύθυνση e-mail, γραμμή 1 διεύθυνσης, πόλη/περιοχή, ταχυδρομικός κώδικας και χώρα."
 
-msgctxt "ORDER_SEND_SHIPMENT_BIZ_RECIPIENT_INFORMATION_ERROR"
 msgid "There was a problem registering recipient information with Biz. Please check your recipient information entries."
 msgstr "Υπήρξε ένα πρόβλημα κατά την αποστολή πληροφοριών παραλήπτη στην Biz. Ελέγξτε τις πληροφορίες παραλήπτη που έχετε εισάγει."
 
-msgctxt "ORDER_SEND_SHIPMENT_BIZ_ITEMS_ERROR"
 msgid "There was a problem with your order's items while submitting their information to Biz."
 msgstr "Υπήρξε ένα πρόβλημα με τα τεμάχια της παραγγελίας μετά από την αποστολή τους στην Biz."
 
-msgctxt "ORDER_SEND_SHIPMENT_UNKNOWN_BIZ_ERROR"
 msgid "Response from Biz could not be read, please check your warehouse shipments from their official application."
 msgstr "Η απάντηση από την Biz δε μπορούσε να αναγνωσθεί, ελέγξτε τις παραδόσεις σας από την επίσημη εφαρμογή της Biz."
 
-msgctxt "ORDER_SEND_SHIPMENT_UNKNOWN_BIZ_SHIPMENT_INFORMATION_ERROR"
 msgid "An unknown Biz error occured after submitting the shipment information."
 msgstr "Ένα άγνωστο σφάλμα από την Biz Courier προέκυψε μετά την υποβολή των πληροφοριών παράδοσης."
 
-msgctxt "ORDER_SEND_SHIPMENT_STOCK_ERROR"
 msgid "There isn't enough stock to ship some products."
 msgstr "Δεν υπάρχει επαρκές απόθεμα κάποιων τεμαχίων για τη παράδοση."
 
-msgctxt "ORDER_CONNECTION_ERROR"
 msgid "There was a connection error while trying to contact Biz Courier. More information: "
 msgstr "Υπήρξε ένα πρόβλημα κατά τη σύνδεση με τη Biz Courier. Περισσότερες πληροφορίες: "
