@@ -2,11 +2,10 @@
 #
 msgid ""
 msgstr ""
-
-"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.3.0\n"
+"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.3.1\n"
 "Report-Msgid-Bugs-To: Alexandros Raikos <alexandros@araikos.gr>\n"
 "POT-Creation-Date: 2021-09-17 8:12+0300\n"
-"POT-Creation-Date: 2021-09-16 18:46+0300\n"
+"PO-Revision-Date: 2021-09-16 18:46+0300\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,6 +13,7 @@ msgstr ""
 "Last-Translator: Alexandros Raikos <alexandros@araikos.gr>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: en\n"
+"X-Generator: Poedit 3.0\n"
 
 msgctxt "PLUGIN_DESCRIPTION"
 msgid "Integrate your Biz Courier warehouse with WooCommerce."
@@ -42,7 +42,6 @@ msgstr "Donate via GitHub Sponsors"
 # Integration
 # ------
 # This section provides the necessary translations for initialising the custom Biz integration.
-
 msgctxt "SETTINGS_INTEGRATION_SETUP_PROMPT"
 msgid "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 msgstr "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
@@ -72,8 +71,8 @@ msgid "Insert your Biz Courier credentials here. If you are still unregistered w
 msgstr "Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact Biz</a>."
 
 msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_ACCOUNT_NUMBER"
-msgid  "Account Number"
-msgstr  "Account Number"
+msgid "Account Number"
+msgstr "Account Number"
 
 msgctxt "SETTINGS_INTEGRATION_CREDENTIALS_ACCOUNT_NUMBER_DESCRIPTION"
 msgid "Your account number registered with Biz Courier."
@@ -141,9 +140,8 @@ msgstr "Disable"
 
 # Stock Synchronization
 # ------
-# This section provides all the translations related to syncing stock 
+# This section provides all the translations related to syncing stock
 # between the WooCommerce store and the items in the connected warehouse.
-
 msgctxt "PRODUCT_WAREHOUSE_SYNC_TITLE"
 msgid "Biz Warehouse"
 msgstr "Biz Warehouse"
@@ -186,9 +184,8 @@ msgstr "Biz Warehouse"
 
 # Shipping Method
 # ------
-# This section provides the necessary translations for initialising 
+# This section provides the necessary translations for initialising
 # the custom Biz shipping method.
-
 msgctxt "SETTINGS_SHIPPING_TITLE"
 msgid "Biz Courier Shipping"
 msgstr "Biz Courier Shipping"
@@ -300,7 +297,6 @@ msgid "Insert the additional fee amount for deliveries on Saturdays."
 msgstr "Insert the additional fee amount for deliveries on Saturdays."
 
 # --- Instance shipping settings.
-
 msgctxt "SETTINGS_SHIPPING_INSTANCE_SHIPPING_ZONE_TYPE_TITLE"
 msgid "Shipping zone type"
 msgstr "Shipping zone type"
@@ -353,7 +349,6 @@ msgstr "Morning delivery (until 10:30 a.m.)"
 # ------
 # This section provides the necessary translations for mapping, managing and displaying
 # WooCommerce orders and their status to Biz Courier Shipments.
-
 msgctxt "ALL_ORDERS_SHIPMENT_VOUCHER_COLUMN_TITLE"
 msgid "Biz shipment voucher"
 msgstr "Biz shipment voucher"
@@ -507,7 +502,6 @@ msgid "at"
 msgstr "at"
 
 # Automated notes
-
 msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_COMPLETED"
 msgid "The newly connected shipment was already completed."
 msgstr "The newly connected shipment was already completed."
@@ -525,7 +519,6 @@ msgid "The newly connected shipment is pending delivery."
 msgstr "The newly connected shipment is pending delivery."
 
 # Error messages
-
 msgctxt "ORDER_EDIT_VOUCHER_NOT_FOUND_ERROR"
 msgid "This voucher was not found. Please provide a valid shipment voucher."
 msgstr "This voucher was not found. Please provide a valid shipment voucher."
