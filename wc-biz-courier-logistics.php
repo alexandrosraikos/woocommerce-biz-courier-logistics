@@ -10,8 +10,8 @@
  * WC tested up to: 5.2.2
  * Author:            Alexandros Raikos
  * Author URI:        https://www.araikos.gr/en/
- * License:           GNU General Public License v3.0
- * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
+ * License:           The Unlicense
+ * License URI:	      https://unlicense.org
  * Text Domain:       wc-biz-courier-logistics
  * Domain Path:       /languages
  */
@@ -21,11 +21,6 @@ if (!defined('WPINC')) {
 	die;
 }
 
-/**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
 define('WC_BIZ_COURIER_LOGISTICS_VERSION', '1.3.0');
 
 // Check for active WooCommerce.

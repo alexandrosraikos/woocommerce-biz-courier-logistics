@@ -1,22 +1,18 @@
-# ENGLISH (EN) translation for Biz Courier & Logistics for WooCommerce.
-# Copyright (C) 2021, Alexandros Raikos tou Konstantinou.
+# GREEK (EL) translation for Biz Courier & Logistics for WooCommerce.
 # This file is distributed under the same license as the Biz Courier & Logistics for WooCommerce package.
-# Alexandros Raikos <alexandros@araikos.gr>, 2021.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.0.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-10 17:11-0600\n"
-"PO-Revision-Date: 2021-05-10 23:18+0300\n"
+"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.3.0\n"
+"Report-Msgid-Bugs-To: Alexandros Raikos <alexandros@araikos.gr>\n"
+"PO-Revision-Date: 2021-09-17 08:38+0300\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: \n"
-"X-Generator: Poedit 2.4.3\n"
-"Last-Translator: \n"
+"Last-Translator: Alexandros Raikos <alexandros@araikos.gr>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: el\n"
+"Language: el_GR\n"
+"X-Generator: Poedit 3.0\n"
 
 msgid "Integrate your Biz Courier warehouse with WooCommerce."
 msgstr "Συνδέστε την αποθήκη σας Biz με το WooCommerce."
@@ -36,10 +32,25 @@ msgstr "Υποστήριξη"
 msgid "Donate via GitHub Sponsors"
 msgstr "Δωρεά μέσω GitHub Sponsors"
 
+# Globals
+# ------
+# This section includes globally used strings.
+
+msgid "Enable"
+msgstr "Ενεργοποίηση"
+
+msgid "Biz Warehouse"
+msgstr "Αποθήκη Biz"
+
+msgid "Final"
+msgstr "Τελικό"
+
+msgid "Pending"
+msgstr "Εκκρεμεί"
+
 # Integration
 # ------
 # This section provides the necessary translations for initialising the custom Biz integration.
-
 msgid "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 msgstr "Πρέπει να ρυθμίσετε τα στοιχεία σας Biz Courier στις <a href='%s'>ρυθμίσεις WooCommerce</a>."
 
@@ -61,14 +72,11 @@ msgstr "Στοιχεία Biz Courier"
 msgid "Insert your Biz Courier credentials here. If you are still unregistered with Biz Courier, please <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">contact Biz</a>."
 msgstr "Εισάγετε τα στοιχεία σας Biz Courier στα παρακάτω πεδία. Αν δεν έχετε εγγραφεί ακόμη, <a href=\"https://www.bizcourier.eu/ContactUs.htm\" target=\"blank\">επικοινωνήστε με την Biz</a>."
 
-msgid  "Account Number"
+msgid "Account Number"
 msgstr "Αριθμός λογαριασμού"
 
 msgid "Your account number registered with Biz Courier."
 msgstr "Ο αριθμός λογαριασμού ο οποίος σας έχει αποσταλεί από την Biz Courier."
-
-msgid "Your head CRM number registered with Biz Courier."
-msgstr "Ο κωδικός βασικού CRM ο οποίος σας έχει αποσταλεί από την Biz Courier."
 
 msgid "Warehouse CRM Number"
 msgstr "Κωδικός CRM αποθήκης"
@@ -100,22 +108,31 @@ msgstr "Αυτόματη ενημέρωση κατάστασης παραγγε�
 msgid "Update Processing shipment status automatically to Completed or Cancelled, based on Biz Courier data."
 msgstr "Αυτόματη ενημέρωση παραγγελιών υπό Επεξεργασία σε Ολοκληρωμένες ή Ακυρωμένες, βάσει δεδομένων της Biz Courier."
 
+msgid "Automatic shipment creation"
+msgstr "Αυτόματη δημιουργία αποστολής"
+
+msgid "Automatically send Biz shipments when orders enter the selected status."
+msgstr "Αυτόματη δημιουργία αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση."
+
+msgid "Automatic shipment cancellation"
+msgstr "Αυτόματη ακύρωση αποστολής"
+
+msgid "Automatically cancel Biz shipments when orders enter the selected status."
+msgstr "Αυτόματη ακύρωση αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση."
+
+msgid "Disable"
+msgstr "Απενεργοποίηση"
+
 # Stock Synchronization
 # ------
-# This section provides all the translations related to syncing stock 
+# This section provides all the translations related to syncing stock
 # between the WooCommerce store and the items in the connected warehouse.
 
-msgid "Biz Warehouse"
-msgstr "Αποθήκη Biz"
+msgid "Select this option if the product is stored in your Biz warehouse."
+msgstr "Ενεργοποιήστε αυτή την επιλογή αν το προϊόν βρίσκεται στην Biz αποθήκη σας."
 
 msgid "Biz status"
 msgstr "Κατάσταση Biz"
-
-msgid "Get stock levels"
-msgstr "Μέτρηση αποθέματος"
-
-msgid "Pending"
-msgstr "Εκκρεμεί"
 
 msgid "Found"
 msgstr "Βρέθηκε"
@@ -129,68 +146,18 @@ msgstr "Βρέθηκε μερικώς"
 msgid "Disabled"
 msgstr "Εκτός αποθήκης"
 
-msgid "Select this option if the product is stored in your Biz warehouse."
-msgstr "Ενεργοποιήστε αυτή την επιλογή αν το προϊόν βρίσκεται στην Biz αποθήκη σας."
-
+msgid "Get stock levels"
+msgstr "Μέτρηση αποθέματος"
 
 # Shipping Method
 # ------
-# This section provides the necessary translations for initialising 
+# This section provides the necessary translations for initialising
 # the custom Biz shipping method.
-
 msgid "Biz Courier Shipping"
 msgstr "Αποστολές Biz Courier"
 
-msgid "Automatic shipment creation"
-msgstr "Αυτόματη δημιουργία αποστολής"
-
-msgid "Automatically send Biz shipments when orders enter the selected status."
-msgstr "Αυτόματη δημιουργία αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση."
-
-msgid "Disable"
-msgstr "Απενεργοποίηση"
-
-msgid "Automatic shipment cancellation"
-msgstr "Αυτόματη ακύρωση αποστολής"
-
-msgid "Automatically cancel Biz shipments when orders enter the selected status."
-msgstr "Αυτόματη ακύρωση αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση."
-
-msgid "Simple delivery"
-msgstr "Απλή παράδοση"
-
-msgid "SMS notifications"
-msgstr "Ειδοποιήσεις μέσω SMS"
-
-msgid "Use billing phone"
-msgstr "Χρήση αριθμού τηλεφώνου χρέωσης"
-
-msgid "Submit the recipient's billing phone number instead of the shipping phone number to Biz."
-msgstr "Χρησιμοποιείστε τον αριθμό τηλεφώνου χρέωσης αντί για τον αριθμό τηλεφώνου αποστολής όταν αποστέλλετε μία νέα παράδοση στη Biz."
-
-msgid "Inform your customers about their Biz shipment status via SMS."
-msgstr "Ενημερώστε τους πελάτες σας μέσω SMS για την κατάσταση της παράδοσης."
-
-msgid "Morning delivery"
-msgstr "Πρωινή παράδοση"
-
-msgid "Check the box if you would like the morning delivery option enabled in same area deliveries."
-msgstr "Επιλέξτε αν θέλετε να ενεργοποιήσετε τις πρωϊνές παραδόσεις για παραδόσεις εντός νομού αποθήκης."
-
-msgid "Morning delivery (until 10:30 a.m.)"
-msgstr "Πρωινή παράδοση (έως 10:30 π.μ.)"
-
-msgid "Saturday delivery"
-msgstr "Παράδοση εντός Σαββάτου"
-
-msgid "Check the box if you would like the Saturday delivery option enabled in same area deliveries."
-msgstr "Επιλέξτε αν θέλετε να ενεργοποιήσετε τις παραδόσεις Σαββάτου για παραδόσεις εντός νομού αποθήκης."
-
 msgid "Allow your customers to receive their products via Biz Courier Shipping."
 msgstr "Επιτρέψτε στους πελάτες σας να λάβουν τα προϊόντα τους μέσω της Biz Courier."
-
-msgid "Enable"
-msgstr "Ενεργοποίηση"
 
 msgid "Allow shipping with Biz Courier."
 msgstr "Ενεργοποιήστε τις αποστολές με Biz Courier."
@@ -201,15 +168,68 @@ msgstr "Προμήθεια αντικαταβολής"
 msgid "Insert the additional Biz fee for Cash On Delivery payments."
 msgstr "Εισάγετε το ποσό χρέωσης αντικαταβολής για αποστολές Biz."
 
-msgid "Shipping Warehouses"
-msgstr "Αποθήκες αποστολών"
+# --- General shipping settings.
+msgid "Same Day Delivery"
+msgstr "Παράδοση αυθημερόν"
 
-msgid "Warehouse Location"
-msgstr "Τοποθεσία αποθήκης"
+msgid "Allow same region customers to opt for same day delivery."
+msgstr "Επιτρέψτε στους πελάτες που βρίσκονται στον ίδιο νομό να ζητήσουν αυθημερόν παράδοση."
 
-msgid "Insert the agreed upon prices for Biz Courier Shipping."
-msgstr "Εισάγετε τις τιμές που έχετε συμφωνήσει στο συμβόλαιό σας με την Biz Courier."
+msgid "Charge per km"
+msgstr "Χρέωση ανα χλμ"
 
+msgid "Insert the charge per km for same day deliveries up to 2kg."
+msgstr "Εισάγετε το κόστος παράδοσης αυθημερόν για αποστολές έως 2kg."
+
+msgid "Minimum charge"
+msgstr "Ελάχιστη χρέωση"
+
+msgid "Insert the minimum charge for same day deliveries."
+msgstr "Εισάγετε το ελάχιστο κόστος για αυθημερόν παραδόσεις."
+
+msgid "Additional Services"
+msgstr "Πρόσθετες υπηρεσίες"
+
+msgid "Adjust options for additional services provided by Biz Courier."
+msgstr "Προσαρμόστε τις ρυθμίσεις των πρόσθετων υπηρεσιών αποστολών Biz Courier."
+
+msgid "SMS notifications"
+msgstr "Ειδοποιήσεις μέσω SMS"
+
+msgid "Inform your customers about their Biz shipment status via SMS."
+msgstr "Ενημερώστε τους πελάτες σας μέσω SMS για την κατάσταση της παράδοσης."
+
+msgid "Use billing phone"
+msgstr "Χρήση αριθμού τηλεφώνου χρέωσης"
+
+msgid "Submit the recipient's billing phone number instead of the shipping phone number to Biz."
+msgstr "Χρησιμοποιείστε τον αριθμό τηλεφώνου χρέωσης αντί για τον αριθμό τηλεφώνου αποστολής όταν αποστέλλετε μία νέα παράδοση στη Biz."
+
+msgid "Morning delivery"
+msgstr "Πρωινή παράδοση"
+
+msgid "Check the box if you would like the morning delivery option enabled in same area deliveries."
+msgstr "Επιλέξτε αν θέλετε να ενεργοποιήσετε τις πρωϊνές παραδόσεις για παραδόσεις εντός νομού αποθήκης."
+
+msgid "Morning delivery fee"
+msgstr "Κόστος πρωϊνής παράδοσης"
+
+msgid "Insert the additional fee amount for morning deliveries."
+msgstr "Προσθέστε το ποσό επιπλέον χρέωσης για πρωϊνές παραδόσεις."
+
+msgid "Saturday delivery"
+msgstr "Παράδοση εντός Σαββάτου"
+
+msgid "Check the box if you would like the Saturday delivery option enabled in same area deliveries."
+msgstr "Επιλέξτε αν θέλετε να ενεργοποιήσετε τις παραδόσεις Σαββάτου για παραδόσεις εντός νομού αποθήκης."
+
+msgid "Saturday delivery fee"
+msgstr "Κόστος παράδοσης Σαββάτου"
+
+msgid "Insert the additional fee amount for deliveries on Saturdays."
+msgstr "Προσθέστε το ποσό επιπλέον χρέωσης για παραδόσεις εντός Σαββάτου."
+
+# --- Instance shipping settings.
 msgid "Shipping zone type"
 msgstr "Τύπος ζώνης αποστολών"
 
@@ -219,95 +239,111 @@ msgstr "Επιλέξτε τον τύπο περιοχής Biz που αντιπ�
 msgid "Same area as warehouse"
 msgstr "Εντός νομού αποθήκης"
 
+msgid "Land destinations"
+msgstr "Χερσαίοι προορισμοί"
+
+msgid "Island destinations"
+msgstr "Νησιωτικοί προορισμοί"
+
+msgid "Inaccessible areas"
+msgstr "Δυσπρόσιτες περιοχές"
+
 msgid "Delivery pricing"
 msgstr "Κόστος αποστολής"
 
 msgid "Insert the delivery fee amount for up to 2kg."
 msgstr "Εισάγετε το ποσό χρέωσης για την αποστολή εώς 2 κιλών (kg)."
 
-msgid "Insert the delivery fee amount for every extra kg."
-msgstr "Εισάγετε το ποσό χρέωσης για κάθε επιπλέον κιλό (kg) στην αποστολή."
-
 msgid "Charge per extra kg"
 msgstr "Χρέωση ανά επιπλέον κιλό"
 
-msgid "Land destinations"
-msgstr "Χερσαίοι προορισμοί"
+msgid "Insert the delivery fee amount for every extra kg."
+msgstr "Εισάγετε το ποσό χρέωσης για κάθε επιπλέον κιλό (kg) στην αποστολή."
 
-msgid "Insert the price for domestic land destinations."
-msgstr "Εισάγετε το κόστος αποστολής για εγχώριους χερσαίους προορισμούς."
+msgid "Simple delivery"
+msgstr "Απλή παράδοση"
 
-msgid "Island destinations"
-msgstr "Νησιωτικοί προορισμοί"
-
-msgid "Insert the price for domestic island destinations."
-msgstr "Εισάγετε το κόστος αποστολής για εγχώριους νησιωτικούς προορισμούς."
-
-msgid "Inaccessible areas"
-msgstr "Δυσπρόσιτες περιοχές"
-
-msgid "Insert the price for domestic inaccessible destinations."
-msgstr "Εισάγετε το κόστος αποστολής για εγχώριες δυσπρόσιτες περιοχές."
-
-msgid "Same Day Delivery"
-msgstr "Παράδοση αυθημερόν"
-
-msgid "Insert the pricing for same day delivery."
-msgstr "Εισάγετε το κόστος παράδοσης αυθημερόν."
-
-msgid "Allow same region customers to opt for same day delivery."
-msgstr "Επιτρέψτε στους πελάτες που βρίσκονται στον ίδιο νομό να ζητήσουν αυθημερόν παράδοση."
-
-msgid "Charge per km"
-msgstr "Χρέωση ανα χλμ"
-
-msgid "Minimum charge"
-msgstr "Ελάχιστη χρέωση"
-
-msgid "Additional Services"
-msgstr "Πρόσθετες υπηρεσίες"
-
-msgid "Adjust options for additional services provided by Biz Courier."
-msgstr "Προσαρμόστε τις ρυθμίσεις των πρόσθετων υπηρεσιών αποστολών Biz Courier."
-
-msgid "Morning delivery fee"
-msgstr "Κόστος πρωϊνής παράδοσης"
-
-msgid "Insert the additional fee amount for morning deliveries."
-msgstr "Προσθέστε το ποσό επιπλέον χρέωσης για πρωϊνές παραδόσεις."
-
-msgid "Saturday delivery fee"
-msgstr "Κόστος παράδοσης Σαββάτου"
-
-msgid "Insert the additional fee amount for deliveries on Saturdays."
-msgstr "Προσθέστε το ποσό επιπλέον χρέωσης για παραδόσεις εντός Σαββάτου."
-
+msgid "Morning delivery (until 10:30 a.m.)"
+msgstr "Πρωινή παράδοση (έως 10:30 π.μ.)"
 
 # Order Status
 # ------
 # This section provides the necessary translations for mapping, managing and displaying
 # WooCommerce orders and their status to Biz Courier Shipments.
-
 msgid "Biz shipment voucher"
 msgstr "Κωδικός παράδοσης Biz"
 
-msgid "Track shipment"
-msgstr "Ανίχνευση αποστολής"
+msgid "Biz Courier status"
+msgstr "Κατάσταση Biz Courier"
 
-msgid "Tracking Code"
-msgstr "Κωδικός ανίχνευσης"
+msgid "This order has not shipped with Biz."
+msgstr "Αυτή η παραγγελία δεν έχει αποσταλεί μέσω Biz."
+
+msgid "Send shipment"
+msgstr "Αποστολή παραγγελίας"
+
+msgid "The shipment was successfully registered to Biz Courier."
+msgstr "Η παράδοση καταχωρήθηκε με επιτυχία στην Biz Courier."
+
+msgid "Add existing voucher number"
+msgstr "Προσθήκη κωδικού αποστολής"
+
+msgid "Insert the shipment's voucher number from Biz Courier in the field below."
+msgstr "Εισάγετε τον κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
 
 msgid "Voucher number: "
-msgstr "Κωδικός αποστολής: "
+msgstr "Κωδικός παράδοσης: "
+
+msgid "Edit voucher"
+msgstr "Επεξεργασία κωδικού αποστολής"
+
+msgid "Insert the new shipment voucher number from Biz Courier in the field below."
+msgstr "Εισάγετε τον νέο κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
+
+msgid "Delete voucher"
+msgstr "Διαγραφή κωδικού αποστολής"
+
+msgid "Are you sure you want to delete the shipment voucher from this order?"
+msgstr "Είστε σίγουρος/η πως θέλετε να διαγράψετε αυτόν τον κωδικό αποστολής από την παραγγελία;"
 
 msgid "Shipment actions: "
 msgstr "Ενέργειες παράδοσης: "
+
+msgid "Modify shipment"
+msgstr "Επεξεργασία παράδοσης"
+
+msgid "Please insert the message you want to send to Biz about the shipment."
+msgstr "Εισάγετε παρακάτω το μήνυμα που θέλετε να στείλετε στην Biz σχετικά με την παράδοση."
+
+msgid "Message sent to Biz: "
+msgstr "Μήνυμα εστάλη στην Biz: "
+
+msgid " (modification id: "
+msgstr " (αναγνωριστικό τροποποίησης: "
+
+msgid "Request shipment cancellation"
+msgstr "Αίτηση ακύρωσης παράδοσης"
+
+msgid "Are you sure you want to request the cancellation of this Biz shipment? If you want to send it again, you will receive a new tracking code."
+msgstr "Σίγουρα επιθυμείτε να στείλετε αίτηση ακύρωσης αυτής της παράδοσης Biz; Αν επιθυμείτε να την ξαναστείλετε, θα λάβετε νέο κωδικό αποστολής."
+
+msgid "The Biz shipment with tracking code %s was cancelled."
+msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε."
+
+msgid "The Biz shipment with tracking code %s was cancelled. The cancellation code is: %s."
+msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε. Ο κωδικός ακύρωσης είναι: %s."
+
+msgid "Synchronize order status"
+msgstr "Συγχρονισμός κατάστασης"
 
 msgid "You must change the order status to \"Processing\" in order to perform more actions on this shipment."
 msgstr "Πρέπει να αλλάξετε την κατάσταση της παραγγελίας σε \"Σε επεξεργασία\" για να πραγματοποιήσετε περαιτέρω ενέργειες σε αυτή την παράδοση."
 
 msgid "This shipment has reached a %s state. You must change the order status to reflect that change. You can also enable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>."
 msgstr "Αυτή η παράδοση %s. Πρέπει να αλλάξετε την κατάσταση της παραγγελίας. Μπορείτε επίσης να ενεργοποιήσετε την αυτόματη ενημέρωση κατάστασης παραγγελιών στις <em>Ρυθμίσεις WooCoomerce > Ενσωμάτωση > Biz Courier & Logistics</em>."
+
+msgid "This shipment has reached a %s state. The order status will be updated automatically in a few minutes. You can disable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>."
+msgstr "Η παράδοση %s. Η κατάσταση της παραγγελίας θα ενημερωθεί αυτόματα σε λίγα λεπτά. Μπορείτε να απενεργοποιήσετε την αυτόματη ενημέρωση κατάστασης παραγγελιών στις <em>Ρυθμίσεις WooCoomerce > Ενσωματώσεις > Biz Courier & Logistics</em>."
 
 msgid "This shipment has reached a %s state. You must change the order status to reflect that change."
 msgstr "Αυτή η παράδοση %s. Πρέπει να αλλάξετε την κατάσταση της παραγγελίας."
@@ -327,47 +363,11 @@ msgstr "απέτυχε"
 msgid "completed"
 msgstr "ολοκληρώθηκε"
 
-msgid "There was a problem processing the submitted order information."
-msgstr "Υπήρξε ένα πρόβλημα κατά την επεξεργασία των "
-
-msgid "This order could not be submitted due to existing data."
-msgstr "Αυτή η παραγγελία δεν μπορούσε να υποβληθεί λόγω υπάρχοντων δεδομένων."
-
-msgid "Synchronize order status"
-msgstr "Συγχρονισμός κατάστασης"
-
-msgid "Modify shipment"
-msgstr "Επεξεργασία παράδοσης"
-
-msgid "Edit voucher"
-msgstr "Επεξεργασία κωδικού αποστολής"
-
-msgid "The newly connected shipment was already completed."
-msgstr "Η νέα παράδοση με την οποία συνδεθήκατε ήταν ήδη ολοκληρωμένη."
-
-msgid "The newly connected shipment was already cancelled."
-msgstr "Η νέα παράδοση με την οποία συνδεθήκατε ήταν ήδη ακυρωμένη."
-
-msgid "The newly connected shipment is pending delivery."
-msgstr "Εκκρεμεί η παράδοση της νέας συνδεδεμένης σας αποστολής Biz."
-
-msgid "Request shipment cancellation"
-msgstr "Αίτηση ακύρωσης παράδοσης"
-
-msgid "Delete voucher"
-msgstr "Διαγραφή κωδικού αποστολής"
-
 msgid "Status history: "
 msgstr "Ιστορικό κατάστασης: "
 
-msgid "Modification history: "
-msgstr "Ιστορικό τροποποιήσεων: "
-
 msgid "Delivery status update"
 msgstr "Ενημέρωση κατάστασης παράδοσης"
-
-msgid "Final"
-msgstr "Τελικό"
 
 msgid "No other comments."
 msgstr "Κανένα άλλο σχόλιο."
@@ -378,33 +378,20 @@ msgstr "Ενέργειες:"
 msgid "at"
 msgstr "στις"
 
-msgid "Biz Courier status"
-msgstr "Κατάσταση Biz Courier"
+# Automated notes
+msgid "The connected Biz shipment was completed."
+msgstr "Η συνδεδεμένη παράδοση Biz ολοκληρώθηκε."
 
-msgid "The shipment was successfully registered to Biz Courier."
-msgstr "Η παράδοση καταχωρήθηκε με επιτυχία στην Biz Courier."
+msgid "The connected Biz shipment was cancelled."
+msgstr "Η συνδεδεμένη παράδοση Biz ακυρώθηκε."
 
-msgid "This order has not shipped with Biz."
-msgstr "Αυτή η παραγγελία δεν έχει αποσταλεί μέσω Biz."
+msgid "The connected Biz shipment has failed."
+msgstr "Η συνδεδεμένη παράδοση Biz απέτυχε."
 
-msgid "Send shipment"
-msgstr "Αποστολή παραγγελίας"
+msgid "The newly connected shipment is pending delivery."
+msgstr "Εκκρεμεί η παράδοση της νέας συνδεδεμένης σας αποστολής Biz."
 
-msgid "Add existing voucher number"
-msgstr "Προσθήκη κωδικού αποστολής"
-
-msgid "Insert the shipment's voucher number from Biz Courier in the field below."
-msgstr "Εισάγετε τον κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
-
-msgid "Insert the new shipment voucher number from Biz Courier in the field below."
-msgstr "Εισάγετε τον νέο κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
-
-msgid "An error was encountered by Biz Courier while processing the voucher. Is it a valid shipment voucher?"
-msgstr ""
-
-msgid "Are you sure you want to delete the shipment voucher from this order?"
-msgstr "Είστε σίγουρος/η πως θέλετε να διαγράψετε αυτόν τον κωδικό αποστολής από την παραγγελία;"
-
+# Error messages
 msgid "This voucher was not found. Please provide a valid shipment voucher."
 msgstr "Αυτός ο κωδικός παράδοσης δεν βρέθηκε. Εισάγετε έναν έγκυρο κωδικό παράδοσης."
 
@@ -432,14 +419,11 @@ msgstr "Υπήρξε ένα σφάλμα με τα στοιχεία σας Biz C
 msgid "An unknown error occured while processing order information."
 msgstr "Προέκυψε ένα άγνωστο σφάλμα κατά την επεξεργασία των πληροφοριών της παραγγελίας."
 
-msgid "An unknown error occured after processing order information."
-msgstr "Προέκυψε ένα άγνωστο σφάλμα μετά την επεξεργασία των πληροφοριών της παραγγελίας."
-
 msgid "A voucher already exists for this order."
 msgstr "Ένας κωδικός παράδοσης υπάρχει ήδη για αυτή την παραγγελία."
 
-msgid "There was an unexpected error from Biz."
-msgstr "Προέκυψε ένα αναπάντεχο σφάλμα από την Biz."
+msgid "There was a problem with the recipient's information. Make sure you have filled in all the necessary fields: First name, last name, phone number, e-mail address, address line #1, city, postal code and country."
+msgstr "Υπήρξε ένα πρόβλημα με της πληροφορίες του παραλήπτη. Ελέγξτε τις πληροφορίες αποστολής που έχετε εισάγει: Όνομα, επώνυμο, αριθμός τηλεφώνου, διεύθυνση e-mail, γραμμή 1 διεύθυνσης, πόλη/περιοχή, ταχυδρομικός κώδικας και χώρα."
 
 msgid "There was a problem registering recipient information with Biz. Please check your recipient information entries."
 msgstr "Υπήρξε ένα πρόβλημα κατά την αποστολή πληροφοριών παραλήπτη στην Biz. Ελέγξτε τις πληροφορίες παραλήπτη που έχετε εισάγει."
@@ -451,46 +435,10 @@ msgid "Response from Biz could not be read, please check your warehouse shipment
 msgstr "Η απάντηση από την Biz δε μπορούσε να αναγνωσθεί, ελέγξτε τις παραδόσεις σας από την επίσημη εφαρμογή της Biz."
 
 msgid "An unknown Biz error occured after submitting the shipment information."
-msgstr "Ένα άγνωστο σφάλμα από την Biz Courier προέκυψε μετά την υποβολή των πληροφοριών παράδοσης"
-
-msgid "There was a connection error while trying to contact Biz Courier. More information: "
-msgstr "Υπήρξε ένα πρόβλημα κατά τη σύνδεση με τη Biz Courier. Περισσότερες πληροφορίες: "
-
-msgid "There was a problem with the recipient's information. Make sure you have filled in all the necessary fields: First name, last name, phone number, e-mail address, address line #1, city, postal code and country."
-msgstr "Υπήρξε ένα πρόβλημα με της πληροφορίες του παραλήπτη. Ελέγξτε τις πληροφορίες αποστολής που έχετε εισάγει: Όνομα, επώνυμο, αριθμός τηλεφώνου, διεύθυνση e-mail, γραμμή 1 διεύθυνσης, πόλη/περιοχή, ταχυδρομικός κώδικας και χώρα."
-
-msgid "This shipment has reached a %s state. The order status will be updated automatically in a few minutes. You can disable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>."
-msgstr "Η παράδοση %s. Η κατάσταση της παραγγελίας θα ενημερωθεί αυτόματα σε λίγα λεπτά. Μπορείτε να απενεργοποιήσετε την αυτόματη ενημέρωση κατάστασης παραγγελιών στις <em>Ρυθμίσεις WooCoomerce > Ενσωματώσεις > Biz Courier & Logistics</em>."
+msgstr "Ένα άγνωστο σφάλμα από την Biz Courier προέκυψε μετά την υποβολή των πληροφοριών παράδοσης."
 
 msgid "There isn't enough stock to ship some products."
 msgstr "Δεν υπάρχει επαρκές απόθεμα κάποιων τεμαχίων για τη παράδοση."
 
-msgid "Are you sure you want to request the cancellation of this Biz shipment? If you want to send it again, you will receive a new tracking code."
-msgstr "Σίγουρα επιθυμείτε να στείλετε αίτηση ακύρωσης αυτής της παράδοσης Biz; Αν επιθυμείτε να την ξαναστείλετε, θα λάβετε νέο κωδικό αποστολής."
-
-msgid "Please insert the message you want to send to Biz about the shipment."
-msgstr "Εισάγετε παρακάτω το μήνυμα που θέλετε να στείλετε στην Biz σχετικά με την παράδοση."
-
-msgid "The Biz shipment with tracking code %s was cancelled. The cancellation code is: %s."
-msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε. Ο κωδικός ακύρωσης είναι: %s."
-
-msgid "The shipment was cancelled by Biz Courier."
-msgstr "Η παράδοση ακυρώθηκε από την Biz Courier."
-
-msgid "The shipment was delivered successfully by Biz Courier."
-msgstr "Η αποστολή παραδόθηκε επιτυχώς από την Biz Courier."
-
-msgid "The Biz shipment with tracking code %s was cancelled."
-msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε."
-
-msgid "The Biz Courier shipment was cancelled."
-msgstr "Η παράδοση μέσω Biz ακυρώθηκε."
-
-msgid "Resend shipment"
-msgstr "Επανάληψη αποστολής παραγγελίας"
-
-msgid "Message sent to Biz: "
-msgstr "Μήνυμα εστάλη στην Biz: "
-
-msgid " (modification id: "
-msgstr " (αναγνωριστικό τροποποίησης: "
+msgid "There was a connection error while trying to contact Biz Courier. More information: "
+msgstr "Υπήρξε ένα πρόβλημα κατά τη σύνδεση με τη Biz Courier. Περισσότερες πληροφορίες: "

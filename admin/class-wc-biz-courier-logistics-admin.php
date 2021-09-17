@@ -657,7 +657,7 @@ class WC_Biz_Courier_Logistics_Admin
 			$status_report = biz_shipment_status($_POST['voucher']);
 			if (!empty($status_report)) {
 				update_post_meta($_POST['order_id'], '_biz_voucher', $_POST['voucher']);
-				if (biz_conclude_order_status($_POST['order_id'], $status_report)) die("OK");
+				if (biz_conclude_order_status($_POST['order_id'], true, $status_report)) die("OK");
 			}
 		} catch (ErrorException $e) {
 			die(json_encode([
@@ -1004,7 +1004,7 @@ class WC_Biz_Courier_Logistics_Admin
 				if (!empty($voucher)) {
 					try {
 						require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
-						biz_conclude_order_status($order_id);
+						biz_conclude_order_status($order_id, true);
 					} catch (ErrorException $e) {
 						$error_description = __('This voucher was not found. Please provide a valid shipment voucher.', 'wc-biz-courier-logistics');
 					} catch (SoapFault $f) {
