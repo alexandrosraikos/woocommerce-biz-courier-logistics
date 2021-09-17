@@ -1,4 +1,4 @@
-![A blue delivery truck on the road.]('/docs/img/banner.png')
+![A blue delivery truck on the road.]('docs/img/banner.png')
 
 # Biz Courier & Logistics for WooCommerce
 
