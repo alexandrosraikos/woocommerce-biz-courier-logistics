@@ -89,7 +89,22 @@ Unfortunately this WordPress plugin cannot be featured in the WordPress plugin d
 
 **Which languages are supported by this plugin?**
 
-Currently, Biz Courier & Logistics for WooCommerce supports English :us: and Greek :greece:.
+Currently, Biz Courier & Logistics for WooCommerce supports:
+
+- :us: English
+- :greece: Greek
+
+If you'd like to contribute to the translation of this plugin in other location where Biz Courier is active, such as:
+
+- :czech_republic: Czech
+- :hungary: Hungarian
+- :it: Italian
+- :poland: Polish
+- :romania: Romanian
+- :slovakia: Slovak
+- :slovenia: Slovenian
+
+You can join the public crowdsourcing translation effort [here](https://poeditor.com/join/project?hash=Vkqajt1Tio) through the POEditor platform.
 
 **What can I do to ensure the future of this plugin?**
 
