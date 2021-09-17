@@ -1,7 +1,4 @@
 # Template translation file for Biz Courier & Logistics for WooCommerce.
-# Copyright (C) 2021, Alexandros Raikos tou Konstantinou.
-# This file is distributed under the same license as the Biz Courier & Logistics for WooCommerce package.
-# Alexandros Raikos <alexandros@araikos.gr>, 2021.
 #
 msgid ""
 msgstr ""
