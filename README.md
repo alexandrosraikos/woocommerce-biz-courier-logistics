@@ -1,3 +1,5 @@
+![A blue delivery truck on the road.]('/docs/img/banner.png')
+
 # Biz Courier & Logistics for WooCommerce
 
 A plugin designed to integrate WooCommerce with the Biz Courier & Logistics platform.
@@ -95,8 +97,10 @@ You got me, this isn't a frequently asked question, but it's an important one if
 
 ## Legal Disclaimer
 
-I am in no way affiliated with Biz Courier Services. This is a third party plugin developed and provided free of charge under [The Unlicense](https://unlicense.org) use to assist users and businesses in connecting with the Biz Courier Services API (see [Web Services for eShops](https://www.bizcourier.eu/WebServices)). All of the services provided to you by Biz Courier Services are subject to their [Terms & Conditions](https://www.bizcourier.eu/faq/usefulinformation.html) and you should always use their official software for your logistics operations, alongside any complementary solutions utilising their available APIs such as this plugin ("Biz Courier & Logistics for WooCommerce").
+I am not affiliated with Biz Courier Services. This is a third party plugin developed and provided free of charge (non-commercial) under [The Unlicense](https://unlicense.org) used to assist users and businesses in connecting a WooCommerce installation with the Biz Courier Services API (see [Web Services for eShops](https://www.bizcourier.eu/WebServices)). All of the services provided to you by Biz Courier Services are subject to their [Terms & Conditions](https://www.bizcourier.eu/faq/usefulinformation.html) and you should always use their official software for your logistics operations, when using any complementary solutions utilising their available APIs such as this plugin ("Biz Courier & Logistics for WooCommerce").
 
-The name "Biz Courier" and any references made within this repository is purely within the boundaries of nominative fair use for internal reference and functionality purposes (i.e. PHP `class` names, PHP `function` names, etc.), as well as a direct delineation of named functionalities offered by the official Biz Courier Services Web API and descriptive identification.
+The name "Biz Courier & Logistics", the `wc-biz-courier-logistics` identifier and any user interface text references made within this repository and the active use of the plugin are purely within the boundaries of non-commercial use, used for internal reference and functionality purposes (i.e. PHP `class` names, PHP `function` names, etc.), as well as a direct delineation of named functionalities offered by the official Biz Courier Services Web API and its descriptive identifiers.
 
 If you are a representative of Biz Courier Services and would like to pose concerns regarding possible trademark infringement, please [contact me](https://www.araikos.gr/en/contact) directly.
+
+The WooCommerce™️ trademark included in the documentation and title of this non-commercial project promotes the use of the free and freely available WooCommerce open-source platform, licensed under the [GNU General Public License](https://github.com/woocommerce/woocommerce/blob/trunk/license.txt).
