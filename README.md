@@ -1,4 +1,4 @@
-![A blue delivery truck on the road.]('docs/img/banner.png')
+![A blue delivery truck on the road.](docs/img/banner.png)
 
 # Biz Courier & Logistics for WooCommerce
 
@@ -104,3 +104,5 @@ The name "Biz Courier & Logistics", the `wc-biz-courier-logistics` identifier an
 If you are a representative of Biz Courier Services and would like to pose concerns regarding possible trademark infringement, please [contact me](https://www.araikos.gr/en/contact) directly.
 
 The WooCommerce™️ trademark included in the documentation and title of this non-commercial project promotes the use of the free and freely available WooCommerce open-source platform, licensed under the [GNU General Public License](https://github.com/woocommerce/woocommerce/blob/trunk/license.txt).
+
+Some banner icons were made by [Freepik]("https://www.freepik.com") from [www.flaticon.com](https://www.flaticon.com/).
