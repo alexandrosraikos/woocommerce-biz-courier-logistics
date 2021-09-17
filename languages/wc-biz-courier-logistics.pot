@@ -491,15 +491,15 @@ msgstr ""
 
 # Automated notes
 msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_COMPLETED"
-msgid "The newly connected shipment was already completed."
+msgid "The connected Biz shipment was completed."
 msgstr ""
 
 msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_CANCELLED"
-msgid "The newly connected shipment was already cancelled."
+msgid "The connected Biz shipment was cancelled."
 msgstr ""
 
 msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_FAILED"
-msgid "The newly connected shipment had already failed."
+msgid "The connected Biz shipment has failed."
 msgstr ""
 
 msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_PROCESSING"

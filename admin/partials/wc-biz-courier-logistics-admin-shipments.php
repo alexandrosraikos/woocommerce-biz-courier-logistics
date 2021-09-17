@@ -398,7 +398,7 @@ function biz_shipment_status($voucher): array
  *
  * @since    1.2.1
  */
-function biz_conclude_order_status($order_id, $report = null) : bool
+function biz_conclude_order_status(string $order_id, bool $note = false, array $report = null) : bool
 {
 	try {
 		if (!isset($report)){
@@ -409,20 +409,19 @@ function biz_conclude_order_status($order_id, $report = null) : bool
 
 				// Handle completed shipment status.
 				$order = wc_get_order($order_id);
-				// TODO @alexandrosraikos: Conditionalize order note (cron syncing, manual syncing, adding voucher).
-				$order->update_status("completed", __("The newly connected shipment was already completed.", 'wc-biz-courier-logistics'));
+				$order->update_status("completed", __("The connected Biz shipment was completed.", 'wc-biz-courier-logistics'));
 			} elseif (end($report)['conclusion'] == 'cancelled') {
 
 				// Handle cancelled shipment status.
 				$order = wc_get_order($order_id);
-				$order->update_status("cancelled", __("The newly connected shipment was already cancelled.", 'wc-biz-courier-logistics'));
+				$order->update_status("cancelled", __("The connected Biz shipment was cancelled.", 'wc-biz-courier-logistics'));
 				// Add delivery failure note.
 				update_post_meta($order_id, '_biz_failure_delivery_note', end($report)['level-description'] . ' '.__('Other comments:','wc-biz-courier-logistics').' ' . end($report)['comments'] ?? '-');
 			} elseif (end($report)['conclusion'] == 'failed') {
 
 				// Handle failed shipment status.
 				$order = wc_get_order($order_id);
-				$order->update_status("failed", __("The newly connected shipment had already failed.", 'wc-biz-courier-logistics'));
+				$order->update_status("failed", __("The connected Biz shipment has failed.", 'wc-biz-courier-logistics'));
 
 				// Add delivery failure note.
 				update_post_meta($order_id, '_biz_failure_delivery_note', end($report)['level-description'] . ' '.__('Other comments:','wc-biz-courier-logistics').' ' . end($report)['comments'] ?? '-');

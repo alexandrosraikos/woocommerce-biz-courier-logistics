@@ -501,16 +501,16 @@ msgstr "στις"
 
 # Automated notes
 msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_COMPLETED"
-msgid "The newly connected shipment was already completed."
-msgstr "Η νέα παράδοση με την οποία συνδεθήκατε ήταν ήδη ολοκληρωμένη."
+msgid "The connected Biz shipment was completed."
+msgstr "Η συνδεδεμένη παράδοση Biz ολοκληρώθηκε."
 
 msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_CANCELLED"
-msgid "The newly connected shipment was already cancelled."
-msgstr "Η νέα παράδοση με την οποία συνδεθήκατε ήταν ήδη ακυρωμένη."
+msgid "The connected Biz shipment was cancelled."
+msgstr "Η συνδεδεμένη παράδοση Biz ακυρώθηκε."
 
 msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_FAILED"
-msgid "The newly connected shipment had already failed."
-msgstr "Η νέα παράδοση με την οποία συνδεθήκατε είχε ήδη αποτύχει."
+msgid "The connected Biz shipment has failed."
+msgstr "Η συνδεδεμένη παράδοση Biz απέτυχε."
 
 msgctxt "ORDER_NOTE_SHIPMENT_SYNCHRONIZATION_MESSAGE_PROCESSING"
 msgid "The newly connected shipment is pending delivery."
