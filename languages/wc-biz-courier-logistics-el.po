@@ -38,6 +38,26 @@ msgctxt "PLUGIN_LINK_3"
 msgid "Donate via GitHub Sponsors"
 msgstr "Δωρεά μέσω GitHub Sponsors"
 
+# Globals
+# ------
+# This section includes globally used strings.
+
+msgctxt "SETTINGS_ENABLE_TITLE"
+msgid "Enable"
+msgstr "Ενεργοποίηση"
+
+msgctxt "SETTINGS_WAREHOUSE_MANAGEMENT_TITLE"
+msgid "Biz Warehouse"
+msgstr "Αποθήκη Biz"
+
+msgctxt "STATUS_LEVEL_FINAL"
+msgid "Final"
+msgstr "Τελικό"
+
+msgctxt "STATUS_LEVEL_PENDING"
+msgid "Pending"
+msgstr "Εκκρεμεί"
+
 # Integration
 # ------
 # This section provides the necessary translations for initialising the custom Biz integration.
@@ -141,9 +161,6 @@ msgstr "Απενεργοποίηση"
 # ------
 # This section provides all the translations related to syncing stock
 # between the WooCommerce store and the items in the connected warehouse.
-msgctxt "PRODUCT_WAREHOUSE_SYNC_TITLE"
-msgid "Biz Warehouse"
-msgstr "Αποθήκη Biz"
 
 msgctxt "PRODUCT_WAREHOUSE_SYNC_DESCRIPTION"
 msgid "Select this option if the product is stored in your Biz warehouse."
@@ -152,10 +169,6 @@ msgstr "Ενεργοποιήστε αυτή την επιλογή αν το πρ
 msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_TITLE"
 msgid "Biz status"
 msgstr "Κατάσταση Biz"
-
-msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_PENDING"
-msgid "Pending"
-msgstr "Εκκρεμεί"
 
 msgctxt "PRODUCT_WAREHOUSE_SYNC_STATUS_FOUND"
 msgid "Found"
@@ -177,10 +190,6 @@ msgctxt "ALL_PRODUCTS_SYNC_BUTTON"
 msgid "Get stock levels"
 msgstr "Μέτρηση αποθέματος"
 
-msgctxt "ALL_PRODUCTS_COLUMN_SYNC_INDICATOR_TITLE"
-msgid "Biz Warehouse"
-msgstr "Αποθήκη Biz"
-
 # Shipping Method
 # ------
 # This section provides the necessary translations for initialising
@@ -192,10 +201,6 @@ msgstr "Αποστολές Biz Courier"
 msgctxt "SETTINGS_SHIPPING_DESCRIPTION"
 msgid "Allow your customers to receive their products via Biz Courier Shipping."
 msgstr "Επιτρέψτε στους πελάτες σας να λάβουν τα προϊόντα τους μέσω της Biz Courier."
-
-msgctxt "SETTINGS_SHIPPING_ENABLE_TITLE"
-msgid "Enable"
-msgstr "Ενεργοποίηση"
 
 msgctxt "SETTINGS_SHIPPING_ENABLE_DESCRIPTION"
 msgid "Allow shipping with Biz Courier."
@@ -218,25 +223,21 @@ msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_DESCRIPTION"
 msgid "Allow same region customers to opt for same day delivery."
 msgstr "Επιτρέψτε στους πελάτες που βρίσκονται στον ίδιο νομό να ζητήσουν αυθημερόν παράδοση."
 
-msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_ENABLE_TITLE"
-msgid "Enable"
-msgstr "Ενεργοποίηση"
-
-msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_ENABLE_DESCRIPTION"
-msgid "Allow same region customers to opt for same day delivery."
-msgstr "Επιτρέψτε στους πελάτες που βρίσκονται στον ίδιο νομό να ζητήσουν αυθημερόν παράδοση."
-
-msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_DESCRIPTION"
-msgid "Insert the pricing for same day delivery."
-msgstr "Εισάγετε το κόστος παράδοσης αυθημερόν."
-
 msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_PER_KM"
 msgid "Charge per km"
 msgstr "Χρέωση ανα χλμ"
 
+msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_PER_KM_DESCRIPTION"
+msgid "Insert the charge per km for same day deliveries up to 2kg."
+msgstr "Εισάγετε το κόστος παράδοσης αυθημερόν για αποστολές έως 2kg."
+
 msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_MINIMUM_CHARGE"
 msgid "Minimum charge"
 msgstr "Ελάχιστη χρέωση"
+
+msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_PRICING_MINIMUM_CHARGE_DESCRIPTION"
+msgid "Insert the minimum charge for same day deliveries."
+msgstr "Εισάγετε το ελάχιστο κόστος για αυθημερόν παραδόσεις."
 
 msgctxt "SETTINGS_SHIPPING_ADDITIONAL_SERVICES_TITLE"
 msgid "Additional Services"
@@ -478,14 +479,6 @@ msgstr "Ιστορικό κατάστασης: "
 msgctxt "ORDER_METABOX_STATUS_GENERIC_DESCRIPTION"
 msgid "Delivery status update"
 msgstr "Ενημέρωση κατάστασης παράδοσης"
-
-msgctxt "ORDER_METABOX_STATUS_HISTORY_LEVEL_FINAL"
-msgid "Final"
-msgstr "Τελικό"
-
-msgctxt "ORDER_METABOX_STATUS_HISTORY_LEVEL_PENDING"
-msgid "Pending"
-msgstr "Εκκρεμεί"
 
 msgctxt "ORDER_METABOX_STATUS_HISTORY_NO_COMMENTS_MESSAGE"
 msgid "No other comments."

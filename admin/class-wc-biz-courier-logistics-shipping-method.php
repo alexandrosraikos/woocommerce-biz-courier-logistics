@@ -86,7 +86,7 @@ class Biz_Shipping_Method extends WC_Shipping_Method
             'biz_same_day_delivery_title' => array(
                 'title' => __('Same Day Delivery', 'wc-biz-courier-logistics'),
                 'type' => 'title',
-                'description' => __('Insert the pricing for same day delivery.', 'wc-biz-courier-logistics'),
+                'description' => __('Allow same region customers to opt for same day delivery.', 'wc-biz-courier-logistics'),
             ),
             'biz_same_day_delivery_enabled' => array(
                 'title' => __('Enable', 'wc-biz-courier-logistics'),
@@ -97,14 +97,17 @@ class Biz_Shipping_Method extends WC_Shipping_Method
             'biz_same_day_delivery_pricing'  => array(
                 'title' => __('Charge per km', 'wc-biz-courier-logistics'),
                 'type' => 'price',
+                'description' => __('Insert the charge per km for same day deliveries up to 2kg.', 'wc-biz-courier-logistics'),
             ),
             'biz_same_day_delivery_minimum_charge'  => array(
                 'title' => __('Minimum charge', 'wc-biz-courier-logistics'),
                 'type' => 'price',
+                'description' => __('Insert the minimum charge for same day deliveries.', 'wc-biz-courier-logistics'),
             ),
             'biz_same_day_delivery_pricing_extra_kg'  => array(
                 'title' => __('Charge per extra kg', 'wc-biz-courier-logistics'),
                 'type' => 'price',
+                'description' => __('Insert the delivery fee amount for every extra kg.', 'wc-biz-courier-logistics'),
             ),
             'biz_additional_services_title' => array(
                 'title' => __('Additional Services', 'wc-biz-courier-logistics'),
