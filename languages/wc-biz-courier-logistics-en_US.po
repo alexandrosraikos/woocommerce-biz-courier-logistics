@@ -1,7 +1,4 @@
 # ENGLISH (EN) translation for Biz Courier & Logistics for WooCommerce.
-# Copyright (C) 2021, Alexandros Raikos tou Konstantinou.
-# This file is distributed under the same license as the Biz Courier & Logistics for WooCommerce package.
-# Alexandros Raikos <alexandros@araikos.gr>, 2021.
 #
 msgid ""
 msgstr ""
@@ -14,7 +11,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: \n"
-"X-Generator: Poedit 2.4.3\n"
 "Last-Translator: Alexandros Raikos <alexandros@araikos.gr>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: en\n"
