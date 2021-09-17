@@ -10,8 +10,8 @@
  * WC tested up to: 5.2.2
  * Author:            Alexandros Raikos
  * Author URI:        https://www.araikos.gr/en/
- * License:           GNU General Public License v3.0
- * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
+ * License:           The Unlicense
+ * License URI:	      https://unlicense.org
  * Text Domain:       wc-biz-courier-logistics
  * Domain Path:       /languages
  */
