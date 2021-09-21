@@ -398,11 +398,11 @@ function biz_shipment_status($voucher): array
  *
  * @since    1.2.1
  */
-function biz_conclude_order_status(string $order_id, bool $note = false, array $report = null) : bool
+function biz_conclude_order_status(string $order_id, bool $note = false, array $report = null): bool
 {
 	try {
-		if (!isset($report)){
-		$report = biz_shipment_status(get_post_meta($order_id, '_biz_voucher', true));
+		if (!isset($report)) {
+			$report = biz_shipment_status(get_post_meta($order_id, '_biz_voucher', true));
 		}
 		if (end($report)['level'] == 'Final') {
 			if (end($report)['conclusion'] == 'completed') {
@@ -411,16 +411,19 @@ function biz_conclude_order_status(string $order_id, bool $note = false, array $
 				$order = wc_get_order($order_id);
 				if ($note) $order->update_status("completed", __("The connected Biz shipment was completed.", 'wc-biz-courier-logistics'));
 				else $order->update_status("completed");
-				
 			} elseif (end($report)['conclusion'] == 'cancelled') {
 
 				// Handle cancelled shipment status.
 				$order = wc_get_order($order_id);
 				if ($note) $order->update_status("cancelled", __("The connected Biz shipment was cancelled.", 'wc-biz-courier-logistics'));
 				else $order->update_status("cancelled");
-				
+
+				$failure_delivery_note = end($report)['level-description'] . __('Other comments:', 'wc-biz-courier-logistics') . '\n';
+				foreach (array_reverse($report) as $status) {
+					$failure_delivery_note .= ($status['date'] . '-' . $status['time']) . ':\n' . ($status['comments'] ?? 'none');
+				}
 				// Add delivery failure note.
-				update_post_meta($order_id, '_biz_failure_delivery_note', end($report)['level-description'] . ' '.__('Other comments:','wc-biz-courier-logistics').' ' . end($report)['comments'] ?? '-');
+				update_post_meta($order_id, '_biz_failure_delivery_note', $failure_delivery_note);
 			} elseif (end($report)['conclusion'] == 'failed') {
 
 				// Handle failed shipment status.
@@ -428,19 +431,21 @@ function biz_conclude_order_status(string $order_id, bool $note = false, array $
 				if ($note) $order->update_status("failed", __("The connected Biz shipment has failed.", 'wc-biz-courier-logistics'));
 				else $order->update_status("failed");
 
+				$failure_delivery_note = end($report)['level-description'] . __('Other comments:', 'wc-biz-courier-logistics') . '\n';
+				foreach (array_reverse($report) as $status) {
+					$failure_delivery_note .= ($status['date'] . '-' . $status['time']) . ':\n' . ($status['comments'] ?? 'none');
+				}
 				// Add delivery failure note.
-				update_post_meta($order_id, '_biz_failure_delivery_note', end($report)['level-description'] . ' '.__('Other comments:','wc-biz-courier-logistics').' ' . end($report)['comments'] ?? '-');
+				update_post_meta($order_id, '_biz_failure_delivery_note', $failure_delivery_note);
 			}
-		}
-		else {
+		} else {
 
 			// Handle pending shipment status.
 			$order = wc_get_order($order_id);
 			$order->update_status("processing", __("The newly connected shipment is pending.", 'wc-biz-courier-logistics'));
 		}
-		
-		return true;
 
+		return true;
 	} catch (\Exception $e) {
 		throw new $e;
 	}

@@ -69,7 +69,7 @@ class WC_Biz_Courier_Logistics
 	 */
 	public function __construct()
 	{
-		$this->version = '1.3.0';
+		$this->version = '1.3.1';
 		$this->WC_Biz_Courier_Logistics = 'wc-biz-courier-logistics';
 
 		$this->load_dependencies();
