@@ -133,7 +133,7 @@ function biz_order_voucher_column_html($voucher)
     if (empty($voucher)) {
         echo '<span>-</span>';
     } else {
-        echo '<a href="https://trackit.bizcourier.eu/app/' . get_locale() . '/' . $voucher . '" target="blank">' . $voucher . '</a>';
+        echo '<a href="https://trackit.bizcourier.eu/app/' . substr(get_locale(),0,2) . '/' . $voucher . '" target="blank">' . $voucher . '</a>';
     }
 }
 
