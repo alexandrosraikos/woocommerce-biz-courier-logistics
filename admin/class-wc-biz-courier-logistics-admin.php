@@ -436,18 +436,23 @@ class WC_Biz_Courier_Logistics_Admin
 						if (get_post_meta($child_id, '_biz_stock_sync', true) == 'no') {
 							continue;
 						}
-						$child_status = get_post_meta($child_id, '_biz_stock_sync_status', true);
-						if ($status == 'synced' && $child_status == 'not-synced') {
-							$status = 'partial';
-							continue;
-						}
-						if ($status == 'not-synced' && $child_status == 'synced') {
-							$status = 'partial';
-							continue;
-						}
-						if ($child_status == 'pending') {
-							$status = 'pending';
-							continue;
+						else {
+							$child_status = get_post_meta($child_id, '_biz_stock_sync_status', true);
+							if ($status == 'synced' && $child_status == 'not-synced') {
+								$status = 'partial';
+								continue;
+							}
+							if ($status == 'not-synced' && $child_status == 'synced') {
+								$status = 'partial';
+								continue;
+							}
+							if ($status == 'disabled') {
+								$status = $child_status;
+							}
+							if ($child_status == 'pending') {
+								$status = 'pending';
+								continue;
+							}
 						}
 					}
 				};
