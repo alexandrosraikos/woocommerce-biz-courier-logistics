@@ -54,6 +54,19 @@ class WC_Biz_Courier_Logistics_Admin
 		$this->version = $version;
 	}
 
+
+	/**
+	 * Notify the administrator of disabled PHP SOAP extension.
+	 *
+	 * @since    1.3.2
+	 */
+	public function biz_soap_extension_error() {
+		if(!extension_loaded('soap')) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+			biz_soap_extension_error_html();
+		}
+	}
+
 	/**
 	 * Register the stylesheets for the admin area.
 	 *
@@ -336,7 +349,7 @@ class WC_Biz_Courier_Logistics_Admin
 		$products = wc_get_products(array(
 			'limit' => -1,
 		));
-		$all_skus = array();
+		$all_skus = [];
 		if (!empty($products)) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock-synchronization.php';
 			foreach ($products as $product) {
@@ -349,9 +362,10 @@ class WC_Biz_Courier_Logistics_Admin
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock-synchronization.php';
 
 			biz_stock_sync($all_skus);
+		} catch (SoapFault $e) {
+			die($e->getMessage());
 		} catch (Exception $e) {
-			echo $e->getMessage();
-			error_log("Error contacting Biz Courier - " . $e->getMessage());
+			die($e->getMessage());
 		}
 
 		// Return success.

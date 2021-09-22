@@ -131,7 +131,7 @@
 			$retrieved_quantities = array_combine($retrieved_skus, array_map(function ($bp) {
 				return $bp->Remaining_Quantity;
 			}, $response));
-
+			
 			// Compare with each product in the synchronization call.
 			foreach ($skus as $sku) {
 
@@ -156,7 +156,7 @@
 						// Update Biz synchronization post metadata.
 						update_post_meta($product_post_id, '_biz_stock_sync_status', 'synced');
 					}
-				} elseif (!in_array($sku, $retrieved_skus)) {
+				} else  {
 
 					// Get the product using the SKU.
 					$product_post_id = wc_get_product_id_by_sku($sku);
@@ -170,6 +170,6 @@
 				}
 			}
 		} catch (SoapFault $fault) {
-			throw new Exception('conn-error');
+			throw new $fault;
 		}
 	}

@@ -69,7 +69,7 @@ class WC_Biz_Courier_Logistics
 	 */
 	public function __construct()
 	{
-		$this->version = '1.3.1';
+		$this->version = '1.3.2';
 		$this->WC_Biz_Courier_Logistics = 'wc-biz-courier-logistics';
 
 		$this->load_dependencies();
@@ -152,6 +152,7 @@ class WC_Biz_Courier_Logistics
 
 		$plugin_admin = new WC_Biz_Courier_Logistics_Admin($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
 
+		$this->loader->add_action('init', $plugin_admin, 'biz_soap_extension_error');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 		$this->loader->add_filter('plugin_action_links_wc-biz-courier-logistics/wc-biz-courier-logistics.php', $plugin_admin, 'biz_plugin_action_links');

@@ -21,6 +21,21 @@
  */
 
 /**
+ * Print HTML notice for disabled SOAP extension.
+ *
+ * @since    1.3.2
+ * @uses 	 admin_url()
+ */
+function biz_soap_extension_error_html()
+{
+?>
+    <div class="notice notice-error biz-notice">
+        <?php _e("You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator.", "wc-biz-courier-logistics")  ?>
+    </div>
+<?php
+}
+
+/**
  * Print HTML notice for missing credentials
  *
  * @since    1.0.0

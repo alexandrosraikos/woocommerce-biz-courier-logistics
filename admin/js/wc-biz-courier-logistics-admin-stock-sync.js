@@ -21,16 +21,14 @@
         data: {
           action: "biz_stock_sync",
           nonce: ajax_prop.nonce,
-          product_skus: ajax_prop.product_skus,
         },
         // Handle response.
         complete: function (response) {
-          if (response.responseText.includes("error")) {
-            var url = new URL(window.location.href);
-            var params = url.searchParams;
-            params.set("biz_error", response.responseText);
-            url.search = params.toString();
-            window.location.href = url.toString();
+          if (
+            response.responseText.includes("error") ||
+            response.status !== 200
+          ) {
+            alert(response.responseText);
           } else {
             window.location.reload();
           }

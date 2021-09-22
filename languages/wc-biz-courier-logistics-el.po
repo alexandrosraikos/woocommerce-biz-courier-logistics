@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Biz Courier & Logistics for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.3.1\n"
+"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.3.2\n"
 "Report-Msgid-Bugs-To: Alexandros Raikos <alexandros@araikos.gr>\n"
 "PO-Revision-Date: 2021-09-17 08:38+0300\n"
 "MIME-Version: 1.0\n"
@@ -51,6 +51,10 @@ msgstr "Εκκρεμεί"
 # Integration
 # ------
 # This section provides the necessary translations for initialising the custom Biz integration.
+
+msgid "You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator."
+msgstr "Πρέπει να ενεργοποιήσετε την επέκταση soap στην εγκατάσταση PHP σας για να χρησιμοποιήσετε τις λειτουργίες του Biz Courier & Logistics for WooCommerce. Επικοινωνήστε με τον διαχειριστή του εξυπηρετητή σας."
+
 msgid "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 msgstr "Πρέπει να ρυθμίσετε τα στοιχεία σας Biz Courier στις <a href='%s'>ρυθμίσεις WooCommerce</a>."
 
