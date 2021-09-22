@@ -21,7 +21,7 @@
         data: {
           action: "biz_stock_sync",
           nonce: ajax_prop.nonce,
-          // product_skus: ajax_prop.product_skus,
+          product_skus: ajax_prop.product_skus,
         },
         // Handle response.
         complete: function (response) {
