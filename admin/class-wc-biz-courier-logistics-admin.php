@@ -60,8 +60,9 @@ class WC_Biz_Courier_Logistics_Admin
 	 *
 	 * @since    1.3.2
 	 */
-	public function biz_soap_extension_error() {
-		if(!extension_loaded('soap')) {
+	public function biz_soap_extension_error()
+	{
+		if (!extension_loaded('soap')) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 			biz_soap_extension_error_html();
 		}
@@ -449,8 +450,7 @@ class WC_Biz_Courier_Logistics_Admin
 					foreach ($children_ids as $child_id) {
 						if (get_post_meta($child_id, '_biz_stock_sync', true) == 'no') {
 							continue;
-						}
-						else {
+						} else {
 							$child_status = get_post_meta($child_id, '_biz_stock_sync_status', true);
 							if ($status == 'synced' && $child_status == 'not-synced') {
 								$status = 'partial';
@@ -512,19 +512,28 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * Calculate the additional COD fee for Biz shipping on checkout
 	 *
-	 * @since    1.3.2
+	 * @since    1.3.3
 	 */
-	function add_biz_cod_fee(WC_Cart $cart) {
+	function add_biz_cod_fee($cart)
+	{
+		if ( is_admin() && defined('DOING_AJAX') && !WC()->session->__isset('biz_shipping_method')) return;
+
+		// Polyfill for older PHP versions.
+		if (!function_exists('str_contains')) {
+			function str_contains($haystack, $needle) {
+				return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+			}
+		}
+
 		if (
 			WC()->session->get('chosen_payment_method') == 'cod' &&
-			str_contains(WC()->session->get( 'chosen_shipping_methods' )[0], 'biz_shipping_method')
+			str_contains(WC()->session->get('chosen_shipping_methods')[0], 'biz_shipping_method')
 		) {
 			$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
 			if (!empty($biz_shipping_settings['biz_cash_on_delivery_fee'])) {
-				$cart->add_fee(__('Cash on Delivery fee','wc-biz-courier-logistics'),$biz_shipping_settings['biz_cash_on_delivery_fee']);
+				$cart->add_fee(__('Cash on Delivery fee', 'wc-biz-courier-logistics'), $biz_shipping_settings['biz_cash_on_delivery_fee']);
 			}
 		}
-		
 	}
 
 
@@ -550,7 +559,7 @@ class WC_Biz_Courier_Logistics_Admin
 				'error_description' => 'Unverified request to send shipment.'
 			]));
 		}
-		
+
 		// Send shipment using POST data and handle errors.
 		try {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
@@ -961,6 +970,8 @@ class WC_Biz_Courier_Logistics_Admin
 		 */
 		function biz_shipment_meta_box($post)
 		{
+
+
 			function prepare_scripts_new_shipment($order_id)
 			{
 				// Enqueue and localize send new shipment.
@@ -992,9 +1003,10 @@ class WC_Biz_Courier_Logistics_Admin
 				));
 			}
 
-			// Get order and any voucher data.
+			// Get any voucher data.
 			$order = wc_get_order($post->ID);
 			$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
+
 			try {
 				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
 				if (!empty($voucher)) {
@@ -1058,5 +1070,4 @@ class WC_Biz_Courier_Logistics_Admin
 			}
 		}
 	}
-
 }
