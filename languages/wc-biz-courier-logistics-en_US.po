@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Biz Courier & Logistics for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.3.2\n"
+"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.3.3\n"
 "Report-Msgid-Bugs-To: Alexandros Raikos <alexandros@araikos.gr>\n"
 "PO-Revision-Date: 2021-09-16 18:46+0300\n"
 "MIME-Version: 1.0\n"
@@ -167,6 +167,9 @@ msgstr "COD fee"
 
 msgid "Insert the additional Biz fee for Cash On Delivery payments."
 msgstr "Insert the additional Biz fee for Cash On Delivery payments."
+
+msgid "Cash on Delivery fee"
+msgstr "Αντικαταβολή"
 
 # --- General shipping settings.
 # FIX ALL FIELDS IN PHP

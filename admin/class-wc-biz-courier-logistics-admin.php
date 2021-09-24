@@ -512,7 +512,7 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * Calculate the additional COD fee for Biz shipping on checkout
 	 *
-	 * @since    1.0.0
+	 * @since    1.3.2
 	 */
 	function add_biz_cod_fee(WC_Cart $cart) {
 		if (
