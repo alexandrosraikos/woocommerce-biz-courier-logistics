@@ -531,7 +531,7 @@ class WC_Biz_Courier_Logistics_Admin
 				'error_description' => 'Unverified request to send shipment.'
 			]));
 		}
-
+		
 		// Send shipment using POST data and handle errors.
 		try {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
@@ -600,6 +600,11 @@ class WC_Biz_Courier_Logistics_Admin
 			die(json_encode([
 				'error_code' => 'connection-error',
 				'error_description' => __('There was a connection error while trying to contact Biz Courier. More information: ', 'wc-biz-courier-logistics') . $f->getMessage()
+			]));
+		} catch (\Exception $e) {
+			die(json_encode([
+				'error_code' => 'unknown-error',
+				'error_description' => 'There was an unknown error.'
 			]));
 		}
 	}

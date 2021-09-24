@@ -71,7 +71,6 @@ function biz_send_shipment(int $order_id): bool
 
 		// Check for pre-existing voucher or non-processing state.
 		if ((empty(get_post_meta($order->get_id(), '_biz_voucher', true)) || $order->get_status() != 'processing')) {
-
 			// Handle each item included in the order.
 			foreach ($items as $item) {
 
@@ -100,9 +99,12 @@ function biz_send_shipment(int $order_id): bool
 					} else throw new UnexpectedValueException('metrics-error');
 				} else throw new UnexpectedValueException('sku-error');
 			}
-
+			
 			// Get phone number, order comments and special delivery methods.
-			$phone = ($order->get_shipping_phone() ?: ($biz_shipping_settings['biz_billing_phone_usage'] == 'yes' ? $order->get_billing_phone() : ''));
+			$phone = $order->get_shipping_phone();
+			if (empty($phone) && !empty($biz_shipping_settings['biz_billing_phone_usage'])) {
+				$phone = ($biz_shipping_settings['biz_billing_phone_usage'] == 'yes') ? $order->get_billing_phone() : '';
+			}	
 			$comments = function () use ($order) {
 				$comment = "";
 				if (
@@ -158,7 +160,7 @@ function biz_send_shipment(int $order_id): bool
 				"Relative1" => "", // Unsupported.
 				"Relative2" => "", // Unsupported.
 				"Delivery_Time_To" => "", // Unsupported.
-				"SMS" => ($biz_shipping_settings['biz_sms_notifications'] == "yes") ? "1" : "0",
+				"SMS" => (($biz_shipping_settings['biz_sms_notifications'] ?? "no") == "yes") ? "1" : "0",
 				"Special_Treatment" => "", // Unsupported.
 				"Protocol" => "", // Unsupported.
 				"Morning_Delivery" => $morning_delivery(),

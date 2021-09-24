@@ -31,7 +31,11 @@
           if (response.responseText === "OK") {
             window.location.reload();
           } else {
-            showError(JSON.parse(response.responseText));
+            try {
+              showError(JSON.parse(response.responseText));
+            } catch {
+              showError(response.responseText);
+            }
           }
         },
         dataType: "json",
