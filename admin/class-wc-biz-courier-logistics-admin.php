@@ -614,6 +614,21 @@ class WC_Biz_Courier_Logistics_Admin
 				case 'biz-recipient-info-error':
 					$error_description = __("There was a problem registering recipient information with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics');
 					break;
+				case 'biz-area-code-error':
+				case 'biz-area-error':
+					$error_description = __("There was a problem processing the recipient's area. Please make sure it is correct.", 'wc-biz-courier-logistics');
+					break;
+				case 'biz-recipient-phone-error':
+					$error_description = __("There was a problem processing the recipient's phone number. Please make sure it is correct.", 'wc-biz-courier-logistics');
+					break;
+				case 'biz-product-ownership-error':
+				case 'biz-multiple-product-ownership-error':
+				case 'biz-product-field-error':
+					$error_description = __("There was an internal Biz error while processing the order's items.", 'wc-biz-courier-logistics');
+					break;
+				case 'biz-postal-code-error':
+					$error_description = __("There was a problem processing the order's postal code. Please make sure it is correct.", 'wc-biz-courier-logistics');
+					break;
 				case 'biz-package-data-error':
 					$error_description = __("There was a problem with your order's items while submitting their information to Biz.", 'wc-biz-courier-logistics');
 					break;

@@ -100,6 +100,13 @@ function biz_send_shipment(int $order_id): bool
 				} else throw new UnexpectedValueException('sku-error');
 			}
 			
+			// Backwards compatible for older PHP versions.
+			if (!function_exists('str_contains')) {
+				function str_contains($haystack, $needle) {
+					return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+				}
+			}
+			
 			// Get phone number, order comments and special delivery methods.
 			$phone = $order->get_shipping_phone();
 			if (empty($phone) && !empty($biz_shipping_settings['biz_billing_phone_usage'])) {
@@ -137,7 +144,7 @@ function biz_send_shipment(int $order_id): bool
 				"R_Area_Code" => $order->get_shipping_country(),
 				"R_Area" => truncate_field($order->get_shipping_city()),
 				"R_PC" => $order->get_shipping_postcode(),
-				"R_Phone1" => $phone ?? "",
+				"R_Phone1" => $phone,
 				"R_Phone2" => "",
 				"R_Email" => truncate_field($order->get_billing_email(), 60),
 				"Length" => $total_dimensions['length'], // cm int
@@ -166,8 +173,7 @@ function biz_send_shipment(int $order_id): bool
 				"Con_Call" => "0", // Unsupported.
 				"Ins_Amount" => "" // Unsupported.
 			]);
-
-			// Handle error codes from response.
+			
 			switch ($response->Error_Code) {
 				case 0:
 					if (!empty($response->Voucher)) {
@@ -179,10 +185,28 @@ function biz_send_shipment(int $order_id): bool
 					} else throw new ErrorException('biz-response-data-error');
 				case 1:
 					throw new ErrorException('biz-auth-error');
-				case 11:
+				case 2:
+				case 3:
+				case 10:
 					throw new ErrorException('biz-recipient-info-error');
+				case 4:
+					throw new ErrorException('biz-area-code-error');
+				case 5:
+					throw new ErrorException('biz-area-error');
+				case 6:
+					throw new ErrorException('biz-recipient-phone-error');
+				case 7:
+					throw new ErrorException('biz-product-ownership-error');
+				case 8:
+					throw new ErrorException('biz-multiple-product-ownership-error');
+				case 9:
+					throw new ErrorException('biz-product-field-error');
+				case 11:
+					throw new ErrorException('biz-postal-code-error');
 				case 12:
 					throw new ErrorException('biz-package-data-error');
+				default:
+					throw new ErrorException('biz-unknown-error-code-'.$response->Error_Code);
 			}
 		} else throw new LogicException('voucher-exists-error');
 	} catch (SoapFault $fault) {

@@ -556,6 +556,22 @@ msgctxt "ORDER_SEND_SHIPMENT_BIZ_RECIPIENT_INFORMATION_ERROR"
 msgid "There was a problem registering recipient information with Biz. Please check your recipient information entries."
 msgstr ""
 
+msgctxt "ORDER_SEND_SHIPMENT_BIZ_AREA_ERROR"
+msgid "There was a problem processing the recipient's area. Please make sure it is correct."
+msgstr ""
+
+msgctxt "ORDER_SEND_SHIPMENT_BIZ_RECIPIENT_PHONE_ERROR"
+msgid "There was a problem processing the recipient's phone number. Please make sure it is correct."
+msgstr ""
+
+msgctxt "ORDER_SEND_SHIPMENT_BIZ_PRODUCT_FIELD_ERROR"
+msgid "There was an internal Biz error while processing the order's items."
+msgstr ""
+
+msgctxt "ORDER_SEND_SHIPMENT_BIZ_POSTAL_CODE_ERROR"
+msgid "There was a problem processing the order's postal code. Please make sure it is correct."
+msgstr ""
+
 msgctxt "ORDER_SEND_SHIPMENT_BIZ_ITEMS_ERROR"
 msgid "There was a problem with your order's items while submitting their information to Biz."
 msgstr ""
