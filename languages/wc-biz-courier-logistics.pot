@@ -135,7 +135,7 @@ msgid "Automatic shipment creation"
 msgstr ""
 
 msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CREATION_DESCRIPTION"
-msgid "Automatically send Biz shipments when orders enter the selected status."
+msgid "Automatically send Biz shipments when orders enter the selected status. <em>WARNING: This applies for all orders, regardless if the customer selected Biz Courier as a shipping method or not.</em>"
 msgstr ""
 
 msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CANCELLATION_TITLE"
@@ -143,7 +143,7 @@ msgid "Automatic shipment cancellation"
 msgstr ""
 
 msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_CANCELLATION_DESCRIPTION"
-msgid "Automatically cancel Biz shipments when orders enter the selected status."
+msgid "Automatically cancel Biz shipments when orders enter the selected status. <em>NOTICE: This works only for orders containing a valid Biz voucher number.</em>"
 msgstr ""
 
 msgctxt "SETTINGS_INTEGRATION_GENERAL_AUTOMATIC_SHIPMENT_ACTIONS_DISABLED_STATUS"

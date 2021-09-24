@@ -114,14 +114,14 @@ class Biz_Integration extends WC_Integration
             'automatic_shipment_creation' => array(
                 'title' => __('Automatic shipment creation', 'wc-biz-courier-logistics'),
                 'type' => 'select',
-                'description' => __('Automatically send Biz shipments when orders enter the selected status.', 'wc-biz-courier-logistics'),
+                'description' => __('Automatically send Biz shipments when orders enter the selected status. <em>WARNING: This applies for all orders, regardless if the customer selected Biz Courier as a shipping method or not.</em>', 'wc-biz-courier-logistics'),
                 'default' => 'disabled',
                 'options' => $statuses
             ),
             'automatic_shipment_cancellation' => array(
                 'title' => __('Automatic shipment cancellation', 'wc-biz-courier-logistics'),
                 'type' => 'select',
-                'description' => __('Automatically cancel Biz shipments when orders enter the selected status.', 'wc-biz-courier-logistics'),
+                'description' => __('Automatically cancel Biz shipments when orders enter the selected status. <em>NOTICE: This works only for orders containing a valid Biz voucher number.</em>', 'wc-biz-courier-logistics'),
                 'default' => 'disabled',
                 'options' => $statuses
             ),

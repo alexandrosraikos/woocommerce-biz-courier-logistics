@@ -115,14 +115,14 @@ msgstr "Αυτόματη ενημέρωση παραγγελιών υπό Επε
 msgid "Automatic shipment creation"
 msgstr "Αυτόματη δημιουργία αποστολής"
 
-msgid "Automatically send Biz shipments when orders enter the selected status."
-msgstr "Αυτόματη δημιουργία αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση."
+msgid "Automatically send Biz shipments when orders enter the selected status. <em>WARNING: This applies for all orders, regardless if the customer selected Biz Courier as a shipping method or not.</em>"
+msgstr "Αυτόματη δημιουργία αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση. <em>ΠΡΟΣΟΧΗ: Αυτό ισχύει για όλες τις παραγγελίες, ανεξαρτήτως αν ο πελάτης επέλεξε την Biz Courier ως μέθοδο αποστολής ή όχι.</em>"
 
 msgid "Automatic shipment cancellation"
 msgstr "Αυτόματη ακύρωση αποστολής"
 
-msgid "Automatically cancel Biz shipments when orders enter the selected status."
-msgstr "Αυτόματη ακύρωση αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση."
+msgid "Automatically cancel Biz shipments when orders enter the selected status. <em>NOTICE: This works only for orders containing a valid Biz voucher number.</em>"
+msgstr "Αυτόματη ακύρωση αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση. <em>ΣΗΜΕΙΩΣΗ: Αυτό λειτουργεί μόνο για παραγγελίες που περιέχουν έναν έγκυρο κωδικός παράδοσης Biz.</em>"
 
 msgid "Disable"
 msgstr "Απενεργοποίηση"

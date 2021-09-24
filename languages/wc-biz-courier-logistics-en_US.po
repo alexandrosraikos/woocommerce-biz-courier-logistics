@@ -111,14 +111,14 @@ msgstr "Update Processing shipment status automatically to Completed or Cancelle
 msgid "Automatic shipment creation"
 msgstr "Automatic shipment creation"
 
-msgid "Automatically send Biz shipments when orders enter the selected status."
-msgstr "Automatically send Biz shipments when orders enter the selected status."
+msgid "Automatically send Biz shipments when orders enter the selected status. <em>WARNING: This applies for all orders, regardless if the customer selected Biz Courier as a shipping method or not.</em>"
+msgstr "Automatically send Biz shipments when orders enter the selected status. <em>WARNING: This applies for all orders, regardless if the customer selected Biz Courier as a shipping method or not.</em>"
 
 msgid "Automatic shipment cancellation"
 msgstr "Automatic shipment cancellation"
 
-msgid "Automatically cancel Biz shipments when orders enter the selected status."
-msgstr "Automatically cancel Biz shipments when orders enter the selected status."
+msgid "Automatically cancel Biz shipments when orders enter the selected status. <em>NOTICE: This works only for orders containing a valid Biz voucher number.</em>"
+msgstr "Automatically cancel Biz shipments when orders enter the selected status. <em>NOTICE: This works only for orders containing a valid Biz voucher number.</em>"
 
 msgid "Disable"
 msgstr "Disable"
