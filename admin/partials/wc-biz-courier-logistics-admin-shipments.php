@@ -105,20 +105,15 @@ function biz_send_shipment(int $order_id): bool
 			if (empty($phone) && !empty($biz_shipping_settings['biz_billing_phone_usage'])) {
 				$phone = ($biz_shipping_settings['biz_billing_phone_usage'] == 'yes') ? $order->get_billing_phone() : '';
 			}	
-			$comments = function () use ($order) {
-				$comment = "";
-				if (
-					str_contains($order->get_shipping_method(), "Σαββάτου") ||
-					str_contains($order->get_shipping_method(), "Saturday")
-				) {
-					$comment .= "[SATURDAY DELIVERY] ";
-				}
-				$comment .= "Recipient comments:" . ($order->get_customer_note() ?? "none");
-				return $comment;
-			};
-			$morning_delivery = function () use ($order) {
-				return (str_contains($order->get_shipping_method(), "Πρωινή") || str_contains($order->get_shipping_method(), "Morning")) ? "yes" : "";
-			};
+			$comments = "";
+			if (
+				str_contains($order->get_shipping_method(), "Σαββάτου") ||
+				str_contains($order->get_shipping_method(), "Saturday")
+			) {
+				$comments .= "[SATURDAY DELIVERY] ";
+			}
+			$comments .= "Recipient comments:" . ($order->get_customer_note() ?? "none");
+			$morning_delivery = (str_contains($order->get_shipping_method(), "Πρωινή") || str_contains($order->get_shipping_method(), "Morning")) ? "yes" : "";
 
 			// Check for completeness.
 			if (
@@ -142,7 +137,7 @@ function biz_send_shipment(int $order_id): bool
 				"R_Area_Code" => $order->get_shipping_country(),
 				"R_Area" => truncate_field($order->get_shipping_city()),
 				"R_PC" => $order->get_shipping_postcode(),
-				"R_Phone1" => $phone,
+				"R_Phone1" => $phone ?? "",
 				"R_Phone2" => "",
 				"R_Email" => truncate_field($order->get_billing_email(), 60),
 				"Length" => $total_dimensions['length'], // cm int
@@ -154,7 +149,7 @@ function biz_send_shipment(int $order_id): bool
 				"Multi_Prod" => implode("#", $shipment_products),
 				"Cash_On_Delivery" => ($order->get_payment_method() == 'cod') ? number_format($order->get_total(), 2) : '',
 				"Checques_On_Delivery" => "", // Unsupported.
-				"Comments" => $comments(),
+				"Comments" => $comments,
 				"Charge" => "3", // Unsupported, always 3.
 				"Type" => "2", // Unsupported, always assume parcel.
 				"Relative1" => "", // Unsupported.
@@ -163,7 +158,7 @@ function biz_send_shipment(int $order_id): bool
 				"SMS" => (($biz_shipping_settings['biz_sms_notifications'] ?? "no") == "yes") ? "1" : "0",
 				"Special_Treatment" => "", // Unsupported.
 				"Protocol" => "", // Unsupported.
-				"Morning_Delivery" => $morning_delivery(),
+				"Morning_Delivery" => $morning_delivery,
 				"Buy_Amount" => "", // Unsupported.
 				"Pick_Up" => "", // Unsupported.
 				"Service_Type" => "", // Unsupported.

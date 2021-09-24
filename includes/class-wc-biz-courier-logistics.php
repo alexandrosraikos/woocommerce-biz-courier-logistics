@@ -178,10 +178,11 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('manage_product_posts_custom_column', $plugin_admin, 'biz_stock_sync_indicator_column', 10, 2);
 
 		/** 
-		 *  Biz Courier Shipping Method.
+		 *  Biz Courier Shipping Method and COD.
 		 */
 		$this->loader->add_action('woocommerce_shipping_init', $plugin_admin, 'biz_shipping_method');
 		$this->loader->add_filter('woocommerce_shipping_methods', $plugin_admin, 'add_biz_shipping_method');
+		$this->loader->add_action( 'woocommerce_cart_calculate_fees', $plugin_admin, 'add_biz_cod_fee', 20, 1 );
 
 		/**
 		 *  Order and shipment interactivity.

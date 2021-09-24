@@ -510,6 +510,25 @@ class WC_Biz_Courier_Logistics_Admin
 
 
 	/**
+	 * Calculate the additional COD fee for Biz shipping on checkout
+	 *
+	 * @since    1.0.0
+	 */
+	function add_biz_cod_fee(WC_Cart $cart) {
+		if (
+			WC()->session->get('chosen_payment_method') == 'cod' &&
+			str_contains(WC()->session->get( 'chosen_shipping_methods' )[0], 'biz_shipping_method')
+		) {
+			$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
+			if (!empty($biz_shipping_settings['biz_cash_on_delivery_fee'])) {
+				$cart->add_fee(__('Cash on Delivery fee','wc-biz-courier-logistics'),$biz_shipping_settings['biz_cash_on_delivery_fee']);
+			}
+		}
+		
+	}
+
+
+	/**
 	 * 	Order Status 
 	 * 	------------
 	 *  This section provides the necessary functionality for mapping, managing and displaying
@@ -1039,4 +1058,5 @@ class WC_Biz_Courier_Logistics_Admin
 			}
 		}
 	}
+
 }

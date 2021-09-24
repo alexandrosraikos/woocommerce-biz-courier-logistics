@@ -207,6 +207,10 @@ msgctxt "SETTINGS_SHIPPING_COD_FEE_DESCRIPTION"
 msgid "Insert the additional Biz fee for Cash On Delivery payments."
 msgstr ""
 
+msgctxt "CHECKOUT_COD_FEE_LABEL"
+msgid "Cash on Delivery fee"
+msgstr ""
+
 # --- General shipping settings.
 # FIX ALL FIELDS IN PHP
 msgctxt "SETTINGS_SHIPPING_SAME_DAY_DELIVERY_TITLE"

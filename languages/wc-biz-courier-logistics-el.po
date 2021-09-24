@@ -172,6 +172,9 @@ msgstr "Προμήθεια αντικαταβολής"
 msgid "Insert the additional Biz fee for Cash On Delivery payments."
 msgstr "Εισάγετε το ποσό χρέωσης αντικαταβολής για αποστολές Biz."
 
+msgid "Cash on Delivery fee"
+msgstr "Αντικαταβολή"
+
 # --- General shipping settings.
 msgid "Same Day Delivery"
 msgstr "Παράδοση αυθημερόν"
