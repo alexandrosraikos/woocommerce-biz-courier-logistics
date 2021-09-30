@@ -100,4 +100,24 @@ class WC_Biz_Courier_Logistics_Public {
 
 	}
 
+
+	/**
+	 * Inject a script to refresh checkout fees on payment method change.
+	 *
+	 * @since    1.4.0
+	 */
+	function biz_checkout_refresh (){
+		if(is_checkout() && ! is_wc_endpoint_url()):
+		?>
+		<script type="text/javascript">
+		jQuery( function($){
+			$('form.checkout').on('change', 'input[name="payment_method"]', function(){
+				$(document.body).trigger('update_checkout');
+			});
+		});
+		</script>
+		<?php
+		endif;
+	}
+
 }
