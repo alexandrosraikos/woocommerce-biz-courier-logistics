@@ -341,6 +341,8 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	function biz_stock_sync_handler()
 	{
+		// TODO @alexandrosraikos: Display stock level synchronization errors. (#31 - https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/issues/31)
+
 		// Verify the WordPress generated nonce.
 		if (!wp_verify_nonce($_POST['nonce'], 'ajax_stock_sync_validation')) {
 			die("Unverified request to synchronise stock.");

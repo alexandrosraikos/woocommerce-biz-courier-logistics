@@ -176,12 +176,15 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('manage_posts_extra_tablenav', $plugin_admin, 'add_biz_stock_sync_all_button', 20, 1);
 		$this->loader->add_filter('manage_edit-product_columns', $plugin_admin, 'add_biz_stock_sync_indicator_column');
 		$this->loader->add_action('manage_product_posts_custom_column', $plugin_admin, 'biz_stock_sync_indicator_column', 10, 2);
+		// TODO @alexandrosraikos: Provide option to handle Biz Warehouse jointly for variations (#34 - https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/issues/34)
 
 		/** 
 		 *  Biz Courier Shipping Method and COD.
 		 */
 		$this->loader->add_action('woocommerce_shipping_init', $plugin_admin, 'biz_shipping_method');
 		$this->loader->add_filter('woocommerce_shipping_methods', $plugin_admin, 'add_biz_shipping_method');
+
+		// TODO @alexandrosraikos: Move this to public.
 		$this->loader->add_action( 'woocommerce_cart_calculate_fees', $plugin_admin, 'add_biz_cod_fee', 10, 1 );
 
 		/**
@@ -197,6 +200,9 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('wp_ajax_biz_delete_shipment_voucher', $plugin_admin, 'biz_delete_shipment_voucher_handler');
 		$this->loader->add_action('wp_ajax_biz_synchronize_order', $plugin_admin, 'biz_synchronize_order_handler');
 		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'biz_order_changed_handler',10, 3);
+
+
+		// TODO @alexandrosraikos: Add biz Warehouse indicator on order items page (#32 - https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/issues/32).
 
 		// Shipment automatic updating - cron job.
 		function biz_cron_order_status_checking_interval($schedules) {

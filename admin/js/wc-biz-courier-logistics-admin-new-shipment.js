@@ -17,6 +17,8 @@
       $("#biz-send-shipment").prop("disabled", true);
       $("#biz-send-shipment").addClass("biz-loading");
 
+      // TODO @alexandrosraikos: Show shipment sending confirmation (#33 - https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/issues/33)
+
       // Perform AJAX request.
       $.ajax({
         url: ajax_prop.ajax_url,
