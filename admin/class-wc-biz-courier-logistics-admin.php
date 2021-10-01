@@ -516,7 +516,7 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	function add_biz_cod_fee($cart)
 	{
-		if ( is_admin() && defined('DOING_AJAX') && !WC()->session->__isset('biz_shipping_method')) return;
+		if ( is_admin() && defined('DOING_AJAX')) return;
 
 		// Polyfill for older PHP versions.
 		if (!function_exists('str_contains')) {
