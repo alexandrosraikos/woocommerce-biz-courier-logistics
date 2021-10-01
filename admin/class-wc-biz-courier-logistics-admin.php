@@ -526,8 +526,7 @@ class WC_Biz_Courier_Logistics_Admin
 		}
 
 		if (
-			WC()->session->get('chosen_payment_method') == 'cod' &&
-			str_contains(WC()->session->get('chosen_shipping_methods')[0], 'biz_shipping_method')
+			WC()->session->get('chosen_payment_method') == 'cod'
 		) {
 			$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
 			if (!empty($biz_shipping_settings['biz_cash_on_delivery_fee'])) {
