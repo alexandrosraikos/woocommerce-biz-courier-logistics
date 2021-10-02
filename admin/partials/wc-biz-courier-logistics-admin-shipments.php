@@ -76,8 +76,10 @@ function biz_send_shipment(int $order_id): bool
 
 				// Handle product and conditions.
 				$product = wc_get_product($item['product_id']);
+				if ($product->is_type('variable') && !empty($item['variation_id'])) {
+					$product = wc_get_product($item['variation_id']);
+				}
 				if ($product->is_virtual()) continue;
-				elseif ($product->get_stock_quantity() <= 0) throw new UnexpectedValueException('stock-error');
 
 				// Check for active Biz synchronization status.
 				if (get_post_meta($product->get_id(), '_biz_stock_sync_status', true) == 'synced') {
