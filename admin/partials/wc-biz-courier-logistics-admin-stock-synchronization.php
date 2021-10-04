@@ -105,6 +105,7 @@
 			// Initialize client.
 			$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/prod_stock.php?wsdl", array(
 				'trace' => 1,
+				'exceptions' =>	true,
 				'encoding' => 'UTF-8',
 			));
 
@@ -147,14 +148,25 @@
 						$wc_product = wc_get_product($product_post->ID);
 
 						// Update remaining stock quantity.
-						if ($retrieved_quantities[$sku] >= 0) {
-							wc_update_product_stock($wc_product, $retrieved_quantities[$sku], 'set');
-						} else {
-							wc_update_product_stock($wc_product, 0, 'set');
-						}
+						wc_update_product_stock($wc_product, ($retrieved_quantities[$sku] >= 0) ? $retrieved_quantities[$sku] : 0, 'set');
 
 						// Update Biz synchronization post metadata.
 						update_post_meta($product_post_id, '_biz_stock_sync_status', 'synced');
+
+						// Update same SKU children.
+						if ($wc_product->has_child()) {
+							foreach ($wc_product->get_children() as $child_id) {
+								$child_product = wc_get_product($child_id);
+								if (get_post_meta($child_product->get_id(), '_biz_stock_sync', true) && $child_product->get_sku() == $wc_product->get_sku()) {
+
+									// Update remaining stock quantity.
+									wc_update_product_stock($child_product, ($retrieved_quantities[$sku] >= 0) ? $retrieved_quantities[$sku] : 0, 'set');
+			
+									// Update Biz synchronization post metadata.
+									update_post_meta($child_product->get_id(), '_biz_stock_sync_status', 'synced');
+								}
+							}
+						}
 					}
 				} else  {
 
@@ -170,6 +182,6 @@
 				}
 			}
 		} catch (SoapFault $fault) {
-			throw new $fault;
+			throw $fault;
 		}
 	}

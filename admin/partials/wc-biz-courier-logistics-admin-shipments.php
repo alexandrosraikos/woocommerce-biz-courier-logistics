@@ -37,7 +37,7 @@ function biz_send_shipment(int $order_id): bool
 	 */
 	function truncate_field(string $string, int $length = 40)
 	{
-		return (strlen($string) > $length) ? substr($string, 0, $length - 1) . "." : $string;
+		return utf8_encode((strlen($string) > $length) ? substr($string, 0, $length - 1) . "." : $string);
 	}
 
 	// Get Biz credentials and shipping settings.
@@ -51,7 +51,8 @@ function biz_send_shipment(int $order_id): bool
 		// Initialize client.
 		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl", [
 			'trace' => 1,
-			'encoding' => 'UTF-8',
+			'exceptions' =>	true,
+			'encoding' => 'UTF-8'
 		]);
 
 		// Initialize Biz item format array in product_code:quantity format.
@@ -79,7 +80,6 @@ function biz_send_shipment(int $order_id): bool
 				if ($product->is_type('variable') && !empty($item['variation_id'])) {
 					$product = wc_get_product($item['variation_id']);
 				}
-				if ($product->is_virtual()) continue;
 
 				// Check for active Biz synchronization status.
 				if (get_post_meta($product->get_id(), '_biz_stock_sync_status', true) == 'synced') {
@@ -212,7 +212,7 @@ function biz_send_shipment(int $order_id): bool
 			}
 		} else throw new LogicException('voucher-exists-error');
 	} catch (SoapFault $fault) {
-		throw new $fault;
+		throw $fault;
 	}
 }
 
@@ -236,6 +236,7 @@ function biz_modify_shipment(int $order_id, string $message = ""): bool
 		// Initialize client.
 		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/bizmod.php?wsdl", [
 			'trace' => 1,
+			'exceptions' =>	true,
 			'encoding' => 'UTF-8',
 		]);
 
@@ -258,7 +259,7 @@ function biz_modify_shipment(int $order_id, string $message = ""): bool
 			return true;
 		} else throw new ErrorException($response->Error);
 	} catch (SoapFault $fault) {
-		throw new $fault;
+		throw $fault;
 	}
 }
 
@@ -282,6 +283,7 @@ function biz_cancel_shipment($order_id): bool
 		// Initialize client.
 		$client = new SoapClient("http://www.bizcourier.eu/pegasus_cloud_app/service_01/loc_app/biz_add_act.php?wsdl", [
 			'trace' => 1,
+			'exceptions' =>	true,
 			'encoding' => 'UTF-8',
 		]);
 
@@ -309,7 +311,7 @@ function biz_cancel_shipment($order_id): bool
 		} else throw new ErrorException($response->Error);
 		return true;
 	} catch (SoapFault $fault) {
-		throw new $fault;
+		throw $fault;
 	}
 }
 
@@ -329,6 +331,7 @@ function biz_shipment_status($voucher): array
 		// Initialize client.
 		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/TrackEvntSrv.php?wsdl", [
 			'trace' => 1,
+			'exceptions' =>	true,
 			'encoding' => 'UTF-8',
 		]);
 		$biz_settings = get_option('woocommerce_biz_integration_settings');
@@ -410,7 +413,7 @@ function biz_shipment_status($voucher): array
 		// Return full status list.
 		return $complete_statuses;
 	} catch (SoapFault $fault) {
-		throw new $fault;
+		throw $fault;
 	}
 }
 
