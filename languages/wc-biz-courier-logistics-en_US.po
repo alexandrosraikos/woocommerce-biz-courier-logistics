@@ -411,8 +411,8 @@ msgstr "An unknown Biz error occured while processing shipment modification info
 msgid "There are no products in this order."
 msgstr "There are no products in this order."
 
-msgid "Some products were not found in the Biz warehouse."
-msgstr "Some products were not found in the Biz warehouse."
+msgid "Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability."
+msgstr "Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability."
 
 msgid "Please make sure all products in the order have their weight & dimensions registered."
 msgstr "Please make sure all products in the order have their weight & dimensions registered."

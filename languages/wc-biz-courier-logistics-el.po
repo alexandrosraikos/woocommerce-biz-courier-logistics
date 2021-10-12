@@ -414,8 +414,8 @@ msgstr "Ένα άγνωστο σφάλμα προέκυψε από την Biz κ
 msgid "There are no products in this order."
 msgstr "Δεν υπάρχουν προϊόντα σε αυτή την παραγγελία."
 
-msgid "Some products were not found in the Biz warehouse."
-msgstr "Κάποια προϊόντα δεν βρίσκονται στην αποθήκη Biz."
+msgid "Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability."
+msgstr "Κάποια προϊόντα δεν βρέθηκαν στην αποθήκη Biz. Προσπαθήστε να κάνετε \"Μέτρηση αποθέματος\" στην σελίδα \"Όλα τα προϊόντα\" για να ενημερώσετε τη διαθεσιμότητά τους."
 
 msgid "Please make sure all products in the order have their weight & dimensions registered."
 msgstr "Πρέπει να έχει καταχωρηθεί βάρος και διαστάσεις σε κάθε προϊόν της παραγγελίας."

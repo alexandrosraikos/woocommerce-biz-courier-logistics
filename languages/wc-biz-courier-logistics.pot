@@ -529,7 +529,7 @@ msgid "There are no products in this order."
 msgstr ""
 
 msgctxt "ORDER_SEND_SHIPMENT_SKU_ERROR"
-msgid "Some products were not found in the Biz warehouse."
+msgid "Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability."
 msgstr ""
 
 msgctxt "ORDER_SEND_SHIPMENT_METRICS_ERROR"

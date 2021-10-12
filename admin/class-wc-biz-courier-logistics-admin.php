@@ -578,7 +578,7 @@ class WC_Biz_Courier_Logistics_Admin
 					$error_description = __("Please make sure all products in the order have their weight & dimensions registered.", 'wc-biz-courier-logistics');
 					break;
 				case 'sku-error':
-					$error_description = __("Some products were not found in the Biz warehouse.", 'wc-biz-courier-logistics');
+					$error_description = __("Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability.", 'wc-biz-courier-logistics');
 					break;
 				case 'recipient-info-error':
 					$error_description = __("There was a problem with the recipient's information. Make sure you have filled in all the necessary fields: First name, last name, phone number, e-mail address, address line #1, city, postal code and country.", 'wc-biz-courier-logistics');
@@ -838,7 +838,7 @@ class WC_Biz_Courier_Logistics_Admin
 							$error_description = __("Please make sure all products in the order have their weight & dimensions registered.", 'wc-biz-courier-logistics');
 							break;
 						case 'sku-error':
-							$error_description = __("Some products were not found in the Biz warehouse.", 'wc-biz-courier-logistics');
+							$error_description = __("Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability. Try going to the All Products page and clicking on \"Get stock levels\", to update availability.", 'wc-biz-courier-logistics');
 							break;
 						case 'recipient-info-error':
 							$error_description = __("There was a problem with the recipient's information. Make sure you have filled in all the necessary fields: First name, last name, phone number, e-mail address, address line #1, city, postal code and country.", 'wc-biz-courier-logistics');
