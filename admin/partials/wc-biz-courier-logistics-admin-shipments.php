@@ -155,7 +155,7 @@ function biz_send_shipment(int $order_id): bool
 				"Weight" => $total_dimensions['weight'], // kg int
 				"Prod" => explode(":", $shipment_products[0])[0],
 				"Pieces" => explode(":", $shipment_products[0])[1],
-				"Multi_Prod" => implode("#", $shipment_products),
+				"Multi_Prod" => implode("#", array_shift($shipment_products)),
 				"Cash_On_Delivery" => ($order->get_payment_method() == 'cod') ? number_format($order->get_total(), 2) : '',
 				"Checques_On_Delivery" => "", // Unsupported.
 				"Comments" => $comments,
