@@ -177,7 +177,7 @@ function biz_send_shipment(int $order_id): bool
 			];
 
 			// Make SOAP call as per shipment creation API v2.2.
-			// $response = $client->__soapCall('newShipment', $data);
+			$response = $client->__soapCall('newShipment', $data);
 			
 			switch ($response->Error_Code) {
 				case 0:
