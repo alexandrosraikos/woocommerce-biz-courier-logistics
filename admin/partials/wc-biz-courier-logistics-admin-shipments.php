@@ -37,7 +37,8 @@ function biz_send_shipment(int $order_id): bool
 	 */
 	function truncate_field(string $string, int $length = 40)
 	{
-		return utf8_encode((strlen($string) > $length) ? substr($string, 0, $length - 1) . "." : $string);
+		$string = (mb_detect_encoding($string) == 'UTF-8') ? $string : utf8_encode($string);
+		return (mb_strlen($string, 'UTF-8') > $length) ? mb_substr($string, 0, $length - 1) . "." : $string;
 	}
 
 	// Get Biz credentials and shipping settings.
@@ -135,8 +136,7 @@ function biz_send_shipment(int $order_id): bool
 				empty($phone)
 			) throw new UnexpectedValueException('recipient-info-error');
 
-			// Make SOAP call as per shipment creation API v2.2.
-			$response = $client->__soapCall('newShipment', [
+			$data = [
 				'Code' => $biz_settings['account_number'],
 				'CRM' => $biz_settings['warehouse_crm'],
 				'User' => $biz_settings['username'],
@@ -155,10 +155,10 @@ function biz_send_shipment(int $order_id): bool
 				"Weight" => $total_dimensions['weight'], // kg int
 				"Prod" => explode(":", $shipment_products[0])[0],
 				"Pieces" => explode(":", $shipment_products[0])[1],
-				"Multi_Prod" => implode("#", array_shift($shipment_products)),
+				"Multi_Prod" => (count($shipment_products) > 1) ? implode("#", array_shift($shipment_products)) : '',
 				"Cash_On_Delivery" => ($order->get_payment_method() == 'cod') ? number_format($order->get_total(), 2) : '',
 				"Checques_On_Delivery" => "", // Unsupported.
-				"Comments" => $comments,
+				"Comments" => truncate_field($comments, 1000),
 				"Charge" => "3", // Unsupported, always 3.
 				"Type" => "2", // Unsupported, always assume parcel.
 				"Relative1" => "", // Unsupported.
@@ -174,7 +174,10 @@ function biz_send_shipment(int $order_id): bool
 				"Relabel" => "", // Unsupported.
 				"Con_Call" => "0", // Unsupported.
 				"Ins_Amount" => "" // Unsupported.
-			]);
+			];
+
+			// Make SOAP call as per shipment creation API v2.2.
+			// $response = $client->__soapCall('newShipment', $data);
 			
 			switch ($response->Error_Code) {
 				case 0:
