@@ -136,6 +136,8 @@ function biz_send_shipment(int $order_id): bool
 				empty($phone)
 			) throw new UnexpectedValueException('recipient-info-error');
 
+			$first_product = array_shift($shipment_products);
+
 			$data = [
 				'Code' => $biz_settings['account_number'],
 				'CRM' => $biz_settings['warehouse_crm'],
@@ -153,9 +155,9 @@ function biz_send_shipment(int $order_id): bool
 				"Width" => $total_dimensions['width'], // cm int
 				"Height" => $total_dimensions['height'], // cm int
 				"Weight" => $total_dimensions['weight'], // kg int
-				"Prod" => explode(":", $shipment_products[0])[0],
-				"Pieces" => explode(":", $shipment_products[0])[1],
-				"Multi_Prod" => (count($shipment_products) > 1) ? implode("#", array_shift($shipment_products)) : '',
+				"Prod" => explode(":", $first_product)[0],
+				"Pieces" => explode(":", $first_product)[1],
+				"Multi_Prod" => (count($shipment_products) > 0) ? implode("#", $shipment_products) : '',
 				"Cash_On_Delivery" => ($order->get_payment_method() == 'cod') ? number_format($order->get_total(), 2) : '',
 				"Checques_On_Delivery" => "", // Unsupported.
 				"Comments" => truncate_field($comments, 1000),
