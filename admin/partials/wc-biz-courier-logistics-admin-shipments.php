@@ -83,38 +83,41 @@ function biz_send_shipment(int $order_id): bool
 				}
 
 				// Check for active Biz synchronization status.
-				if (get_post_meta($product->get_id(), '_biz_stock_sync_status', true) == 'synced') {
+				if (get_post_meta($product->get_id(), '_biz_stock_sync', true) == 'yes') {
+					if (get_post_meta($product->get_id(), '_biz_stock_sync_status', true) == 'synced') {
 
-					// Merge order item codes and quantities.
-					$shipment_products[] = $product->get_sku() . ":" . $item->get_quantity();
+						// Merge order item codes and quantities.
+						$shipment_products[] = $product->get_sku() . ":" . $item->get_quantity();
 
-					// Calculate total dimensions.
-					if (
-						!empty($product->get_width()) &&
-						!empty($product->get_height()) &&
-						!empty($product->get_length()) &&
-						!empty($product->get_weight())
-					) {
-						$total_dimensions['width'] += $product->get_width() * $item->get_quantity();
-						$total_dimensions['height'] += $product->get_height() * $item->get_quantity();
-						$total_dimensions['length'] += $product->get_length() * $item->get_quantity();
-						$total_dimensions['weight'] += $product->get_weight() * $item->get_quantity();
-					} else throw new UnexpectedValueException('metrics-error');
-				} else throw new UnexpectedValueException('sku-error');
+						// Calculate total dimensions.
+						if (
+							!empty($product->get_width()) &&
+							!empty($product->get_height()) &&
+							!empty($product->get_length()) &&
+							!empty($product->get_weight())
+						) {
+							$total_dimensions['width'] += $product->get_width() * $item->get_quantity();
+							$total_dimensions['height'] += $product->get_height() * $item->get_quantity();
+							$total_dimensions['length'] += $product->get_length() * $item->get_quantity();
+							$total_dimensions['weight'] += $product->get_weight() * $item->get_quantity();
+						} else throw new UnexpectedValueException('metrics-error');
+					} else throw new UnexpectedValueException('sku-error');
+				}
 			}
-			
+
 			// Backwards compatible for older PHP versions.
 			if (!function_exists('str_contains')) {
-				function str_contains($haystack, $needle) {
+				function str_contains($haystack, $needle)
+				{
 					return $needle !== '' && mb_strpos($haystack, $needle) !== false;
 				}
 			}
-			
+
 			// Get phone number, order comments and special delivery methods.
 			$phone = $order->get_shipping_phone();
 			if (empty($phone) && !empty($biz_shipping_settings['biz_billing_phone_usage'])) {
 				$phone = ($biz_shipping_settings['biz_billing_phone_usage'] == 'yes') ? $order->get_billing_phone() : '';
-			}	
+			}
 			$comments = "";
 			if (
 				str_contains($order->get_shipping_method(), "Σαββάτου") ||
@@ -180,7 +183,7 @@ function biz_send_shipment(int $order_id): bool
 
 			// Make SOAP call as per shipment creation API v2.2.
 			$response = $client->__soapCall('newShipment', $data);
-			
+
 			switch ($response->Error_Code) {
 				case 0:
 					if (!empty($response->Voucher)) {
@@ -213,7 +216,7 @@ function biz_send_shipment(int $order_id): bool
 				case 12:
 					throw new ErrorException('biz-package-data-error');
 				default:
-					throw new ErrorException('biz-unknown-error-code-'.$response->Error_Code);
+					throw new ErrorException('biz-unknown-error-code-' . $response->Error_Code);
 			}
 		} else throw new LogicException('voucher-exists-error');
 	} catch (SoapFault $fault) {

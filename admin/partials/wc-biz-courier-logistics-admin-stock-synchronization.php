@@ -143,7 +143,7 @@
 					$product_post_id = wc_get_product_id_by_sku($sku);
 
 					// Check for active stock syncing.
-					if (get_post_meta($product_post_id, '_biz_stock_sync', true)) {
+					if (get_post_meta($product_post_id, '_biz_stock_sync', true) == 'yes') {
 						$product_post = get_post($product_post_id);
 						$wc_product = wc_get_product($product_post->ID);
 
@@ -157,7 +157,7 @@
 						if ($wc_product->has_child()) {
 							foreach ($wc_product->get_children() as $child_id) {
 								$child_product = wc_get_product($child_id);
-								if (get_post_meta($child_product->get_id(), '_biz_stock_sync', true) && $child_product->get_sku() == $wc_product->get_sku()) {
+								if (get_post_meta($child_product->get_id(), '_biz_stock_sync', true) == 'yes' && $child_product->get_sku() == $wc_product->get_sku()) {
 
 									// Update remaining stock quantity.
 									wc_update_product_stock($child_product, ($retrieved_quantities[$sku] >= 0) ? $retrieved_quantities[$sku] : 0, 'set');
@@ -173,7 +173,7 @@
 					// Get the product using the SKU.
 					$product_post_id = wc_get_product_id_by_sku($sku);
 
-					if (get_post_meta($product_post_id, '_biz_stock_sync', true)) {
+					if (get_post_meta($product_post_id, '_biz_stock_sync', true) == 'yes') {
 						$product_post = get_post($product_post_id);
 						$wc_product = wc_get_product($product_post->ID);
 						// Update Biz synchronization post metadata.
