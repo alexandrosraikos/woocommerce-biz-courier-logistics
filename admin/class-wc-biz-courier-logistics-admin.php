@@ -85,8 +85,66 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	public function enqueue_scripts()
 	{
+		// Global script options.
 		wp_enqueue_script($this->WC_Biz_Courier_Logistics, plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin.js', array('jquery'), $this->version, false);
+		wp_localize_script($this->WC_Biz_Courier_Logistics, "GlobalProperties", array(
+			"ajaxEndpointURL" => admin_url('admin-ajax.php')
+		));
+
+		// Scripts for shipments.
+		wp_register_script('wc-biz-courier-logistics-new-shipment', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-new-shipment.js', array('jquery', $this->WC_Biz_Courier_Logistics));
 	}
+
+
+	// Polyfill for older PHP versions.
+	function str_contains($haystack, $needle)
+	{
+		return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+	}
+
+	/**
+	 * The generalized handler for AJAX calls.
+	 * 
+	 * @param string $action The action slug used in WordPress.
+	 * @param callable $completion The callback for completed data.
+	 * 
+	 * @return void The function simply echoes the response to the 
+	 */
+	static function ajax_handler($completion): void
+	{
+		if (!wp_verify_nonce($_POST['nonce'], $_POST['action'])) {
+			http_response_code(403);
+			die("Unverified request for action: " . $_POST['action']);
+		}
+
+		if (str_contains($_POST['action'], 'shipment')) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
+		} elseif (str_contains($_POST['action'], 'stock')) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock-synchronization.php';
+		}
+
+		// Send shipment using POST data and handle errors.
+		try {
+			$data = $completion(array_filter($_POST, function ($key) {
+				return ($key != 'action' && $key != 'nonce');
+			}, ARRAY_FILTER_USE_KEY));
+			http_response_code(200);
+			$data = json_encode($data);
+			if ($data == false) throw new ErrorException("There was an error while encoding the data to JSON.");
+			else die(json_encode($data));
+		} catch (RuntimeException $e) {
+			http_response_code(400);
+			die($e->getMessage());
+		} catch (ErrorException $e) {
+			http_response_code(500);
+			die($e->getMessage());
+		} catch (SoapFault $f) {
+			http_response_code(502);
+			error_log($f->getMessage());
+			die();
+		}
+	}
+
 
 	/**
 	 * Add plugin action links.
@@ -518,15 +576,7 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	function add_biz_cod_fee($cart)
 	{
-		if ( is_admin() && defined('DOING_AJAX')) return;
-
-		// Polyfill for older PHP versions.
-		if (!function_exists('str_contains')) {
-			function str_contains($haystack, $needle) {
-				return $needle !== '' && mb_strpos($haystack, $needle) !== false;
-			}
-		}
-
+		if (is_admin() && defined('DOING_AJAX')) return;
 		if (
 			WC()->session->get('chosen_payment_method') == 'cod'
 		) {
@@ -539,118 +589,56 @@ class WC_Biz_Courier_Logistics_Admin
 
 
 	/**
-	 * 	Order Status 
+	 * 	Order / Shipment Interactions
 	 * 	------------
 	 *  This section provides the necessary functionality for mapping, managing and displaying
 	 * 	WooCommerce orders and their status to Biz Courier Shipments.
-	 * 
+	 * 	
 	 */
 
 	/**
 	 * Handles shipment creation AJAX requests from authorized users.
+	 * NOTE: This is executed through WP's AJAX endpoint.
+	 * 
+	 * @param string $_POST['order_id'] The related order's ID.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
+	 * @version 1.4.0
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 */
-	function biz_send_shipment_handler()
+	function biz_shipment_send_handler()
 	{
-		// Verify WordPress generated nonce.
-		if (!wp_verify_nonce($_POST['nonce'], 'ajax_send_shipment_validation')) {
-			die(json_encode([
-				'error_code' => 'auth-error',
-				'error_description' => 'Unverified request to send shipment.'
-			]));
-		}
+		WC_Biz_Courier_Logistics_Admin::ajax_handler(function ($data) {
+			biz_send_shipment(intval($data['order_id']));
+		});
+	}
 
-		// Send shipment using POST data and handle errors.
-		try {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
-			if (biz_send_shipment(intval($_POST['order_id']))) die("OK");
-		} catch (UnexpectedValueException $e) {
-			$error_code = $e->getMessage();
-			switch ($error_code) {
-				case 'no-products-error':
-					$error_description = __("There are no products in this order.", 'wc-biz-courier-logistics');
-					break;
-				case 'stock-error':
-					$error_description = __("There isn't enough stock to ship some products.", 'wc-biz-courier-logistics');
-					break;
-				case 'metrics-error':
-					$error_description = __("Please make sure all products in the order have their weight & dimensions registered.", 'wc-biz-courier-logistics');
-					break;
-				case 'sku-error':
-					$error_description = __("Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability.", 'wc-biz-courier-logistics');
-					break;
-				case 'recipient-info-error':
-					$error_description = __("There was a problem with the recipient's information. Make sure you have filled in all the necessary fields: First name, last name, phone number, e-mail address, address line #1, city, postal code and country.", 'wc-biz-courier-logistics');
-					break;
-				default:
-					$error_description = __("An unknown error occured while processing order information.", 'wc-biz-courier-logistics');
+	/**
+	 * Handles manual voucher addition AJAX requests from authorized users.
+	 * NOTE: This is executed through WP's AJAX endpoint.
+	 * 
+	 * @param string $_POST['voucher'] The new shipment voucher.
+	 * @param string $_POST['order_id'] The related order's ID.
+	 *
+	 * @since 1.2.0
+	 * @version 1.4.0
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 */
+	function biz_shipment_add_voucher_handler(): void
+	{
+		WC_Biz_Courier_Logistics_Admin::ajax_handler(function ($data) {
+
+			// Validate voucher.
+			$status_report = biz_shipment_status($_POST['voucher']);
+			if (!empty($status_report)) {
+				if (!update_post_meta($data['order_id'], '_biz_voucher', $data['new_voucher'])) {
+					throw new ErrorException("The shipment voucher could not be saved to this order.");
+				}
+				biz_conclude_order_status($_POST['order_id'], true, $status_report);
 			}
-			die(json_encode([
-				'error_code' => $error_code,
-				'error_description' => $error_description
-			]));
-		} catch (LogicException $e) {
-			$error_code = $e->getMessage();
-			switch ($error_code) {
-				case "voucher-exists-error":
-					$error_description = __("A voucher already exists for this order.", 'wc-biz-courier-logistics');
-					break;
-				default:
-					$error_description = __("An unknown error occured after processing order information.", 'wc-biz-courier-logistics');
-			}
-			die(json_encode([
-				'error_code' => $error_code,
-				'error_description' => $error_description
-			]));
-		} catch (ErrorException $e) {
-			$error_code = $e->getMessage();
-			switch ($error_code) {
-				case 'biz-response-data-error':
-					$error_description = __("Response from Biz could not be read, please check your warehouse shipments from their official application.", 'wc-biz-courier-logistics');
-					break;
-				case 'biz-auth-error':
-					$error_description = __("There was an error with your Biz credentials.", 'wc-biz-courier-logistics');
-					break;
-				case 'biz-recipient-info-error':
-					$error_description = __("There was a problem registering recipient information with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics');
-					break;
-				case 'biz-area-code-error':
-				case 'biz-area-error':
-					$error_description = __("There was a problem processing the recipient's area. Please make sure it is correct.", 'wc-biz-courier-logistics');
-					break;
-				case 'biz-recipient-phone-error':
-					$error_description = __("There was a problem processing the recipient's phone number. Please make sure it is correct.", 'wc-biz-courier-logistics');
-					break;
-				case 'biz-product-ownership-error':
-				case 'biz-multiple-product-ownership-error':
-				case 'biz-product-field-error':
-					$error_description = __("There was an internal Biz error while processing the order's items.", 'wc-biz-courier-logistics');
-					break;
-				case 'biz-postal-code-error':
-					$error_description = __("There was a problem processing the order's postal code. Please make sure it is correct.", 'wc-biz-courier-logistics');
-					break;
-				case 'biz-package-data-error':
-					$error_description = __("There was a problem with your order's items while submitting their information to Biz.", 'wc-biz-courier-logistics');
-					break;
-				default:
-					$error_description = __("An unknown Biz error occured after submitting the shipment information.", 'wc-biz-courier-logistics');
-			}
-			die(json_encode([
-				'error_code' => $error_code,
-				'error_description' => $error_description
-			]));
-		} catch (SoapFault $f) {
-			die(json_encode([
-				'error_code' => 'connection-error',
-				'error_description' => __('There was a connection error while trying to contact Biz Courier. More information: ', 'wc-biz-courier-logistics') . $f->getMessage()
-			]));
-		} catch (\Exception $e) {
-			die(json_encode([
-				'error_code' => 'unknown-error',
-				'error_description' => 'There was an unknown error.'
-			]));
-		}
+		});
 	}
 
 	/**
@@ -658,113 +646,27 @@ class WC_Biz_Courier_Logistics_Admin
 	 *
 	 * @since    1.0.0
 	 */
-	function biz_modify_shipment_handler()
+	function biz_shipment_modification_request_handler()
 	{
-		// Verify WordPress generated nonce.
-		if (!wp_verify_nonce($_POST['nonce'], 'ajax_modify_shipment_validation')) {
-			die(json_encode([
-				'error_code' => 'auth-error',
-				'error_description' => 'Unverified request to modify shipment.'
-			]));
-		}
+		WC_Biz_Courier_Logistics_Admin::ajax_handler(function () {
 
-		// Attempt to send shipment using POST data.
-		try {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
-			if ($_POST['shipment_modification_message'] == 'cancel') {
-				if (biz_cancel_shipment(intval($_POST['order_id']))) die("OK");
-			} else {
-				if (biz_modify_shipment(intval($_POST['order_id']), $_POST['shipment_modification_message'], false)) die("OK");
-			}
-		} catch (UnexpectedValueException $e) {
-			$error_code = $e->getMessage();
-			switch ($error_code) {
-				case 'data-error':
-					$error_description = __("The voucher number couldn't be retrieved.", 'wc-biz-courier-logistics');
-					break;
-				default:
-					$error_description = __("An unknown error occured while processing shipment modification information.", 'wc-biz-courier-logistics');
-			}
-			die(json_encode([
-				'error_code' => $error_code,
-				'error_description' => $error_description
-			]));
-		} catch (ErrorException $e) {
-			die(json_encode([
-				'error_code' => $e->getMessage(),
-				'error_description' => __('An unknown Biz error occured while processing shipment modification information.', 'wc-biz-courier-logistics')
-			]));
-		} catch (SoapFault $f) {
-			die(json_encode([
-				'error_code' => 'connection-error',
-				'error_description' => __('There was a connection error while trying to contact Biz Courier. More information: ', 'wc-biz-courier-logistics') . $f->getMessage()
-			]));
-		}
+			// TODO @alexandrosraikos: Rebuild exceptions.
+			biz_modify_shipment(intval($_POST['order_id']), $_POST['shipment_modification_message']);
+		});
 	}
 
 	/**
-	 * Handles manual voucher addition AJAX requests from authorized users.
+	 * Handles shipment cancellation AJAX requests from authorized users.
 	 *
-	 * @since    1.2.0
+	 * @since    1.0.0
 	 */
-	function biz_add_shipment_voucher_handler()
+	function biz_shipment_cancellation_request_handler()
 	{
+		WC_Biz_Courier_Logistics_Admin::ajax_handler(function () {
 
-		// Verify WordPress generated nonce.
-		if (!wp_verify_nonce($_POST['nonce'], 'ajax_add_shipment_voucher_validation')) {
-			die(json_encode([
-				'error_code' => 'auth-error',
-				'error_description' => 'Unverified request to add shipment voucher.'
-			]));
-		}
-
-		try {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
-
-			// Validate voucher.
-			$status_report = biz_shipment_status($_POST['voucher']);
-			if (!empty($status_report)) {
-				update_post_meta($_POST['order_id'], '_biz_voucher', $_POST['voucher']);
-				if (biz_conclude_order_status($_POST['order_id'], true, $status_report)) die("OK");
-			}
-		} catch (ErrorException $e) {
-			die(json_encode([
-				'error_code' => $e->getMessage(),
-				'error_description' => __('This voucher was not found. Please provide a valid shipment voucher.', 'wc-biz-courier-logistics')
-			]));
-		} catch (SoapFault $f) {
-			die(json_encode([
-				'error_code' => 'connection-error',
-				'error_description' => __('There was a connection error while trying to contact Biz Courier. More information: ', 'wc-biz-courier-logistics') . $f->getMessage()
-			]));
-		}
-
-		die();
-	}
-
-	/**
-	 * Handles manual voucher deletion AJAX requests from authorized users.
-	 *
-	 * @since    1.2.0
-	 */
-	function biz_delete_shipment_voucher_handler()
-	{
-
-		// Verify WordPress generated nonce.
-		if (!wp_verify_nonce($_POST['nonce'], 'ajax_delete_shipment_voucher_validation')) {
-			die(json_encode([
-				'error_code' => 'auth-error',
-				'error_description' => 'Unverified request to delete the shipment voucher.'
-			]));
-		}
-
-		if (delete_post_meta($_POST['order_id'], '_biz_voucher')) die("OK");
-		else {
-			die(json_encode([
-				'error_code' => 'unknown-error',
-				'error_description' => 'The shipment voucher could not be deleted.'
-			]));
-		}
+			// TODO @alexandrosraikos: Rebuild exceptions.
+			biz_cancel_shipment(intval($_POST['order_id']));
+		});
 	}
 
 	/**
@@ -772,37 +674,44 @@ class WC_Biz_Courier_Logistics_Admin
 	 *
 	 * @since    1.2.0
 	 */
-	function biz_edit_shipment_voucher_handler()
+	function biz_shipment_edit_voucher_handler()
 	{
-
-		// Verify WordPress generated nonce.
-		if (!wp_verify_nonce($_POST['nonce'], 'ajax_edit_shipment_voucher_validation')) {
-			die(json_encode([
-				'error_code' => 'auth-error',
-				'error_description' => 'Unverified request to edit the shipment voucher.'
-			]));
-		}
-
-		try {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
+		WC_Biz_Courier_Logistics_Admin::ajax_handler(function ($data) {
 
 			// Validate voucher.
-			$report = biz_shipment_status($_POST['voucher']);
+			$status_report = biz_shipment_status($_POST['voucher']);
+			if (!empty($status_report)) {
+				if (!update_post_meta($data['order_id'], '_biz_voucher', $data['new_voucher'])) {
+					throw new ErrorException("The shipment voucher could not be saved to this order.");
+				}
+			}
+		});
+	}
 
-			// Update order information.
-			update_post_meta($_POST['order_id'], '_biz_voucher', $_POST['voucher']);
-			die("OK");
-		} catch (ErrorException $e) {
-			die(json_encode([
-				'error_code' => $e->getMessage(),
-				'error_description' => __('This voucher was not found. Please provide a valid shipment voucher.', 'wc-biz-courier-logistics')
-			]));
-		} catch (SoapFault $f) {
-			die(json_encode([
-				'error_code' => 'connection-error',
-				'error_description' => __('There was a connection error while trying to contact Biz Courier. More information: ', 'wc-biz-courier-logistics') . $f->getMessage()
-			]));
-		}
+	/**
+	 * Handles manual voucher deletion AJAX requests from authorized users.
+	 *
+	 * @since    1.2.0
+	 */
+	function biz_shipment_delete_voucher_handler()
+	{
+		WC_Biz_Courier_Logistics_Admin::ajax_handler(function () {
+			if (!delete_post_meta($_POST['order_id'], '_biz_voucher')) {
+				throw new ErrorException("The shipment voucher could not be deleted from this order.");
+			}
+		});
+	}
+
+	/**
+	 * Handles manual voucher deletion AJAX requests from authorized users.
+	 *
+	 * @since    1.2.0
+	 */
+	function biz_shipment_synchronize_order_handler()
+	{
+		WC_Biz_Courier_Logistics_Admin::ajax_handler(function () {
+			biz_conclude_order_status($_POST['order_id']);
+		});
 	}
 
 	/**
@@ -910,40 +819,6 @@ class WC_Biz_Courier_Logistics_Admin
 		}
 	}
 
-
-
-	/**
-	 * Handles manual voucher deletion AJAX requests from authorized users.
-	 *
-	 * @since    1.2.0
-	 */
-	function biz_synchronize_order_handler()
-	{
-
-		// Verify WordPress generated nonce.
-		if (!wp_verify_nonce($_POST['nonce'], 'ajax_synchronize_order_validation')) {
-			die(json_encode([
-				'error_code' => 'auth-error',
-				'error_description' => 'Unverified request to edit the shipment voucher.'
-			]));
-		}
-
-		try {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
-			if (biz_conclude_order_status($_POST['order_id'])) die("OK");
-		} catch (ErrorException $e) {
-			die(json_encode([
-				'error_code' => $e->getMessage(),
-				'error_description' => __('This voucher was not found. Please provide a valid shipment voucher.', 'wc-biz-courier-logistics')
-			]));
-		} catch (SoapFault $f) {
-			die(json_encode([
-				'error_code' => 'connection-error',
-				'error_description' => __('There was a connection error while trying to contact Biz Courier. More information: ', 'wc-biz-courier-logistics') . $f->getMessage()
-			]));
-		}
-	}
-
 	function add_biz_order_voucher_column($columns)
 	{
 		$columns['biz-voucher'] = __("Biz shipment voucher", 'wc-biz-courier-logistics');
@@ -986,36 +861,40 @@ class WC_Biz_Courier_Logistics_Admin
 		 */
 		function biz_shipment_meta_box($post)
 		{
-
-
+			/**
+			 * Prepare scripts for non-submitted orders.
+			 */
 			function prepare_scripts_new_shipment($order_id)
 			{
 				// Enqueue and localize send new shipment.
-				wp_enqueue_script('wc-biz-courier-logistics-new-shipment', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-new-shipment.js', array('jquery'));
-				wp_localize_script('wc-biz-courier-logistics-new-shipment', "ajax_prop", array(
-					"ajax_url" => admin_url('admin-ajax.php'),
-					"send_shipment_nonce" => wp_create_nonce('ajax_send_shipment_validation'),
-					"add_shipment_voucher_nonce" => wp_create_nonce('ajax_add_shipment_voucher_validation'),
-					"order_id" => $order_id,
-					"add_voucher_message" => __("Insert the shipment's voucher number from Biz Courier in the field below.", "wc-biz-courier-logistics")
+				wp_enqueue_script('wc-biz-courier-logistics-new-shipment');
+				wp_localize_script('wc-biz-courier-logistics-new-shipment', "ShipmentProperties", array(
+					"bizShipmentSendNonce" => wp_create_nonce('biz_shipment_send'),
+					"bizShipmentAddVoucherNonce" => wp_create_nonce('biz_shipment_add_voucher'),
+					"orderID" => $order_id,
+					"SEND_SHIPMENT_CONFIRMATION" => __("Are you sure you want to send this shipment?", "wc-biz-courier-logistics"),
+					"ADD_VOUCHER_MESSAGE" => __("Insert the shipment's voucher number from Biz Courier in the field below.", "wc-biz-courier-logistics")
 				));
 			}
 
+			/**
+			 * Prepare scripts for submitted orders.
+			 */
 			function prepare_scripts_existing_shipment($order_id)
 			{
 				// Enqueue and localize button scripts.
 				wp_enqueue_script('wc-biz-courier-logistics-existing-shipment', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-existing-shipment.js', array('jquery'));
-				wp_localize_script('wc-biz-courier-logistics-existing-shipment', "ajax_prop", array(
-					"ajax_url" => admin_url('admin-ajax.php'),
-					"modify_shipment_nonce" => wp_create_nonce('ajax_modify_shipment_validation'),
-					"synchronize_order_nonce" => wp_create_nonce('ajax_synchronize_order_validation'),
-					"edit_shipment_voucher_nonce" => wp_create_nonce('ajax_edit_shipment_voucher_validation'),
-					"delete_shipment_voucher_nonce" => wp_create_nonce('ajax_delete_shipment_voucher_validation'),
-					"order_id" => $order_id,
-					"cancellation_request_confirmation" => __("Are you sure you want to request the cancellation of this Biz shipment? If you want to send it again, you will receive a new tracking code.", "wc-biz-courier-logistics"),
-					"modification_message" => __("Please insert the message you want to send to Biz about the shipment.", "wc-biz-courier-logistics"),
-					"edit_voucher_message" => __("Insert the new shipment voucher number from Biz Courier in the field below.", "wc-biz-courier-logistics"),
-					"delete_confirmation" => __("Are you sure you want to delete the shipment voucher from this order?", "wc-biz-courier-logistics")
+				wp_localize_script('wc-biz-courier-logistics-existing-shipment', "ShipmentProperties", array(
+					"bizShipmentModificationRequestNonce" => wp_create_nonce('biz_shipment_modification_request'),
+					"bizShipmentCancellationRequestNonce" => wp_create_nonce('biz_shipment_cancellation_request'),
+					"bizShipmentEditVoucherNonce" => wp_create_nonce('biz_shipment_edit_voucher'),
+					"bizShipmentDeleteVoucherNonce" => wp_create_nonce('biz_shipment_delete_voucher'),
+					"bizShipmentSynchronizeOrderNonce" => wp_create_nonce('biz_shipment_synchronize_order'),
+					"orderID" => $order_id,
+					"CANCELLATION_REQUEST_CONFIRMATION" => __("Are you sure you want to request the cancellation of this Biz shipment? If you want to send it again, you will receive a new tracking code.", "wc-biz-courier-logistics"),
+					"MODIFICATION_REQUEST_PROMPT" => __("Please insert the message you want to send to Biz about the shipment.", "wc-biz-courier-logistics"),
+					"EDIT_VOUCHER_PROMPT" => __("Insert the new shipment voucher number from Biz Courier in the field below.", "wc-biz-courier-logistics"),
+					"DELETE_VOUCHER_CONFIRMATION" => __("Are you sure you want to delete the shipment voucher from this order?", "wc-biz-courier-logistics")
 				));
 			}
 

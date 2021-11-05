@@ -13,262 +13,379 @@
  * @subpackage WC_Biz_Courier_Logistics/admin/partials
  */
 
-/**
- * Creates a new shipment with Biz and saves the Biz generated voucher in the order's metadata.
- *
- * @since    1.0.0
- * @param	 int $order_id The ID of the WooCommerce order.
- * @uses	 __soapCall()
- * @uses	 wc_get_order()
- * @uses 	 wc_get_product()
- * @uses 	 get_post_meta()
- * @uses 	 get_option()
- * @uses 	 update_post_meta()
- * @uses 	 delete_post_meta()
- */
-function biz_send_shipment(int $order_id): bool
-{
+// Backwards compatible for older PHP versions.
+if (!function_exists('str_contains')) {
 	/**
-	 * Truncate text to the desired character limit.
-	 *
-	 * @since    1.0.0
-	 * @param string $string The text to be truncated.
-	 * @param int $length The maximum length.
+	 * Backwards compatibility of `str_contains` for PHP <8.
+	 * 
+	 * @since 1.3.2
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 */
-	function truncate_field(string $string, int $length = 40)
+	function str_contains($haystack, $needle)
 	{
-		$string = (mb_detect_encoding($string) == 'UTF-8') ? $string : utf8_encode($string);
-		return (mb_strlen($string, 'UTF-8') > $length) ? mb_substr($string, 0, $length - 1) . "." : $string;
+		return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+	}
+}
+
+function ensure_utf8(string $string): string {
+	return (mb_detect_encoding($string) == 'UTF-8') ? $string : utf8_encode($string);
+}
+
+/**
+ * Truncate text to the desired character limit.
+ *
+ * @param string $string The text to be truncated.
+ * @param int $length The maximum length.
+ * 
+ * @return	string The text truncated to the desired length (40 characters is default).
+ * 
+ * @since   1.0.0
+ * @version	1.4.0
+ */
+function truncate_field(string $string, int $length = 40)
+{
+	// Ensure UTF-8 encoding.
+	$string = ensure_utf8($string);
+
+	// Return the truncated string.
+	return (mb_strlen($string, 'UTF-8') > $length) ? mb_substr($string, 0, $length - 1) . "." : $string;
+}
+
+/**
+ * Make an authorized request to the Biz Courier API via SOAP.
+ * 
+ * @param string $wsdl_url The url to WSDL file.
+ * @param string $method The method to call within the WSDL.
+ * @param array $data The data to include in the request.
+ * @param bool $authorized Whether this request requires authorization.
+ * @param callable $completion The callback to complete the procedure.
+ * 
+ * @return ?Object If no `$completion` is defined.
+ * 
+ * @throws RuntimeException When there are no credentials registered.
+ * @throws SoapFault When there is a connection error.
+ * 
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.4.0
+ */
+function contactBizCourierAPI(string $wsdl_url, string $method, array $data, bool $authorized, ?callable $completion = NULL, ?callable $rejection = NULL): Object
+{
+	// For authorized requests.
+	if ($authorized) {
+
+		/** @var string[] $biz_settings The persistent Biz integration settings. */
+		$biz_settings = get_option('woocommerce_biz_integration_settings');
+
+		// Check for existing credentials.
+		if (
+			empty($biz_settings['account_number']) ||
+			empty($biz_settings['warehouse_crm']) ||
+			empty($biz_settings['username']) ||
+			empty($biz_settings['password'])
+		) {
+			throw new RuntimeException(__(`Please set up your Biz Courier & Logistics credentials before submitting a shipment.`, 'wc-biz-courier-logistics'));
+		}
+
+		// Append to data array.
+		$data['Code'] = $biz_settings['account_number'];
+		$data['CRM'] = $biz_settings['warehouse_crm'];
+		$data['User'] = $biz_settings['username'];
+		$data['Pass'] = $biz_settings['password'];
 	}
 
-	// Get Biz credentials and shipping settings.
-	$biz_settings = get_option('woocommerce_biz_integration_settings');
-	$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
+	/** @var SoapClient $client The SOAP client with exceptions enabled. */
+	$client = new SoapClient($wsdl_url, [
+		'trace' => 1,
+		'exceptions' =>	true,
+		'encoding' => 'UTF-8'
+	]);
 
-	// Get order object.
+	/** @var Object $response The API response. */
+	$response = $client->__soapCall($method, $data);
+
+	// Handle response.
+	if ($response->Error == 0) {
+		if ($completion != NULL) {
+			$completion($response);
+		} else return $response;
+	} else {
+		if ($rejection != NULL){
+			$rejection($response);
+		}
+		else throw new ErrorException($response->Error);
+	} 
+}
+
+/**
+ * Creates a new shipment with and saves the response voucher in the order's meta
+ * as `_biz_voucher`. For more information on this API call visit the official documentation here:
+ * https://www.bizcourier.eu/WebServices
+ *
+ * @param	int $order_id The ID of the WooCommerce order.
+ * 
+ * @throws	RuntimeException When data are invalid.
+ * @throws	ErrorException When there are API errors.
+ * @throws  SoapFault When there are connection errors.
+ * 
+ * @author	Alexandros Raikos <alexandros@araikos.gr>
+ * @since	1.0.0
+ * @version	1.4.0
+ */
+function biz_send_shipment(int $order_id): void
+{
+	// TODO @alexandrosraikos: Handle empty orders or unsupported orders (#36).
+	/**
+	 * Initialization
+	 * 
+	 * The following variables and conditions are critical
+	 * to the execution of the shipment.
+	 */
+
+	/** @var WC_Order $order The order. */
 	$order = wc_get_order($order_id);
 
-	try {
-		// Initialize client.
-		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl", [
-			'trace' => 1,
-			'exceptions' =>	true,
-			'encoding' => 'UTF-8'
-		]);
+	// Check for existing voucher.
+	if ((!empty(get_post_meta($order->get_id(), '_biz_voucher', true)))) {
+		throw new RuntimeException(__("A voucher already exists for this order.", 'wc-biz-courier-logistics'));
+	}
 
-		// Initialize Biz item format array in product_code:quantity format.
-		$shipment_products = [];
+	/** @var WC_Order_Item[] $items The order's items. */
+	$items = $order->get_items();
 
-		// Initialize total volume array.
-		$total_dimensions = [
-			'width' => 0,
-			'height' => 0,
-			'length' => 0,
-			'weight' => 0
-		];
+	// Check for no items.
+	if (empty($items)) throw new RuntimeException(__("There are no items in this order.", 'wc-biz-courier-logistics'));
 
-		// Get order items.
-		$items = $order->get_items();
-		if (empty($items)) throw new UnexpectedValueException('no-products-error');
+	/**
+	 * Prepare shipment items.
+	 * 
+	 * This section checks for product data
+	 * and calculates package dimensions.
+	 */
 
-		// Check for pre-existing voucher or non-processing state.
-		if ((empty(get_post_meta($order->get_id(), '_biz_voucher', true)) || $order->get_status() != 'processing')) {
-			// Handle each item included in the order.
-			foreach ($items as $item) {
+	/** @var string[] $shipment_products The order items array in product_code:quantity format. */
+	$shipment_products = [];
 
-				// Handle product and conditions.
-				$product = wc_get_product($item['product_id']);
-				if ($product->is_type('variable') && !empty($item['variation_id'])) {
-					$product = wc_get_product($item['variation_id']);
-				}
+	/** @var double[] $package_metrics The total calculated dimensions. */
+	$package_metrics = [
+		'width' => 0,
+		'height' => 0,
+		'length' => 0,
+		'weight' => 0
+	];
 
-				// Check for active Biz synchronization status.
-				if (get_post_meta($product->get_id(), '_biz_stock_sync', true) == 'yes') {
-					if (get_post_meta($product->get_id(), '_biz_stock_sync_status', true) == 'synced') {
+	// Handle each item included in the order.
+	foreach ($items as $item) {
 
-						// Merge order item codes and quantities.
-						$shipment_products[] = $product->get_sku() . ":" . $item->get_quantity();
+		/** @var WC_Product $product The order item's product data. */
+		$product = wc_get_product($item['product_id']);
 
-						// Calculate total dimensions.
-						if (
-							!empty($product->get_width()) &&
-							!empty($product->get_height()) &&
-							!empty($product->get_length()) &&
-							!empty($product->get_weight())
-						) {
-							$total_dimensions['width'] += $product->get_width() * $item->get_quantity();
-							$total_dimensions['height'] += $product->get_height() * $item->get_quantity();
-							$total_dimensions['length'] += $product->get_length() * $item->get_quantity();
-							$total_dimensions['weight'] += $product->get_weight() * $item->get_quantity();
-						} else throw new UnexpectedValueException('metrics-error');
-					} else throw new UnexpectedValueException('sku-error');
-				}
-			}
+		// Get exact variation used as the product the referred product is variable.
+		if ($product->is_type('variable') && !empty($item['variation_id'])) {
+			$product = wc_get_product($item['variation_id']);
+		}
 
-			// Backwards compatible for older PHP versions.
-			if (!function_exists('str_contains')) {
-				function str_contains($haystack, $needle)
-				{
-					return $needle !== '' && mb_strpos($haystack, $needle) !== false;
-				}
-			}
+		// Check for active Biz synchronization status.
+		if (get_post_meta($product->get_id(), '_biz_stock_sync', true) == 'yes') {
+			if (get_post_meta($product->get_id(), '_biz_stock_sync_status', true) == 'synced') {
 
-			// Get phone number, order comments and special delivery methods.
-			$phone = $order->get_shipping_phone();
-			if (empty($phone) && !empty($biz_shipping_settings['biz_billing_phone_usage'])) {
-				$phone = ($biz_shipping_settings['biz_billing_phone_usage'] == 'yes') ? $order->get_billing_phone() : '';
-			}
-			$comments = "";
-			if (
-				str_contains($order->get_shipping_method(), "Σαββάτου") ||
-				str_contains($order->get_shipping_method(), "Saturday")
-			) {
-				$comments .= "[SATURDAY DELIVERY] ";
-			}
-			$comments .= "Recipient comments:" . ($order->get_customer_note() ?? "none");
-			$morning_delivery = (str_contains($order->get_shipping_method(), "Πρωινή") || str_contains($order->get_shipping_method(), "Morning")) ? "yes" : "";
+				// Merge order item codes and quantities.
+				$shipment_products[] = $product->get_sku() . ":" . $item->get_quantity();
 
-			// Check for completeness.
-			if (
-				empty($order->get_shipping_first_name()) ||
-				empty($order->get_shipping_last_name()) ||
-				empty($order->get_shipping_address_1()) ||
-				empty($order->get_shipping_country()) ||
-				empty($order->get_shipping_city()) ||
-				empty($order->get_shipping_postcode()) ||
-				empty($phone)
-			) throw new UnexpectedValueException('recipient-info-error');
+				// Add volume and weight to total dimensions.
+				if (
+					!empty($product->get_width()) &&
+					!empty($product->get_height()) &&
+					!empty($product->get_length()) &&
+					!empty($product->get_weight())
+				) {
+					$package_metrics['width'] += $product->get_width() * $item->get_quantity();
+					$package_metrics['height'] += $product->get_height() * $item->get_quantity();
+					$package_metrics['length'] += $product->get_length() * $item->get_quantity();
+					$package_metrics['weight'] += $product->get_weight() * $item->get_quantity();
+				} else throw new RuntimeException(__("Please make sure all products in the order have their weight & dimensions registered.", 'wc-biz-courier-logistics'));
+			} else throw new RuntimeException(__("Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability.", 'wc-biz-courier-logistics'));
+		}
+	}
 
-			$first_product = array_shift($shipment_products);
+	// Check for supported items.
+	if (empty($shipment_products)) throw new RuntimeException(__("There are no Biz items to submit in this order.", 'wc-biz-courier-logistics'));
 
-			$data = [
-				'Code' => $biz_settings['account_number'],
-				'CRM' => $biz_settings['warehouse_crm'],
-				'User' => $biz_settings['username'],
-				'Pass' => $biz_settings['password'],
-				"R_Name" => truncate_field($order->get_shipping_first_name() . " " . $order->get_shipping_last_name()),
-				"R_Address" => truncate_field($order->get_shipping_address_1() . " " . $order->get_shipping_address_2()),
-				"R_Area_Code" => $order->get_shipping_country(),
-				"R_Area" => truncate_field($order->get_shipping_city()),
-				"R_PC" => $order->get_shipping_postcode(),
-				"R_Phone1" => $phone,
-				"R_Phone2" => "",
-				"R_Email" => truncate_field($order->get_billing_email(), 60),
-				"Length" => $total_dimensions['length'], // cm int
-				"Width" => $total_dimensions['width'], // cm int
-				"Height" => $total_dimensions['height'], // cm int
-				"Weight" => $total_dimensions['weight'], // kg int
-				"Prod" => explode(":", $first_product)[0],
-				"Pieces" => explode(":", $first_product)[1],
-				"Multi_Prod" => (count($shipment_products) > 0) ? implode("#", $shipment_products) : '',
-				"Cash_On_Delivery" => ($order->get_payment_method() == 'cod') ? number_format($order->get_total(), 2) : '',
-				"Checques_On_Delivery" => "", // Unsupported.
-				"Comments" => truncate_field($comments, 1000),
-				"Charge" => "3", // Unsupported, always 3.
-				"Type" => "2", // Unsupported, always assume parcel.
-				"Relative1" => "", // Unsupported.
-				"Relative2" => "", // Unsupported.
-				"Delivery_Time_To" => "", // Unsupported.
-				"SMS" => (($biz_shipping_settings['biz_sms_notifications'] ?? "no") == "yes") ? "1" : "0",
-				"Special_Treatment" => "", // Unsupported.
-				"Protocol" => "", // Unsupported.
-				"Morning_Delivery" => $morning_delivery,
-				"Buy_Amount" => "", // Unsupported.
-				"Pick_Up" => "", // Unsupported.
-				"Service_Type" => "", // Unsupported.
-				"Relabel" => "", // Unsupported.
-				"Con_Call" => "0", // Unsupported.
-				"Ins_Amount" => "" // Unsupported.
-			];
+	/** @var string $first_product The extracted first product from `$shipment_products`. */
+	$first_product = array_shift($shipment_products);
 
-			// Make SOAP call as per shipment creation API v2.2.
-			$response = $client->__soapCall('newShipment', $data);
+	/**
+	 * Prepare shipment options.
+	 * 
+	 * This section checks for enabled options
+	 * and prepares fields accordinf to the Biz API.
+	 */
 
+	/** @var string[] $biz_shipping_settings Any registered Biz Courier shipping method options. */
+	$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
+
+	/** @var string $phone The recipient's phone number. */
+	$phone = $order->get_shipping_phone();
+
+	// Switch to billing phone number if desired or unavailable.
+	if (empty($phone) && !empty($biz_shipping_settings['biz_billing_phone_usage'])) {
+		$phone = ($biz_shipping_settings['biz_billing_phone_usage'] == 'yes') ? $order->get_billing_phone() : '';
+	}
+
+	/** @var string $comments Any order comments. */
+	$comments = "";
+
+	// Include comment for Saturday delivery.
+	if (
+		str_contains($order->get_shipping_method(), "Σαββάτου") ||
+		str_contains($order->get_shipping_method(), "Saturday")
+	) {
+		$comments .= "[SATURDAY DELIVERY] ";
+	}
+
+	// Append any recipient comments.
+	$comments .= "Recipient comments: " . ($order->get_customer_note() ?? "none");
+
+	/** @var string $morning_delivery Include morrning delivery if present in the shipping method title. @see Biz_Shipping_Method::calculate_shipping */
+	$morning_delivery = (str_contains($order->get_shipping_method(), "Πρωινή") || str_contains($order->get_shipping_method(), "Morning")) ? "yes" : "";
+
+	// Check recipient information for completeness.
+	if (
+		empty($order->get_shipping_first_name()) ||
+		empty($order->get_shipping_last_name()) ||
+		empty($order->get_shipping_address_1()) ||
+		empty($order->get_shipping_country()) ||
+		empty($order->get_shipping_city()) ||
+		empty($order->get_shipping_postcode()) ||
+		empty($phone)
+	) throw new RuntimeException(__("There was a problem with the recipient's information. Make sure you have filled in all the necessary fields: First name, last name, phone number, e-mail address, address line #1, city, postal code and country.", 'wc-biz-courier-logistics'));
+
+
+	/** @var string[] $data The prepared shipment data. */
+	$data = [
+		"R_Name" => truncate_field($order->get_shipping_first_name() . " " . $order->get_shipping_last_name()),
+		"R_Address" => truncate_field($order->get_shipping_address_1() . " " . $order->get_shipping_address_2()),
+		"R_Area_Code" => $order->get_shipping_country(),
+		"R_Area" => truncate_field($order->get_shipping_city()),
+		"R_PC" => $order->get_shipping_postcode(),
+		"R_Phone1" => $phone,
+		"R_Phone2" => "",
+		"R_Email" => truncate_field($order->get_billing_email(), 60),
+		"Length" => $package_metrics['length'], // cm int
+		"Width" => $package_metrics['width'], // cm int
+		"Height" => $package_metrics['height'], // cm int
+		"Weight" => $package_metrics['weight'], // kg int
+		"Prod" => explode(":", $first_product)[0],
+		"Pieces" => explode(":", $first_product)[1],
+		"Multi_Prod" => (count($shipment_products) > 0) ? implode("#", $shipment_products) : '',
+		"Cash_On_Delivery" => ($order->get_payment_method() == 'cod') ? number_format($order->get_total(), 2) : '',
+		"Checques_On_Delivery" => "", // Unsupported.
+		"Comments" => truncate_field($comments, 1000),
+		"Charge" => "3", // Unsupported, always 3.
+		"Type" => "2", // Unsupported, always assume parcel.
+		"Relative1" => "", // Unsupported.
+		"Relative2" => "", // Unsupported.
+		"Delivery_Time_To" => "", // Unsupported.
+		"SMS" => (($biz_shipping_settings['biz_sms_notifications'] ?? "no") == "yes") ? "1" : "0",
+		"Special_Treatment" => "", // Unsupported.
+		"Protocol" => "", // Unsupported.
+		"Morning_Delivery" => $morning_delivery,
+		"Buy_Amount" => "", // Unsupported.
+		"Pick_Up" => "", // Unsupported.
+		"Service_Type" => "", // Unsupported.
+		"Relabel" => "", // Unsupported.
+		"Con_Call" => "0", // Unsupported.
+		"Ins_Amount" => "" // Unsupported.
+	];
+
+	// Perform the request.
+	contactBizCourierAPI(
+		"https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl",
+		"newShipment",
+		$data,
+		true,
+		function ($response) use ($order) {
+			// Handle response error codes.
 			switch ($response->Error_Code) {
 				case 0:
 					if (!empty($response->Voucher)) {
-						// Update order information.
+		
+						// Update order meta.
 						delete_post_meta($order->get_id(), '_biz_failure_delivery_note');
 						update_post_meta($order->get_id(), '_biz_voucher', $response->Voucher);
+		
+						// Switch order status to `processing`.
 						$order->update_status('processing', __('The shipment was successfully registered to Biz Courier.', 'wc-biz-courier-logistics'));
-						return true;
-					} else throw new ErrorException('biz-response-data-error');
+					} else throw new ErrorException(__("Response from Biz could not be read, please check your warehouse shipments from the official application.", 'wc-biz-courier-logistics'));
 				case 1:
-					throw new ErrorException('biz-auth-error');
+					throw new ErrorException(__("There was an error with your Biz credentials.", 'wc-biz-courier-logistics'));
 				case 2:
 				case 3:
 				case 10:
-					throw new ErrorException('biz-recipient-info-error');
+					throw new ErrorException(__("There was a problem registering recipient information with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
 				case 4:
-					throw new ErrorException('biz-area-code-error');
+					throw new ErrorException(__("There was a problem registering the recipient's area code with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
 				case 5:
-					throw new ErrorException('biz-area-error');
+					throw new ErrorException(__("There was a problem registering the recipient's area with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
 				case 6:
-					throw new ErrorException('biz-recipient-phone-error');
+					throw new ErrorException(__("There was a problem registering the recipient's phone number with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
 				case 7:
-					throw new ErrorException('biz-product-ownership-error');
+					throw new ErrorException(__("The item does not belong to this Biz account. Please check the order.", 'wc-biz-courier-logistics'));
 				case 8:
-					throw new ErrorException('biz-multiple-product-ownership-error');
+					throw new ErrorException(__("Some products do not belong to this Biz account. Please check the order's items.", 'wc-biz-courier-logistics'));
 				case 9:
-					throw new ErrorException('biz-product-field-error');
+					throw new ErrorException(__("The shipment's products were incorrectly registered.", 'wc-biz-courier-logistics'));
+				case 10:
+					throw new ErrorException(__("There was a problem registering the recipient's postal code with Biz. Please fill in all required recipient information entries.", 'wc-biz-courier-logistics'));
 				case 11:
-					throw new ErrorException('biz-postal-code-error');
+					throw new ErrorException(__("There was a problem registering the recipient's postal code with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
 				case 12:
-					throw new ErrorException('biz-package-data-error');
+					throw new ErrorException(__("A shipment used for relabeling cannot be used.", 'wc-biz-courier-logistics'));
 				default:
-					throw new ErrorException('biz-unknown-error-code-' . $response->Error_Code);
+					throw new ErrorException(__("An unknown Biz error occured after submitting the shipment information.", 'wc-biz-courier-logistics'));
 			}
-		} else throw new LogicException('voucher-exists-error');
-	} catch (SoapFault $fault) {
-		throw $fault;
-	}
+		}
+	);
+
 }
 
 /**
  * Modify a shipment with Biz.
  *
- * @since    1.0.0
  * @param	 int $order_id The ID of the WooCommerce order.
+ * @param string $message? The modification message to include.
+ * 
  * @uses 	get_option()
  * @uses	get_post_meta()
  * @uses	update_status()
+ * 
+ * @throws ErrorException When there is an invalid response from the Biz Courier API.
+ * @throws SoapFault When there are connection issues.
+ * 
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since    1.0.0
  */
-function biz_modify_shipment(int $order_id, string $message = ""): bool
+function biz_modify_shipment(int $order_id, string $message): void
 {
-	// Get saved order voucher.
+	/** @var WC_Order $order The order. */
 	$order = wc_get_order($order_id);
+
+	/** @var string $voucher The order's shipment voucher. */
 	$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
-	if ($voucher == false) throw new UnexpectedValueException('data-error');
+	if ($voucher == false) throw new RuntimeException(__("The voucher couldn't be retrieved.", 'wc-biz-courier-logistics'));
 
-	try {
-		// Initialize client.
-		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/bizmod.php?wsdl", [
-			'trace' => 1,
-			'exceptions' =>	true,
-			'encoding' => 'UTF-8',
-		]);
-
-		// Get Biz settings.
-		$biz_settings = get_option('woocommerce_biz_integration_settings');
-
-		// Make SOAP call.
-		$response = $client->__soapCall('modifyShipment', [
-			'Code' => $biz_settings['account_number'],
-			'CRM' => $biz_settings['warehouse_crm'],
-			'User' => $biz_settings['username'],
-			'Pass' => $biz_settings['password'],
+	// Perform the request.
+	contactBizCourierAPI(
+		"https://www.bizcourier.eu/pegasus_cloud_app/service_01/bizmod.php?wsdl",
+		"modifyShipment",
+		[
 			'voucher' => $voucher,
-			'modification' => utf8_encode($message)
-		]);
-
-		// Handle response.
-		if ($response->Error == 0) {
+			'modification' =>  ensure_utf8($message)
+		],
+		true,
+		function ($response) use ($order, $message) {
 			$order->add_order_note(__("Message sent to Biz: ", "wc-biz-courier-logistics") . $message . __(" (modification id: ", "wc-biz-courier-logistics") . $response->ModCode . ")");
-			return true;
-		} else throw new ErrorException($response->Error);
-	} catch (SoapFault $fault) {
-		throw $fault;
-	}
+		}
+	);
 }
 
 /**
@@ -280,149 +397,135 @@ function biz_modify_shipment(int $order_id, string $message = ""): bool
  * @uses	get_post_meta()
  * @uses	update_status()
  */
-function biz_cancel_shipment($order_id): bool
+function biz_cancel_shipment($order_id): void
 {
-	// Get saved order voucher.
+	/** @var WC_Order $order The order. */
 	$order = wc_get_order($order_id);
+
+	/** @var string $voucher The order's shipment voucher. */
 	$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
-	if ($voucher == false) throw new UnexpectedValueException('data-error');
+	if ($voucher == false) throw new RuntimeException(__("The voucher couldn't be retrieved.", 'wc-biz-courier-logistics'));
 
-	try {
-		// Initialize client.
-		$client = new SoapClient("http://www.bizcourier.eu/pegasus_cloud_app/service_01/loc_app/biz_add_act.php?wsdl", [
-			'trace' => 1,
-			'exceptions' =>	true,
-			'encoding' => 'UTF-8',
-		]);
-
-		// Get Biz settings.
-		$biz_settings = get_option('woocommerce_biz_integration_settings');
-
-		// Prepare request data.
-		$modification_data = [
-			'code' => $biz_settings['account_number'],
-			'crm' => $biz_settings['warehouse_crm'],
-			'user' => $biz_settings['username'],
-			'pass' => $biz_settings['password'],
+	// Perform the request.
+	contactBizCourierAPI(
+		"http://www.bizcourier.eu/pegasus_cloud_app/service_01/loc_app/biz_add_act.php?wsdl",
+		"actionShipment",
+		[
 			'voucher' => $voucher,
 			'actcode' => 'CANRE',
 			'notes' => ''
-		];
-
-		// Make SOAP call.
-		$response = $client->__soapCall('actionShipment', $modification_data);
-		// Handle error codes from response.
-		if ($response->Error == 0) {
+		],
+		true,
+		function ($response) use ($order, $voucher) {
 			$order->update_status('cancelled', sprintf(__("The Biz shipment with tracking code %s was cancelled. The cancellation code is: %s."), $voucher, $response->ActId), true);
-		} elseif ($response->Error == 1) {
-			$order->update_status('cancelled', sprintf(__("The Biz shipment with tracking code %s was cancelled."), $voucher, $response->ActId), true);
-		} else throw new ErrorException($response->Error);
-		return true;
-	} catch (SoapFault $fault) {
-		throw $fault;
-	}
+		},
+		function ($error) use ($order, $voucher) {
+			$order->update_status('cancelled', sprintf(__("The Biz shipment with tracking code %s was cancelled."), $voucher, $error->ActId), true);
+		}
+	);
 }
-
 
 
 /**
  * Get the status history of a Biz Courier shipment using the stored voucher number.
  *
+ * @param string $voucher The voucher code associated with the Biz shipment.
+ *
+ * @uses __soapCall()
+ * 
+ * @return array An array of the complete status history.
+ * 
+ * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since    1.0.0
- * @uses 	 __soapCall()
- * @param 	 string $voucher The voucher code associated with the Biz shipment.
  */
 function biz_shipment_status($voucher): array
 {
-	// Get all available shipment statuses.
-	try {
-		// Initialize client.
-		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/TrackEvntSrv.php?wsdl", [
-			'trace' => 1,
-			'exceptions' =>	true,
-			'encoding' => 'UTF-8',
-		]);
-		$biz_settings = get_option('woocommerce_biz_integration_settings');
+	/** @var Object $biz_status_list The official list of status levels. */
+	$biz_status_list = contactBizCourierAPI(
+		"https://www.bizcourier.eu/pegasus_cloud_app/service_01/TrackEvntSrv.php?wsdl",
+		"TrackEvntSrv",
+		[],
+		true
+	);
 
-		// Make SOAP call.
-		$biz_status_list = $client->__soapCall('TrackEvntSrv', [
-			'Code' => $biz_settings['account_number'],
-			'CRM' => $biz_settings['warehouse_crm'],
-			'User' => $biz_settings['username'],
-			'Pass' => $biz_settings['password'],
-		]);
+	/** @var array $status_levels All available status levels. */
+	$status_levels = [];
 
-		$status_levels = [];
-		foreach ($biz_status_list as $biz_status) {
-			$status_levels[$biz_status->Status_Code] = [
-				'level' => $biz_status->Level,
-				'description' => $biz_status->Comments
-			];
-		}
-		$status_levels['NONE'] = [
-			'level' => 'Pending',
-			'description' => __("Delivery status update", 'wc-biz-courier-logistics')
+	// Populate status levels from the call.
+	foreach ($biz_status_list as $biz_status) {
+		$status_levels[$biz_status->Status_Code] = [
+			'level' => $biz_status->Level,
+			'description' => $biz_status->Comments
 		];
+	}
 
-		// Get specific order status history from Biz.
-		$client = new SoapClient("https://www.bizcourier.eu/pegasus_cloud_app/service_01/full_history.php?wsdl", [
-			'encoding' => 'UTF-8',
-		]);
-		$response = $client->__soapCall("full_status", ["Voucher" => $voucher]);
+	// Insert custom `'NONE'` status level.
+	$status_levels['NONE'] = [
+		'level' => 'Pending',
+		'description' => __("Delivery status update", 'wc-biz-courier-logistics')
+	];
 
-		// Check for invalid voucher.
-		if (empty($response)) throw new ErrorException("voucher-error");
 
-		$complete_statuses = [];
-		foreach ($response as $status) {
+	/** @var Object $biz_status_list The shipment's status history. */
+	$biz_status_history = contactBizCourierAPI(
+		"https://www.bizcourier.eu/pegasus_cloud_app/service_01/full_history.php?wsdl",
+		"full_status",
+		[
+			'Voucher' => $voucher
+		],
+		true
+	);
 
-			// Create grouped index.
-			$i = $status->Status_Date . '-' . $status->Status_Time . '-' . $status->Status_Code;
-			$status_code = $status->Status_Code;
-			if (empty($status_code)) $status_code = 'NONE';
+	/** @var array $biz_full_status_history The shipment's complete status history. */
+	$biz_full_status_history = [];
+	foreach ($biz_status_history as $status) {
 
-			// Reach conclusion on Final levels.
-			if ($status_levels[$status_code]['level'] == 'Final') {
-				if (
-					$status_code == 'ΠΡΔ' ||
-					$status_code == 'COD' ||
-					$status_code == 'OK'
-				) $conclusion = 'completed';
-				elseif ($status_code == 'AKY') $conclusion = 'cancelled';
-				else $conclusion = 'failed';
-			}
+		/** @var string $i The array key which joins three properties. */
+		$i = $status->Status_Date . '-' . $status->Status_Time . '-' . $status->Status_Code;
 
-			// Add basic status information.
-			if (!isset($complete_statuses[$i])) {
-				$complete_statuses[$i] = array(
-					'code' => $status_code,
-					'level' => $status_levels[$status_code]['level'] ?? '',
-					'level-description' => $status_levels[$status_code]['description'],
-					'conclusion' => $conclusion ?? '',
-					'description' => (get_locale() == 'el') ? $status->Status_Description : $status->Status_Description_En,
-					'comments' => $status->Status_Comments,
-					'date' => $status->Status_Date,
-					'time' => $status->Status_Time,
-					'actions' => array(),
-					'last_mile_tracking_number' => $status->Part_Tracking_Num ?? ''
-				);
-			}
+		/** @var string $status_code The status code of each level. */
+		$status_code = $status->Status_Code;
+		if (empty($status_code)) $status_code = 'NONE';
 
-			// Append status actions.
-			if (!empty($status->Action_Description)) {
-				array_push($complete_statuses[$i]['actions'], [
-					'description' => (get_locale() == 'el') ? $status->Action_Description : $status->Action_Description_En,
-					'time' => $status->Action_Date,
-					'date' => $status->Action_Time,
-				]);
-			}
+		// Reach conclusion on Final levels.
+		if ($status_levels[$status_code]['level'] == 'Final') {
+			if (
+				$status_code == 'ΠΡΔ' ||
+				$status_code == 'COD' ||
+				$status_code == 'OK'
+			) $conclusion = 'completed';
+			elseif ($status_code == 'AKY') $conclusion = 'cancelled';
+			else $conclusion = 'failed';
 		}
 
-		// Return full status list.
-		return $complete_statuses;
-	} catch (SoapFault $fault) {
-		throw $fault;
+		// Add basic status information.
+		if (!isset($biz_full_status_history[$i])) {
+			$biz_full_status_history[$i] = array(
+				'code' => $status_code,
+				'level' => $status_levels[$status_code]['level'] ?? '',
+				'level-description' => $status_levels[$status_code]['description'],
+				'conclusion' => $conclusion ?? '',
+				'description' => (get_locale() == 'el') ? $status->Status_Description : $status->Status_Description_En,
+				'comments' => $status->Status_Comments,
+				'date' => $status->Status_Date,
+				'time' => $status->Status_Time,
+				'actions' => array(),
+				'last_mile_tracking_number' => $status->Part_Tracking_Num ?? ''
+			);
+		}
+
+		// Append status actions.
+		if (!empty($status->Action_Description)) {
+			array_push($biz_full_status_history[$i]['actions'], [
+				'description' => (get_locale() == 'el') ? $status->Action_Description : $status->Action_Description_En,
+				'time' => $status->Action_Date,
+				'date' => $status->Action_Time,
+			]);
+		}
 	}
+
+	// Return full status list.
+	return $biz_full_status_history;
 }
 
 

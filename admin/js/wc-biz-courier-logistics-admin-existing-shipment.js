@@ -1,194 +1,158 @@
+/**
+ * @file Provides functions for existing shipment data.
+ *
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.0.0
+ */
+
 (function ($) {
   "use strict";
+  /**
+   * Generic
+   *
+   * This section includes generic functionality
+   * related to assigning new shipments.
+   *
+   */
 
-  function showError(error) {
-    $("#wc-biz-courier-logistics-metabox").prepend(
-      '<li class="biz-error">' + error.error_description + "</li>"
+  /**
+   * Request shipment modification using a message prompt.
+   *
+   * @param {Event} e The click event.
+   *
+   * @since 1.4.0
+   */
+  function requestShipmentModification(e) {
+    e.preventDefault();
+
+    const message = prompt(ShipmentProperties.MODIFICATION_REQUEST_PROMPT);
+    if (message != null && message != "") {
+      makeWPRequest(
+        "#biz-modify-shipment",
+        "biz_shipment_modification_request",
+        ShipmentProperties.bizShipmentModificationRequestNonce,
+        {
+          order_id: ShipmentProperties.orderID,
+          shipment_modification_message: message,
+        },
+        () => window.location.reload()
+      );
+    }
+  }
+
+  /**
+   * Request shipment cancellation using a confirmation prompt.
+   *
+   * @param {Event} e The click event.
+   *
+   * @since 1.4.0
+   */
+  function requestShipmentCancellation(e) {
+    e.preventDefault();
+
+    if (confirm(ShipmentProperties.CANCELLATION_REQUEST_CONFIRMATION)) {
+      makeWPRequest(
+        "#biz-cancel-shipment",
+        "biz_shipment_cancellation_request",
+        ShipmentProperties.bizShipmentCancellationRequestNonce,
+        {
+          order_id: ShipmentProperties.orderID,
+        },
+        () => window.location.reload()
+      );
+    }
+  }
+
+  /**
+   * Edit the shipment's voucher using a browser prompt.
+   *
+   * @param {Event} e The click event.
+   *
+   * @since 1.4.0
+   */
+  function editShipmentVoucher(e) {
+    e.preventDefault();
+
+    const editedVoucher = prompt(ShipmentProperties.EDIT_VOUCHER_PROMPT);
+    if (editedVoucher != null && editedVoucher != "") {
+      makeWPRequest(
+        "#biz-edit-shipment-voucher",
+        "biz_shipment_edit_voucher",
+        ShipmentProperties.bizShipmentEditVoucherNonce,
+        {
+          order_id: ShipmentProperties.orderID,
+          voucher: editedVoucher,
+        },
+        () => window.location.reload()
+      );
+    }
+  }
+
+  /**
+   * Delete the shipment's voucher using a confirmation prompt.
+   *
+   * @param {Event} e The click event.
+   *
+   * @since 1.4.0
+   */
+  function deleteShipmentVoucher(e) {
+    e.preventDefault();
+
+    if (confirm(ShipmentProperties.DELETE_VOUCHER_CONFIRMATION)) {
+      makeWPRequest(
+        "#biz-delete-shipment-voucher",
+        "biz_shipment_delete_voucher",
+        ShipmentProperties.bizShipmentDeleteVoucherNonce,
+        {
+          order_id: ShipmentProperties.orderID,
+        },
+        () => window.location.reload()
+      );
+    }
+  }
+
+  /**
+   * Manually synchronize order status based on shipment status.
+   *
+   * @param {Event} e The click event.
+   *
+   * @since 1.4.0
+   */
+  function synchronizeOrderStatus(e) {
+    e.preventDefault();
+
+    makeWPRequest(
+      "#biz-synchronize-order",
+      "biz_shipment_synchronize_order",
+      ShipmentProperties.bizShipmentSynchronizeOrderNonce,
+      {
+        order_id: ShipmentProperties.orderID,
+      },
+      () => window.location.reload()
     );
   }
 
   // Ensure prepared document.
   $(document).ready(function () {
+    /**
+     *
+     * Generic interface actions & event listeners.
+     *
+     */
+
     // Capture click event for modification.
-    $("#biz-modify-shipment").click(function (event) {
-      // Prevent default reload.
-      event.preventDefault();
-
-      var message = prompt(ajax_prop.modification_message);
-      if (message != null && message != "") {
-        // Disable button.
-        $("#biz-modify-shipment").prop("disabled", true);
-        $("#biz-modify-shipment").addClass("biz-loading");
-
-        // Perform AJAX request.
-        $.ajax({
-          url: ajax_prop.ajax_url,
-          type: "post",
-          data: {
-            action: "biz_modify_shipment",
-            nonce: ajax_prop.modify_shipment_nonce,
-            order_id: ajax_prop.order_id,
-            shipment_modification_message: message,
-          },
-          // Handle response.
-          complete: function (response) {
-            if (response.responseText === "OK") {
-              window.location.reload();
-            } else {
-              try {
-                showError(JSON.parse(response.responseText));
-              } catch {
-                showError(response.responseText);
-              }
-            }
-          },
-          dataType: "json",
-        });
-      }
-    });
+    $("#biz-modify-shipment").click(requestShipmentModification);
 
     // Capture click event for cancellation.
-    $("#biz-cancel-shipment").click(function (event) {
-      // Prevent default reload.
-      event.preventDefault();
-
-      if (confirm(ajax_prop.cancellation_request_confirmation)) {
-        // Disable button.
-        $("#biz-cancel-shipment").prop("disabled", true);
-        $("#biz-cancel-shipment").addClass("biz-loading");
-
-        // Perform AJAX request.
-        $.ajax({
-          url: ajax_prop.ajax_url,
-          type: "post",
-          data: {
-            action: "biz_modify_shipment",
-            nonce: ajax_prop.modify_shipment_nonce,
-            order_id: ajax_prop.order_id,
-            shipment_modification_message: "cancel",
-          },
-          // Handle response.
-          complete: function (response) {
-            if (response.responseText === "OK") {
-              window.location.reload();
-            } else {
-              showError(JSON.parse(response.responseText));
-            }
-          },
-          dataType: "json",
-        });
-      } else {
-        // Re-enable button.
-        $("#biz-cancel-shipment").prop("disabled", false);
-        $("#biz-cancel-shipment").removeClass("biz-loading");
-      }
-    });
+    $("#biz-cancel-shipment").click(requestShipmentCancellation);
 
     // Capture click event for voucher editing.
-    $("#biz-edit-shipment-voucher").click(function (event) {
-      // Prevent default reload.
-      event.preventDefault();
-
-      // Disable button.
-      $("#biz-edit-shipment-voucher").prop("disabled", true);
-      $("#biz-edit-shipment-voucher").addClass("biz-loading");
-
-      var newVoucher = prompt(ajax_prop.edit_voucher_message);
-      if (newVoucher != null) {
-        // Perform AJAX request.
-        $.ajax({
-          url: ajax_prop.ajax_url,
-          type: "post",
-          data: {
-            action: "biz_edit_shipment_voucher",
-            nonce: ajax_prop.edit_shipment_voucher_nonce,
-            order_id: ajax_prop.order_id,
-            voucher: newVoucher,
-          },
-          // Handle response.
-          complete: function (response) {
-            if (response.responseText === "OK") {
-              window.location.reload();
-            } else {
-              showError(JSON.parse(response.responseText));
-
-              // Re-enable button.
-              $("#biz-edit-shipment-voucher").prop("disabled", false);
-              $("#biz-edit-shipment-voucher").removeClass("biz-loading");
-            }
-          },
-          dataType: "json",
-        });
-      } else {
-        // Re-enable button.
-        $("#biz-edit-shipment-voucher").prop("disabled", false);
-        $("#biz-edit-shipment-voucher").removeClass("biz-loading");
-      }
-    });
+    $("#biz-edit-shipment-voucher").click(editShipmentVoucher);
 
     // Capture click event for voucher deletion.
-    $("#biz-delete-shipment-voucher").click(function (event) {
-      // Prevent default reload.
-      event.preventDefault();
-
-      if (confirm(ajax_prop.delete_confirmation)) {
-        // Disable button.
-        $("#biz-delete-shipment-voucher").prop("disabled", true);
-        $("#biz-delete-shipment-voucher").addClass("biz-loading");
-
-        // Perform AJAX request.
-        $.ajax({
-          url: ajax_prop.ajax_url,
-          type: "post",
-          data: {
-            action: "biz_delete_shipment_voucher",
-            nonce: ajax_prop.delete_shipment_voucher_nonce,
-            order_id: ajax_prop.order_id,
-          },
-          // Handle response.
-          complete: function (response) {
-            if (response.responseText === "OK") {
-              window.location.reload();
-            } else {
-              showError(JSON.parse(response.responseText));
-
-              // Re-enable button.
-              $("#biz-delete-shipment-voucher").prop("disabled", false);
-              $("#biz-delete-shipment-voucher").removeClass("biz-loading");
-            }
-          },
-          dataType: "json",
-        });
-      }
-    });
+    $("#biz-delete-shipment-voucher").click(deleteShipmentVoucher);
 
     // Capture click event for order synchronization.
-    $("#biz-synchronize-order").click(function (event) {
-      // Prevent default reload.
-      event.preventDefault();
-      // Disable button.
-      $("#biz-synchronize-order").prop("disabled", true);
-      $("#biz-synchronize-order").addClass("biz-loading");
-
-      // Perform AJAX request.
-      $.ajax({
-        url: ajax_prop.ajax_url,
-        type: "post",
-        data: {
-          action: "biz_synchronize_order",
-          nonce: ajax_prop.synchronize_order_nonce,
-          order_id: ajax_prop.order_id,
-        },
-        // Handle response.
-        complete: function (response) {
-          if (response.responseText === "OK") {
-            window.location.reload();
-          } else {
-            showError(JSON.parse(response.responseText));
-          }
-        },
-        dataType: "json",
-      });
-    });
+    $("#biz-synchronize-order").click(synchronizeOrderStatus);
   });
 })(jQuery);

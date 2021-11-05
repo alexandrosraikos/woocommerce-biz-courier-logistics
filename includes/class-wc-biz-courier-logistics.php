@@ -193,12 +193,13 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_shipment_meta_box');
 		$this->loader->add_filter('manage_edit-shop_order_columns', $plugin_admin, 'add_biz_order_voucher_column');
 		$this->loader->add_action('manage_shop_order_posts_custom_column', $plugin_admin, 'biz_order_voucher_column', 10, 2);
-		$this->loader->add_action('wp_ajax_biz_send_shipment', $plugin_admin, 'biz_send_shipment_handler');
-		$this->loader->add_action('wp_ajax_biz_modify_shipment', $plugin_admin, 'biz_modify_shipment_handler');
-		$this->loader->add_action('wp_ajax_biz_add_shipment_voucher', $plugin_admin, 'biz_add_shipment_voucher_handler');
-		$this->loader->add_action('wp_ajax_biz_edit_shipment_voucher', $plugin_admin, 'biz_edit_shipment_voucher_handler');
-		$this->loader->add_action('wp_ajax_biz_delete_shipment_voucher', $plugin_admin, 'biz_delete_shipment_voucher_handler');
-		$this->loader->add_action('wp_ajax_biz_synchronize_order', $plugin_admin, 'biz_synchronize_order_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_send', $plugin_admin, 'biz_shipment_send_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_modification_request', $plugin_admin, 'biz_shipment_modification_request_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_cancellation_request', $plugin_admin, 'biz_shipment_cancellation_request_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_add_voucher', $plugin_admin, 'biz_shipment_add_voucher_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_edit_voucher', $plugin_admin, 'biz_shipment_edit_voucher_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_delete_voucher', $plugin_admin, 'biz_shipment_delete_voucher_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_synchronize_order', $plugin_admin, 'biz_shipment_synchronize_order_handler');
 		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'biz_order_changed_handler',10, 3);
 
 
