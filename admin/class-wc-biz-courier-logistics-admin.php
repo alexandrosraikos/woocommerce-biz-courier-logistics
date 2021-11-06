@@ -95,12 +95,7 @@ class WC_Biz_Courier_Logistics_Admin
 		wp_register_script('wc-biz-courier-logistics-new-shipment', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-new-shipment.js', array('jquery', $this->WC_Biz_Courier_Logistics));
 	}
 
-
-	// Polyfill for older PHP versions.
-	function str_contains($haystack, $needle)
-	{
-		return $needle !== '' && mb_strpos($haystack, $needle) !== false;
-	}
+	// TODO @alexandrosraikos: Create 'automated_handler' for error handling non-AJAX hooks.
 
 	/**
 	 * The generalized handler for AJAX calls.
@@ -120,7 +115,7 @@ class WC_Biz_Courier_Logistics_Admin
 		if (str_contains($_POST['action'], 'shipment')) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
 		} elseif (str_contains($_POST['action'], 'stock')) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock-synchronization.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock.php';
 		}
 
 		// Send shipment using POST data and handle errors.
@@ -397,40 +392,28 @@ class WC_Biz_Courier_Logistics_Admin
 	 * @uses 	 wp_verify_nonce()
 	 * @uses 	 WC_Biz_Courier_Logistics_Admin::biz_stock_sync()
 	 */
-	function biz_stock_sync_handler()
+	function biz_stock_synchronization_handler()
 	{
 		// TODO @alexandrosraikos: Display stock level synchronization errors. (#31 - https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/issues/31)
 
-		// Verify the WordPress generated nonce.
-		if (!wp_verify_nonce($_POST['nonce'], 'ajax_stock_sync_validation')) {
-			die("Unverified request to synchronise stock.");
-		}
+		WC_Biz_Courier_Logistics_Admin::ajax_handler(function () {
 
-		// Get SKUs from all products.
-		$products = wc_get_products(array(
-			'limit' => -1,
-		));
-		$all_skus = [];
-		if (!empty($products)) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock-synchronization.php';
-			foreach ($products as $product) {
-				$all_skus = array_merge($all_skus, get_all_related_skus($product));
+			/** @var WC_Product[] $products An array of all products. */
+			$products = wc_get_products(array(
+				'limit' => -1,
+			));
+
+			/** @var string[] $all_skus An array of all SKUs. */
+			$all_skus = [];
+			if (!empty($products)) {
+				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock.php';
+				foreach ($products as $product) {
+					$all_skus = array_merge($all_skus, get_all_related_skus($product));
+				}
 			}
-		}
-
-		// Attempt stock synchronization using all SKUs.
-		try {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock-synchronization.php';
 
 			biz_stock_sync($all_skus);
-		} catch (SoapFault $e) {
-			die($e->getMessage());
-		} catch (Exception $e) {
-			die($e->getMessage());
-		}
-
-		// Return success.
-		die();
+		});
 	}
 
 	/**
@@ -453,9 +436,8 @@ class WC_Biz_Courier_Logistics_Admin
 
 		// Enqeue & localize synchronization button script.
 		wp_enqueue_script('wc-biz-courier-logistics-stock-sync', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-stock-sync.js', array('jquery'));
-		wp_localize_script('wc-biz-courier-logistics-stock-sync', "ajax_prop", array(
-			"ajax_url" => admin_url('admin-ajax.php'),
-			"nonce" => wp_create_nonce('ajax_stock_sync_validation'),
+		wp_localize_script('wc-biz-courier-logistics-stock-sync', "StockProperties", array(
+			"bizStockSynchronizationNonce" => wp_create_nonce('biz_stock_synchronization_validation'),
 		));
 
 		// Insert button HTML.

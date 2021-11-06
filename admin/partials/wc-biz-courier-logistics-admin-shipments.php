@@ -27,95 +27,6 @@ if (!function_exists('str_contains')) {
 	}
 }
 
-function ensure_utf8(string $string): string {
-	return (mb_detect_encoding($string) == 'UTF-8') ? $string : utf8_encode($string);
-}
-
-/**
- * Truncate text to the desired character limit.
- *
- * @param string $string The text to be truncated.
- * @param int $length The maximum length.
- * 
- * @return	string The text truncated to the desired length (40 characters is default).
- * 
- * @since   1.0.0
- * @version	1.4.0
- */
-function truncate_field(string $string, int $length = 40)
-{
-	// Ensure UTF-8 encoding.
-	$string = ensure_utf8($string);
-
-	// Return the truncated string.
-	return (mb_strlen($string, 'UTF-8') > $length) ? mb_substr($string, 0, $length - 1) . "." : $string;
-}
-
-/**
- * Make an authorized request to the Biz Courier API via SOAP.
- * 
- * @param string $wsdl_url The url to WSDL file.
- * @param string $method The method to call within the WSDL.
- * @param array $data The data to include in the request.
- * @param bool $authorized Whether this request requires authorization.
- * @param callable $completion The callback to complete the procedure.
- * 
- * @return ?Object If no `$completion` is defined.
- * 
- * @throws RuntimeException When there are no credentials registered.
- * @throws SoapFault When there is a connection error.
- * 
- * @author Alexandros Raikos <alexandros@araikos.gr>
- * @since 1.4.0
- */
-function contactBizCourierAPI(string $wsdl_url, string $method, array $data, bool $authorized, ?callable $completion = NULL, ?callable $rejection = NULL): Object
-{
-	// For authorized requests.
-	if ($authorized) {
-
-		/** @var string[] $biz_settings The persistent Biz integration settings. */
-		$biz_settings = get_option('woocommerce_biz_integration_settings');
-
-		// Check for existing credentials.
-		if (
-			empty($biz_settings['account_number']) ||
-			empty($biz_settings['warehouse_crm']) ||
-			empty($biz_settings['username']) ||
-			empty($biz_settings['password'])
-		) {
-			throw new RuntimeException(__(`Please set up your Biz Courier & Logistics credentials before submitting a shipment.`, 'wc-biz-courier-logistics'));
-		}
-
-		// Append to data array.
-		$data['Code'] = $biz_settings['account_number'];
-		$data['CRM'] = $biz_settings['warehouse_crm'];
-		$data['User'] = $biz_settings['username'];
-		$data['Pass'] = $biz_settings['password'];
-	}
-
-	/** @var SoapClient $client The SOAP client with exceptions enabled. */
-	$client = new SoapClient($wsdl_url, [
-		'trace' => 1,
-		'exceptions' =>	true,
-		'encoding' => 'UTF-8'
-	]);
-
-	/** @var Object $response The API response. */
-	$response = $client->__soapCall($method, $data);
-
-	// Handle response.
-	if ($response->Error == 0) {
-		if ($completion != NULL) {
-			$completion($response);
-		} else return $response;
-	} else {
-		if ($rejection != NULL){
-			$rejection($response);
-		}
-		else throw new ErrorException($response->Error);
-	} 
-}
-
 /**
  * Creates a new shipment with and saves the response voucher in the order's meta
  * as `_biz_voucher`. For more information on this API call visit the official documentation here:
@@ -262,14 +173,14 @@ function biz_send_shipment(int $order_id): void
 
 	/** @var string[] $data The prepared shipment data. */
 	$data = [
-		"R_Name" => truncate_field($order->get_shipping_first_name() . " " . $order->get_shipping_last_name()),
-		"R_Address" => truncate_field($order->get_shipping_address_1() . " " . $order->get_shipping_address_2()),
+		"R_Name" => WC_Biz_Courier_Logistics::truncate_field($order->get_shipping_first_name() . " " . $order->get_shipping_last_name()),
+		"R_Address" => WC_Biz_Courier_Logistics::truncate_field($order->get_shipping_address_1() . " " . $order->get_shipping_address_2()),
 		"R_Area_Code" => $order->get_shipping_country(),
-		"R_Area" => truncate_field($order->get_shipping_city()),
+		"R_Area" => WC_Biz_Courier_Logistics::truncate_field($order->get_shipping_city()),
 		"R_PC" => $order->get_shipping_postcode(),
 		"R_Phone1" => $phone,
 		"R_Phone2" => "",
-		"R_Email" => truncate_field($order->get_billing_email(), 60),
+		"R_Email" => WC_Biz_Courier_Logistics::truncate_field($order->get_billing_email(), 60),
 		"Length" => $package_metrics['length'], // cm int
 		"Width" => $package_metrics['width'], // cm int
 		"Height" => $package_metrics['height'], // cm int
@@ -279,7 +190,7 @@ function biz_send_shipment(int $order_id): void
 		"Multi_Prod" => (count($shipment_products) > 0) ? implode("#", $shipment_products) : '',
 		"Cash_On_Delivery" => ($order->get_payment_method() == 'cod') ? number_format($order->get_total(), 2) : '',
 		"Checques_On_Delivery" => "", // Unsupported.
-		"Comments" => truncate_field($comments, 1000),
+		"Comments" => WC_Biz_Courier_Logistics::truncate_field($comments, 1000),
 		"Charge" => "3", // Unsupported, always 3.
 		"Type" => "2", // Unsupported, always assume parcel.
 		"Relative1" => "", // Unsupported.
@@ -298,7 +209,7 @@ function biz_send_shipment(int $order_id): void
 	];
 
 	// Perform the request.
-	contactBizCourierAPI(
+	WC_Biz_Courier_Logistics::contactBizCourierAPI(
 		"https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl",
 		"newShipment",
 		$data,
@@ -374,12 +285,12 @@ function biz_modify_shipment(int $order_id, string $message): void
 	if ($voucher == false) throw new RuntimeException(__("The voucher couldn't be retrieved.", 'wc-biz-courier-logistics'));
 
 	// Perform the request.
-	contactBizCourierAPI(
+	WC_Biz_Courier_Logistics::contactBizCourierAPI(
 		"https://www.bizcourier.eu/pegasus_cloud_app/service_01/bizmod.php?wsdl",
 		"modifyShipment",
 		[
 			'voucher' => $voucher,
-			'modification' =>  ensure_utf8($message)
+			'modification' =>  WC_Biz_Courier_Logistics::ensure_utf8($message)
 		],
 		true,
 		function ($response) use ($order, $message) {
@@ -407,7 +318,7 @@ function biz_cancel_shipment($order_id): void
 	if ($voucher == false) throw new RuntimeException(__("The voucher couldn't be retrieved.", 'wc-biz-courier-logistics'));
 
 	// Perform the request.
-	contactBizCourierAPI(
+	WC_Biz_Courier_Logistics::contactBizCourierAPI(
 		"http://www.bizcourier.eu/pegasus_cloud_app/service_01/loc_app/biz_add_act.php?wsdl",
 		"actionShipment",
 		[
@@ -441,7 +352,7 @@ function biz_cancel_shipment($order_id): void
 function biz_shipment_status($voucher): array
 {
 	/** @var Object $biz_status_list The official list of status levels. */
-	$biz_status_list = contactBizCourierAPI(
+	$biz_status_list = WC_Biz_Courier_Logistics::contactBizCourierAPI(
 		"https://www.bizcourier.eu/pegasus_cloud_app/service_01/TrackEvntSrv.php?wsdl",
 		"TrackEvntSrv",
 		[],
@@ -467,7 +378,7 @@ function biz_shipment_status($voucher): array
 
 
 	/** @var Object $biz_status_list The shipment's status history. */
-	$biz_status_history = contactBizCourierAPI(
+	$biz_status_history = WC_Biz_Courier_Logistics::contactBizCourierAPI(
 		"https://www.bizcourier.eu/pegasus_cloud_app/service_01/full_history.php?wsdl",
 		"full_status",
 		[

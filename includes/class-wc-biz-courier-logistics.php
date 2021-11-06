@@ -172,7 +172,7 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'biz_save_product_inventory_options',10,1);
 		$this->loader->add_action('woocommerce_variation_options', $plugin_admin, 'biz_variation_inventory_options',10,3);
 		$this->loader->add_action('woocommerce_save_product_variation', $plugin_admin, 'biz_save_variation_inventory_options',10,2);
-		$this->loader->add_action('wp_ajax_biz_stock_sync', $plugin_admin, 'biz_stock_sync_handler');
+		$this->loader->add_action('wp_ajax_biz_stock_synchronization', $plugin_admin, 'biz_stock_synchronization_handler');
 		$this->loader->add_action('manage_posts_extra_tablenav', $plugin_admin, 'add_biz_stock_sync_all_button', 20, 1);
 		$this->loader->add_filter('manage_edit-product_columns', $plugin_admin, 'add_biz_stock_sync_indicator_column');
 		$this->loader->add_action('manage_product_posts_custom_column', $plugin_admin, 'biz_stock_sync_indicator_column', 10, 2);
@@ -281,4 +281,106 @@ class WC_Biz_Courier_Logistics
 	{
 		return $this->version;
 	}
+
+	/**
+	 * Make an authorized request to the Biz Courier API via SOAP.
+	 * 
+	 * @param string $wsdl_url The url to WSDL file.
+	 * @param string $method The method to call within the WSDL.
+	 * @param array $data The data to include in the request.
+	 * @param bool $authorized Whether this request requires authorization.
+	 * @param callable $completion The callback to complete the procedure.
+	 * 
+	 * @return ?Object If no `$completion` is defined.
+	 * 
+	 * @throws RuntimeException When there are no credentials registered.
+	 * @throws SoapFault When there is a connection error.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	public static function contactBizCourierAPI(string $wsdl_url, string $method, array $data, bool $authorized, ?callable $completion = NULL, ?callable $rejection = NULL): Object
+	{
+		// For authorized requests.
+		if ($authorized) {
+
+			/** @var string[] $biz_settings The persistent Biz integration settings. */
+			$biz_settings = get_option('woocommerce_biz_integration_settings');
+
+			// Check for existing credentials.
+			if (
+				empty($biz_settings['account_number']) ||
+				empty($biz_settings['warehouse_crm']) ||
+				empty($biz_settings['username']) ||
+				empty($biz_settings['password'])
+			) {
+				throw new RuntimeException(__(`Please set up your Biz Courier & Logistics credentials before submitting a shipment.`, 'wc-biz-courier-logistics'));
+			}
+
+			// Append to data array.
+			$data['Code'] = $biz_settings['account_number'];
+			$data['CRM'] = $biz_settings['warehouse_crm'];
+			$data['User'] = $biz_settings['username'];
+			$data['Pass'] = $biz_settings['password'];
+		}
+
+		/** @var SoapClient $client The SOAP client with exceptions enabled. */
+		$client = new SoapClient($wsdl_url, [
+			'trace' => 1,
+			'exceptions' =>	true,
+			'encoding' => 'UTF-8'
+		]);
+
+		/** @var Object $response The API response. */
+		$response = $client->__soapCall($method, $data);
+
+		// Handle response.
+		if ($response->Error == 0) {
+			if ($completion != NULL) {
+				$completion($response);
+			} else return $response;
+		} else {
+			if ($rejection != NULL) {
+				$rejection($response);
+			} else throw new ErrorException($response->Error);
+		}
+	}
+
+	/**
+	 * Ensure the string is in UTF-8 format.
+	 * 
+	 * @param string $string The string.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.3.2
+	 */
+	public static function ensure_utf8(string $string): string {
+		return (mb_detect_encoding($string) == 'UTF-8') ? $string : utf8_encode($string);
+	}
+
+	/**
+	 * Truncate text to the desired character limit.
+	 *
+	 * @param string $string The text to be truncated.
+	 * @param int $length The maximum length.
+	 * 
+	 * @return	string The text truncated to the desired length (40 characters is default).
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since   1.0.0
+	 * @version	1.4.0
+	 */
+	public static function truncate_field(string $string, int $length = 40)
+	{
+		// Ensure UTF-8 encoding.
+		$string = WC_Biz_Courier_Logistics::ensure_utf8($string);
+
+		// Return the truncated string.
+		return (mb_strlen($string, 'UTF-8') > $length) ? mb_substr($string, 0, $length - 1) . "." : $string;
+	}
+
 }
+
+
+
+
