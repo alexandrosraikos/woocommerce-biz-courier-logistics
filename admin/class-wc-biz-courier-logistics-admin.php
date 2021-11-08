@@ -54,6 +54,12 @@ class WC_Biz_Courier_Logistics_Admin
 		$this->version = $version;
 	}
 
+	/**
+	 * 	Generic
+	 * 	------------
+	 *  This section provides all the generic plugin functionality.
+	 */
+
 
 	/**
 	 * Notify the administrator of disabled PHP SOAP extension.
@@ -64,7 +70,7 @@ class WC_Biz_Courier_Logistics_Admin
 	{
 		if (!extension_loaded('soap')) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-			biz_soap_extension_error_html();
+			notice_display_html(__("You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator.", "wc-biz-courier-logistics"));
 		}
 	}
 
@@ -91,11 +97,90 @@ class WC_Biz_Courier_Logistics_Admin
 			"ajaxEndpointURL" => admin_url('admin-ajax.php')
 		));
 
+		// Scripts for stock.
+		wp_register_script('wc-biz-courier-logistics-stock-sync', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-stock-sync.js', array('jquery'));
+
 		// Scripts for shipments.
 		wp_register_script('wc-biz-courier-logistics-new-shipment', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-new-shipment.js', array('jquery', $this->WC_Biz_Courier_Logistics));
+		wp_register_script('wc-biz-courier-logistics-existing-shipment', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-existing-shipment.js', array('jquery'));
 	}
 
-	// TODO @alexandrosraikos: Create 'automated_handler' for error handling non-AJAX hooks.
+
+	/**
+	 * Add plugin action links.
+	 *
+	 * Add a link to the settings page on the plugins.php page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array  $links List of existing plugin action links.
+	 * @return array         List of modified plugin action links.
+	 */
+	function biz_plugin_action_links($actions)
+	{
+		return array_merge(array(
+			'<a href="' . esc_url(admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')) . '">' . __('Settings', 'wc-biz-courier-logistics') . '</a>'
+		), $actions);
+	}
+
+	/**
+	 * Add plugin action links.
+	 *
+	 * Add a link to the settings page on the plugins.php page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array  $links List of existing plugin row meta links.
+	 * @return array         List of modified plugin row meta links.
+	 */
+	function biz_plugin_row_meta($links, $file)
+	{
+		if (strpos($file, 'wc-biz-courier-logistics.php')) {
+			$links[] = '<a href="https://github.com/sponsors/alexandrosraikos" target="blank">' . __('Donate via GitHub Sponsors', 'wc-biz-courier-logistics') . '</a>';
+			$links[] = '<a href="https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/blob/main/README.md" target="blank">' . __('Documentation', 'wc-biz-courier-logistics') . '</a>';
+			$links[] = '<a href="https://www.araikos.gr/en/contact/" target="blank">' . __('Support', 'wc-biz-courier-logistics') . '</a>';
+		}
+		return $links;
+	}
+
+	/**
+	 * Trigger an asynchronous internal error display on load
+	 * 
+	 * @usedby `init` WP hook.
+	 */
+	static function async_error_display()
+	{
+		/** @var string $internal_error The internal persistent error. */
+		$internal_error = get_option('biz_internal_error');
+		if (!empty($internal_error)) {
+			notice_display_html($internal_error);
+		}
+		// TODO @alexandrosraikos: Display automatically on current post type if the `_biz_internal_error` meta data is detected.
+	}
+
+	/**
+	 * An error registrar for asynchronous throwing functions.
+	 * 
+	 * @param callable $completion The action that needs to be done.
+	 * @param int? $post_id The ID of the relevant post (optional).
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	static function async_handler($completion, $post_id = null): void
+	{
+		try {
+			$completion();
+		} catch (\Exception $e) {
+			if (empty($post_id)) {
+				// Register an internal error specific to the post ID.
+				update_post_meta($post_id, '_biz_internal_error', $e->getMessage());
+			} else {
+				// Register a generic internal error.
+				update_option('biz_internal_error', $e->getMessage());
+			}
+		}
+	}
 
 	/**
 	 * The generalized handler for AJAX calls.
@@ -138,44 +223,6 @@ class WC_Biz_Courier_Logistics_Admin
 			error_log($f->getMessage());
 			die();
 		}
-	}
-
-
-	/**
-	 * Add plugin action links.
-	 *
-	 * Add a link to the settings page on the plugins.php page.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param  array  $links List of existing plugin action links.
-	 * @return array         List of modified plugin action links.
-	 */
-	function biz_plugin_action_links($actions)
-	{
-		return array_merge(array(
-			'<a href="' . esc_url(admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')) . '">' . __('Settings', 'wc-biz-courier-logistics') . '</a>'
-		), $actions);
-	}
-
-	/**
-	 * Add plugin action links.
-	 *
-	 * Add a link to the settings page on the plugins.php page.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param  array  $links List of existing plugin row meta links.
-	 * @return array         List of modified plugin row meta links.
-	 */
-	function biz_plugin_row_meta($links, $file)
-	{
-		if (strpos($file, 'wc-biz-courier-logistics.php')) {
-			$links[] = '<a href="https://github.com/sponsors/alexandrosraikos" target="blank">' . __('Donate via GitHub Sponsors', 'wc-biz-courier-logistics') . '</a>';
-			$links[] = '<a href="https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/blob/main/README.md" target="blank">' . __('Documentation', 'wc-biz-courier-logistics') . '</a>';
-			$links[] = '<a href="https://www.araikos.gr/en/contact/" target="blank">' . __('Support', 'wc-biz-courier-logistics') . '</a>';
-		}
-		return $links;
 	}
 
 
@@ -238,9 +285,9 @@ class WC_Biz_Courier_Logistics_Admin
 			$biz_settings = get_option('woocommerce_biz_integration_settings');
 			if (isset($_GET['biz_error'])) {
 				if ($_GET['biz_error'] == 'auth-error') {
-					biz_settings_notice_invalid_html();
+					notice_display_html(sprintf(__("Your Biz Courier credentials are invalid. Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.", "wc-biz-courier-logistics"), admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')));
 				} elseif ($_GET['biz_error'] == 'conn-error') {
-					biz_settings_notice_error_html();
+					notice_display_html(__("There was an error contacting Biz Courier, please try again later.", "wc-biz-courier-logistics"));
 				}
 			} elseif (
 				$biz_settings['account_number'] == null ||
@@ -248,7 +295,7 @@ class WC_Biz_Courier_Logistics_Admin
 				$biz_settings['username'] == null ||
 				$biz_settings['password'] == null
 			) {
-				biz_settings_notice_missing_html();
+				notice_display_html(sprintf(__("Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.", "wc-biz-courier-logistics"), admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')), 'warning');
 			}
 		}
 	}
@@ -435,7 +482,7 @@ class WC_Biz_Courier_Logistics_Admin
 		}
 
 		// Enqeue & localize synchronization button script.
-		wp_enqueue_script('wc-biz-courier-logistics-stock-sync', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-stock-sync.js', array('jquery'));
+		wp_enqueue_script('wc-biz-courier-logistics-stock-sync');
 		wp_localize_script('wc-biz-courier-logistics-stock-sync', "StockProperties", array(
 			"bizStockSynchronizationNonce" => wp_create_nonce('biz_stock_synchronization_validation'),
 		));
@@ -812,7 +859,7 @@ class WC_Biz_Courier_Logistics_Admin
 		switch ($column) {
 			case 'biz-voucher':
 				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-				biz_order_voucher_column_html(get_post_meta($post_id, '_biz_voucher', true));
+				order_column_voucher_html(get_post_meta($post_id, '_biz_voucher', true));
 				break;
 		}
 	}
@@ -865,7 +912,7 @@ class WC_Biz_Courier_Logistics_Admin
 			function prepare_scripts_existing_shipment($order_id)
 			{
 				// Enqueue and localize button scripts.
-				wp_enqueue_script('wc-biz-courier-logistics-existing-shipment', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-existing-shipment.js', array('jquery'));
+				wp_enqueue_script('wc-biz-courier-logistics-existing-shipment');
 				wp_localize_script('wc-biz-courier-logistics-existing-shipment', "ShipmentProperties", array(
 					"bizShipmentModificationRequestNonce" => wp_create_nonce('biz_shipment_modification_request'),
 					"bizShipmentCancellationRequestNonce" => wp_create_nonce('biz_shipment_cancellation_request'),
@@ -906,7 +953,7 @@ class WC_Biz_Courier_Logistics_Admin
 			if (!empty($potential_internal_error)) {
 				delete_post_meta($order->get_id(), '_biz_internal_error');
 			}
-			biz_shipment_status_tracking_metabox_html($order->get_status(), $voucher ?? null, $report ?? null, $potential_internal_error);
+			shipment_meta_box_html($order->get_status(), $voucher ?? null, $report ?? null, $potential_internal_error);
 		}
 
 		// Ensure the administrator is on the "Edit" screen and not "Add".

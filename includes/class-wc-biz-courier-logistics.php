@@ -69,6 +69,10 @@ class WC_Biz_Courier_Logistics
 	 */
 	public function __construct()
 	{
+		// TODO @alexandrosraikos: Generalize as much code as possible (#37).
+		// TODO @alexandrosraikos: Enforce correct documentation everywhere (#38).
+		// TODO @alexandrosraikos: Update all translations.
+
 		$this->version = '1.4.0';
 		$this->WC_Biz_Courier_Logistics = 'wc-biz-courier-logistics';
 
@@ -149,10 +153,10 @@ class WC_Biz_Courier_Logistics
 	 */
 	private function define_admin_hooks()
 	{
-
 		$plugin_admin = new WC_Biz_Courier_Logistics_Admin($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
 
 		$this->loader->add_action('init', $plugin_admin, 'biz_soap_extension_error');
+		$this->loader->add_action('init', $plugin_admin, 'async_error_display');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 		$this->loader->add_filter('plugin_action_links_wc-biz-courier-logistics/wc-biz-courier-logistics.php', $plugin_admin, 'biz_plugin_action_links');
@@ -299,7 +303,7 @@ class WC_Biz_Courier_Logistics
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.4.0
 	 */
-	public static function contactBizCourierAPI(string $wsdl_url, string $method, array $data, bool $authorized, ?callable $completion = NULL, ?callable $rejection = NULL): Object
+	public static function contactBizCourierAPI(string $wsdl_url, string $method, array $data, bool $authorized, ?callable $completion = NULL, ?callable $rejection = NULL): array
 	{
 		// For authorized requests.
 		if ($authorized) {
@@ -337,8 +341,8 @@ class WC_Biz_Courier_Logistics
 		// Handle response.
 		if ($response->Error == 0) {
 			if ($completion != NULL) {
-				$completion($response);
-			} else return $response;
+				$completion(json_decode(json_encode($response),true));
+			} else return json_decode(json_encode($response),true);
 		} else {
 			if ($rejection != NULL) {
 				$rejection($response);
