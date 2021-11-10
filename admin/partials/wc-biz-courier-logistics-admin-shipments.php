@@ -13,20 +13,6 @@
  * @subpackage WC_Biz_Courier_Logistics/admin/partials
  */
 
-// Backwards compatible for older PHP versions.
-if (!function_exists('str_contains')) {
-	/**
-	 * Backwards compatibility of `str_contains` for PHP <8.
-	 * 
-	 * @since 1.3.2
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 */
-	function str_contains($haystack, $needle)
-	{
-		return $needle !== '' && mb_strpos($haystack, $needle) !== false;
-	}
-}
-
 /**
  * Creates a new shipment with and saves the response voucher in the order's meta
  * as `_biz_voucher`. For more information on this API call visit the official documentation here:
@@ -448,6 +434,7 @@ function biz_shipment_status($voucher): array
  */
 function biz_conclude_order_status(string $order_id, bool $note = false, array $report = null): void
 {
+	// TODO @alexandrosraikos: Clean up and comment.
 	try {
 		if (!isset($report)) {
 			$report = biz_shipment_status(get_post_meta($order_id, '_biz_voucher', true));

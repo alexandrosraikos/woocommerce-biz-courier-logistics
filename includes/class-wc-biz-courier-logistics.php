@@ -155,6 +155,8 @@ class WC_Biz_Courier_Logistics
 	{
 		$plugin_admin = new WC_Biz_Courier_Logistics_Admin($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
 
+		// TODO @alexandrosraikos: Rename functions.
+
 		$this->loader->add_action('init', $plugin_admin, 'check_minimum_requirements');
 		$this->loader->add_action('init', $plugin_admin, 'async_error_display');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
@@ -209,7 +211,7 @@ class WC_Biz_Courier_Logistics
 
 		// TODO @alexandrosraikos: Add biz Warehouse indicator on order items page (#32 - https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/issues/32).
 
-		// Shipment automatic updating - cron job.
+		// TODO @alexandrosraikos: Clean this up.
 		function biz_cron_order_status_checking_interval($schedules) {
 			$schedules['ten_minutes'] = array(
 				'interval' => 300,

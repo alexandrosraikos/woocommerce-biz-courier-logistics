@@ -125,6 +125,7 @@ function order_column_voucher_html($voucher)
  */
 function shipment_meta_box_html(string $order_status, string $voucher = null, array $report = null, $internal_error = null)
 {
+	// TODO @alexandrosraikos: Restructure class references.
 ?>
     <div class="wc-biz-courier-logistics meta-box">
         <ul id="wc-biz-courier-logistics-metabox">

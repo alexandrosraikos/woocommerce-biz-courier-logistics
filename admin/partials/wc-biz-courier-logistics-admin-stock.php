@@ -23,6 +23,7 @@
  */
 function get_all_related_skus($product)
 {
+	// TODO @alexandrosraikos: Clean up and comment.
 	// Push simple product SKUs.
 	$skus = array();
 	if ($product->managing_stock()) {
@@ -56,6 +57,7 @@ function get_all_related_skus($product)
  */
 function reset_all_sync_status()
 {
+	// TODO @alexandrosraikos: Clean up and comment.
 	// Get all products.
 	$products = wc_get_products(array(
 		'posts_per_page' => -1
@@ -87,20 +89,12 @@ function reset_all_sync_status()
  *
  * @param array $skus An array of product skus formatted as strings.
  * 
- * @uses get_option()
- * @uses __soapCall()
  * @uses WC_Biz_Courier_Logistics_Admin::reset_all_sync_status()
- * @uses in_array()
- * @uses wc_get_product_id_by_sku()
- * @uses wc_get_product()
- * @uses get_post()
- * @uses update_post_meta()
- * @uses delete_post_meta()
  * 
  * @author Alexandros Raikos <alexandros@araikos.gr>
- * @version 1.4.0
  * @since 1.0.0
  * 
+ * @version 1.4.0
  */
 function biz_stock_sync($skus)
 {

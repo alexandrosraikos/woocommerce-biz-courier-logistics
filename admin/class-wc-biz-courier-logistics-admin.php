@@ -66,18 +66,35 @@ class WC_Biz_Courier_Logistics_Admin
 	 *
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.3.2
+	 * 
+	 * @version 1.4.0
 	 */
 	public function check_minimum_requirements()
 	{
-		// Check for loaded extensions.
+		// Check for PHP and loaded extensions.
+		if (version_compare(phpversion(), '7.4.0') < 0) {
+			notice_display_html(__("This version of PHP is not supported by Biz Courier & Logistics for WooCommerce. Please update to PHP 7.4.0 or later."), 'wc-biz-courier-logistics');
+		}
 		if (!extension_loaded('soap')) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 			notice_display_html(__("You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator.", "wc-biz-courier-logistics"));
 		}
 
-		// TODO @alexandrosraikos: Check for PHP > 7.4. (#39)
-		// TODO @alexandrosraikos: Check for WordPress > 5.7.0 (#39)
-		// TODO @alexandrosraikos: Check for WooCommerce > 5.6.0 (#39)
+		// Check for supported WordPress version.
+		global $wp_version;
+		if (version_compare($wp_version, '5.7.0') < 0) {
+			notice_display_html(__("This version of WordPress is not supported by Biz Courier & Logistics for WooCommerce. Please update to version 5.7.0 or later."), 'wc-biz-courier-logistics');
+		}
+
+		// Check for installed WooCommerce.
+		if (!class_exists('WooCommerce')) {
+			notice_display_html(__("Biz Courier & Logistics for WooCommerce requires the WooCommerce plugin to be installed and enabled.", 'wc-biz-courier-logistics'));
+		}
+
+		// Check for supported WooCommerce version.
+		if (version_compare($WC_VERSION, '5.6.0') < 0) {
+			notice_display_html(__("This version of WooCommerce is not supported by Biz Courier & Logistics for WooCommerce. Please update to WooCommerce 5.6.0 or later.", 'wc-biz-courier-logistics'));
+		}
 	}
 
 	/**
@@ -374,9 +391,7 @@ class WC_Biz_Courier_Logistics_Admin
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 
 			echo '<div class="biz_sync-indicator-container"><div class="biz_sync-indicator-title">' . __('Biz status', 'wc-biz-courier-logistics') . ': </div>';
-
 			biz_stock_sync_column_html(get_post_meta($post->ID, '_biz_stock_sync_status', true));
-
 			echo '</div>';
 		}
 	}
@@ -386,24 +401,25 @@ class WC_Biz_Courier_Logistics_Admin
 	 * 
 	 * Handle product option persistence for the Biz warehouse stock synchronisation.
 	 *
-	 * @since    1.2.0
-	 * @uses 	 get_post_meta()
-	 * @uses 	 update_post_meta()
-	 * @uses 	 delete_post_meta()
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.2.0
+	 * 
+	 * @version 1.4.0
 	 */
 	function biz_save_product_inventory_options($post_id)
 	{
-		// TODO @alexandrosraikos: Add code documentation.
+
+		/** @var WC_Product $product The product. */
 		$product = wc_get_product($post_id);
 
-		// On SKU modification.
+		// Reset synchronization status on SKU change.
 		if ($_POST['_sku'] != $product->get_sku()) {
 			if (get_post_meta($post_id, '_biz_stock_sync', true) == 'yes') {
 				update_post_meta($post_id, '_biz_stock_sync_status', 'pending');
 			}
 		}
 
-		// On stock sync preference change.
+		// Reset synchronization status on Biz Warehouse option change.
 		if (!empty($_POST['_biz_stock_sync'])) {
 			update_post_meta($post_id, '_biz_stock_sync', $_POST['_biz_stock_sync']);
 			update_post_meta($post_id, '_biz_stock_sync_status', 'pending');
@@ -445,14 +461,14 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * 
 	 * Handle product variation option persistence for the Biz warehouse stock synchronisation.
-	 *
-	 * @since    1.2.0
-	 * @uses 	 update_post_meta()
-	 * @uses 	 delete_post_meta()
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
 	function biz_save_variation_inventory_options($variation_id, $i)
 	{
-		// TODO @alexandrosraikos: Add code documentation.
 		$variation = wc_get_product($variation_id);
 
 		// If stock sync is enabled.
@@ -475,9 +491,12 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * Handles stock sync AJAX requests from authorized users and initiates sync.
 	 *
-	 * @since    1.0.0
-	 * @uses 	 wp_verify_nonce()
-	 * @uses 	 WC_Biz_Courier_Logistics_Admin::biz_stock_sync()
+	 * @uses WC_Biz_Courier_Logistics_Admin::biz_stock_sync()
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
 	function biz_stock_synchronization_handler()
 	{
@@ -505,18 +524,14 @@ class WC_Biz_Courier_Logistics_Admin
 
 	/**
 	 * Add Biz Courier remaining stock synchronization button to the All Products page.
-	 *
-	 * @since    1.0.0
-	 * @uses  	 WC_Biz_Courier_Logistics_Admin::get_all_related_skus()
-	 * @uses 	 wp_enqueue_script()
-	 * @uses 	 wp_localize_script()
-	 * @uses 	 wp_create_nonce()
-	 * @uses 	 biz_stock_sync_all_button()
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
 	function add_biz_stock_sync_all_button()
 	{
-		// TODO @alexandrosraikos: Add code documentation.
-
 		// Ensure active All Products page.
 		global $current_screen;
 		if ('product' != $current_screen->post_type) {
@@ -538,13 +553,18 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * Add Biz Courier stock synchronisation status column to the All Products page.
 	 *
-	 * @since    1.0.0
 	 * @param 	 array $columns The active list of columns in the All Products page.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
 	function add_biz_stock_sync_indicator_column($columns)
 	{
-		// TODO @alexandrosraikos: Add code documentation.
+		// Append the Biz synchronization status column.
 		$columns['biz_sync'] = __('Biz Warehouse', 'wc-biz-courier-logistics');
+
 		return $columns;
 	}
 
@@ -552,14 +572,11 @@ class WC_Biz_Courier_Logistics_Admin
 	 * Add Biz Courier stock synchronisation status indicator column to each product
 	 * in the All Products page.
 	 *
-	 * @since    1.0.0
-	 * @uses 	 get_post_meta()
-	 * @uses 	 wc_get_product()
-	 * @uses 	 biz_stock_sync_column_html()
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
 	 */
 	function biz_stock_sync_indicator_column($column_name, $product_post_id)
 	{
-		// TODO @alexandrosraikos: Add code documentation.
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 
 		// Ensure Biz Status column.
@@ -622,42 +639,61 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * Declare the Biz_Shipping_Method class.
 	 *
-	 * @since    1.0.0
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
 	function biz_shipping_method()
 	{
-		// TODO @alexandrosraikos: Add code documentation.
+		// Import the Biz Shipping Method class.
 		if (!class_exists('Biz_Shipping_Method')) require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipping-method.php';
 	}
 
 	/**
 	 * Declare Biz_Shipping_Method class.
+	 * 
+	 * @param array $methods The active list of shipping methods.
 	 *
-	 * @since    1.0.0
-	 * @param 	 array $methods The active list of shipping methods.
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
 	function add_biz_shipping_method($methods)
 	{
-		// TODO @alexandrosraikos: Add code documentation.
+		// Append the new shipping method.
 		$methods['biz_shipping_method'] = 'Biz_Shipping_Method';
+
 		return $methods;
 	}
 
 
 	/**
 	 * Calculate the additional COD fee for Biz shipping on checkout
+	 * 
+	 * @param object $cart The given checkout cart.
 	 *
-	 * @since    1.3.3
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.3.3
+	 * 
+	 * @version 1.4.0
 	 */
 	function add_biz_cod_fee($cart)
 	{
-		// TODO @alexandrosraikos: Add code documentation.
 		// TODO @alexandrosraikos: Move to public.
+
+		// Ignore AJAX call.
 		if (is_admin() && defined('DOING_AJAX')) return;
+
+		// Add the COD fee on COD payment methods.
 		if (
 			WC()->session->get('chosen_payment_method') == 'cod'
 		) {
+			/** @var array $biz_shipping_settings The Biz shipping settings. */
 			$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
+
+			// Add the registered fee amount.
 			if (!empty($biz_shipping_settings['biz_cash_on_delivery_fee'])) {
 				$cart->add_fee(__('Cash on Delivery fee', 'wc-biz-courier-logistics'), $biz_shipping_settings['biz_cash_on_delivery_fee']);
 			}
@@ -721,13 +757,12 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * Handles shipment modification AJAX requests from authorized users.
 	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since    1.0.0
 	 */
 	function biz_shipment_modification_request_handler()
 	{
 		WC_Biz_Courier_Logistics_Admin::ajax_handler(function () {
-
-			// TODO @alexandrosraikos: Rebuild exceptions.
 			biz_modify_shipment(intval($_POST['order_id']), $_POST['shipment_modification_message']);
 		});
 	}
@@ -740,8 +775,6 @@ class WC_Biz_Courier_Logistics_Admin
 	function biz_shipment_cancellation_request_handler()
 	{
 		WC_Biz_Courier_Logistics_Admin::ajax_handler(function () {
-
-			// TODO @alexandrosraikos: Rebuild exceptions.
 			biz_cancel_shipment(intval($_POST['order_id']));
 		});
 	}
@@ -749,6 +782,7 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * Handles manual voucher editing AJAX requests from authorized users.
 	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since    1.2.0
 	 */
 	function biz_shipment_edit_voucher_handler()
@@ -768,6 +802,7 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * Handles manual voucher deletion AJAX requests from authorized users.
 	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since    1.2.0
 	 */
 	function biz_shipment_delete_voucher_handler()
@@ -782,6 +817,7 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * Handles manual voucher deletion AJAX requests from authorized users.
 	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since    1.2.0
 	 */
 	function biz_shipment_synchronize_order_handler()
@@ -794,119 +830,80 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * Handles shipment modification on order change.
 	 *
-	 * @since    1.0.0
+	 * @param int $id The order ID.
+	 * @param string $from The previous order status.
+	 * @param string $to The next order status.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
 	function biz_order_changed_handler($id, $from, $to)
 	{
-		// TODO @alexandrosraikos: Use async_handler for all this.
-		// Automate shipment functionality.
+		/** @var array $biz_settings The integration settings. */
 		$biz_settings = get_option('woocommerce_biz_integration_settings');
 
-		// Automatic creation.
+
+		// 1. Check existing options for automatic shipment creation.
 		if (($biz_settings['automatic_shipment_creation'] ?? 'disabled') != 'disabled') {
+			
+			// Match preferred sending state on a voucher order.
 			if (
+				!empty(get_post_meta($id, '_biz_voucher', true)) &&
 				substr($biz_settings['automatic_shipment_creation'], 3) == $to
 			) {
-				// Send shipment using POST data and handle errors.
-				try {
-					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
-					$voucher = get_post_meta($id, '_biz_voucher', true);
-					if (empty($voucher)) biz_send_shipment($id);
-				} catch (UnexpectedValueException $e) {
-					$error_code = $e->getMessage();
-					switch ($error_code) {
-						case 'no-products-error':
-							$error_description = __("There are no products in this order.", 'wc-biz-courier-logistics');
-							break;
-						case 'stock-error':
-							$error_description = __("There isn't enough stock to ship some products.", 'wc-biz-courier-logistics');
-							break;
-						case 'metrics-error':
-							$error_description = __("Please make sure all products in the order have their weight & dimensions registered.", 'wc-biz-courier-logistics');
-							break;
-						case 'sku-error':
-							$error_description = __("Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability. Try going to the All Products page and clicking on \"Get stock levels\", to update availability.", 'wc-biz-courier-logistics');
-							break;
-						case 'recipient-info-error':
-							$error_description = __("There was a problem with the recipient's information. Make sure you have filled in all the necessary fields: First name, last name, phone number, e-mail address, address line #1, city, postal code and country.", 'wc-biz-courier-logistics');
-							break;
-						default:
-							$error_description = __("An unknown error occured while processing order information.", 'wc-biz-courier-logistics');
-					}
-				} catch (LogicException $e) {
-					$error_code = $e->getMessage();
-					switch ($error_code) {
-						case "voucher-exists-error":
-							$error_description = __("A voucher already exists for this order.", 'wc-biz-courier-logistics');
-							break;
-						default:
-							$error_description = __("An unknown error occured after processing order information.", 'wc-biz-courier-logistics');
-					}
-				} catch (ErrorException $e) {
-					$error_code = $e->getMessage();
-					switch ($error_code) {
-						case 'biz-response-data-error':
-							$error_description = __("Response from Biz could not be read, please check your warehouse shipments from their official application.", 'wc-biz-courier-logistics');
-							break;
-						case 'biz-auth-error':
-							$error_description = __("There was an error with your Biz credentials.", 'wc-biz-courier-logistics');
-							break;
-						case 'biz-recipient-info-error':
-							$error_description = __("There was a problem registering recipient information with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics');
-							break;
-						case 'biz-package-data-error':
-							$error_description = __("There was a problem with your order's items while submitting their information to Biz.", 'wc-biz-courier-logistics');
-							break;
-						default:
-							$error_description = __("An unknown Biz error occured after submitting the shipment information.", 'wc-biz-courier-logistics');
-					}
-				} catch (SoapFault $f) {
-					$error_description = __('There was a connection error while trying to contact Biz Courier. More information: ', 'wc-biz-courier-logistics') . $f->getMessage();
-				}
 
-				if (!empty($error_description)) update_post_meta($id, '_biz_internal_error', $error_description);
+				// Handle shipment sending.
+				WC_Biz_Courier_Logistics_Admin::async_handler(function () use ($id) {
+					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
+					biz_send_shipment($id);
+				}, $id);
+
 			}
 		}
 
-		// Automatic cancellation.
+		// 2. Check existing options for automatic shipment cancellation.
 		if (($biz_settings['automatic_shipment_cancellation'] ?? 'disabled') != 'disabled') {
+			
+			// Match preferred sending state on a voucher order.
 			if (
+				!empty(get_post_meta($id, '_biz_voucher', true)) &&
 				substr($biz_settings['automatic_shipment_cancellation'], 3) == $to
 			) {
-				try {
+
+				// Handle shipment sending.
+				WC_Biz_Courier_Logistics_Admin::async_handler(function () use ($id) {
 					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
-					$voucher = get_post_meta($id, '_biz_voucher', true);
-					if (!empty($voucher)) biz_cancel_shipment($id);
-				} catch (UnexpectedValueException $e) {
-					$error_code = $e->getMessage();
-					switch ($error_code) {
-						case 'data-error':
-							$error_description = __("The voucher number couldn't be retrieved.", 'wc-biz-courier-logistics');
-							break;
-						default:
-							$error_description = __("An unknown error occured while processing shipment modification information.", 'wc-biz-courier-logistics');
-					}
-				} catch (ErrorException $e) {
-					// Unknown happens when cancelling an already cancelled order.
-					// $error_description = __('An unknown Biz error occured while processing shipment modification information.', 'wc-biz-courier-logistics');
-				} catch (SoapFault $f) {
-					$error_description = __('There was a connection error while trying to contact Biz Courier. More information: ', 'wc-biz-courier-logistics') . $f->getMessage();
-				}
-				if (!empty($error_description)) update_post_meta($id, '_biz_internal_error', $error_description);
+					biz_cancel_shipment($id);
+				}, $id);
+
 			}
 		}
 	}
 
+	/**
+	 * Register the voucher column.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.3.0
+	 */
 	function add_biz_order_voucher_column($columns)
 	{
-		// TODO @alexandrosraikos: Add code documentation.
+		// Append the new key and return.
 		$columns['biz-voucher'] = __("Biz shipment voucher", 'wc-biz-courier-logistics');
 		return $columns;
 	}
 
+	/**
+	 * Register the voucher column.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.3.0
+	 */
 	function biz_order_voucher_column($column, $post_id)
 	{
-		// TODO @alexandrosraikos: Add code documentation.
+		// Print the voucher in the column's row.
 		switch ($column) {
 			case 'biz-voucher':
 				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
@@ -1017,6 +1014,8 @@ class WC_Biz_Courier_Logistics_Admin
 	 *
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.2.0
+	 * 
+	 * @version 1.4.0
 	 */
 	function biz_cron_order_status_checking()
 	{
