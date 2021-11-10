@@ -446,7 +446,7 @@ function biz_shipment_status($voucher): array
  *
  * @since    1.2.1
  */
-function biz_conclude_order_status(string $order_id, bool $note = false, array $report = null): bool
+function biz_conclude_order_status(string $order_id, bool $note = false, array $report = null): void
 {
 	try {
 		if (!isset($report)) {
@@ -492,8 +492,6 @@ function biz_conclude_order_status(string $order_id, bool $note = false, array $
 			$order = wc_get_order($order_id);
 			$order->update_status("processing", __("The newly connected shipment is pending.", 'wc-biz-courier-logistics'));
 		}
-
-		return true;
 	} catch (\Exception $e) {
 		throw new $e;
 	}
