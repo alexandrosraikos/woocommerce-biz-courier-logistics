@@ -27,7 +27,7 @@
     e.preventDefault();
     if (window.confirm(ShipmentProperties.SEND_SHIPMENT_CONFIRMATION)) {
       makeWPRequest(
-        '#wc-biz-courier-logistics-shipment-management button[data-action="send"]',
+        '#wc-biz-courier-logistics-shipment-management > .actions > button[data-action="send"]',
         "biz_shipment_send",
         ShipmentProperties.bizShipmentSendNonce,
         {
@@ -52,7 +52,7 @@
     const newVoucher = prompt(ShipmentProperties.ADD_VOUCHER_MESSAGE);
     if (newVoucher != null) {
       makeWPRequest(
-        '#wc-biz-courier-logistics-shipment-management button[data-action="add-voucher"]',
+        '#wc-biz-courier-logistics-shipment-management > .actions > button[data-action="add-voucher"]',
         "biz_shipment_add_voucher",
         ShipmentProperties.bizShipmentAddVoucherNonce,
         {
@@ -75,12 +75,12 @@
 
     // Send shipment button.
     $(
-      '#wc-biz-courier-logistics-shipment-management button[data-action="send"]'
+      '#wc-biz-courier-logistics-shipment-management > .actions > button[data-action="send"]'
     ).click(requestShipment);
 
     // Add shipment voucher button.
     $(
-      '#wc-biz-courier-logistics-shipment-management button[data-action="add-voucher"]'
+      '#wc-biz-courier-logistics-shipment-management > .actions > button[data-action="add-voucher"]'
     ).click(addVoucher);
   });
 })(jQuery);

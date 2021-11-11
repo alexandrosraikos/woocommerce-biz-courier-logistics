@@ -16,6 +16,54 @@
    */
 
   /**
+   * Edit the shipment's voucher using a browser prompt.
+   *
+   * @param {Event} e The click event.
+   *
+   * @since 1.4.0
+   */
+  function editShipmentVoucher(e) {
+    e.preventDefault();
+
+    const editedVoucher = prompt(ShipmentProperties.EDIT_VOUCHER_PROMPT);
+    if (editedVoucher != null && editedVoucher != "") {
+      makeWPRequest(
+        '#wc-biz-courier-logistics-shipment-management > .voucher > button[data-action="edit"]',
+        "biz_shipment_edit_voucher",
+        ShipmentProperties.bizShipmentEditVoucherNonce,
+        {
+          order_id: ShipmentProperties.orderID,
+          new_voucher: editedVoucher,
+        },
+        () => window.location.reload()
+      );
+    }
+  }
+
+  /**
+   * Delete the shipment's voucher using a confirmation prompt.
+   *
+   * @param {Event} e The click event.
+   *
+   * @since 1.4.0
+   */
+  function deleteShipmentVoucher(e) {
+    e.preventDefault();
+
+    if (confirm(ShipmentProperties.DELETE_VOUCHER_CONFIRMATION)) {
+      makeWPRequest(
+        '#wc-biz-courier-logistics-shipment-management > .voucher > button[data-action="delete"]',
+        "biz_shipment_delete_voucher",
+        ShipmentProperties.bizShipmentDeleteVoucherNonce,
+        {
+          order_id: ShipmentProperties.orderID,
+        },
+        () => window.location.reload()
+      );
+    }
+  }
+
+  /**
    * Request shipment modification using a message prompt.
    *
    * @param {Event} e The click event.
@@ -28,7 +76,7 @@
     const message = prompt(ShipmentProperties.MODIFICATION_REQUEST_PROMPT);
     if (message != null && message != "") {
       makeWPRequest(
-        "#biz-modify-shipment",
+        '#wc-biz-courier-logistics-shipment-management > .actions > button[data-action="modify"]',
         "biz_shipment_modification_request",
         ShipmentProperties.bizShipmentModificationRequestNonce,
         {
@@ -52,57 +100,9 @@
 
     if (confirm(ShipmentProperties.CANCELLATION_REQUEST_CONFIRMATION)) {
       makeWPRequest(
-        "#biz-cancel-shipment",
+        '#wc-biz-courier-logistics-shipment-management > .actions > button[data-action="cancel"]',
         "biz_shipment_cancellation_request",
         ShipmentProperties.bizShipmentCancellationRequestNonce,
-        {
-          order_id: ShipmentProperties.orderID,
-        },
-        () => window.location.reload()
-      );
-    }
-  }
-
-  /**
-   * Edit the shipment's voucher using a browser prompt.
-   *
-   * @param {Event} e The click event.
-   *
-   * @since 1.4.0
-   */
-  function editShipmentVoucher(e) {
-    e.preventDefault();
-
-    const editedVoucher = prompt(ShipmentProperties.EDIT_VOUCHER_PROMPT);
-    if (editedVoucher != null && editedVoucher != "") {
-      makeWPRequest(
-        "#biz-edit-shipment-voucher",
-        "biz_shipment_edit_voucher",
-        ShipmentProperties.bizShipmentEditVoucherNonce,
-        {
-          order_id: ShipmentProperties.orderID,
-          voucher: editedVoucher,
-        },
-        () => window.location.reload()
-      );
-    }
-  }
-
-  /**
-   * Delete the shipment's voucher using a confirmation prompt.
-   *
-   * @param {Event} e The click event.
-   *
-   * @since 1.4.0
-   */
-  function deleteShipmentVoucher(e) {
-    e.preventDefault();
-
-    if (confirm(ShipmentProperties.DELETE_VOUCHER_CONFIRMATION)) {
-      makeWPRequest(
-        "#biz-delete-shipment-voucher",
-        "biz_shipment_delete_voucher",
-        ShipmentProperties.bizShipmentDeleteVoucherNonce,
         {
           order_id: ShipmentProperties.orderID,
         },
@@ -122,7 +122,7 @@
     e.preventDefault();
 
     makeWPRequest(
-      "#biz-synchronize-order",
+      '#wc-biz-courier-logistics-shipment-management > .actions > button[data-action="sync"]',
       "biz_shipment_synchronize_order",
       ShipmentProperties.bizShipmentSynchronizeOrderNonce,
       {

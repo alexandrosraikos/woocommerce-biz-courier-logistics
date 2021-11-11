@@ -175,9 +175,9 @@ class WC_Biz_Courier_Logistics
 		 *  Custom Stock Synchronization.
 		 */
 		$this->loader->add_action('woocommerce_product_options_inventory_product_data', $plugin_admin, 'biz_product_inventory_options');
-		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'biz_save_product_inventory_options',10,1);
-		$this->loader->add_action('woocommerce_variation_options', $plugin_admin, 'biz_variation_inventory_options',10,3);
-		$this->loader->add_action('woocommerce_save_product_variation', $plugin_admin, 'biz_save_variation_inventory_options',10,2);
+		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'biz_save_product_inventory_options', 10, 1);
+		$this->loader->add_action('woocommerce_variation_options', $plugin_admin, 'biz_variation_inventory_options', 10, 3);
+		$this->loader->add_action('woocommerce_save_product_variation', $plugin_admin, 'biz_save_variation_inventory_options', 10, 2);
 		$this->loader->add_action('wp_ajax_biz_stock_synchronization', $plugin_admin, 'biz_stock_synchronization_handler');
 		$this->loader->add_action('manage_posts_extra_tablenav', $plugin_admin, 'add_biz_stock_sync_all_button', 20, 1);
 		$this->loader->add_filter('manage_edit-product_columns', $plugin_admin, 'add_biz_stock_sync_indicator_column');
@@ -191,7 +191,7 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_filter('woocommerce_shipping_methods', $plugin_admin, 'add_biz_shipping_method');
 
 		// TODO @alexandrosraikos: Move this to public.
-		$this->loader->add_action( 'woocommerce_cart_calculate_fees', $plugin_admin, 'add_biz_cod_fee', 10, 1 );
+		$this->loader->add_action('woocommerce_cart_calculate_fees', $plugin_admin, 'add_biz_cod_fee', 10, 1);
 
 		/**
 		 *  Order and shipment interactivity.
@@ -206,13 +206,14 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('wp_ajax_biz_shipment_edit_voucher', $plugin_admin, 'biz_shipment_edit_voucher_handler');
 		$this->loader->add_action('wp_ajax_biz_shipment_delete_voucher', $plugin_admin, 'biz_shipment_delete_voucher_handler');
 		$this->loader->add_action('wp_ajax_biz_shipment_synchronize_order', $plugin_admin, 'biz_shipment_synchronize_order_handler');
-		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'biz_order_changed_handler',10, 3);
+		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'biz_order_changed_handler', 10, 3);
 
 
 		// TODO @alexandrosraikos: Add biz Warehouse indicator on order items page (#32 - https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/issues/32).
 
 		// TODO @alexandrosraikos: Clean this up.
-		function biz_cron_order_status_checking_interval($schedules) {
+		function biz_cron_order_status_checking_interval($schedules)
+		{
 			$schedules['ten_minutes'] = array(
 				'interval' => 300,
 				'display' => 'Every 5 minutes.'
@@ -241,7 +242,7 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
 
-		$this->loader->add_action( 'wp_footer', $plugin_public, 'biz_checkout_refresh');
+		$this->loader->add_action('wp_footer', $plugin_public, 'biz_checkout_refresh');
 	}
 
 	/**
@@ -305,7 +306,7 @@ class WC_Biz_Courier_Logistics
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.4.0
 	 */
-	public static function contactBizCourierAPI(string $wsdl_url, string $method, array $data, bool $authorized, ?callable $completion = NULL, ?callable $rejection = NULL): array
+	public static function contactBizCourierAPI(string $wsdl_url, string $method, array $data, bool $authorized, ?callable $completion = NULL, ?callable $rejection = NULL)
 	{
 		// For authorized requests.
 		if ($authorized) {
@@ -324,10 +325,12 @@ class WC_Biz_Courier_Logistics
 			}
 
 			// Append to data array.
-			$data['Code'] = $biz_settings['account_number'];
-			$data['CRM'] = $biz_settings['warehouse_crm'];
-			$data['User'] = $biz_settings['username'];
-			$data['Pass'] = $biz_settings['password'];
+			$data = array_merge([
+				'Code' => $biz_settings['account_number'],
+				'CRM' => $biz_settings['warehouse_crm'],
+				'User' => $biz_settings['username'],
+				'Pass' => $biz_settings['password']
+			], $data);
 		}
 
 		/** @var SoapClient $client The SOAP client with exceptions enabled. */
@@ -339,13 +342,15 @@ class WC_Biz_Courier_Logistics
 
 		/** @var Object $response The API response. */
 		$response = $client->__soapCall($method, $data);
-		$response = json_decode(json_encode($response),true);
+		$response = json_decode(json_encode($response), true);
 
 		// Handle response.
 		if (($response['Error'] ?? 0) == 0) {
 			if ($completion != NULL) {
 				$completion($response);
-			} else return $response;
+			} else {
+				return $response;
+			}
 		} else {
 			if ($rejection != NULL) {
 				$rejection($response);
@@ -361,7 +366,8 @@ class WC_Biz_Courier_Logistics
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.3.2
 	 */
-	public static function ensure_utf8(string $string): string {
+	public static function ensure_utf8(string $string): string
+	{
 		return (mb_detect_encoding($string) == 'UTF-8') ? $string : utf8_encode($string);
 	}
 
@@ -385,9 +391,4 @@ class WC_Biz_Courier_Logistics
 		// Return the truncated string.
 		return (mb_strlen($string, 'UTF-8') > $length) ? mb_substr($string, 0, $length - 1) . "." : $string;
 	}
-
 }
-
-
-
-

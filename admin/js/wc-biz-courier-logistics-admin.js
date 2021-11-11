@@ -20,17 +20,18 @@ var $ = jQuery;
  *
  * @param {string} selector The DOM selector of the element that will be alerted about.
  * @param {string} message The message that will be displayed in the alert.
- * @param {string} type The type of alert (either an `'error'` or `'notice'`)/
+ * @param {string?} type The type of alert (either `'failure'`, `'warning'` or left `null`).
  * @param {Boolean} placeBefore Whether the alert is placed before the selected element.
  *
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.4.0
  */
-function showAlert(selector, message, type = "error", placeBefore = false) {
+function showAlert(selector, message, type = null, placeBefore = false) {
+  console.log($(selector));
   if (placeBefore) {
     $(selector).before(
       '<div class="wc-biz-courier-logistics-notice ' +
-        type +
+        (type ?? "") +
         '">' +
         message +
         "</div>"
@@ -38,7 +39,7 @@ function showAlert(selector, message, type = "error", placeBefore = false) {
   } else {
     $(selector).after(
       '<div class="wc-biz-courier-logistics-notice ' +
-        type +
+        (type ?? "") +
         '">' +
         message +
         "</div>"
@@ -100,7 +101,7 @@ function makeWPRequest(actionDOMSelector, action, nonce, data, completion) {
           console.error("Invalid JSON response: " + objError);
         }
       } else if (response.status === 400 || response.status === 500) {
-        showAlert(actionDOMSelector, response.responseText);
+        showAlert(actionDOMSelector, response.responseText, "failure");
 
         // Remove the loading class.
         $(actionDOMSelector).removeClass("loading");
@@ -110,7 +111,8 @@ function makeWPRequest(actionDOMSelector, action, nonce, data, completion) {
       } else {
         showAlert(
           actionDOMSelector,
-          "There was an unknown connection error to the Biz API. Please try again later."
+          "There was an unknown connection error to the Biz API. Please try again later.",
+          "failure"
         );
 
         // Remove the loading class.
@@ -123,7 +125,3 @@ function makeWPRequest(actionDOMSelector, action, nonce, data, completion) {
     dataType: "json",
   });
 }
-
-(function ($) {
-  "use strict";
-})(jQuery);

@@ -226,6 +226,8 @@ class WC_Biz_Courier_Logistics_Admin
 			// Run completion function.
 			$completion();
 		} catch (\Exception $e) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+			notice_display_embedded_html($e->getMessage(), 'failure');
 			if (empty($post_id)) {
 				// Register an internal error specific to the post ID.
 				update_post_meta($post_id, '_biz_internal_error', $e->getMessage());
@@ -794,7 +796,7 @@ class WC_Biz_Courier_Logistics_Admin
 		WC_Biz_Courier_Logistics_Admin::ajax_handler(function ($data) {
 
 			// Validate voucher.
-			$status_report = biz_shipment_status($_POST['voucher']);
+			$status_report = biz_shipment_status($_POST['new_voucher']);
 			if (!empty($status_report)) {
 				if (!update_post_meta($data['order_id'], '_biz_voucher', $data['new_voucher'])) {
 					throw new ErrorException("The shipment voucher could not be saved to this order.");
@@ -976,23 +978,26 @@ class WC_Biz_Courier_Logistics_Admin
 			/** @var WC_Order $order The order being currently viewed. */
 			$order = wc_get_order($post->ID);
 
-			// Print the meta box using Biz API and local data.
-			WC_Biz_Courier_Logistics_Admin::async_handler(function () use ($order) {
-				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-shipments.php';
 
-				/** @var string $voucher The order's voucher. */
-				$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
+			/** @var string $voucher The order's voucher. */
+			$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
 
-				// Get Biz API data and prepare scripts appropriately.
-				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-				if (!empty($voucher)) {
-					prepare_scripts_existing_shipment($order->get_id());
-					shipment_management_html($voucher, $order->get_status(), biz_shipment_status($voucher));
-				} else {
-					prepare_scripts_new_shipment($order->get_id());
-					shipment_creation_html();
+			// Get Biz API data and prepare scripts appropriately.
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+			if (!empty($voucher)) {
+				prepare_scripts_existing_shipment($order->get_id());
+				try {
+					$status_history = biz_shipment_status($voucher);
 				}
-			}, $order->get_id());
+				catch (\Exception $e) {
+					notice_display_embedded_html($e->getMessage(), 'failure');
+				}
+				shipment_management_html($voucher, $order->get_status(), $status_history ?? null);
+			} else {
+				prepare_scripts_new_shipment($order->get_id());
+				shipment_creation_html();
+			}
 		}
 
 		// Ensure the administrator is on the "Edit" screen and not "Add".

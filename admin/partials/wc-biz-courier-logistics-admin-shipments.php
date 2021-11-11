@@ -202,13 +202,13 @@ function biz_send_shipment(int $order_id): void
 		true,
 		function ($response) use ($order) {
 			// Handle response error codes.
-			switch ($response->Error_Code) {
+			switch ($response['Error_Code']) {
 				case 0:
-					if (!empty($response->Voucher)) {
+					if (!empty($response['Voucher'])) {
 		
 						// Update order meta.
 						delete_post_meta($order->get_id(), '_biz_failure_delivery_note');
-						update_post_meta($order->get_id(), '_biz_voucher', $response->Voucher);
+						update_post_meta($order->get_id(), '_biz_voucher', $response['Voucher']);
 		
 						// Switch order status to `processing`.
 						$order->update_status('processing', __('The shipment was successfully registered to Biz Courier.', 'wc-biz-courier-logistics'));
@@ -370,11 +370,11 @@ function biz_shipment_status(string $voucher): array
 		[
 			'Voucher' => $voucher
 		],
-		true
+		false
 	);
 
 	// Check for empty status history.
-	if(empty($biz_status_history)) throw new RuntimeException(__("There are no data available for this voucher number.", 'wc-biz-courier-logistics'));
+	if(empty($biz_status_history)) throw new RuntimeException(sprintf(__("There are no data available for the voucher number %s.", 'wc-biz-courier-logistics'), $voucher));
 
 	/** @var array $biz_full_status_history The shipment's complete status history. */
 	$biz_full_status_history = [];
