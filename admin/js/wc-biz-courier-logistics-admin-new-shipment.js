@@ -27,7 +27,7 @@
     e.preventDefault();
     if (window.confirm(ShipmentProperties.SEND_SHIPMENT_CONFIRMATION)) {
       makeWPRequest(
-        "#biz-send-shipment",
+        '#wc-biz-courier-logistics-shipment-management button[data-action="send"]',
         "biz_shipment_send",
         ShipmentProperties.bizShipmentSendNonce,
         {
@@ -50,9 +50,9 @@
   function addVoucher(e) {
     e.preventDefault();
     const newVoucher = prompt(ShipmentProperties.ADD_VOUCHER_MESSAGE);
-    if (voucher != null) {
+    if (newVoucher != null) {
       makeWPRequest(
-        "#biz-add-shipment-voucher",
+        '#wc-biz-courier-logistics-shipment-management button[data-action="add-voucher"]',
         "biz_shipment_add_voucher",
         ShipmentProperties.bizShipmentAddVoucherNonce,
         {
@@ -74,9 +74,13 @@
      */
 
     // Send shipment button.
-    $("#biz-send-shipment").click(requestShipment);
+    $(
+      '#wc-biz-courier-logistics-shipment-management button[data-action="send"]'
+    ).click(requestShipment);
 
     // Add shipment voucher button.
-    $("#biz-add-shipment-voucher").click(addVoucher);
+    $(
+      '#wc-biz-courier-logistics-shipment-management button[data-action="add-voucher"]'
+    ).click(addVoucher);
   });
 })(jQuery);

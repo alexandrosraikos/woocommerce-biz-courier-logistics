@@ -335,7 +335,7 @@ function biz_cancel_shipment($order_id): void
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since    1.0.0
  */
-function biz_shipment_status($voucher): array
+function biz_shipment_status(string $voucher): array
 {
 	/** @var Object $biz_status_list The official list of status levels. */
 	$biz_status_list = WC_Biz_Courier_Logistics::contactBizCourierAPI(
@@ -350,9 +350,9 @@ function biz_shipment_status($voucher): array
 
 	// Populate status levels from the call.
 	foreach ($biz_status_list as $biz_status) {
-		$status_levels[$biz_status->Status_Code] = [
-			'level' => $biz_status->Level,
-			'description' => $biz_status->Comments
+		$status_levels[$biz_status['Status_Code']] = [
+			'level' => $biz_status['Level'],
+			'description' => $biz_status['Comments']
 		];
 	}
 
@@ -373,15 +373,18 @@ function biz_shipment_status($voucher): array
 		true
 	);
 
+	// Check for empty status history.
+	if(empty($biz_status_history)) throw new RuntimeException(__("There are no data available for this voucher number.", 'wc-biz-courier-logistics'));
+
 	/** @var array $biz_full_status_history The shipment's complete status history. */
 	$biz_full_status_history = [];
 	foreach ($biz_status_history as $status) {
 
 		/** @var string $i The array key which joins three properties. */
-		$i = $status->Status_Date . '-' . $status->Status_Time . '-' . $status->Status_Code;
+		$i = $status['Status_Date'] . '-' . $status['Status_Time'] . '-' . $status['Status_Code'];
 
 		/** @var string $status_code The status code of each level. */
-		$status_code = $status->Status_Code;
+		$status_code = $status['Status_Code'];
 		if (empty($status_code)) $status_code = 'NONE';
 
 		// Reach conclusion on Final levels.
@@ -402,21 +405,21 @@ function biz_shipment_status($voucher): array
 				'level' => $status_levels[$status_code]['level'] ?? '',
 				'level-description' => $status_levels[$status_code]['description'],
 				'conclusion' => $conclusion ?? '',
-				'description' => (get_locale() == 'el') ? $status->Status_Description : $status->Status_Description_En,
-				'comments' => $status->Status_Comments,
-				'date' => $status->Status_Date,
-				'time' => $status->Status_Time,
+				'description' => (get_locale() == 'el') ? $status['Status_Description'] : $status['Status_Description_En'],
+				'comments' => $status['Status_Comments'],
+				'date' => $status['Status_Date'],
+				'time' => $status['Status_Time'],
 				'actions' => array(),
-				'last_mile_tracking_number' => $status->Part_Tracking_Num ?? ''
+				'last_mile_tracking_number' => $status['Part_Tracking_Num'] ?? ''
 			);
 		}
 
 		// Append status actions.
-		if (!empty($status->Action_Description)) {
+		if (!empty($status['Action_Description'])) {
 			array_push($biz_full_status_history[$i]['actions'], [
-				'description' => (get_locale() == 'el') ? $status->Action_Description : $status->Action_Description_En,
-				'time' => $status->Action_Date,
-				'date' => $status->Action_Time,
+				'description' => (get_locale() == 'el') ? $status['Action_Description'] : $status['Action_Description_En'],
+				'time' => $status['Action_Date'],
+				'date' => $status['Action_Time'],
 			]);
 		}
 	}

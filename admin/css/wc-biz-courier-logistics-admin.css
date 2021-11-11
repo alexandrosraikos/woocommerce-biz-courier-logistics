@@ -1,21 +1,97 @@
 /**
- * All of the CSS for your admin-specific functionality should be
- * included in this file.
+ * All of the CSS for the admin-specific functionality.
+ *
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.0.0
+ *
+ * @version 1.4.0
  */
 
 /**
-    * 	Integration
-    * 	------------
-    *  This section provides the necessary styling for initialising the custom Biz integration.
-    * 
-    */
+* ------------
+* Global
+* ------------
+* This section provides the necessary styling for initialising the custom Biz integration.
+* 
+*/
 
-div.biz-notice {
-  font-weight: bold;
+/**
+*
+* Variables
+* ---------
+*/
+:root {
+  /**
+  * Colors
+  */
+
+  /* Notification foreground colors */
+  --foreground-color-notice: rgb(3, 92, 194);
+  --foreground-color-success: #7ad03a;
+  --foreground-color-failure: #a44;
+  --foreground-color-warning: rgb(194, 117, 3);
+
+  /* Notification background colors */
+  --background-color-notice: #daf0ff;
+  --background-color-success: #daffdd;
+  --background-color-failure: #ffdada;
+  --background-color-warning: #fffdda;
+}
+
+/**
+*
+* Notifications
+* ---------
+*/
+
+/**
+* The notice box.
+*/
+.wc-biz-courier-logistics-notice {
+  /* Display & Box Model */
   margin-top: 15px;
   margin-bottom: 15px;
-  padding-top: 10px !important;
-  padding-bottom: 10px !important;
+  padding: 7px !important;
+  background-color: var(--background-color-notice);
+  border-radius: 5px;
+
+  /* Other */
+  color: var(--foreground-color-notice);
+  font-size: 10px;
+  font-weight: bold;
+}
+
+/**
+* The warning notice box.
+*/
+.wc-biz-courier-logistics-notice.warning {
+  /* Display & Box Model */
+  background-color: var(--background-color-warning);
+
+  /* Other */
+  color: var(--foreground-color-warning);
+}
+
+/**
+* The error notice box.
+*/
+.wc-biz-courier-logistics-notice.error {
+  /* Display & Box Model */
+  background-color: var(--background-color-failure);
+
+  /* Other */
+  color: var(--foreground-color-failure);
+}
+
+/**
+* The success notice box.
+*/
+.wc-biz-courier-logistics-notice.success {
+  /* Display & Box Model */
+  background-color: var(--background-color-success);
+
+  /* Other */
+  color: var(--foreground-color-success);
 }
 
 /**
@@ -36,7 +112,7 @@ div.biz-notice {
   height: 10px;
   width: 10px;
   margin-right: 5px;
-  background-color: rgb(3, 92, 194);
+  background-color: var(--foreground-color-notice);
   border-radius: 20px;
 }
 
@@ -79,59 +155,104 @@ button.biz-loading {
 }
 
 /**
-	 * 	Order Status 
-	 * 	------------
-	 *  This section provides the necessary styling for displaying
-	 * 	Biz Courier shipment status.
-	 * 
-	 */
+* ------------
+* Shipments
+* ------------
+* This section provides the necessary styling for
+* shipment management.
+*/
 
-.biz-voucher a,
-.biz-voucher span {
+/**
+* Add a top-bottom margin to all container children.
+*/
+#wc-biz-courier-logistics-shipment-management > div {
+  /* Display & Box Model */
+  margin: 10px 0;
+}
+
+#wc-biz-courier-logistics-shipment-management > div > h4 {
+  /* Display & Box Model */
+  margin: 7px 0;
+
+  /* Other */
+  font-size: 16px;
+}
+
+/**
+* 
+* Voucher
+* ------------
+* This section provides the necessary styling for
+* the voucher section.
+*/
+
+/**
+* Emphasize the voucher number.
+*/
+#wc-biz-courier-logistics-shipment-management > .voucher > .number {
+  /* Display & Box Model */
+  margin-bottom: 10px;
+
+  /* Other */
+  font-size: 24px;
   font-weight: bold;
   font-family: monospace;
 }
 
-ul#wc-biz-courier-logistics-metabox .biz-error {
-  font-size: 10px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  background: #ffdada;
+/**
+* Emphasize the partner tracking number subtly.
+*/
+#wc-biz-courier-logistics-shipment-management > .voucher > .partner-number {
+  /* Other */
+  font-weight: bold;
+  font-size: 18px;
 }
 
-ul#wc-biz-courier-logistics-metabox .biz-notice {
-  font-size: 10px;
-  padding: 5px 10px;
-  font-weight: normal;
-  border-radius: 5px;
-  margin: 0 0 10px 0;
-  background: #daf0ff;
+/**
+* Add underlining to voucher management buttons.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .voucher
+  > button[data-action="edit"],
+#wc-biz-courier-logistics-shipment-management
+  > .voucher
+  > button[data-action="delete"] {
+  border: none;
+  padding: 0;
+  background: none;
+  text-decoration: underline;
 }
 
-ul#wc-biz-courier-logistics-metabox .biz-warning {
-  font-size: 10px;
-  padding: 5px 10px;
-  font-weight: normal;
-  border-radius: 5px;
-  margin: 0 0 10px 0;
-  background: #fffdda;
+/**
+* Add native WordPress Admin theme 
+* color to editing button.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .voucher
+  > button[data-action="edit"] {
+  color: var(--wp-admin-theme-color);
 }
 
-ul#wc-biz-courier-logistics-metabox .biz-success {
-  font-size: 10px;
-  padding: 5px 10px;
-  font-weight: normal;
-  border-radius: 5px;
-  margin: 0 0 10px 0;
-  background: #daffdd;
+/**
+* Add native WooCommerce destructive 
+* action color to delete button.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .voucher
+  > button[data-action="delete"] {
+  color: var(--wc-red);
 }
 
-ul#wc-biz-courier-logistics-metabox > li {
-  margin: 10px 0;
-}
+/**
+* 
+* Actions
+* ------------
+* This section provides the necessary styling for
+* the shipment actions.
+*/
 
-#biz-shipment-actions-title {
-  margin-bottom: 8px;
+#wc-biz-courier-logistics-shipment-management > .actions > button {
+  margin-bottom: 10px;
 }
 
 #biz-cancel-shipment.button {
@@ -141,22 +262,6 @@ ul#wc-biz-courier-logistics-metabox > li {
 
 #biz-add-shipment-voucher {
   margin-top: 10px;
-}
-
-#biz-edit-shipment-voucher,
-#biz-delete-shipment-voucher {
-  border: none;
-  padding: 0;
-  background: none;
-  text-decoration: underline;
-}
-
-#biz-edit-shipment-voucher {
-  color: var(--wp-admin-theme-color);
-}
-
-#biz-delete-shipment-voucher {
-  color: var(--wc-red);
 }
 
 #biz-edit-shipment-voucher:hover,
@@ -179,10 +284,13 @@ ul#wc-biz-courier-logistics-metabox > li {
   margin: 5px 0;
 }
 
-.biz-shipment-partner .tracking-number {
-  font-weight: bold;
-  font-size: 18px;
-}
+/**
+* 
+* History
+* ------------
+* This section provides the necessary styling for
+* the status history section.
+*/
 
 #biz-shipment-status-history {
   max-height: 300px;

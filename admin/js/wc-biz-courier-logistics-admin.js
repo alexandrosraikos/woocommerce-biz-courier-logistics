@@ -28,16 +28,16 @@ var $ = jQuery;
  */
 function showAlert(selector, message, type = "error", placeBefore = false) {
   if (placeBefore) {
-    $(selector).insertBefore(
-      '<div class="wc-biz-courier-logistics biz-' +
+    $(selector).before(
+      '<div class="wc-biz-courier-logistics-notice ' +
         type +
         '">' +
         message +
         "</div>"
     );
   } else {
-    $(selector).insertAfter(
-      '<div class="wc-biz-courier-logistics biz-' +
+    $(selector).after(
+      '<div class="wc-biz-courier-logistics-notice ' +
         type +
         '">' +
         message +
@@ -101,11 +101,23 @@ function makeWPRequest(actionDOMSelector, action, nonce, data, completion) {
         }
       } else if (response.status === 400 || response.status === 500) {
         showAlert(actionDOMSelector, response.responseText);
+
+        // Remove the loading class.
+        $(actionDOMSelector).removeClass("loading");
+        if (actionDOMSelector.includes("button")) {
+          $(actionDOMSelector).prop("disabled", false);
+        }
       } else {
         showAlert(
           actionDOMSelector,
           "There was an unknown connection error to the Biz API. Please try again later."
         );
+
+        // Remove the loading class.
+        $(actionDOMSelector).removeClass("loading");
+        if (actionDOMSelector.includes("button")) {
+          $(actionDOMSelector).prop("disabled", false);
+        }
       }
     },
     dataType: "json",

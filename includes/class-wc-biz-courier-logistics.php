@@ -339,16 +339,17 @@ class WC_Biz_Courier_Logistics
 
 		/** @var Object $response The API response. */
 		$response = $client->__soapCall($method, $data);
+		$response = json_decode(json_encode($response),true);
 
 		// Handle response.
-		if ($response->Error == 0) {
+		if (($response['Error'] ?? 0) == 0) {
 			if ($completion != NULL) {
-				$completion(json_decode(json_encode($response),true));
-			} else return json_decode(json_encode($response),true);
+				$completion($response);
+			} else return $response;
 		} else {
 			if ($rejection != NULL) {
 				$rejection($response);
-			} else throw new ErrorException($response->Error);
+			} else throw new ErrorException($response['Error']);
 		}
 	}
 

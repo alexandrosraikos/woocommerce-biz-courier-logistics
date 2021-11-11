@@ -140,19 +140,37 @@
      *
      */
 
-    // Capture click event for modification.
-    $("#biz-modify-shipment").click(requestShipmentModification);
-
-    // Capture click event for cancellation.
-    $("#biz-cancel-shipment").click(requestShipmentCancellation);
+    /**
+     * Voucher
+     */
 
     // Capture click event for voucher editing.
-    $("#biz-edit-shipment-voucher").click(editShipmentVoucher);
+    $(
+      '#wc-biz-courier-logistics-shipment-management > .voucher > button[data-action="edit"]'
+    ).click(editShipmentVoucher);
 
     // Capture click event for voucher deletion.
-    $("#biz-delete-shipment-voucher").click(deleteShipmentVoucher);
+    $(
+      '#wc-biz-courier-logistics-shipment-management > .voucher > button[data-action="delete"]'
+    ).click(deleteShipmentVoucher);
+
+    /**
+     * Actions
+     */
+
+    // Capture click event for modification.
+    $(
+      '#wc-biz-courier-logistics-shipment-management > .actions > button[data-action="modify"]'
+    ).click(requestShipmentModification);
+
+    // Capture click event for cancellation.
+    $(
+      '#wc-biz-courier-logistics-shipment-management > .actions > button[data-action="cancel"]'
+    ).click(requestShipmentCancellation);
 
     // Capture click event for order synchronization.
-    $("#biz-synchronize-order").click(synchronizeOrderStatus);
+    $(
+      '#wc-biz-courier-logistics-shipment-management > .actions > button[data-action="sync"]'
+    ).click(synchronizeOrderStatus);
   });
 })(jQuery);

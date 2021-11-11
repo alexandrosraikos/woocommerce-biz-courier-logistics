@@ -13,14 +13,14 @@
  */
 
 /**
+ * 	------------
  * 	Generic
  * 	------------
- *  This section provides generic markdown.
- * 
+ *  This section provides generic markup.
  */
 
 /**
- * Display an error message in native WP styling.
+ * Display a notice in native WP styling.
  *
  * @param string $message The message to be displayed.
  * @param string $type The type of notice (currently only `warning` and `error` supported).
@@ -31,7 +31,25 @@
 function notice_display_html($message, $type = 'error')
 {
 ?>
-    <div class="notice notice-<?php echo $type ?> biz-notice">
+    <div class="notice notice-<?php echo $type ?>">
+        <?php echo $message ?>
+    </div>
+<?php
+}
+
+/**
+ * Embed a notice box.
+ *
+ * @param string $message The message to be displayed.
+ * @param string? $type The type of notice (`warning`, `error` & `success` supported).
+ *
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.4.0
+ */
+function notice_display_embedded_html($message, $type = "")
+{
+?>
+    <div class="wc-biz-courier-logistics-notice <?php echo $type ?>">
         <?php echo $message ?>
     </div>
 <?php
@@ -39,10 +57,11 @@ function notice_display_html($message, $type = 'error')
 
 
 /**
- * 	Stock Synchronisation
  * 	------------
- *  This section provides all the markdown related to syncing stock 
- * 	between the WooCommerce store and the items in the connected warehouse.
+ * 	Stock
+ * 	------------
+ *  This section provides all the markup 
+ *  related to stock management.
  * 
  */
 
@@ -85,14 +104,20 @@ function biz_stock_sync_column_html($status)
     echo '<div class="biz_sync-indicator ' . $status . '">' . $label . '</div>';
 }
 
+
 /**
- * 	Order Status 
+ * 	------------
+ * 	Shipments
  * 	------------
  *  This section provides the necessary functionality for displaying
- * 	Biz Courier shipment status.
- * 
+ * 	Biz Courier shipment data.
  */
 
+
+/**
+ *  All Orders Page
+ * 	------------
+ */
 
 /**
  * Print HTML column order voucher.
@@ -111,189 +136,165 @@ function order_column_voucher_html($voucher)
     }
 }
 
+/**
+ *  Order Page
+ * 	------------
+ */
 
 /**
- * Print errors in HTML for the shipment tracking meta box.
- *
- * @param    string $status The associated order status.
- * @param    string $voucher The order's voucher, defaults to null if not present.
- * @param    array $report The shipment's status history, defaults to null if not present.
- * @param    string $internal_error A description of a past internal error to display asynchronously.
+ * Print the shipment creation HTML.
+ * 
+ * @usedby wc-biz-courier-logistics-admin-new-shipment.js
+ * @since 1.4.0
+ */
+function shipment_creation_html()
+{
+?>
+    <div id="wc-biz-courier-logistics-shipment-management" class="wc-biz-courier-logistics">
+        <p><?php _e("This order has not shipped with Biz.", "wc-biz-courier-logistics") ?></p>
+        <div class="actions">
+            <button data-action="send" class="button button-primary" />
+            <?php _e("Send shipment", "wc-biz-courier-logistics") ?>
+            </button>
+            <button data-action="add-voucher" class="button">
+                <?php _e("Add existing voucher number", "wc-biz-courier-logistics") ?>
+            </button>
+        </div>
+    </div>
+<?php
+}
+
+/**
+ * Print the shipment management HTML.
+ * 
+ * @param string $voucher The connected shipment voucher.
+ * @param string $status The order's status.
+ * @param array $history The shipment's complete history.
+ * 
+ * @usedby wc-biz-courier-logistics-admin-existing-shipment.js
  * 
  * @author Alexandros Raikos <alexandros@araikos.gr>
- * @since 1.0.0
+ * @since 1.4.0
  */
-function shipment_meta_box_html(string $order_status, string $voucher = null, array $report = null, $internal_error = null)
+function shipment_management_html($voucher, $status, $history)
 {
-	// TODO @alexandrosraikos: Restructure class references.
+    // TODO @alexandrosraikos: Finish working on styling.
+    // TODO @alexandrosraikos: Test all sequences.
 ?>
-    <div class="wc-biz-courier-logistics meta-box">
-        <ul id="wc-biz-courier-logistics-metabox">
-            <?php
+    <div id="wc-biz-courier-logistics-shipment-management" class="wc-biz-courier-logistics">
+        <div class="voucher">
+            <h4><?php _e("Voucher number", 'wc-biz-courier-logistics') ?></h4>
+            <div class="number"><?php echo $voucher ?></div>
 
-            // Show internal error.
-            if (!empty($internal_error)) {
-            ?>
-                <li class="biz-error">
-                    <?php echo $internal_error; ?>
-                </li>
             <?php
+            // Show last mile tracking number, if available.
+            if (!empty($history)) {
+                if (!empty(end($history)['last_mile_tracking_number'])) {
+            ?>
+                    <h5><?php _e('Partner tracking number', 'wc-biz-courier-logistics') ?></h5>
+                    <div class="partner-number"> <?php echo end($history)['last_mile_tracking_number'] ?></div>
+            <?php
+                }
             }
-
-            // For non-synchronised orders.
-            if (empty($voucher)) {
             ?>
-                <p class="wc-biz-courier-logistics-order-indicator not-synchronized">
-                    <?php _e("This order has not shipped with Biz.", "wc-biz-courier-logistics") ?>
-                </p>
-                <button id="biz-send-shipment" class="button save-order button-primary" />
-                <?php _e("Send shipment", "wc-biz-courier-logistics") ?>
-                </button>
-                <button id="biz-add-shipment-voucher" class="button">
-                    <?php _e("Add existing voucher number", "wc-biz-courier-logistics") ?>
-                </button>
+
+            <button data-action="edit">
+                <?php _e("Edit voucher", "wc-biz-courier-logistics") ?>
+            </button>
+            <button data-action="delete">
+                <?php _e("Delete voucher", "wc-biz-courier-logistics") ?>
+            </button>
+        </div>
+        <div class="actions">
+            <h4><?php _e("Shipment actions", 'wc-biz-courier-logistics') ?></h4>
             <?php
-            }
 
-            // For synchronised orders.
-            else {
+            // Shipment modification actions.
+            if (end($history)['level'] != 'Final') {
+                if ($status == "processing") {
             ?>
-                <li class="biz-voucher">
-                    <?php echo __("Voucher number: ", 'wc-biz-courier-logistics') . '<div>' . $voucher . '</div>' ?>
-                    <button id="biz-edit-shipment-voucher">
-                        <?php _e("Edit voucher", "wc-biz-courier-logistics") ?>
+                    <button class="button" data-action="modify">
+                        <?php _e("Modify shipment", "wc-biz-courier-logistics") ?>
                     </button>
-                    <button id="biz-delete-shipment-voucher">
-                        <?php _e("Delete voucher", "wc-biz-courier-logistics") ?>
+                    <button class="button" data-action="cancel">
+                        <?php _e("Request shipment cancellation", "wc-biz-courier-logistics") ?>
                     </button>
-                </li>
-                <li class="biz-shipment-modification">
-                    <div id="biz-shipment-actions-title">
-                        <?php echo __("Shipment actions: ", 'wc-biz-courier-logistics') ?>
-                    </div>
+                <?php
+                } else {
+                    notice_display_embedded_html(__('You must change the order status to "Processing" in order to perform more actions on this shipment.', 'wc-biz-courier-logistics'), 'warning');
+                ?>
+                    <button class="button button-primary" data-action="sync">
+                        <?php _e("Synchronize order status", "wc-biz-courier-logistics") ?>
+                    </button>
                     <?php
-
-                    // Shipment modification actions.
-                    if (end($report)['level'] != 'Final') {
-                        if ($order_status == "processing") {
-                    ?>
-                            <button class="button" id="biz-modify-shipment">
-                                <?php _e("Modify shipment", "wc-biz-courier-logistics") ?>
-                            </button>
-                            <button class="button" id="biz-cancel-shipment">
-                                <?php _e("Request shipment cancellation", "wc-biz-courier-logistics") ?>
-                            </button>
-                        <?php
+                }
+            } else {
+                if ($status != end($history)['conclusion']) {
+                    $biz_settings = get_option('woocommerce_biz_integration_settings');
+                    if ($biz_settings['automatic_order_status_updating'] == 'yes') {
+                        if ($status == 'processing') {
+                            notice_display_embedded_html(sprintf(__("This shipment has reached a %s state. The order status will be updated automatically in a few minutes. You can disable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>.", "wc-biz-courier-logistics"), __(end($history)['conclusion'], 'wc-biz-courier-logistics')));
                         } else {
-                        ?>
-                            <div class="biz-warning">
-                                <?php _e('You must change the order status to "Processing" in order to perform more actions on this shipment.', 'wc-biz-courier-logistics') ?>
-                            </div>
+                            notice_display_embedded_html(sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change.", "wc-biz-courier-logistics"), __(end($history)['conclusion'], 'wc-biz-courier-logistics')), 'warning');
+                        }
+                    } else {
+                        if ($status == 'processing') {
+                            notice_display_embedded_html(sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change. You can also enable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>.", "wc-biz-courier-logistics"), __(end($history)['conclusion'], 'wc-biz-courier-logistics')), 'warning');
+                    ?>
                             <button class="button" id="biz-synchronize-order">
                                 <?php _e("Synchronize order status", "wc-biz-courier-logistics") ?>
                             </button>
-                            <?php
-                        }
-                    } else {
-                        if ($order_status != end($report)['conclusion']) {
-                            $biz_settings = get_option('woocommerce_biz_integration_settings');
-                            if ($biz_settings['automatic_order_status_updating'] == 'yes') {
-                                if ($order_status == 'processing') {
-                            ?>
-                                    <div class="biz-notice">
-                                        <?php echo sprintf(__("This shipment has reached a %s state. The order status will be updated automatically in a few minutes. You can disable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
-                                    </div>
-                                <?php
-                                } else {
-                                ?>
-                                    <div class="biz-warning">
-                                        <?php echo sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
-                                    </div>
-                                <?php
-                                }
-                            } else {
-                                if ($order_status == 'processing') {
-                                ?>
-                                    <div class="biz-warning">
-                                        <?php echo sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change. You can also enable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
-                                    </div>
-                                    <button class="button" id="biz-synchronize-order">
-                                        <?php _e("Synchronize order status", "wc-biz-courier-logistics") ?>
-                                    </button>
-                                <?php
-                                } else {
-                                ?>
-                                    <div class="biz-warning">
-                                        <?php echo sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
-                                    </div>
-                                <?php
-                                }
-                            }
-                        } else {
-                            if (end($report)['conclusion'] != "completed") {
-                                ?>
-                                <div class="biz-error">
-                                    <?php echo sprintf(__("This shipment has reached a %s state. You cannot perform further actions.", "wc-biz-courier-logistics"), __(end($report)['conclusion'], 'wc-biz-courier-logistics')); ?>
-                                </div>
-                            <?php
-                            } else {
-                            ?>
-                                <div class="biz-success">
-                                    <?php _e('This shipment was completed. There are no more actions to perform.', 'wc-biz-courier-logistics') ?>
-                                </div>
-                    <?php
-                            }
-                        }
-                    }
-                    ?>
-                </li>
-                <?php
-
-                // Show last mile tracking number, if available.
-                if (!empty($report)) {
-                    if (!empty(end($report)['last_mile_tracking_number'])) {
-                ?>
-                        <li class="biz-shipment-partner">
-                            <div class="title"><?php _e('Partner tracking number:', 'wc-biz-courier-logistics') ?></div>
-                            <div class="tracking-number"> <?php echo end($report)['last_mile_tracking_number'] ?></div>
-                        </li>
-                    <?php
-                    }
-                }
-
-                // Show status history data.
-                if (!empty($report)) {
-                    ?>
-                    <li>
-                        <?php
-                        _e("Status history: ", 'wc-biz-courier-logistics');
-                        ?>
-                    </li>
-                    <li id="biz-shipment-status-history">
-                        <?php
-                        foreach (array_reverse($report) as $status) {
-                            echo '<ul class="biz-shipment-status ' . $status['conclusion'] . '">';
-                            echo '<li class="status-level">' . __($status['level'], 'wc-biz-courier-logistics') . '</li>';
-                            echo '<li class="status-description">' . $status['description'] . (($status['level'] == "Final") ? file_get_contents(plugin_dir_path(dirname(__FILE__)) . 'svg/' . $status['conclusion'] . '.svg') : "") . '</li>';
-                            echo '<li class="status-comments">' . ((!empty($status['comments'])) ? $status['comments'] : __('No other comments.', 'wc-biz-courier-logistics')) . '</li>';
-                            if (!empty($status['actions'])) {
-                                echo '<ul class="actions">';
-                                echo '<div class="title">' . __('Actions:', 'wc-biz-courier-logistics') . '</div>';
-                                foreach (array_reverse($status['actions']) as $action) {
-                                    echo '<hr/><li class="action-description">' . $action['description'] . '</li>';
-                                    echo '<li class="action-date">' . $action['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $action['time'] . '</li>';
-                                }
-                                echo '</ul>';
-                            }
-                            echo '<li class="status-date">' . $status['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $status['time'] . '</li>';
-                            echo '</ul>';
-                        }
-                        ?>
-                    </li>
             <?php
+                        } else {
+                            notice_display_embedded_html(sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change.", "wc-biz-courier-logistics"), __(end($history)['conclusion'], 'wc-biz-courier-logistics')), 'warning');
+                        }
+                    }
+                } else {
+                    if (end($history)['conclusion'] != "completed") {
+                        notice_display_embedded_html(sprintf(__("This shipment has reached a %s state. You cannot perform further actions.", "wc-biz-courier-logistics"), __(end($history)['conclusion'], 'wc-biz-courier-logistics')), 'error');
+                    } else {
+                        notice_display_embedded_html(__('This shipment was completed. There are no more actions to perform.', 'wc-biz-courier-logistics'), 'success');
+                    }
                 }
             }
             ?>
-        </ul>
+        </div>
+        <div class="history">
+            <h4><?php _e("Status history", 'wc-biz-courier-logistics') ?></h4>
+            <?php
+            if (!empty($history)) {
+            ?>
+                <ul class="status-list">
+                    <?php
+                    foreach (array_reverse($history) as $status) {
+
+                        // Basic information.
+                        echo '<li class="status ' . $status['conclusion'] . '">';
+                        echo '<span class="level">' . __($status['level'], 'wc-biz-courier-logistics') . '</span>';
+                        echo '<h5 class="description">' . $status['description'] . (($status['level'] == "Final") ? file_get_contents(plugin_dir_path(dirname(__FILE__)) . 'svg/' . $status['conclusion'] . '.svg') : "") . '</h5>';
+                        echo '<p class="comments">' . ((!empty($status['comments'])) ? $status['comments'] : __('No other comments.', 'wc-biz-courier-logistics')) . '</p>';
+
+                        // Additional status actions.
+                        if (!empty($status['actions'])) {
+                            echo '<ul class="actions">';
+                            echo '<div class="title">' . __('Actions:', 'wc-biz-courier-logistics') . '</div>';
+                            foreach (array_reverse($status['actions']) as $action) {
+                                echo '<hr/><li class="description">' . $action['description'] . '</li>';
+                                echo '<li class="action-date">' . $action['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $action['time'] . '</li>';
+                            }
+                            echo '</ul>';
+                        }
+
+                        // Additional metadata.
+                        echo '<span class="date">' . $status['date'] . ' ' . __('at', 'wc-biz-courier-logistics') . ' ' . $status['time'] . '</span>';
+                        echo '</li>';
+                    }
+                    ?>
+        </div>
+    <?php
+            } else notice_display_embedded_html(__("There is no status history for this shipment.", 'wc-biz-courier-logistics'), 'warning');
+    ?>
     </div>
-<?php }
+    </div>
+<?php
+}

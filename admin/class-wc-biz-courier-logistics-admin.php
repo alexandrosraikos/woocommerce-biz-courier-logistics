@@ -73,6 +73,7 @@ class WC_Biz_Courier_Logistics_Admin
 	{
 		// Check for PHP and loaded extensions.
 		if (version_compare(phpversion(), '7.4.0') < 0) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 			notice_display_html(__("This version of PHP is not supported by Biz Courier & Logistics for WooCommerce. Please update to PHP 7.4.0 or later."), 'wc-biz-courier-logistics');
 		}
 		if (!extension_loaded('soap')) {
@@ -83,16 +84,19 @@ class WC_Biz_Courier_Logistics_Admin
 		// Check for supported WordPress version.
 		global $wp_version;
 		if (version_compare($wp_version, '5.7.0') < 0) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 			notice_display_html(__("This version of WordPress is not supported by Biz Courier & Logistics for WooCommerce. Please update to version 5.7.0 or later."), 'wc-biz-courier-logistics');
 		}
 
 		// Check for installed WooCommerce.
 		if (!class_exists('WooCommerce')) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 			notice_display_html(__("Biz Courier & Logistics for WooCommerce requires the WooCommerce plugin to be installed and enabled.", 'wc-biz-courier-logistics'));
 		}
 
 		// Check for supported WooCommerce version.
-		if (version_compare($WC_VERSION, '5.6.0') < 0) {
+		if (version_compare(WC_VERSION, '5.6.0') < 0) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 			notice_display_html(__("This version of WooCommerce is not supported by Biz Courier & Logistics for WooCommerce. Please update to WooCommerce 5.6.0 or later.", 'wc-biz-courier-logistics'));
 		}
 	}
@@ -744,7 +748,7 @@ class WC_Biz_Courier_Logistics_Admin
 		WC_Biz_Courier_Logistics_Admin::ajax_handler(function ($data) {
 
 			// Validate voucher.
-			$status_report = biz_shipment_status($_POST['voucher']);
+			$status_report = biz_shipment_status($_POST['new_voucher']);
 			if (!empty($status_report)) {
 				if (!update_post_meta($data['order_id'], '_biz_voucher', $data['new_voucher'])) {
 					throw new ErrorException("The shipment voucher could not be saved to this order.");
@@ -980,16 +984,14 @@ class WC_Biz_Courier_Logistics_Admin
 				$voucher = get_post_meta($order->get_id(), '_biz_voucher', true);
 
 				// Get Biz API data and prepare scripts appropriately.
+				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 				if (!empty($voucher)) {
-					$report = biz_shipment_status($voucher);
 					prepare_scripts_existing_shipment($order->get_id());
+					shipment_management_html($voucher, $order->get_status(), biz_shipment_status($voucher));
 				} else {
 					prepare_scripts_new_shipment($order->get_id());
+					shipment_creation_html();
 				}
-
-				// Print the meta box.
-				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-				shipment_meta_box_html($order->get_status(), $voucher ?? null, $report ?? null);
 			}, $order->get_id());
 		}
 
