@@ -84,7 +84,7 @@ function biz_stock_sync_all_button()
  *
  * @since    1.0.0
  */
-function biz_stock_sync_column_html($status)
+function product_synchronization_status_indicator($status)
 {
     $label = __("Pending", "wc-biz-courier-logistics");
     switch ($status):
@@ -144,7 +144,7 @@ function order_column_voucher_html($voucher)
 /**
  * Print the shipment creation HTML.
  * 
- * @usedby wc-biz-courier-logistics-admin-new-shipment.js
+ * @usedby wc-biz-courier-logistics-admin-shipment-creation.js
  * @since 1.4.0
  */
 function shipment_creation_html()
@@ -171,7 +171,7 @@ function shipment_creation_html()
  * @param string $status The order's status.
  * @param array $history The shipment's complete history.
  * 
- * @usedby wc-biz-courier-logistics-admin-existing-shipment.js
+ * @usedby wc-biz-courier-logistics-admin-shipment-management.js
  * 
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.4.0
