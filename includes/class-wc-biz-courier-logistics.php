@@ -71,7 +71,9 @@ class WC_Biz_Courier_Logistics
 	{
 		// TODO @alexandrosraikos: Generalize as much code as possible (#37).
 		// TODO @alexandrosraikos: Enforce correct documentation everywhere (#38). NOTE: use @usedby for hook calls.
+		// TODO @alexandrosraikos: Restructure all CSS.
 		// TODO @alexandrosraikos: Update all translations.
+		// TODO @alexandrosraikos: Log and test all cases thoroughly.
 
 		$this->version = '1.4.0';
 		$this->WC_Biz_Courier_Logistics = 'wc-biz-courier-logistics';
@@ -138,9 +140,7 @@ class WC_Biz_Courier_Logistics
 	 */
 	private function set_locale()
 	{
-
 		$plugin_i18n = new WC_Biz_Courier_Logistics_i18n();
-
 		$this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
 	}
 
@@ -155,75 +155,101 @@ class WC_Biz_Courier_Logistics
 	{
 		$plugin_admin = new WC_Biz_Courier_Logistics_Admin($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
 
-		// TODO @alexandrosraikos: Rename functions.
+		/**
+		 * General
+		 * ----------------
+		 */
 
+		/** Interface hooks */
 		$this->loader->add_action('init', $plugin_admin, 'check_minimum_requirements');
 		$this->loader->add_action('init', $plugin_admin, 'async_error_display');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-		$this->loader->add_filter('plugin_action_links_wc-biz-courier-logistics/wc-biz-courier-logistics.php', $plugin_admin, 'plugin_action_links');
+		$this->loader->add_filter(
+			'plugin_action_links_wc-biz-courier-logistics/wc-biz-courier-logistics.php',
+			$plugin_admin,
+			'plugin_action_links'
+		);
 		$this->loader->add_filter('plugin_row_meta', $plugin_admin, 'plugin_row_meta', 10, 2);
 
 		/**
-		 *  Biz Courier Integration.
+		 * Integration
+		 * ----------------
 		 */
+
+		/** Extensions */
 		$this->loader->add_action('woocommerce_integrations_init', $plugin_admin, 'biz_integration');
 		$this->loader->add_filter('woocommerce_integrations', $plugin_admin, 'add_biz_integration');
+
+		/** Interface hooks */
 		$this->loader->add_filter('admin_notices', $plugin_admin, 'biz_settings_notice');
 
 		/** 
-		 *  Custom Stock Synchronization.
+		 * Product Management
+		 * ----------------
 		 */
+
+		/** Interface hooks */
 		$this->loader->add_action('woocommerce_product_options_inventory_product_data', $plugin_admin, 'add_product_biz_warehouse_option');
-		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'save_product_biz_warehouse_option', 10, 1);
 		$this->loader->add_action('woocommerce_variation_options', $plugin_admin, 'add_product_variation_biz_warehouse_option', 10, 3);
-		$this->loader->add_action('woocommerce_save_product_variation', $plugin_admin, 'save_product_variation_biz_warehouse_option', 10, 2);
-		$this->loader->add_action('wp_ajax_biz_stock_synchronization', $plugin_admin, 'product_stock_synchronization');
 		$this->loader->add_action('manage_posts_extra_tablenav', $plugin_admin, 'add_product_stock_synchronize_all_button', 20, 1);
 		$this->loader->add_filter('manage_edit-product_columns', $plugin_admin, 'add_product_stock_status_indicator_column');
 		$this->loader->add_action('manage_product_posts_custom_column', $plugin_admin, 'product_stock_status_indicator_column', 10, 2);
-		// TODO @alexandrosraikos: Provide option to handle Biz Warehouse jointly for variations (#34 - https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/issues/34)
+
+		/** Handler hooks */
+		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'save_product_biz_warehouse_option', 10, 1);
+		$this->loader->add_action('woocommerce_save_product_variation', $plugin_admin, 'save_product_variation_biz_warehouse_option', 10, 2);
+
+		/** AJAX handler hooks */
+		$this->loader->add_action('wp_ajax_biz_stock_synchronization', $plugin_admin, 'product_stock_synchronization');
+		// TODO @alexandrosraikos: Provide option to handle Biz Warehouse jointly for variations (#34)
 
 		/** 
-		 *  Biz Courier Shipping Method and COD.
+		 * Shipping Method
+		 * ----------------
 		 */
+
+		/** Extensions */
 		$this->loader->add_action('woocommerce_shipping_init', $plugin_admin, 'biz_shipping_method');
 		$this->loader->add_filter('woocommerce_shipping_methods', $plugin_admin, 'add_biz_shipping_method');
 
-		// TODO @alexandrosraikos: Move this to public.
-		$this->loader->add_action('woocommerce_cart_calculate_fees', $plugin_admin, 'add_biz_cod_fee', 10, 1);
-
-		/**
-		 *  Order and shipment interactivity.
+		/** 
+		 * Shipment Management
+		 * ----------------
 		 */
-		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_biz_shipment_meta_box');
-		$this->loader->add_filter('manage_edit-shop_order_columns', $plugin_admin, 'add_biz_order_voucher_column');
-		$this->loader->add_action('manage_shop_order_posts_custom_column', $plugin_admin, 'biz_order_voucher_column', 10, 2);
-		$this->loader->add_action('wp_ajax_biz_shipment_send', $plugin_admin, 'biz_shipment_send_handler');
-		$this->loader->add_action('wp_ajax_biz_shipment_modification_request', $plugin_admin, 'biz_shipment_modification_request_handler');
-		$this->loader->add_action('wp_ajax_biz_shipment_cancellation_request', $plugin_admin, 'biz_shipment_cancellation_request_handler');
-		$this->loader->add_action('wp_ajax_biz_shipment_add_voucher', $plugin_admin, 'biz_shipment_add_voucher_handler');
-		$this->loader->add_action('wp_ajax_biz_shipment_edit_voucher', $plugin_admin, 'biz_shipment_edit_voucher_handler');
-		$this->loader->add_action('wp_ajax_biz_shipment_delete_voucher', $plugin_admin, 'biz_shipment_delete_voucher_handler');
-		$this->loader->add_action('wp_ajax_biz_shipment_synchronize_order', $plugin_admin, 'biz_shipment_synchronize_order_handler');
-		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'biz_order_changed_handler', 10, 3);
 
+		/** Interface hooks */
+		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_shipment_management_meta_box');
+		$this->loader->add_filter('manage_edit-shop_order_columns', $plugin_admin, 'add_shipment_voucher_column');
+		$this->loader->add_action('manage_shop_order_posts_custom_column', $plugin_admin, 'shipment_voucher_column', 10, 2);
+		// TODO @alexandrosraikos: Add biz Warehouse indicator on order items page (#32).
 
-		// TODO @alexandrosraikos: Add biz Warehouse indicator on order items page (#32 - https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/issues/32).
+		/** Handler hooks */
+		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'order_status_change_handler', 10, 3);
 
-		// TODO @alexandrosraikos: Clean this up.
-		function biz_cron_order_status_checking_interval($schedules)
-		{
-			$schedules['ten_minutes'] = array(
-				'interval' => 300,
-				'display' => 'Every 5 minutes.'
-			);
-			return $schedules;
-		}
-		add_filter('cron_schedules',  'biz_cron_order_status_checking_interval');
-		$this->loader->add_action('biz_cron_order_status_checking_hook', $plugin_admin, 'biz_cron_order_status_checking');
-		if (!wp_next_scheduled('biz_cron_order_status_checking_hook')) {
-			wp_schedule_event(time(), 'ten_minutes', 'biz_cron_order_status_checking_hook');
+		/** AJAX handler hooks */
+		$this->loader->add_action('wp_ajax_biz_shipment_send', $plugin_admin, 'shipment_send_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_modification_request', $plugin_admin, 'shipment_modification_request_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_cancellation_request', $plugin_admin, 'shipment_cancellation_request_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_add_voucher', $plugin_admin, 'shipment_add_voucher_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_edit_voucher', $plugin_admin, 'shipment_edit_voucher_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_delete_voucher', $plugin_admin, 'shipment_delete_voucher_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_synchronize_order', $plugin_admin, 'shipment_synchronize_order_handler');
+
+		/** Cron hooks */
+		add_filter(
+			'cron_schedules',
+			function ($schedules) {
+				$schedules['ten_minutes'] = array(
+					'interval' => 300,
+					'display' => 'Every 5 minutes.'
+				);
+				return $schedules;
+			}
+		);
+		$this->loader->add_action('shipment_status_cron_handler_hook', $plugin_admin, 'shipment_status_cron_handler');
+		if (!wp_next_scheduled('shipment_status_cron_handler_hook')) {
+			wp_schedule_event(time(), 'ten_minutes', 'shipment_status_cron_handler_hook');
 		}
 	}
 
@@ -239,9 +265,22 @@ class WC_Biz_Courier_Logistics
 
 		$plugin_public = new WC_Biz_Courier_Logistics_Public($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
 
+		/**
+		 * General
+		 * ----------------
+		 */
+
+		/** Interface hooks */
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
 
+		/** 
+		 * Shipping Method
+		 * ----------------
+		 */
+
+		/** Interface hooks */
+		$this->loader->add_action('woocommerce_cart_calculate_fees', $plugin_public, 'add_biz_cod_fee', 10, 1);
 		$this->loader->add_action('wp_footer', $plugin_public, 'biz_checkout_refresh');
 	}
 

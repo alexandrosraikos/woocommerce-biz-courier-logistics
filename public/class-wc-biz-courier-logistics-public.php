@@ -100,6 +100,36 @@ class WC_Biz_Courier_Logistics_Public {
 
 	}
 
+	/**
+	 * Calculate the additional COD fee for Biz shipping on checkout
+	 * 
+	 * @param object $cart The given checkout cart.
+	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.3.3
+	 * 
+	 * @version 1.4.0
+	 */
+	function add_biz_cod_fee($cart)
+	{
+
+		// Ignore AJAX call.
+		if (is_admin() && defined('DOING_AJAX')) return;
+
+		// Add the COD fee on COD payment methods.
+		if (
+			WC()->session->get('chosen_payment_method') == 'cod'
+		) {
+			/** @var array $biz_shipping_settings The Biz shipping settings. */
+			$biz_shipping_settings = get_option('woocommerce_biz_shipping_method_settings');
+
+			// Add the registered fee amount.
+			if (!empty($biz_shipping_settings['biz_cash_on_delivery_fee'])) {
+				$cart->add_fee(__('Cash on Delivery fee', 'wc-biz-courier-logistics'), $biz_shipping_settings['biz_cash_on_delivery_fee']);
+			}
+		}
+	}
+
 
 	/**
 	 * Inject a script to refresh checkout fees on payment method change.

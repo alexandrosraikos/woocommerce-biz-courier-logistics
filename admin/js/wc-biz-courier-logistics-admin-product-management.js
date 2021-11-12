@@ -44,6 +44,7 @@ function synchronizeStock(e) {
    *
    */
 
+  // TODO @alexandrosraikos: Display stock level synchronization errors. (#31)
   // Ensure prepared document.
   $(document).ready(function () {
     // Capture click event.

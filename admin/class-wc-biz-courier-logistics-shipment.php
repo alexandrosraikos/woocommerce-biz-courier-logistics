@@ -10,64 +10,116 @@
  * @since      1.2.0
  *
  * @package    WC_Biz_Courier_Logistics
- * @subpackage WC_Biz_Courier_Logistics/admin/partials
+ * @subpackage WC_Biz_Courier_Logistics/admin
  */
 
-
+/**
+ * The shipments-specific functionality of the plugin.
+ *
+ * Defines a management interface for shipments
+ * with respect to their associated orders.
+ *
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/admin
+ * 
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.4.0
+ */
 class WC_Biz_Courier_Logistics_Shipment
 {
 	/** @var WC_Order $order The associated WooCommerce order. */
 	protected WC_Order $order;
 
+	/**
+	 * Initialize the class and retrieve the associated order data.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
 	public function __construct(int $order_id)
 	{
 		$this->order = wc_get_order($order_id);
 		if (empty($this->order)) {
-			throw new RuntimeException(__("Unable to retrieve order data."));
+			throw new RuntimeException(__("Unable to retrieve order data.", 'wc-biz-courier-logistics'));
 		}
 	}
 
-
+	/**
+	 * Get the shipment voucher from the associated
+	 * order's metadata.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
 	public function get_voucher()
 	{
 		// TODO @alexandrosraikos: Create persistent memory variable to minimize DB reads.
-		$voucher = get_post_meta($this->order->get_id(), '_biz_voucher', true);
-		if (empty($voucher)) {
-			throw new RuntimeException(__("The voucher couldn't be retrieved.", 'wc-biz-courier-logistics'));
-		}
-		return $voucher;
+		return get_post_meta($this->order->get_id(), '_biz_voucher', true);
 	}
 
+	/**
+	 * Update the shipment's voucher in the associated
+	 * order's metadata.
+	 * 
+	 * @throws ErrorException When the new shipment voucher cannot be set.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
 	public function set_voucher(string $value)
 	{
 		// TODO @alexandrosraikos: Check for valid voucher.
-		if(!update_post_meta($this->order->get_id(), '_biz_voucher', $value)) {
-			throw new ErrorException("The shipment voucher could not be updated.");
+
+		// Check for falsy operation.
+		if (!update_post_meta($this->order->get_id(), '_biz_voucher', $value)) {
+			throw new ErrorException(__("The shipment voucher could not be updated.", 'wc-biz-courier-logistics'));
 		};
 	}
 
+	/**
+	 * Delete the shipment's voucher in the associated
+	 * order's metadata.
+	 * 
+	 * @throws ErrorException When the shipment voucher cannot be deleted.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
 	public function delete_voucher()
 	{
+		// Check for falsy operation.
 		if (!delete_post_meta($this->order->get_id(), '_biz_voucher')) {
-			throw new ErrorException("The shipment voucher could not be deleted from this order.");
+			throw new ErrorException(__("The shipment voucher could not be deleted from this order.", 'wc-biz-courier-logistics'));
 		}
 	}
 
-	public static function is_submitted(int $wc_order_id) {
+	/**
+	 * Check if an order has been submitted to Biz.
+	 * 
+	 * @return bool Whether the order is submitted to Biz Courier.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	public static function is_submitted(int $wc_order_id)
+	{
+		// Return voucher status.
 		return !empty(get_post_meta($wc_order_id, '_biz_voucher', true));
 	}
 
 	/**
 	 * Get the status history of a Biz Courier shipment using the stored voucher number.
 	 *
-	 * @param string $voucher The voucher code associated with the Biz shipment.
-	 *
-	 * @uses __soapCall()
-	 * 
+	 * @param string? $custom_voucher A different voucher code than the one associated.
 	 * @return array An array of the complete status history.
 	 * 
+	 * @uses WC_Biz_Courier_Logistics::contactBizCourierAPI()
+	 * @throws RuntimeException When there are no data for the given voucher number.
+	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since    1.0.0
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
 	public function get_status(string $custom_voucher = null): array
 	{
@@ -86,8 +138,10 @@ class WC_Biz_Courier_Logistics_Shipment
 		// Check for empty status history.
 		if (empty($biz_status_history)) throw new RuntimeException(
 			sprintf(
-				__("There are no data available for the voucher number %s.",
-				'wc-biz-courier-logistics'),
+				__(
+					"There are no data available for the voucher number %s.",
+					'wc-biz-courier-logistics'
+				),
 				$this->get_voucher()
 			)
 		);
@@ -147,9 +201,14 @@ class WC_Biz_Courier_Logistics_Shipment
 	}
 
 	/**
-	 * Handles the conclusion of order status based on the shipment status report.
+	 * Handles the conclusion of order status based on the status report.
+	 * 
+	 * @uses self::get_status()
 	 *
-	 * @since    1.2.1
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.2.1
+	 * 
+	 * @version 1.4.0
 	 */
 	public function conclude_order(bool $add_note = false)
 	{
@@ -202,18 +261,16 @@ class WC_Biz_Courier_Logistics_Shipment
 	/**
 	 * Modify a shipment with Biz.
 	 *
-	 * @param	 int $order_id The ID of the WooCommerce order.
+	 * @param int $order_id The ID of the WooCommerce order.
 	 * @param string $message? The modification message to include.
 	 * 
-	 * @uses 	get_option()
-	 * @uses	get_post_meta()
-	 * @uses	update_status()
-	 * 
-	 * @throws ErrorException When there is an invalid response from the Biz Courier API.
-	 * @throws SoapFault When there are connection issues.
+	 * @uses self::get_voucher()
+	 * @uses WC_Biz_Courier_Logistics::contactBizCourierAPI()
 	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since    1.0.0
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
 	public function modify($message)
 	{
@@ -238,11 +295,15 @@ class WC_Biz_Courier_Logistics_Shipment
 	/**
 	 * Cancel a shipment with Biz.
 	 *
-	 * @since    1.0.0
 	 * @param	 int $order_id The ID of the WooCommerce order.
-	 * @uses 	get_option()
-	 * @uses	get_post_meta()
-	 * @uses	update_status()
+	 * 
+	 * @uses self::get_voucher()
+	 * @uses WC_Biz_Courier_Logistics::contactBizCourierAPI()
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
 	public function cancel()
 	{
@@ -271,11 +332,26 @@ class WC_Biz_Courier_Logistics_Shipment
 		);
 	}
 
+	/**
+	 * Get the status definitions.
+	 * 
+	 * @return array The array of status definitions.
+	 * 
+	 * @uses WC_Biz_Courier_Logistics::contactBizCourierAPI()
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
 	public static function get_status_definitions(): array
 	{
 
 		// TODO @alexandrosraikos: Add settings option to refresh definitions manually.
 
+		/**
+		 * Retrieve the status definitions from the Biz API.
+		 * 
+		 * @return array The retrieved array of status definitions.
+		 */
 		function retrieve_definitions(): array
 		{
 
@@ -310,8 +386,10 @@ class WC_Biz_Courier_Logistics_Shipment
 			return $status_definitions;
 		}
 
+		/** @var array $status_definitions The array of status definitions. */
 		$status_definitions = get_option('wc_biz_courier_logistics_status_definitions');
 
+		// 
 		if (empty($status_definitions)) {
 			return retrieve_definitions();
 		} else {
@@ -321,25 +399,22 @@ class WC_Biz_Courier_Logistics_Shipment
 			} else return $status_definitions;
 		}
 
-		return $status_definitions;
 	}
 
 	/**
 	 * Creates a new shipment with and saves the response voucher in the order's meta
 	 * as `_biz_voucher`. For more information on this API call visit the official documentation here:
 	 * https://www.bizcourier.eu/WebServices
-	 *
-	 * @param	int $order_id The ID of the WooCommerce order.
 	 * 
 	 * @throws	RuntimeException When data are invalid.
 	 * @throws	ErrorException When there are API errors.
-	 * @throws  SoapFault When there are connection errors.
 	 * 
 	 * @author	Alexandros Raikos <alexandros@araikos.gr>
 	 * @since	1.0.0
+	 * 
 	 * @version	1.4.0
 	 */
-	public function send(): string
+	public function send(): void
 	{
 		// TODO @alexandrosraikos: Handle empty orders or unsupported orders (#36).
 		/**
@@ -350,7 +425,7 @@ class WC_Biz_Courier_Logistics_Shipment
 		 */
 
 		// Check for existing voucher.
-		if($this->is_submitted($this->order->get_id())){
+		if ($this->is_submitted($this->order->get_id())) {
 			throw new RuntimeException(__("A voucher already exists for this order.", 'wc-biz-courier-logistics'));
 		}
 
@@ -381,8 +456,12 @@ class WC_Biz_Courier_Logistics_Shipment
 		// Handle each item included in the order.
 		foreach ($items as $item) {
 
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock.php';
+
+			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($item['product_id']);
+
 			/** @var WC_Product $product The order item's product data. */
-			$product = wc_get_product($item['product_id']);
+			$product = $delegate->product;
 
 			// Get exact variation used as the product the referred product is variable.
 			if ($product->is_type('variable') && !empty($item['variation_id'])) {
@@ -390,8 +469,8 @@ class WC_Biz_Courier_Logistics_Shipment
 			}
 
 			// Check for active Biz synchronization status.
-			if (get_post_meta($product->get_id(), '_biz_stock_sync', true) == 'yes') {
-				if (get_post_meta($product->get_id(), '_biz_stock_sync_status', true) == 'synced') {
+			if (!empty($delegate->get_synchronization_status())) {
+				if ($delegate->get_synchronization_status() == 'synced') {
 
 					// Merge order item codes and quantities.
 					$shipment_products[] = $product->get_sku() . ":" . $item->get_quantity();
@@ -510,14 +589,14 @@ class WC_Biz_Courier_Logistics_Shipment
 		switch ($response['Error_Code']) {
 			case 0:
 				if (!empty($response['Voucher'])) {
-
 					// Update order meta.
 					delete_post_meta($this->order->get_id(), '_biz_failure_delivery_note');
 
 					// Switch order status to `processing`.
 					$this->order->update_status('processing', __('The shipment was successfully registered to Biz Courier.', 'wc-biz-courier-logistics'));
 
-					return $response['Voucher'];
+					// Set the voucher response.
+					$this->set_voucher($response['Voucher']);
 				} else throw new ErrorException(__("Response from Biz could not be read, please check your warehouse shipments from the official application.", 'wc-biz-courier-logistics'));
 			case 1:
 				throw new ErrorException(__("There was an error with your Biz credentials.", 'wc-biz-courier-logistics'));
