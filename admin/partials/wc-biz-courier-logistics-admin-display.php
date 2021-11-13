@@ -58,10 +58,10 @@ function notice_display_embedded_html($message, $type = "")
 
 /**
  * 	------------
- * 	Stock
+ * 	Product Management
  * 	------------
  *  This section provides all the markup 
- *  related to stock management.
+ *  related to product management.
  * 
  */
 
@@ -79,48 +79,12 @@ function product_stock_synchronize_all_button_html()
 <?php
 }
 
-function product_synchronization_checkbox ($status)
-{
-    // Print the checkbox.
-    echo '<div class="product_biz_stock_sync">';
-    woocommerce_wp_checkbox(
-        array(
-            'id' => '_biz_stock_sync',
-            'label' => __('Biz Warehouse', 'wc-biz-courier-logistics'),
-            'description' => __('Select this option if the product is stored in your Biz warehouse.', 'wc-biz-courier-logistics'),
-            'value' => (!empty($status)) ? 'yes' : 'no'
-        )
-    );
-    echo '</div>';
-
-    // Print additional stock synchronisation status.
-    if (!empty($status)) {
-        echo '<div class="biz_sync-indicator-container"><div class="biz_sync-indicator-title">' . __('Biz status', 'wc-biz-courier-logistics') . ': </div>';
-        product_synchronization_status_indicator($status);
-        echo '</div>';
-    }
-}
-
-function product_variation_synchronization_checkbox($loop, $status)
-{
-?>
-    <label class="tips" data-tip="<?php _e('Select this option if the product is stored in your Biz warehouse.', 'wc-biz-courier-logistics'); ?>">
-        <?php _e('Biz Warehouse', 'wc-biz-courier-logistics'); ?>
-        <input type="checkbox" class="checkbox variable_checkbox" name="_biz_stock_sync[<?php echo esc_attr($loop); ?>]" <?php echo ((!empty($status)) ? 'checked' : ''); ?> />
-    </label>
-    <?php
-    if (!empty($status)) {
-        echo '<div class="biz_sync-variation-indicator-title">' . __('Biz status', 'wc-biz-courier-logistics') . ': </div>';
-        product_synchronization_status_indicator($status);
-    }
-}
-
 /**
  * Print HTML column stock synchronization indicators.
  *
  * @since    1.0.0
  */
-function product_synchronization_status_indicator($status)
+function product_synchronization_status_indicator($status): string
 {
     $label = __("Pending", "wc-biz-courier-logistics");
     switch ($status):
@@ -137,7 +101,62 @@ function product_synchronization_status_indicator($status)
             $label = __("Disabled", "wc-biz-courier-logistics");
             break;
     endswitch;
-    echo '<div class="biz_sync-indicator ' . $status . '">' . $label . '</div>';
+    return <<<INDICATOR
+    <div class="wc-biz-courier-logistics">
+        <div class="synchronization-indicator $status">$label</div>
+    </div>
+    INDICATOR;
+}
+
+function product_synchronization_status_extended_indicator($status)
+{
+    echo '
+    <div class="wc-biz-courier-logistics extended-synchronization-indicator">
+        <span>' . __('Biz status', 'wc-biz-courier-logistics') . ':</span> 
+        ' . product_synchronization_status_indicator($status) . '
+    </div>
+    ';
+}
+
+function product_synchronization_checkbox($status)
+{
+    // Print the checkbox.
+    echo `
+    <div class="wc-biz-courier-logistics">`
+    .
+    woocommerce_wp_checkbox(
+        array(
+            'id' => '_biz_stock_sync',
+            'label' => __('Biz Warehouse', 'wc-biz-courier-logistics'),
+            'description' => __('Select this option if the product is stored in your Biz warehouse.', 'wc-biz-courier-logistics'),
+            'value' => (!empty($status)) ? 'yes' : 'no'
+        )
+    )
+    .
+    `</div>`;
+
+    // Print additional stock synchronisation status.
+    if (!empty($status)) {
+        product_synchronization_status_extended_indicator($status);
+    }
+}
+
+function product_variation_synchronization_checkbox($loop, $status)
+{
+    echo '
+    <label class="tips" data-tip="' . __('Select this option if the product is stored in your Biz warehouse.', 'wc-biz-courier-logistics') . '">
+        ' . __('Biz Warehouse', 'wc-biz-courier-logistics') . '
+        <input 
+            type="checkbox" 
+            class="checkbox variable_checkbox"
+            name="_biz_stock_sync[' . esc_attr($loop) . ']"
+            ' . (!empty($status) ? 'checked' : '') . ' 
+        />
+    </label>';
+
+    if (!empty($status)) {
+        product_synchronization_status_extended_indicator($status);
+    }
 }
 
 

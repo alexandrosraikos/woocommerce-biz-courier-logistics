@@ -1,5 +1,27 @@
 /**
  * All of the CSS for the admin-specific functionality.
+ * 
+ * ====
+ * Table of Contents
+ * =====
+ *
+ *  1. Global
+ *   1.1. Variables
+ *   1.2. Elements
+ *
+ *  2. Notifications
+ *
+ *  3. Product Management
+ *   3.1. Generic
+ *   3.2. Synchronization Indicator
+ *
+ *  4. Shipments
+ *   4.1. Generic
+ *   4.2. Voucher
+ *   4.3. Actions
+ *   4.4. History
+ *
+ * =====
  *
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.0.0
@@ -11,8 +33,9 @@
 * ------------
 * Global
 * ------------
-* This section provides the necessary styling for initialising the custom Biz integration.
-* 
+* This section provides generic styling
+* for Biz Courier & Logistics for WooCommerce.
+*
 */
 
 /**
@@ -69,9 +92,13 @@
 }
 
 /**
-*
+* ------------
 * Notifications
 * ---------
+* This section provides styling for
+* notification boxes, either displayed
+* dynamically using jQuery, or statically
+* echoed by PHP.
 */
 
 /**
@@ -124,71 +151,123 @@
 }
 
 /**
-    * 	Stock Synchronisation
-    * 	------------
-    *  This section provides all the styling related to syncing stock 
-    * 	between the WooCommerce store and the items in the connected warehouse.
-    * 
-    */
+* ------------
+* Product Management
+* ------------
+* This section provides styling rules
+* for product management related views.
+*
+*/
 
+/**
+*
+* Generic
+* ------------
+* This section provides styling rules
+* for generic native interface elements.
+*/
+
+/**
+* The default generated column.
+*/
 .column-biz_sync {
+  /*  Display & Box Model */
   width: 10ch;
 }
 
-.biz_sync-indicator::before {
-  content: "";
+/**
+*
+* Synchronization Indicator
+* ------------
+* This section provides styling rules
+* for the synchronization indicator.
+*/
+
+/**
+* The synchronization indicator light.
+*/
+.wc-biz-courier-logistics .synchronization-indicator::before {
+  /*  Display & Box Model */
   display: inline-block;
   height: 10px;
   width: 10px;
   margin-right: 5px;
   background-color: var(--foreground-color-notice);
   border-radius: 20px;
+
+  /* Other */
+  content: "";
 }
 
-.biz_sync-indicator.synced::before {
+/** Status: Synchronized */
+.wc-biz-courier-logistics .synchronization-indicator.synced::before {
+  /*  Display & Box Model */
   background-color: #7ad03a;
 }
 
-.biz_sync-indicator.not-synced::before {
+/** Status: Not Synchronized */
+.wc-biz-courier-logistics .synchronization-indicator.not-synced::before {
+  /*  Display & Box Model */
   background-color: #a44;
 }
 
-.biz_sync-indicator.partial::before {
+/** Status: Partially Synchronized */
+.wc-biz-courier-logistics .synchronization-indicator.partial::before {
+  /*  Display & Box Model */
   background-color: rgb(194, 117, 3);
 }
 
-.biz_sync-indicator.disabled::before {
+/** Status: Disabled */
+.wc-biz-courier-logistics .synchronization-indicator.disabled::before {
+  /*  Display & Box Model */
   background-color: gray;
 }
 
-.biz_sync-indicator-container {
-  margin: 0 0 12px 12px;
-}
+/**
+* The extended indicator is simply a wrapper
+* containing a title and the indicator itself.
+*/
+.wc-biz-courier-logistics.extended-synchronization-indicator {
+  /*  Display & Box Model */
+  display: flex;
 
-.biz_sync-indicator-title {
-  display: inline-block;
-  width: 150px;
-  margin-right: 0 !important;
-}
-
-.biz_sync-indicator-title,
-.biz_sync-variation-indicator-title {
+  /* Other */
   font-weight: bold;
-  margin-right: 7px;
-  float: left;
 }
 
-button.biz-loading {
-  opacity: 1;
-  cursor: unset;
+/**
+* Add some spacing between the label and the
+* indicator light.
+*/
+.wc-biz-courier-logistics.extended-synchronization-indicator > span {
+  /*  Display & Box Model */
+  margin-right: 7px;
+}
+
+/**
+* Add the default product inventory panel label spacing
+* and some more spacing.
+*/
+#inventory_product_data.panel
+  .wc-biz-courier-logistics.extended-synchronization-indicator {
+  /*  Display & Box Model */
+  margin: 0 0 12px calc(150px + 12px);
 }
 
 /**
 * ------------
-* Shipments
+* Shipment Management
 * ------------
 * This section provides the necessary styling for
 * shipment management.
+*/
+
+/**
+*
+* Generic
+* ------------
+* This section provides generic styling rules
+* for the shipment management meta box.
 */
 
 /**

@@ -16,7 +16,6 @@
 class WC_Biz_Courier_Logistics_Product_Delegate
 {
 	public WC_Product $product;
-	protected bool $is_enabled;
 
 	public function __construct(int $wc_product_id)
 	{
@@ -24,10 +23,6 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 		if (empty($this->product)) {
 			throw new RuntimeException(__("Unable to retrieve product data.", 'wc-biz-courier-logistics'));
 		}
-
-		if (!empty(get_post_meta($this->product->get_id(), '_biz_stock_sync', true))) {
-			$this->enabled = get_post_meta($this->product->get_id(), '_biz_stock_sync', true) == 'yes';
-		} else $this->enabled = false;
 	}
 
 	public function enable(): void
@@ -35,7 +30,6 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 		if (!update_post_meta($this->product->get_id(), '_biz_stock_sync', 'yes')) {
 			throw new ErrorException(__("The product couldn't be added to the Biz Warehouse.", 'wc-biz-courier-logistics'));
 		}
-		$this->is_enabled = true;
 		$this->reset_synchronization_status();
 	}
 
@@ -44,22 +38,28 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 		if (!delete_post_meta($this->product->get_id(), '_biz_stock_sync')) {
 			throw new ErrorException(__("The product couldn't be removed from the Biz Warehouse.", 'wc-biz-courier-logistics'));
 		}
-		$this->is_enabled = false;
 		if (!delete_post_meta($this->product->get_id(), '_biz_stock_sync_status')) {
 			throw new ErrorException(__("The product synchronization status couldn't be deleted.", 'wc-biz-courier-logistics'));
 		}
 	}
 
+	public function is_enabled(): bool
+	{
+		if (!empty(get_post_meta($this->product->get_id(), '_biz_stock_sync', true))) {
+			return get_post_meta($this->product->get_id(), '_biz_stock_sync', true) == 'yes';
+		} else return false;
+	}
+
 	public function get_synchronization_status(): string
 	{
-		if ($this->is_enabled) {
+		if ($this->is_enabled()) {
 			return get_post_meta($this->product->get_id(), '_biz_stock_sync_status', true);
-		} else return null;
+		} else return '';
 	}
 
 	public function set_synchronization_status($value): void
 	{
-		if ($this->is_enabled) {
+		if ($this->is_enabled()) {
 			if (!update_post_meta($this->product->get_id(), '_biz_stock_sync_status', $value)) {
 				throw new ErrorException(__("The synchronization status could not be set.", 'wc-biz-courier-logistics'));
 			}
@@ -78,7 +78,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 
 	public function get_composite_synchronization_status(): string
 	{
-		if (!$this->is_enabled) {
+		if (!$this->is_enabled()) {
 			return 'disabled';
 		}
 
@@ -89,7 +89,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 		if (!empty($children_ids)) {
 			foreach ($children_ids as $child_id) {
 				$child = new self($child_id);
-				if (!$child->is_enabled) {
+				if (!$child->is_enabled()) {
 					continue;
 				} else {
 					$child_status = $child->get_synchronization_status();
@@ -210,7 +210,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 					$delegate = new self(wc_get_product_id_by_sku($sku));
 
 					// Check for active stock syncing.
-					if ($delegate->is_enabled) {
+					if ($delegate->is_enabled()) {
 						if (in_array($sku, $retrieved_skus)) {
 
 							// Update remaining stock quantity.
@@ -229,7 +229,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 									$child_delegate = new self($child_id);
 
 									if (
-										$child_delegate->is_enabled &&
+										$child_delegate->is_enabled() &&
 										$child_delegate->product->get_sku() == $delegate->product->get_sku()
 									) {
 

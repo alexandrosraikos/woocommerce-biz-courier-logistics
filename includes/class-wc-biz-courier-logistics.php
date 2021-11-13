@@ -162,7 +162,7 @@ class WC_Biz_Courier_Logistics
 
 		/** Interface hooks */
 		$this->loader->add_action('init', $plugin_admin, 'check_minimum_requirements');
-		$this->loader->add_action('init', $plugin_admin, 'async_error_display');
+		$this->loader->add_filter('admin_notices', $plugin_admin, 'internal_error_notice');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 		$this->loader->add_filter(
@@ -228,7 +228,7 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'order_status_change_handler', 10, 3);
 
 		/** AJAX handler hooks */
-		$this->loader->add_action('wp_ajax_biz_shipment_send', $plugin_admin, 'shipment_send_handler');
+		$this->loader->add_action('wp_ajax_biz_shipment_send', $plugin_admin, 'shipment_creation_handler');
 		$this->loader->add_action('wp_ajax_biz_shipment_modification_request', $plugin_admin, 'shipment_modification_request_handler');
 		$this->loader->add_action('wp_ajax_biz_shipment_cancellation_request', $plugin_admin, 'shipment_cancellation_request_handler');
 		$this->loader->add_action('wp_ajax_biz_shipment_add_voucher', $plugin_admin, 'shipment_add_voucher_handler');

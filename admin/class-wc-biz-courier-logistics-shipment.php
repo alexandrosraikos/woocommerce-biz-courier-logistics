@@ -456,7 +456,7 @@ class WC_Biz_Courier_Logistics_Shipment
 		// Handle each item included in the order.
 		foreach ($items as $item) {
 
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 
 			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($item['product_id']);
 

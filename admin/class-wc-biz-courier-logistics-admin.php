@@ -55,21 +55,31 @@ class WC_Biz_Courier_Logistics_Admin
 	}
 
 	/**
-	 * 	Generic
+	 * 	------------
+	 * 	General
 	 * 	------------
 	 *  This section provides all the generic plugin functionality.
 	 */
 
+	/**
+	 * 	
+	 *  Initialization
+	 * 	------------
+	 *  This section provides all the core initialization functionality.
+	 */
 
 	/**
 	 * Notify the administrator of minimum hosting requirements.
+	 * 
+	 * @uses  notice_display_html()
+	 * @usedby 'init'
 	 *
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.3.2
 	 * 
 	 * @version 1.4.0
 	 */
-	public function check_minimum_requirements()
+	public function check_minimum_requirements(): void
 	{
 		// Check for PHP and loaded extensions.
 		if (version_compare(phpversion(), '7.4.0') < 0) {
@@ -95,6 +105,7 @@ class WC_Biz_Courier_Logistics_Admin
 		}
 
 		// Check for supported WooCommerce version.
+		// NOTE: The WC_VERSION warning below is completely normal.
 		if (version_compare(WC_VERSION, '5.6.0') < 0) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 			notice_display_html(__("This version of WooCommerce is not supported by Biz Courier & Logistics for WooCommerce. Please update to WooCommerce 5.6.0 or later.", 'wc-biz-courier-logistics'));
@@ -102,11 +113,52 @@ class WC_Biz_Courier_Logistics_Admin
 	}
 
 	/**
+	 * Trigger an asynchronous internal error display on load.
+	 * 
+	 * @uses `biz_internal_error` A WP option which displays global errors.
+	 * @uses `_biz_internal_error` A post meta key which indicates internal post specific errors.
+	 * @uses notice_display_html()
+	 * 
+	 * @usedby 'admin_notices'
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	public function internal_error_notice(): void
+	{
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+
+		/** @var string $internal_error The internal persistent error. */
+		$internal_error = get_option('biz_internal_error');
+
+		// Get and show the error.
+		if (!empty($internal_error)) notice_display_html($internal_error);
+
+		// Delete the error after shown.
+		delete_option('biz_internal_error');
+
+		// Check for any internal errors in the active post.
+		if (!empty($_GET['post'])) {
+			// Get and show the error.
+			$internal_error = get_post_meta($_GET['post'], '_biz_internal_error', true);
+			if (!empty($internal_error)) notice_display_html($internal_error, 'error');
+
+			// Delete the error from the metadata.
+			delete_post_meta($_GET['post'], '_biz_internal_error');
+		}
+	}
+
+	/**
 	 * Register the stylesheets for the admin area.
 	 *
-	 * @since    1.0.0
+	 * @usedby 'admin_enqueue_scripts'
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since  1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
-	public function enqueue_styles()
+	public function enqueue_styles(): void
 	{
 		wp_register_style($this->WC_Biz_Courier_Logistics, plugin_dir_url(__FILE__) . 'css/wc-biz-courier-logistics-admin.css', array(), $this->version, 'all');
 		wp_enqueue_style($this->WC_Biz_Courier_Logistics);
@@ -115,9 +167,14 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * Register the JavaScript for the admin area.
 	 *
-	 * @since    1.0.0
+	 * @usedby 'admin_enqueue_scripts'
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since  1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
-	public function enqueue_scripts()
+	public function enqueue_scripts(): void
 	{
 		// Global script options.
 		wp_enqueue_script($this->WC_Biz_Courier_Logistics, plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin.js', array('jquery'), $this->version, false);
@@ -125,27 +182,27 @@ class WC_Biz_Courier_Logistics_Admin
 			"ajaxEndpointURL" => admin_url('admin-ajax.php')
 		));
 
-		// Scripts for products.
+		// Scripts for product management.
 		wp_register_script('wc-biz-courier-logistics-product-management', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-product-management.js', array('jquery'));
 
-		// Scripts for shipments.
+		// Scripts for shipment management.
 		wp_register_script('wc-biz-courier-logistics-shipment-creation', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-shipment-creation.js', array('jquery', $this->WC_Biz_Courier_Logistics));
 		wp_register_script('wc-biz-courier-logistics-shipment-management', plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-shipment-management.js', array('jquery'));
 	}
 
 
 	/**
-	 * Add plugin action links.
-	 * Add a link to the settings page on the plugins.php page.
-	 *
-	 * @param  array  $links List of existing plugin action links.
+	 * Add a plugin action link to the plugin settings.
 	 * 
+	 * @param  array  $actions List of existing plugin action links.
 	 * @return array List of modified plugin action links.
+	 * 
+	 * @usedby 'plugin_action_links_wc-biz-courier-logistics/wc-biz-courier-logistics.php'
 	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.3.0
 	 */
-	function plugin_action_links($actions)
+	public function plugin_action_links($actions): array
 	{
 		return array_merge(array(
 			'<a href="' . esc_url(admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')) . '">' . __('Settings', 'wc-biz-courier-logistics') . '</a>'
@@ -153,19 +210,17 @@ class WC_Biz_Courier_Logistics_Admin
 	}
 
 	/**
-	 * Add plugin action links.
+	 * Add plugin meta links.
 	 *
-	 * Add a link to the settings page on the plugins.php page.
-	 *
-	 *
-	 * @param  array  $links List of existing plugin row meta links.
-	 * @return array         List of modified plugin row meta links.
+	 * @param  array $links List of existing plugin row meta links.
+	 * @return array List of modified plugin row meta links.
+	 * 
+	 * @usedby 'plugin_row_meta'
 	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.3.0
-	 * 
 	 */
-	function plugin_row_meta($links, $file)
+	public function plugin_row_meta($links, $file): array
 	{
 		if (strpos($file, 'wc-biz-courier-logistics.php')) {
 
@@ -181,47 +236,22 @@ class WC_Biz_Courier_Logistics_Admin
 		return $links;
 	}
 
+
 	/**
-	 * Trigger an asynchronous internal error display on load
-	 * 
-	 * @uses `biz_internal_error` A WP option which displays global errors.
-	 * @uses `_biz_internal_error` A post meta key which indicates internal post specific errors.
-	 * 
-	 * @usedby `init` WP hook.
-	 * 
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since 1.4.0
+	 * 	
+	 *  Internal
+	 * 	------------
+	 *  This section provides all the internal admin functionality.
 	 */
-	function async_error_display()
-	{
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-
-		/** @var string $internal_error The internal persistent error. */
-		$internal_error = get_option('biz_internal_error');
-
-		// Get and show the error.
-		if (!empty($internal_error)) notice_display_html($internal_error);
-
-		// Delete the error after shown.
-		delete_option('biz_internal_error');
-
-		// Check for any internal errors in the active post.
-		if (!empty($_GET['post'])) {
-
-			// Get and show the error.
-			$internal_error = get_post_meta($_GET['post'], '_biz_internal_error', true);
-			if (!empty($internal_error)) notice_display_html($internal_error, 'error');
-
-			// Delete the error from the metadata.
-			delete_post_meta($_GET['post'], '_biz_internal_error');
-		}
-	}
 
 	/**
 	 * An error registrar for asynchronous throwing functions.
 	 * 
 	 * @param callable $completion The action that needs to be done.
 	 * @param int? $post_id The ID of the relevant post (optional).
+	 * 
+	 * @uses notice_display_html()
+	 * @usedby All functions triggered by WordPress hooks.
 	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.4.0
@@ -232,8 +262,11 @@ class WC_Biz_Courier_Logistics_Admin
 			// Run completion function.
 			$completion();
 		} catch (\Exception $e) {
+
+			// Display the error.
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-			notice_display_embedded_html($e->getMessage(), 'failure');
+			notice_display_html($e->getMessage(), 'failure');
+
 			if (empty($post_id)) {
 				// Register an internal error specific to the post ID.
 				update_post_meta($post_id, '_biz_internal_error', $e->getMessage());
@@ -249,31 +282,43 @@ class WC_Biz_Courier_Logistics_Admin
 	 * 
 	 * @param string $action The action slug used in WordPress.
 	 * @param callable $completion The callback for completed data.
-	 * 
 	 * @return void The function simply echoes the response to the 
+	 * 
+	 * @usedby All functions triggered by the WordPress AJAX handler.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
 	 */
 	private function ajax_handler($completion): void
 	{
+		// Verify the action related nonce.
 		if (!wp_verify_nonce($_POST['nonce'], $_POST['action'])) {
 			http_response_code(403);
 			die("Unverified request for action: " . $_POST['action']);
 		}
 
+		// Include action relevant definitions.
 		if (str_contains($_POST['action'], 'shipment')) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
-		} elseif (str_contains($_POST['action'], 'stock')) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock.php';
+		} elseif (str_contains($_POST['action'], 'product')) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 		}
 
 		// Send shipment using POST data and handle errors.
 		try {
+			/** @var array $data The filtered $_POST data excluding WP specific keys. */
 			$data = $completion(array_filter($_POST, function ($key) {
 				return ($key != 'action' && $key != 'nonce');
 			}, ARRAY_FILTER_USE_KEY));
-			http_response_code(200);
+
+			// Prepare the data and send.
 			$data = json_encode($data);
-			if ($data == false) throw new ErrorException("There was an error while encoding the data to JSON.");
-			else die(json_encode($data));
+			if ($data == false) {
+				throw new ErrorException("There was an error while encoding the data to JSON.");
+			} else {
+				http_response_code(200);
+				die(json_encode($data));
+			}
 		} catch (RuntimeException $e) {
 			http_response_code(400);
 			die($e->getMessage());
@@ -281,29 +326,37 @@ class WC_Biz_Courier_Logistics_Admin
 			http_response_code(500);
 			die($e->getMessage());
 		} catch (SoapFault $f) {
+			// Log the internal connection error.
 			http_response_code(502);
-			error_log($f->getMessage());
+			error_log('[Biz Courier & Logistics for WooCommerce] SOAP client error when contacting Biz: ' . $f->getMessage() . ' (action: ' . $_POST['action'] . ')');
 			die();
 		}
 	}
 
 
 	/**
+	 * 	------------
 	 * 	Integration
 	 * 	------------
-	 *  This section provides the necessary functionality for initialising the custom Biz integration.
+	 *  This section provides the necessary functionality for 
+	 *  initialising the custom Biz integration.
 	 * 
 	 */
 
 
 	/**
 	 * Declare the Biz_Integration class.
+	 * 
+	 * @usedby 'woocommerce_integrations_init'
 	 *
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since    1.0.0
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
-	function biz_integration()
+	public function biz_integration(): void
 	{
+		// Include definition if class doesn't exist.
 		if (!class_exists('Biz_Integration')) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-integration.php';
 		}
@@ -313,13 +366,19 @@ class WC_Biz_Courier_Logistics_Admin
 	/**
 	 * Include Biz_Integration in WooCommerce Integrations.
 	 *
-	 * @param 	 array $integrations The active list of WooCommerce Integrations.
+	 * @param array $integrations The active list of WooCommerce Integrations.
+	 * @return array The expanded list of WooCommerce Integrations.
+	 * 
+	 * @usedby 'woocommerce_integrations'
 	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since    1.0.0
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
 	 */
-	function add_biz_integration($integrations)
+	public function add_biz_integration($integrations): array
 	{
+		// Add the Biz Integration class identifier.
 		$integrations[] = 'Biz_Integration';
 		return $integrations;
 	}
@@ -328,13 +387,13 @@ class WC_Biz_Courier_Logistics_Admin
 	 * Displays a WordPress notice depending on Biz credential and connection status.
 	 *
 	 * @uses notice_display_html()
+	 * @usedby 'admin_notices'
 	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.0.0
 	 */
-	function biz_settings_notice()
+	public function biz_settings_notice()
 	{
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 
 		// Check if the administrator is already in the Biz tab.
 		$in_biz_tab = false;
@@ -348,8 +407,12 @@ class WC_Biz_Courier_Logistics_Admin
 			$biz_settings = get_option('woocommerce_biz_integration_settings');
 			if (isset($_GET['biz_error'])) {
 				if ($_GET['biz_error'] == 'auth-error') {
+
+					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 					notice_display_html(sprintf(__("Your Biz Courier credentials are invalid. Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.", "wc-biz-courier-logistics"), admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')));
 				} elseif ($_GET['biz_error'] == 'conn-error') {
+
+					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 					notice_display_html(__("There was an error contacting Biz Courier, please try again later.", "wc-biz-courier-logistics"));
 				}
 			} elseif (
@@ -358,56 +421,192 @@ class WC_Biz_Courier_Logistics_Admin
 				$biz_settings['username'] == null ||
 				$biz_settings['password'] == null
 			) {
+
+				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 				notice_display_html(sprintf(__("Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.", "wc-biz-courier-logistics"), admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')), 'warning');
 			}
 		}
 	}
 
-	/**
-	 * 	Stock Synchronisation
+	 /**
 	 * 	------------
-	 *  This section provides all the functionality related to syncing stock 
-	 * 	between the WooCommerce store and the items in the connected warehouse.
+	 * 	Product Management
+	 * 	------------
+	 *  This section provides the necessary functionality for 
+	 *  product management.
 	 * 
 	 */
 
+	/**
+	 * 	Interface Hooks
+	 * 	------------
+	 *  All the functionality related to the Product Management WordPress interface.
+	 */
 
 	/**
 	 * 
 	 * Display Biz Warehouse option to include each product in the stock synchronisation process.
 	 *
+	 * @uses $post
+	 * @uses self::async_handler()
+	 * @uses WC_Biz_Courier_Logistics_Product_Delegate
+	 * @uses product_synchronization_checkbox()
+	 * @usedby 'woocommerce_product_options_inventory_product_data'
+	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr> 
 	 * @since 1.2.0
 	 * 
 	 * @version 1.4.0
 	 */
-	function add_product_biz_warehouse_option()
+	public function add_product_biz_warehouse_option(): void
 	{
+		/** @var WP_Post $post The current post. */
 		global $post;
 
 		$this->async_handler(function () use ($post) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock.php';
+
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($post->ID);
 
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
 			product_synchronization_checkbox($delegate->get_synchronization_status());
+
 		}, $post->ID);
+	}
+
+	/**
+	 * Display Biz Warehouse option to include each product variation in the stock synchronisation process.
+	 *
+	 * @uses self::async_handler()
+	 * @uses WC_Biz_Courier_Logistics_Product_Delegate
+	 * @uses product_synchronization_status_indicator()
+	 * @usedby 'woocommerce_variation_options'
+	 * 
+	 * @since 1.2.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function add_product_variation_biz_warehouse_option($loop, $variation_data, $variation): void
+	{
+		$this->async_handler(function () use ($loop, $variation) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
+			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($variation->ID);
+
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+			product_variation_synchronization_checkbox($loop, $delegate->get_synchronization_status());
+		}, $variation->ID);
+	}
+
+	/**
+	 * Add Biz Courier remaining stock synchronization button to the All Products page.
+	 * 
+	 * @uses product_stock_synchronize_all_button_html()
+	 * @usedby 'manage_posts_extra_tablenav'
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function add_product_stock_synchronize_all_button(): void
+	{
+		// Ensure active All Products page.
+		global $current_screen;
+		if ('product' != $current_screen->post_type) {
+			return;
+		}
+
+		// Enqeue & localize synchronization button script.
+		wp_enqueue_script('wc-biz-courier-logistics-product-management');
+		wp_localize_script('wc-biz-courier-logistics-product-management', "StockProperties", array(
+			"bizStockSynchronizationNonce" => wp_create_nonce('biz_stock_synchronization_validation'),
+		));
+
+		// Insert button HTML.
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+		product_stock_synchronize_all_button_html();
 	}
 
 
 	/**
+	 * Add Biz Courier stock synchronisation status column to the All Products page.
+	 *
+	 * @param array $columns The active list of columns in the All Products page.
+	 * @return array The expanded list of columns.
 	 * 
+	 * @usedby 'manage_edit-product_columns'
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function add_product_stock_status_indicator_column($columns): array
+	{
+		// Append the Biz synchronization status column.
+		$columns['biz_sync'] = __('Biz Warehouse', 'wc-biz-courier-logistics');
+
+		return $columns;
+	}
+
+	/**
+	 * Add Biz Courier stock synchronisation status indicator column to each product
+	 * in the All Products page.
+	 * 
+	 * @param string $column_name The name of the column.
+	 * @param int $product_post_id The ID of the product post in the row.
+	 * 
+	 * @uses self::async_handler()
+	 * @uses WC_Biz_Courier_Logistics_Product_Delegate
+	 * @uses product_synchronization_status_indicator()
+	 * @usedby 'manage_product_posts_custom_column'
+	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function product_stock_status_indicator_column($column_name, $product_post_id): void
+	{
+		// Ensure Biz Status column.
+		switch ($column_name) {
+			case 'biz_sync':
+				$this->async_handler(function () use($product_post_id) {
+					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
+					$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product_post_id);
+	
+					// Show HTML.
+					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+					echo product_synchronization_status_indicator($delegate->get_composite_synchronization_status());
+
+				});
+		}
+	}
+
+	/**
+	 * 	Handler Hooks
+	 * 	------------
+	 *  All the functionality related to the Product Management handlers.
+	 */
+
+	/**
 	 * Handle product option persistence for the Biz warehouse stock synchronisation.
+	 * 
+	 * @param int $post_id The ID of the product post.
+	 * 
+	 * @uses self::async_handler()
+	 * @uses WC_Biz_Courier_Logistics_Product_Delegate
+	 * @usedby 'woocommerce_process_product_meta'
 	 *
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.2.0
 	 * 
 	 * @version 1.4.0
 	 */
-	function save_product_biz_warehouse_option($post_id)
+	public function save_product_biz_warehouse_option($post_id): void
 	{
 		$this->async_handler(function () use ($post_id) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 
 			/** @var WC_Product $product The product. */
 			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($post_id);
@@ -426,37 +625,24 @@ class WC_Biz_Courier_Logistics_Admin
 
 	/**
 	 * 
-	 * Display Biz Warehouse option to include each product variation in the stock synchronisation process.
-	 *
-	 * @since    1.2.0
-	 * @uses 	 get_post_meta()
-	 * @uses 	 product_synchronization_status_indicator()
-	 */
-	function add_product_variation_biz_warehouse_option($loop, $variation_data, $variation)
-	{
-		$this->async_handler(function () use ($loop) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock.php';
-			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($variation->ID);
-
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-			product_variation_synchronization_checkbox($loop, $delegate->get_synchronization_status());
-		}, $variation->ID);
-	}
-
-
-	/**
-	 * 
 	 * Handle product variation option persistence for the Biz warehouse stock synchronisation.
+	 * 
+	 * @param int $variation_id The ID of the variation product post.
+	 * @param int $i The index of the current variation being processed in the array.
+	 * 
+	 * @uses self::async_handler()
+	 * @uses WC_Biz_Courier_Logistics_Product_Delegate
+	 * @usedby 'woocommerce_save_product_variation'
 	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.0.0
 	 * 
 	 * @version 1.4.0
 	 */
-	function save_product_variation_biz_warehouse_option($variation_id, $i)
+	public function save_product_variation_biz_warehouse_option($variation_id, $i): void
 	{
 		$this->async_handler(function () use ($i) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 
 			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($variation_id);
 
@@ -480,84 +666,24 @@ class WC_Biz_Courier_Logistics_Admin
 	}
 
 	/**
-	 * Add Biz Courier remaining stock synchronization button to the All Products page.
-	 * 
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since 1.0.0
-	 * 
-	 * @version 1.4.0
+	 * 	AJAX Handler Hooks
+	 * 	------------
+	 *  All the functionality related to the Product Management AJAX handlers.
 	 */
-	function add_product_stock_synchronize_all_button()
-	{
-		// Ensure active All Products page.
-		global $current_screen;
-		if ('product' != $current_screen->post_type) {
-			return;
-		}
-
-		// Enqeue & localize synchronization button script.
-		wp_enqueue_script('wc-biz-courier-logistics-product-management');
-		wp_localize_script('wc-biz-courier-logistics-product-management', "StockProperties", array(
-			"bizStockSynchronizationNonce" => wp_create_nonce('biz_stock_synchronization_validation'),
-		));
-
-		// Insert button HTML.
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-		product_stock_synchronize_all_button_html();
-	}
-
-
-	/**
-	 * Add Biz Courier stock synchronisation status column to the All Products page.
-	 *
-	 * @param 	 array $columns The active list of columns in the All Products page.
-	 * 
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since 1.0.0
-	 * 
-	 * @version 1.4.0
-	 */
-	function add_product_stock_status_indicator_column($columns)
-	{
-		// Append the Biz synchronization status column.
-		$columns['biz_sync'] = __('Biz Warehouse', 'wc-biz-courier-logistics');
-
-		return $columns;
-	}
-
-	/**
-	 * Add Biz Courier stock synchronisation status indicator column to each product
-	 * in the All Products page.
-	 *
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since 1.0.0
-	 */
-	function product_stock_status_indicator_column($column_name, $product_post_id)
-	{
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-
-		// Ensure Biz Status column.
-		switch ($column_name) {
-			case 'biz_sync':
-				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock.php';
-				$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product_post_id);
-
-				// Show HTML.
-				product_synchronization_status_indicator($delegate->get_composite_synchronization_status());
-		}
-	}
 
 	/**
 	 * Handles stock sync AJAX requests from authorized users and initiates sync.
 	 *
-	 * @uses WC_Biz_Courier_Logistics_Admin::biz_stock_sync()
+	 * @uses self::ajax_handler()
+	 * @uses WC_Biz_Courier_Logistics_Product_Delegate
+	 * @usedby 'wp_ajax_biz_stock_synchronization'
 	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.0.0
 	 * 
 	 * @version 1.4.0
 	 */
-	function product_stock_synchronization()
+	public function product_stock_synchronization(): void
 	{
 		$this->ajax_handler(function () {
 
@@ -566,7 +692,7 @@ class WC_Biz_Courier_Logistics_Admin
 				'limit' => -1,
 			));
 
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-stock.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 
 			/** @var string[] $all_skus An array of all SKUs. */
 			$all_skus = [];
@@ -583,25 +709,26 @@ class WC_Biz_Courier_Logistics_Admin
 		});
 	}
 
-
-
 	/**
-	 * 	Shipping Method 
-	 * 	------------
-	 *  This section provides the necessary functionality for initialising the custom Biz shipping method.
+	 * ------------
+	 * Shipping Method 
+	 * ------------
+	 * This section provides the necessary functionality for 
+	 * initialising the custom Biz shipping method.
 	 * 
 	 */
 
-
 	/**
 	 * Declare the Biz_Shipping_Method class.
+	 * 
+	 * @usedby 'woocommerce_shipping_init'
 	 *
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.0.0
 	 * 
 	 * @version 1.4.0
 	 */
-	function biz_shipping_method()
+	public function biz_shipping_method(): void
 	{
 		// Import the Biz Shipping Method class.
 		if (!class_exists('Biz_Shipping_Method')) require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipping-method.php';
@@ -611,13 +738,14 @@ class WC_Biz_Courier_Logistics_Admin
 	 * Declare Biz_Shipping_Method class.
 	 * 
 	 * @param array $methods The active list of shipping methods.
+	 * @return array The expanded list of shipping methods.
 	 *
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.0.0
 	 * 
 	 * @version 1.4.0
 	 */
-	function add_biz_shipping_method($methods)
+	function add_biz_shipping_method($methods): array
 	{
 		// Append the new shipping method.
 		$methods['biz_shipping_method'] = 'Biz_Shipping_Method';
@@ -627,239 +755,53 @@ class WC_Biz_Courier_Logistics_Admin
 
 
 	/**
-	 * 	Order / Shipment Interactions
+	 * ------------
+	 * Shipment Management 
+	 * ------------
+	 * This section provides the necessary functionality for 
+	 * managing shipments.
+	 * 
+	 */
+
+	/**
+	 * 	Interface Hooks
 	 * 	------------
-	 *  This section provides the necessary functionality for mapping, managing and displaying
-	 * 	WooCommerce orders and their status to Biz Courier Shipments.
-	 * 	
+	 *  All the functionality related to the Shipment Management WordPress interface.
 	 */
 
 	/**
-	 * Handles shipment creation AJAX requests from authorized users.
-	 * NOTE: This is executed through WP's AJAX endpoint.
+	 * Add the shipment management view in the order editing page.
 	 * 
-	 * @param string $_POST['order_id'] The related order's ID.
-	 *
-	 * @since 1.0.0
-	 * @version 1.4.0
-	 * 
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 */
-	function shipment_send_handler()
-	{
-		$this->ajax_handler(function ($data) {
-			$shipment = new WC_Biz_Courier_Logistics_Shipment(intval($data['order_id']));
-			$shipment->send();
-		});
-	}
-
-	/**
-	 * Handles manual voucher addition AJAX requests from authorized users.
-	 * NOTE: This is executed through WP's AJAX endpoint.
-	 * 
-	 * @param string $_POST['voucher'] The new shipment voucher.
-	 * @param string $_POST['order_id'] The related order's ID.
-	 *
-	 * @since 1.2.0
-	 * @version 1.4.0
-	 * 
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 */
-	function shipment_add_voucher_handler(): void
-	{
-		$this->ajax_handler(function ($data) {
-			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
-			$shipment->set_voucher($data['new_voucher']);
-			$shipment->conclude_order();
-		});
-	}
-
-	/**
-	 * Handles shipment modification AJAX requests from authorized users.
+	 * @uses WC_Biz_Courier_Logistics_Shipment
+	 * @uses shipment_creation_html()
+	 * @uses shipment_management_html()
+	 * @uses notice_display_embedded_html()
+	 * @usedby 'add_meta_boxes'
 	 *
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.0.0
 	 * 
 	 * @version 1.4.0
 	 */
-	function shipment_modification_request_handler()
-	{
-		$this->ajax_handler(function ($data) {
-			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
-			$shipment->modify($data['shipment_modification_message']);
-		});
-	}
-
-	/**
-	 * Handles shipment cancellation AJAX requests from authorized users.
-	 *
-	 * @since    1.0.0
-	 * 
-	 * @version 1.4.0
-	 */
-	function shipment_cancellation_request_handler()
-	{
-		$this->ajax_handler(function ($data) {
-			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
-			$shipment->cancel();
-		});
-	}
-
-	/**
-	 * Handles manual voucher editing AJAX requests from authorized users.
-	 *
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since    1.2.0
-	 * 
-	 * @version 1.4.0
-	 */
-	function shipment_edit_voucher_handler()
-	{
-		$this->ajax_handler(function ($data) {
-			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
-			$shipment->set_voucher($data['new_voucher']);
-		});
-	}
-
-	/**
-	 * Handles manual voucher deletion AJAX requests from authorized users.
-	 *
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since    1.2.0
-	 * 
-	 * @version 1.4.0
-	 */
-	function shipment_delete_voucher_handler()
-	{
-		+$this->ajax_handler(function ($data) {
-			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
-			$shipment->delete_voucher();
-		});
-	}
-
-	/**
-	 * Handles manual voucher deletion AJAX requests from authorized users.
-	 *
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since    1.2.0
-	 * 
-	 * @version 1.4.0
-	 */
-	function shipment_synchronize_order_handler()
-	{
-		$this->ajax_handler(function ($data) {
-			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
-			$shipment->conclude_order();
-		});
-	}
-
-	/**
-	 * Handles shipment modification on order change.
-	 *
-	 * @param int $id The order ID.
-	 * @param string $from The previous order status.
-	 * @param string $to The next order status.
-	 * 
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since 1.0.0
-	 * 
-	 * @version 1.4.0
-	 */
-	function order_status_change_handler($id, $from, $to)
-	{
-		/** @var array $biz_settings The integration settings. */
-		$biz_settings = get_option('woocommerce_biz_integration_settings');
-
-		// 1. Check existing options for automatic shipment creation.
-		if (substr(($biz_settings['automatic_shipment_creation'] ?? 'disabled'), 3) == $to) {
-
-			// Handle shipment sending.
-			$this->async_handler(function () use ($id) {
-				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
-				$shipment = new WC_Biz_Courier_Logistics_Shipment($id);
-
-				// Match preferred sending state on a voucher order.
-				if (!empty($shipment->get_voucher())) {
-					$shipment->send();
-				}
-			}, $id);
-		}
-
-		// 2. Check existing options for automatic shipment cancellation.
-		if (substr(($biz_settings['automatic_shipment_cancellation'] ?? 'disabled'), 3) == $to) {
-
-			// Handle shipment sending.
-			$this->async_handler(function () use ($id) {
-				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
-				$shipment = new WC_Biz_Courier_Logistics_Shipment($id);
-
-				// Match preferred sending cancellation on a voucher order.
-				if (!empty($shipment->get_voucher())) {
-					$shipment->cancel();
-				}
-			}, $id);
-		}
-	}
-
-	/**
-	 * Register the voucher column.
-	 * 
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since 1.3.0
-	 */
-	function add_shipment_voucher_column($columns)
-	{
-		// Append the new key and return.
-		$columns['biz-voucher'] = __("Biz shipment voucher", 'wc-biz-courier-logistics');
-		return $columns;
-	}
-
-	/**
-	 * Register the voucher column.
-	 * 
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since 1.3.0
-	 */
-	function shipment_voucher_column($column, $post_id)
-	{
-		// Print the voucher in the column's row.
-		switch ($column) {
-			case 'biz-voucher':
-				$this->async_handler(function ($post_id) {
-					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-
-					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
-					$shipment = new WC_Biz_Courier_Logistics_Shipment($id);
-					order_column_voucher_html($shipment->get_voucher());
-				});
-				break;
-		}
-	}
-
-	/**
-	 * Add Biz Courier shipment management in the order editing page.
-	 *
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since 1.0.0
-	 * 
-	 * @version 1.4.0
-	 */
-	function add_shipment_management_meta_box()
+	public function add_shipment_management_meta_box(): void
 	{
 		/**
 		 * Print the Biz Shipment meta box.
 		 * 
 		 * @param WP_Post $post The current post.
-		 *
-		 * @author Alexandros Raikos <alexandros@araikos.gr>
-		 * @since 1.0.0
+		 * 
+		 * @version 1.4.0
 		 */
-		function biz_shipment_meta_box($post)
+		function biz_shipment_meta_box($post): void
 		{
 			/**
 			 * Prepare scripts for non-submitted orders.
+			 * 
+			 * @param int $order_id The ID of the order post.
+			 * 
+			 * @version 1.4.0
 			 */
-			function prepare_scripts_new_shipment($order_id)
+			function prepare_scripts_new_shipment($order_id): void
 			{
 				// Enqueue and localize send new shipment.
 				wp_enqueue_script('wc-biz-courier-logistics-shipment-creation');
@@ -874,8 +816,12 @@ class WC_Biz_Courier_Logistics_Admin
 
 			/**
 			 * Prepare scripts for submitted orders.
+			 * 
+			 * @param int $order_id The ID of the order post.
+			 * 
+			 * @version 1.4.0
 			 */
-			function prepare_scripts_existing_shipment($order_id)
+			function prepare_scripts_existing_shipment($order_id): void
 			{
 				// Enqueue and localize button scripts.
 				wp_enqueue_script('wc-biz-courier-logistics-shipment-management');
@@ -927,16 +873,282 @@ class WC_Biz_Courier_Logistics_Admin
 		}
 	}
 
+	/**
+	 * Register the voucher column.
+	 * 
+	 * @param array $columns The active list of columns.
+	 * @return array The extended list of columns.
+	 * 
+	 * @usedby 'manage_edit-shop_order_columns'
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.3.0
+	 */
+	public function add_shipment_voucher_column($columns): array
+	{
+		// Append the new key and return.
+		$columns['biz-voucher'] = __("Biz shipment voucher", 'wc-biz-courier-logistics');
+		return $columns;
+	}
 
 	/**
-	 * Check for cancelled & completed orders.
+	 * Register the voucher column.
+	 * 
+	 * @uses self::async_handler()
+	 * @uses WC_Biz_Courier_Logistics_Shipment
+	 * @uses order_column_voucher_html()
+	 * @usedby 'manage_shop_order_posts_custom_column
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.3.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function shipment_voucher_column($column, $post_id): void
+	{
+		// Print the voucher in the column's row.
+		switch ($column) {
+			case 'biz-voucher':
+				$this->async_handler(function () use ($post_id) {
+
+					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
+					$shipment = new WC_Biz_Courier_Logistics_Shipment($post_id);
+
+					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+					order_column_voucher_html($shipment->get_voucher());
+				});
+				break;
+		}
+	}
+
+	/**
+	 * 	Handler Hooks
+	 * 	------------
+	 *  All the functionality related to the 
+	 *  Shipment Management handlers.
+	 */
+
+	/**
+	 * Handles shipment modification on order change.
+	 *
+	 * @param int $id The order ID.
+	 * @param string $from The previous order status (not used).
+	 * @param string $to The next order status.
+	 * 
+	 * @uses self::async_handler()
+	 * @uses WC_Biz_Courier_Logistics_Shipment
+	 * @usedby 'woocommerce_order_status_changed'
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function order_status_change_handler($id, $from, $to): void
+	{
+		/** @var array $biz_settings The integration settings. */
+		$biz_settings = get_option('woocommerce_biz_integration_settings');
+
+		// 1. Check existing options for automatic shipment creation.
+		if (substr(($biz_settings['automatic_shipment_creation'] ?? 'disabled'), 3) == $to) {
+
+			// Handle shipment sending.
+			$this->async_handler(function () use ($id) {
+				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
+				$shipment = new WC_Biz_Courier_Logistics_Shipment($id);
+
+				// Match preferred sending state on a voucher order.
+				if (!empty($shipment->get_voucher())) {
+					$shipment->send();
+				}
+			}, $id);
+		}
+
+		// 2. Check existing options for automatic shipment cancellation.
+		if (substr(($biz_settings['automatic_shipment_cancellation'] ?? 'disabled'), 3) == $to) {
+
+			// Handle shipment sending.
+			$this->async_handler(function () use ($id) {
+				require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
+				$shipment = new WC_Biz_Courier_Logistics_Shipment($id);
+
+				// Match preferred sending cancellation on a voucher order.
+				if (!empty($shipment->get_voucher())) {
+					$shipment->cancel();
+				}
+			}, $id);
+		}
+	}
+
+	/**
+	 * 	AJAX Handler Hooks
+	 * 	------------
+	 *  All the functionality related to the 
+	 *  Shipment Management AJAX handlers.
+	 */
+
+	/**
+	 * Handles shipment creation AJAX requests from authorized users.
+	 * 
+	 * @uses self::ajax_handler()
+	 * @uses WC_Biz_Courier_Logistics_Shipment
+	 * @usedby 'wp_ajax_biz_shipment_send'
+	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function shipment_creation_handler(): void
+	{
+		$this->ajax_handler(function ($data) {
+			$shipment = new WC_Biz_Courier_Logistics_Shipment(intval($data['order_id']));
+			$shipment->send();
+		});
+	}
+
+	/**
+	 * Handles shipment modification AJAX requests from authorized users.
+	 * 
+	 * @uses self::ajax_handler()
+	 * @uses WC_Biz_Courier_Logistics_Shipment
+	 * @usedby 'wp_ajax_biz_shipment_modification_request'
+	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function shipment_modification_request_handler(): void
+	{
+		$this->ajax_handler(function ($data) {
+			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
+			$shipment->modify($data['shipment_modification_message']);
+		});
+	}
+
+	/**
+	 * Handles shipment cancellation AJAX requests from authorized users.
+	 * 
+	 * @uses self::ajax_handler()
+	 * @uses WC_Biz_Courier_Logistics_Shipment
+	 * @usedby 'wp_ajax_biz_shipment_cancellation_request'
+	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function shipment_cancellation_request_handler(): void
+	{
+		$this->ajax_handler(function ($data) {
+			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
+			$shipment->cancel();
+		});
+	}
+
+	/**
+	 * Handles manual voucher addition AJAX requests from authorized users.
+	 * 
+	 * @uses self::ajax_handler()
+	 * @uses WC_Biz_Courier_Logistics_Shipment
+	 * @usedby 'wp_ajax_biz_shipment_add_voucher'
 	 *
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.2.0
 	 * 
 	 * @version 1.4.0
 	 */
-	function shipment_status_cron_handler()
+	public function shipment_add_voucher_handler(): void
+	{
+		$this->ajax_handler(function ($data) {
+			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
+			$shipment->set_voucher($data['new_voucher']);
+			$shipment->conclude_order();
+		});
+	}
+
+	/**
+	 * Handles manual voucher editing AJAX requests from authorized users.
+	 *
+	 * @uses self::ajax_handler()
+	 * @uses WC_Biz_Courier_Logistics_Shipment
+	 * @usedby 'wp_ajax_biz_shipment_edit_voucher'
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since    1.2.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function shipment_edit_voucher_handler(): void
+	{
+		$this->ajax_handler(function ($data) {
+			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
+			$shipment->set_voucher($data['new_voucher']);
+		});
+	}
+
+	/**
+	 * Handles manual voucher deletion AJAX requests from authorized users.
+	 *
+	 * @uses self::ajax_handler()
+	 * @uses WC_Biz_Courier_Logistics_Shipment
+	 * @usedby 'wp_ajax_biz_shipment_delete_voucher'
+	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since    1.2.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function shipment_delete_voucher_handler(): void
+	{
+		+$this->ajax_handler(function ($data) {
+			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
+			$shipment->delete_voucher();
+		});
+	}
+
+	/**
+	 * Handles manual voucher deletion AJAX requests from authorized users.
+	 *
+	 * @uses self::ajax_handler()
+	 * @uses WC_Biz_Courier_Logistics_Shipment
+	 * @usedby 'wp_ajax_biz_shipment_synchronize_order'
+	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since    1.2.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function shipment_synchronize_order_handler(): void
+	{
+		$this->ajax_handler(function ($data) {
+			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
+			$shipment->conclude_order();
+		});
+	}
+
+
+	/**
+	 * 	Cron Hooks
+	 * 	------------
+	 *  All the functionality related to the 
+	 *  Shipment Management cron scheduled jobs.
+	 */
+
+	/**
+	 * Check for cancelled & completed orders.
+	 * 
+	 * @uses self::async_handler()
+	 * @uses WC_Biz_Courier_Logistics_Shipment
+	 * @usedby 'shipment_status_cron_handler_hook'
+	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.2.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function shipment_status_cron_handler(): void
 	{
 		// Check if the option is enabled.
 		$biz_settings = get_option('woocommerce_biz_integration_settings');
