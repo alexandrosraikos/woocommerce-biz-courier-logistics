@@ -87,6 +87,18 @@ To upgrade, simply download the latest `wc-biz-courier-logistics.zip` package of
 
 Unfortunately this WordPress plugin cannot be featured in the WordPress plugin directory, due to the strict guidelines regarding the mentions of trademarks (see _Legal Disclaimer_ below) and usage of GPLv2 or later as the open source license.
 
+However, despite the lack of it's availability in the official plugin directory, this plugin is being consistently maintained for optimal performance and stability with the latest WordPress versions. Refer to the badge below for the code reliability rating by SonarCloud:
+
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=alexandrosraikos_woocommerce-biz-courier-logistics&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=alexandrosraikos_woocommerce-biz-courier-logistics)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=alexandrosraikos_woocommerce-biz-courier-logistics&metric=bugs)](https://sonarcloud.io/summary/new_code?id=alexandrosraikos_woocommerce-biz-courier-logistics)
+
+**Is this plugin safe to use?**
+
+No personal information, nor any analytics data of any kind is processed within the scope of this plugin. Your assigned Biz Courier & Logistics credentials are safely stored in your WordPress database. Click on the badge below to learn more information regarding the overall quality status of the current version of Biz Courier & Logistics for WooCommerce:
+
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=alexandrosraikos_woocommerce-biz-courier-logistics&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=alexandrosraikos_woocommerce-biz-courier-logistics)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=alexandrosraikos_woocommerce-biz-courier-logistics&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=alexandrosraikos_woocommerce-biz-courier-logistics)
+
 **Which languages are supported by this plugin?**
 
 Currently, Biz Courier & Logistics for WooCommerce supports:
@@ -108,7 +120,18 @@ You can join the public crowdsourcing translation effort [here](https://poeditor
 
 **What can I do to ensure the future of this plugin?**
 
-You got me, this isn't a frequently asked question, but it's an important one if this plugin has really helped you. Although I do try to keep this plugin stable and constantly up to date, I usually do it at the expense of my spare time. Consider supporting me with a donation through [GitHub Sponsors](https://github.com/sponsors/alexandrosraikos), so that I can be allowed to pour more time and care into it.
+You got me, this isn't a frequently asked question, but it's an important one if this plugin has really helped you. There are two ways you can help ensure the future of Biz Courier & Logistics for WooCommerce.
+
+_Option #1: Contribute_
+
+You are free to create issues for me to review. Please be thorough in your explanations, as it will help me help you, faster and better. In case you'd like to dive in to the source code yourself, you'd be happy to find out that everything is clearly written and properly documented in docblocks.
+
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=alexandrosraikos_woocommerce-biz-courier-logistics&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=alexandrosraikos_woocommerce-biz-courier-logistics)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=alexandrosraikos_woocommerce-biz-courier-logistics&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=alexandrosraikos_woocommerce-biz-courier-logistics)
+
+_Option #2: Donate_
+
+Although I do try to keep this plugin stable and constantly up to date, I usually do it at the expense of my spare time. Consider supporting me with a donation through [GitHub Sponsors](https://github.com/sponsors/alexandrosraikos), so that I can be allowed to pour more time and care into it.
 
 ## Legal Disclaimer
 
