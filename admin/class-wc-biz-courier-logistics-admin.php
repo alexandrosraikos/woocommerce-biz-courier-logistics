@@ -792,7 +792,7 @@ class WC_Biz_Courier_Logistics_Admin
 		 * 
 		 * @version 1.4.0
 		 */
-		function biz_shipment_meta_box($post): void
+		function shipment_management_meta_box($post): void
 		{
 			/**
 			 * Prepare scripts for non-submitted orders.
@@ -865,7 +865,7 @@ class WC_Biz_Courier_Logistics_Admin
 			add_meta_box(
 				'wc-biz-courier-logistics_send_shipment_meta_box',
 				__('Biz Courier status', 'wc-biz-courier-logistics'),
-				'biz_shipment_meta_box',
+				'shipment_management_meta_box',
 				'shop_order',
 				'side',
 				'high'

@@ -69,9 +69,6 @@ class WC_Biz_Courier_Logistics
 	 */
 	public function __construct()
 	{
-		// TODO @alexandrosraikos: Generalize as much code as possible (#37).
-		// TODO @alexandrosraikos: Enforce correct documentation everywhere (#38). NOTE: use @usedby for hook calls.
-		// TODO @alexandrosraikos: Restructure all CSS.
 		// TODO @alexandrosraikos: Update all translations.
 		// TODO @alexandrosraikos: Log and test all cases thoroughly.
 

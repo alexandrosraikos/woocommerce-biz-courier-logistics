@@ -28,7 +28,7 @@
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.4.0
  */
-function notice_display_html($message, $type = 'error')
+function notice_display_html($message, $type = 'error'): void
 {
 ?>
     <div class="notice notice-<?php echo $type ?>">
@@ -46,7 +46,7 @@ function notice_display_html($message, $type = 'error')
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.4.0
  */
-function notice_display_embedded_html($message, $type = "")
+function notice_display_embedded_html($message, $type = ""): void
 {
 ?>
     <div class="wc-biz-courier-logistics-notice <?php echo $type ?>">
@@ -55,20 +55,20 @@ function notice_display_embedded_html($message, $type = "")
 <?php
 }
 
-
 /**
- * 	------------
- * 	Product Management
- * 	------------
- *  This section provides all the markup 
- *  related to product management.
+ * ------------
+ * Product Management 
+ * ------------
+ * This section provides the necessary markup for 
+ * managing products.
  * 
  */
 
 /**
  * Print HTML button for stock synchronization.
  *
- * @since    1.0.0
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.0.0
  */
 function product_stock_synchronize_all_button_html()
 {
@@ -82,7 +82,10 @@ function product_stock_synchronize_all_button_html()
 /**
  * Print HTML column stock synchronization indicators.
  *
- * @since    1.0.0
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.0.0
+ * 
+ * @version 1.4.0
  */
 function product_synchronization_status_indicator($status): string
 {
@@ -108,7 +111,15 @@ function product_synchronization_status_indicator($status): string
     INDICATOR;
 }
 
-function product_synchronization_status_extended_indicator($status)
+/**
+ * Print HTML column stock synchronization indicators with a title label.
+ * 
+ * @uses product_synchronization_status_indicator
+ *
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.4.0
+ */
+function product_synchronization_status_extended_indicator($status): void
 {
     echo '
     <div class="wc-biz-courier-logistics extended-synchronization-indicator">
@@ -118,7 +129,17 @@ function product_synchronization_status_extended_indicator($status)
     ';
 }
 
-function product_synchronization_checkbox($status)
+
+/**
+ * Print product synchronization checkbox with
+ * the accompanying status label if enabled.
+ * 
+ * @uses product_synchronization_status_indicator
+ *
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.4.0
+ */
+function product_synchronization_checkbox($status): void
 {
     // Print the checkbox.
     echo `
@@ -141,7 +162,16 @@ function product_synchronization_checkbox($status)
     }
 }
 
-function product_variation_synchronization_checkbox($loop, $status)
+/**
+ * Print product variation synchronization checkbox with
+ * the accompanying status label if enabled.
+ * 
+ * @uses product_synchronization_status_extended_indicator
+ *
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.4.0
+ */
+function product_variation_synchronization_checkbox($loop, $status): void
 {
     echo '
     <label class="tips" data-tip="' . __('Select this option if the product is stored in your Biz warehouse.', 'wc-biz-courier-logistics') . '">
@@ -160,18 +190,14 @@ function product_variation_synchronization_checkbox($loop, $status)
 }
 
 
-/**
- * 	------------
- * 	Shipments
- * 	------------
- *  This section provides the necessary functionality for displaying
- * 	Biz Courier shipment data.
- */
-
 
 /**
- *  All Orders Page
- * 	------------
+ * ------------
+ * Shipment Management 
+ * ------------
+ * This section provides the necessary markup for 
+ * managing shipments.
+ * 
  */
 
 /**
@@ -179,10 +205,12 @@ function product_variation_synchronization_checkbox($loop, $status)
  *
  * @param string $voucher The order's voucher.
  * 
+ * @usedby WC_Biz_Courier_Logistics_Admin::shipment_voucher_column()
+ * 
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.3.0
  */
-function order_column_voucher_html($voucher)
+function order_column_voucher_html($voucher): void
 {
     if (empty($voucher)) {
         echo '<span>-</span>';
@@ -191,18 +219,18 @@ function order_column_voucher_html($voucher)
     }
 }
 
-/**
- *  Order Page
- * 	------------
- */
 
 /**
  * Print the shipment creation HTML.
  * 
- * @usedby wc-biz-courier-logistics-admin-shipment-creation.js
- * @since 1.4.0
+ * @usedby WC_Biz_Courier_Logistics_Admin::add_shipment_management_meta_box()
+ * 
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.0.0
+ * 
+ * @version 1.4.0
  */
-function shipment_creation_html()
+function shipment_creation_html(): void
 {
     ?>
     <div id="wc-biz-courier-logistics-shipment-management" class="wc-biz-courier-logistics">
@@ -226,14 +254,15 @@ function shipment_creation_html()
  * @param string $status The order's status.
  * @param array $history The shipment's complete history.
  * 
- * @usedby wc-biz-courier-logistics-admin-shipment-management.js
+ * @usedby WC_Biz_Courier_Logistics_Admin::add_shipment_management_meta_box()
  * 
  * @author Alexandros Raikos <alexandros@araikos.gr>
- * @since 1.4.0
+ * @since 1.0.0
+ * 
+ * @version 1.4.0
  */
-function shipment_management_html($voucher, $status, $history)
+function shipment_management_html($voucher, $status, $history): void
 {
-    // TODO @alexandrosraikos: Test all sequences.
 ?>
     <div id="wc-biz-courier-logistics-shipment-management" class="wc-biz-courier-logistics">
         <div class="voucher">
