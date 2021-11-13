@@ -174,7 +174,7 @@ class WC_Biz_Courier_Logistics_Shipment
 			if (!isset($biz_full_status_history[$i])) {
 				$biz_full_status_history[$i] = array(
 					'code' => $status_code,
-					'level' => $status_levels[$status_code]['level'] ?? '',
+					'level' => $status_definitions[$status_code]['level'] ?? '',
 					'level-description' => $status_definitions[$status_code]['description'],
 					'conclusion' => $conclusion ?? '',
 					'description' => (get_locale() == 'el') ? $status['Status_Description'] : $status['Status_Description_En'],
@@ -602,7 +602,6 @@ class WC_Biz_Courier_Logistics_Shipment
 				throw new ErrorException(__("There was an error with your Biz credentials.", 'wc-biz-courier-logistics'));
 			case 2:
 			case 3:
-			case 10:
 				throw new ErrorException(__("There was a problem registering recipient information with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
 			case 4:
 				throw new ErrorException(__("There was a problem registering the recipient's area code with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));

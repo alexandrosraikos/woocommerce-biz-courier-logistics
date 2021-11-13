@@ -122,6 +122,5 @@ function makeWPRequest(actionDOMSelector, action, nonce, data, completion) {
         }
       }
     },
-    dataType: "json",
   });
 }

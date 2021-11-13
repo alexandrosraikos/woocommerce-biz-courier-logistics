@@ -291,10 +291,12 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	private function ajax_handler($completion): void
 	{
+		$action = sanitize_key('action');
+
 		// Verify the action related nonce.
-		if (!wp_verify_nonce($_POST['nonce'], $_POST['action'])) {
+		if (!wp_verify_nonce($_POST['nonce'], $action)) {
 			http_response_code(403);
-			die("Unverified request for action: " . $_POST['action']);
+			die("Unverified request for action: " . $action);
 		}
 
 		// Include action relevant definitions.
@@ -328,7 +330,7 @@ class WC_Biz_Courier_Logistics_Admin
 		} catch (SoapFault $f) {
 			// Log the internal connection error.
 			http_response_code(502);
-			error_log('[Biz Courier & Logistics for WooCommerce] SOAP client error when contacting Biz: ' . $f->getMessage() . ' (action: ' . $_POST['action'] . ')');
+			error_log('[Biz Courier & Logistics for WooCommerce] SOAP client error when contacting Biz: ' . $f->getMessage() . ' (action: ' . $action . ')');
 			die();
 		}
 	}
@@ -1102,7 +1104,7 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	public function shipment_delete_voucher_handler(): void
 	{
-		+$this->ajax_handler(function ($data) {
+		$this->ajax_handler(function ($data) {
 			$shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
 			$shipment->delete_voucher();
 		});
