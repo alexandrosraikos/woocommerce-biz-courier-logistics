@@ -69,9 +69,6 @@ class WC_Biz_Courier_Logistics
 	 */
 	public function __construct()
 	{
-		// TODO @alexandrosraikos: Update all translations.
-		// TODO @alexandrosraikos: Log and test all cases thoroughly.
-
 		$this->version = '1.4.0';
 		$this->WC_Biz_Courier_Logistics = 'wc-biz-courier-logistics';
 
@@ -150,6 +147,9 @@ class WC_Biz_Courier_Logistics
 	 */
 	private function define_admin_hooks()
 	{
+		// TODO @alexandrosraikos: Update all translations (#38).
+		// TODO @alexandrosraikos: Log and test all cases thoroughly (#37).
+
 		$plugin_admin = new WC_Biz_Courier_Logistics_Admin($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
 
 		/**
@@ -199,7 +199,6 @@ class WC_Biz_Courier_Logistics
 
 		/** AJAX handler hooks */
 		$this->loader->add_action('wp_ajax_biz_stock_synchronization', $plugin_admin, 'product_stock_synchronization');
-		// TODO @alexandrosraikos: Provide option to handle Biz Warehouse jointly for variations (#34)
 
 		/** 
 		 * Shipping Method
@@ -219,7 +218,7 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_shipment_management_meta_box');
 		$this->loader->add_filter('manage_edit-shop_order_columns', $plugin_admin, 'add_shipment_voucher_column');
 		$this->loader->add_action('manage_shop_order_posts_custom_column', $plugin_admin, 'shipment_voucher_column', 10, 2);
-		// TODO @alexandrosraikos: Add biz Warehouse indicator on order items page (#32).
+		// TODO @alexandrosraikos: Add Biz Warehouse indicator column on order items panel. (#32)
 
 		/** Handler hooks */
 		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'order_status_change_handler', 10, 3);

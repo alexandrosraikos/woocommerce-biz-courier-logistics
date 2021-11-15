@@ -50,6 +50,8 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 		} else return false;
 	}
 
+	// TODO @alexandrosraikos: Getter and setter functions for enabling/disabling Biz Warehouse option on all variations automatically. (#34)
+
 	public function get_synchronization_status(): string
 	{
 		if ($this->is_enabled()) {

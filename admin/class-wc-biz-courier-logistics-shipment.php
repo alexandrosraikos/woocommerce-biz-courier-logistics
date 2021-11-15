@@ -53,7 +53,6 @@ class WC_Biz_Courier_Logistics_Shipment
 	 */
 	public function get_voucher()
 	{
-		// TODO @alexandrosraikos: Create persistent memory variable to minimize DB reads.
 		return get_post_meta($this->order->get_id(), '_biz_voucher', true);
 	}
 
@@ -68,7 +67,7 @@ class WC_Biz_Courier_Logistics_Shipment
 	 */
 	public function set_voucher(string $value)
 	{
-		// TODO @alexandrosraikos: Check for valid voucher.
+		// TODO @alexandrosraikos: Check for valid voucher (#37).
 
 		// Check for falsy operation.
 		if (!update_post_meta($this->order->get_id(), '_biz_voucher', $value)) {
@@ -146,7 +145,7 @@ class WC_Biz_Courier_Logistics_Shipment
 			)
 		);
 
-		// TODO @alexandrosraikos: catch OutOfRangeException exception once to refresh the saved status definitions.
+		// TODO @alexandrosraikos: catch OutOfRangeException exception once to refresh the saved status definitions. (#37)
 
 		/** @var array $biz_full_status_history The shipment's complete status history. */
 		$biz_full_status_history = [];
@@ -335,6 +334,7 @@ class WC_Biz_Courier_Logistics_Shipment
 	/**
 	 * Get the status definitions.
 	 * 
+	 * @param bool? $force_refresh Force refreshes the saved status definitions.
 	 * @return array The array of status definitions.
 	 * 
 	 * @uses WC_Biz_Courier_Logistics::contactBizCourierAPI()
@@ -342,10 +342,10 @@ class WC_Biz_Courier_Logistics_Shipment
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.4.0
 	 */
-	public static function get_status_definitions(): array
+	public static function get_status_definitions(bool $force_refresh = false): array
 	{
 
-		// TODO @alexandrosraikos: Add settings option to refresh definitions manually.
+		// TODO @alexandrosraikos: Add settings option to refresh definitions manually. (#37)
 
 		/**
 		 * Retrieve the status definitions from the Biz API.
@@ -389,7 +389,12 @@ class WC_Biz_Courier_Logistics_Shipment
 		/** @var array $status_definitions The array of status definitions. */
 		$status_definitions = get_option('wc_biz_courier_logistics_status_definitions');
 
-		// 
+		// Force refresh of definitions.
+		if($force_refresh) {
+			return retrieve_definitions();
+		}
+
+		// Check for existing definitions.
 		if (empty($status_definitions)) {
 			return retrieve_definitions();
 		} else {

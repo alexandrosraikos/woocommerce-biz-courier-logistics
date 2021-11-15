@@ -81,6 +81,8 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	public function check_minimum_requirements(): void
 	{
+		// TODO @alexandrosraikos: Test all minimum requirements notices (#39).
+
 		// Check for PHP and loaded extensions.
 		if (version_compare(phpversion(), '7.4.0') < 0) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
@@ -465,6 +467,9 @@ class WC_Biz_Courier_Logistics_Admin
 		/** @var WP_Post $post The current post. */
 		global $post;
 
+
+		// TODO @alexandrosraikos: Add 'Include all variations' option. (#34)
+
 		$this->async_handler(function () use ($post) {
 
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
@@ -490,6 +495,8 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	public function add_product_variation_biz_warehouse_option($loop, $variation_data, $variation): void
 	{
+		// TODO @alexandrosraikos: Do not show if variations are all included in parent. (#34)
+
 		$this->async_handler(function () use ($loop, $variation) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($variation->ID);
@@ -607,6 +614,8 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	public function save_product_biz_warehouse_option($post_id): void
 	{
+		// TODO @alexandrosraikos: Save data for all variations too if they are automatically included. (#34)
+
 		$this->async_handler(function () use ($post_id) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 
@@ -687,6 +696,7 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	public function product_stock_synchronization(): void
 	{
+		// TODO @alexandrosraikos: Check the error display on throwing response. (#31)
 		$this->ajax_handler(function () {
 
 			/** @var WC_Product[] $products An array of all products. */
