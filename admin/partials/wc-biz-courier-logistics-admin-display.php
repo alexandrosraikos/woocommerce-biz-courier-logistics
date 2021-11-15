@@ -73,7 +73,7 @@ function notice_display_embedded_html($message, $type = ""): void
 function product_stock_synchronize_all_button_html()
 {
 ?>
-    <button class="button button-primary wc-biz-courier-logistics-sync-stock" style="height:32px;">
+    <button class="button button-primary wc-biz-courier-logistics" data-action="synchronize-stock" style="height:32px;">
         <?php _e("Get stock levels", "wc-biz-courier-logistics") ?>
     </button>
 <?php

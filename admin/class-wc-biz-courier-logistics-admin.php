@@ -293,7 +293,7 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	private function ajax_handler($completion): void
 	{
-		$action = sanitize_key('action');
+		$action = sanitize_key($_POST['action']);
 
 		// Verify the action related nonce.
 		if (!wp_verify_nonce($_POST['nonce'], $action)) {
@@ -528,7 +528,11 @@ class WC_Biz_Courier_Logistics_Admin
 		// Enqeue & localize synchronization button script.
 		wp_enqueue_script('wc-biz-courier-logistics-product-management');
 		wp_localize_script('wc-biz-courier-logistics-product-management', "StockProperties", array(
-			"bizStockSynchronizationNonce" => wp_create_nonce('biz_stock_synchronization_validation'),
+			"bizStockSynchronizationNonce" => wp_create_nonce('product_stock_synchronization_all'),
+			"PRODUCT_STOCK_SYNCHRONIZATION_ALL_CONFIRMATION" => __(
+				"Are you sure you would like to synchronize the stock levels of all the products in the catalogue with your Biz Warehouse?",
+				'wc-biz-courier-logistics'
+				)
 		));
 
 		// Insert button HTML.
@@ -683,7 +687,8 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 
 	/**
-	 * Handles stock sync AJAX requests from authorized users and initiates sync.
+	 * Handles stock sync AJAX requests from authorized users and initiates sync
+	 * for all products in the WooCommerce catalogue.
 	 *
 	 * @uses self::ajax_handler()
 	 * @uses WC_Biz_Courier_Logistics_Product_Delegate
@@ -694,11 +699,10 @@ class WC_Biz_Courier_Logistics_Admin
 	 * 
 	 * @version 1.4.0
 	 */
-	public function product_stock_synchronization(): void
+	public function product_stock_synchronization_all(): void
 	{
 		// TODO @alexandrosraikos: Check the error display on throwing response. (#31)
 		$this->ajax_handler(function () {
-
 			/** @var WC_Product[] $products An array of all products. */
 			$products = wc_get_products(array(
 				'limit' => -1,

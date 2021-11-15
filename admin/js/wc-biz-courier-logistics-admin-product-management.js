@@ -22,10 +22,14 @@
  */
 function synchronizeStock(e) {
   e.preventDefault();
-  if (window.confirm(StockProperties.STOCK_SYNCHRONIZATION_CONFIRMATION)) {
+  if (
+    window.confirm(
+      StockProperties.PRODUCT_STOCK_SYNCHRONIZATION_ALL_CONFIRMATION
+    )
+  ) {
     makeWPRequest(
-      "button.wc-biz-courier-logistics-sync-stock",
-      "biz_stock_synchronization",
+      'button.wc-biz-courier-logistics[data-action="synchronize-stock"]',
+      "product_stock_synchronization_all",
       StockProperties.bizStockSynchronizationNonce,
       {},
       () => {
@@ -44,10 +48,11 @@ function synchronizeStock(e) {
    *
    */
 
-  // TODO @alexandrosraikos: Display stock level synchronization errors. (#31)
   // Ensure prepared document.
   $(document).ready(function () {
     // Capture click event.
-    $("button.wc-biz-courier-logistics-sync-stock").click(synchronizeStock);
+    $('button.wc-biz-courier-logistics[data-action="synchronize-stock"]').click(
+      synchronizeStock
+    );
   });
 })(jQuery);

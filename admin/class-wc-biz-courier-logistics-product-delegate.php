@@ -27,9 +27,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 
 	public function enable(): void
 	{
-		if (!update_post_meta($this->product->get_id(), '_biz_stock_sync', 'yes')) {
-			throw new ErrorException(__("The product couldn't be added to the Biz Warehouse.", 'wc-biz-courier-logistics'));
-		}
+		update_post_meta($this->product->get_id(), '_biz_stock_sync', 'yes');
 		$this->reset_synchronization_status();
 	}
 
@@ -62,9 +60,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 	public function set_synchronization_status($value): void
 	{
 		if ($this->is_enabled()) {
-			if (!update_post_meta($this->product->get_id(), '_biz_stock_sync_status', $value)) {
-				throw new ErrorException(__("The synchronization status could not be set.", 'wc-biz-courier-logistics'));
-			}
+			update_post_meta($this->product->get_id(), '_biz_stock_sync_status', $value);
 		} else throw new RuntimeException(__("The product is not in the Biz Warehouse", 'wc-biz-courier-logistics'));
 	}
 
@@ -199,12 +195,12 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 
 				/** @var array $retrieved_skus The extracted SKUs from the Biz response. */
 				$retrieved_skus = array_map(function ($bp) {
-					return $bp->Product_Code;
+					return $bp['Product_Code'];
 				}, $data);
 
 				/** @var array $retrieved_quantities The extracted quantities from the Biz response. */
 				$retrieved_quantities = array_combine($retrieved_skus, array_map(function ($bp) {
-					return $bp->Remaining_Quantity;
+					return $bp['Remaining_Quantity'];
 				}, $data));
 
 				// Compare with each product in the synchronization call.
@@ -251,7 +247,9 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 						}
 					}
 				}
-			}
+			},
+			NULL,
+			true
 		);
 	}
 }

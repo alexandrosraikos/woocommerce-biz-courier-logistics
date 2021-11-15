@@ -198,7 +198,7 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('woocommerce_save_product_variation', $plugin_admin, 'save_product_variation_biz_warehouse_option', 10, 2);
 
 		/** AJAX handler hooks */
-		$this->loader->add_action('wp_ajax_biz_stock_synchronization', $plugin_admin, 'product_stock_synchronization');
+		$this->loader->add_action('wp_ajax_product_stock_synchronization_all', $plugin_admin, 'product_stock_synchronization_all');
 
 		/** 
 		 * Shipping Method
@@ -332,6 +332,8 @@ class WC_Biz_Courier_Logistics
 	 * @param array $data The data to include in the request.
 	 * @param bool $authorized Whether this request requires authorization.
 	 * @param callable $completion The callback to complete the procedure.
+	 * @param callable $rejection The custom rejection procedure.
+	 * @param bool $no_crm Omit the CRM code from the authentication data for authorized requests.
 	 * 
 	 * @return ?Object If no `$completion` is defined.
 	 * 
@@ -341,7 +343,7 @@ class WC_Biz_Courier_Logistics
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.4.0
 	 */
-	public static function contactBizCourierAPI(string $wsdl_url, string $method, array $data, bool $authorized, ?callable $completion = NULL, ?callable $rejection = NULL)
+	public static function contactBizCourierAPI(string $wsdl_url, string $method, array $data, bool $authorized, ?callable $completion = NULL, ?callable $rejection = NULL, ?bool $no_crm = false)
 	{
 		// For authorized requests.
 		if ($authorized) {
@@ -366,6 +368,9 @@ class WC_Biz_Courier_Logistics
 				'User' => $biz_settings['username'],
 				'Pass' => $biz_settings['password']
 			], $data);
+
+			// Remove CRM code if not required.
+			if($no_crm) array_splice($data, 1, 1);
 		}
 
 		/** @var SoapClient $client The SOAP client with exceptions enabled. */

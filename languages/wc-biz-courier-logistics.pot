@@ -183,6 +183,10 @@ msgctxt "ALL_PRODUCTS_SYNC_BUTTON"
 msgid "Get stock levels"
 msgstr ""
 
+msgctxt "PRODUCT_STOCK_SYNCHRONIZATION_ALL_CONFIRMATION"
+msgid "Are you sure you would like to synchronize the stock levels of all the products in the catalogue with your Biz Warehouse?"
+msgstr ""
+
 # Shipping Method
 # ------
 # This section provides the necessary translations for initialising 

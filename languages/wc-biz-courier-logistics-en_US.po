@@ -149,6 +149,9 @@ msgstr "Disabled"
 msgid "Get stock levels"
 msgstr "Get stock levels"
 
+msgid "Are you sure you would like to synchronize the stock levels of all the products in the catalogue with your Biz Warehouse?"
+msgstr "Are you sure you would like to synchronize the stock levels of all the products in the catalogue with your Biz Warehouse?"
+
 # Shipping Method
 # ------
 # This section provides the necessary translations for initialising
