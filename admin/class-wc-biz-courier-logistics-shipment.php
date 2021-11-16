@@ -28,7 +28,10 @@
 class WC_Biz_Courier_Logistics_Shipment
 {
 	/** @var WC_Order $order The associated WooCommerce order. */
-	protected WC_Order $order;
+	public WC_Order $order;
+
+	/** @var array $status_definitions The definitions of shipment statuses. */
+	protected array $status_definitions;
 
 	/**
 	 * Initialize the class and retrieve the associated order data.
@@ -60,19 +63,38 @@ class WC_Biz_Courier_Logistics_Shipment
 	 * Update the shipment's voucher in the associated
 	 * order's metadata.
 	 * 
+	 * @param string $value The new voucher value.
+	 * @param bool $conclude Whether to conclude the order status based on the status history.
+	 * 
 	 * @throws ErrorException When the new shipment voucher cannot be set.
 	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.4.0
 	 */
-	public function set_voucher(string $value)
+	public function set_voucher(string $value, bool $conclude = false): void
 	{
-		// TODO @alexandrosraikos: Check for valid voucher (#37).
+		// TODO @alexandrosraikos: Check if voucher exists on another order and report (#38).
+		
 
-		// Check for falsy operation.
-		if (!update_post_meta($this->order->get_id(), '_biz_voucher', $value)) {
-			throw new ErrorException(__("The shipment voucher could not be updated.", 'wc-biz-courier-logistics'));
-		};
+		/** @var array $report The status history report. */
+		$report = $this->get_status($value);
+
+		if (empty($report)) {
+			throw new RuntimeException(
+				sprintf(
+					__(
+						"The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher.",
+						'wc-biz-courier-logistics'
+					),
+					$value
+				)
+			);
+		} else {
+			update_post_meta($this->order->get_id(), '_biz_voucher', $value);
+			if ($conclude) {
+				$this->conclude_order(true, $report);
+			}
+		}
 	}
 
 	/**
@@ -122,8 +144,6 @@ class WC_Biz_Courier_Logistics_Shipment
 	 */
 	public function get_status(string $custom_voucher = null): array
 	{
-		$status_definitions = $this->get_status_definitions();
-
 		/** @var Object $biz_status_list The shipment's status history. */
 		$biz_status_history = WC_Biz_Courier_Logistics::contactBizCourierAPI(
 			"https://www.bizcourier.eu/pegasus_cloud_app/service_01/full_history.php?wsdl",
@@ -138,14 +158,12 @@ class WC_Biz_Courier_Logistics_Shipment
 		if (empty($biz_status_history)) throw new RuntimeException(
 			sprintf(
 				__(
-					"There are no data available for the voucher number %s.",
+					"The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher.",
 					'wc-biz-courier-logistics'
 				),
-				$this->get_voucher()
+				$custom_voucher ?? $this->get_voucher()
 			)
 		);
-
-		// TODO @alexandrosraikos: catch OutOfRangeException exception once to refresh the saved status definitions. (#37)
 
 		/** @var array $biz_full_status_history The shipment's complete status history. */
 		$biz_full_status_history = [];
@@ -158,8 +176,10 @@ class WC_Biz_Courier_Logistics_Shipment
 			$status_code = $status['Status_Code'];
 			if (empty($status_code)) $status_code = 'NONE';
 
+			$status_definition = $this->get_status_definition($status_code);
+
 			// Reach conclusion on Final levels.
-			if ($status_definitions[$status_code]['level'] == 'Final') {
+			if ($status_definition['level'] == 'Final') {
 				if (
 					$status_code == 'ΠΡΔ' ||
 					$status_code == 'COD' ||
@@ -173,8 +193,8 @@ class WC_Biz_Courier_Logistics_Shipment
 			if (!isset($biz_full_status_history[$i])) {
 				$biz_full_status_history[$i] = array(
 					'code' => $status_code,
-					'level' => $status_definitions[$status_code]['level'] ?? '',
-					'level-description' => $status_definitions[$status_code]['description'],
+					'level' => $status_definition['level'] ?? '',
+					'level-description' => $status_definition['description'],
 					'conclusion' => $conclusion ?? '',
 					'description' => (get_locale() == 'el') ? $status['Status_Description'] : $status['Status_Description_En'],
 					'comments' => $status['Status_Comments'],
@@ -202,6 +222,9 @@ class WC_Biz_Courier_Logistics_Shipment
 	/**
 	 * Handles the conclusion of order status based on the status report.
 	 * 
+	 * @param bool? $add_note A note to add in the order history.
+	 * @param array $report A previous report from self::get_status.
+	 * 
 	 * @uses self::get_status()
 	 *
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
@@ -209,50 +232,47 @@ class WC_Biz_Courier_Logistics_Shipment
 	 * 
 	 * @version 1.4.0
 	 */
-	public function conclude_order(bool $add_note = false)
+	public function conclude_order(bool $add_note = false, array $report = null): void
 	{
-		if (!isset($report)) {
-			$report = $this->get_status();
-		}
+		/** @var array $report The full status history report. */
+		if (empty($report)) $report = $this->get_status();
+
+		error_log(json_encode($report));
+
 		if (end($report)['level'] == 'Final') {
 			if (end($report)['conclusion'] == 'completed') {
 
-				// Handle completed shipment status.
-				$order = wc_get_order($this->order->get_id());
-				if ($add_note) $order->update_status("completed", __("The connected Biz shipment was completed.", 'wc-biz-courier-logistics'));
-				else $order->update_status("completed");
+				if ($add_note) $this->order->update_status("completed", __("The connected Biz shipment was completed.", 'wc-biz-courier-logistics'));
+				else $this->order->update_status("completed");
 			} elseif (end($report)['conclusion'] == 'cancelled') {
 
-				// Handle cancelled shipment status.
-				$order = wc_get_order($this->order->get_id());
-				if ($add_note) $order->update_status("cancelled", __("The connected Biz shipment was cancelled.", 'wc-biz-courier-logistics'));
-				else $order->update_status("cancelled");
+				if ($add_note) $this->order->update_status("cancelled", __("The connected Biz shipment was cancelled.", 'wc-biz-courier-logistics'));
+				else $this->order->update_status("cancelled");
 
+				// Add delivery failure add_note.
 				$failure_delivery_note = end($report)['level-description'] . __('Other comments:', 'wc-biz-courier-logistics') . '\n';
 				foreach (array_reverse($report) as $status) {
 					$failure_delivery_note .= ($status['date'] . '-' . $status['time']) . ':\n' . ($status['comments'] ?? 'none');
 				}
-				// Add delivery failure add_note.
 				update_post_meta($this->order->get_id(), '_biz_failure_delivery_note', $failure_delivery_note);
 			} elseif (end($report)['conclusion'] == 'failed') {
 
 				// Handle failed shipment status.
-				$order = wc_get_order($this->order->get_id());
-				if ($add_note) $order->update_status("failed", __("The connected Biz shipment has failed.", 'wc-biz-courier-logistics'));
-				else $order->update_status("failed");
+				if ($add_note) $this->order->update_status("failed", __("The connected Biz shipment has failed.", 'wc-biz-courier-logistics'));
+				else $this->order->update_status("failed");
 
 				$failure_delivery_note = end($report)['level-description'] . __('Other comments:', 'wc-biz-courier-logistics') . '\n';
 				foreach (array_reverse($report) as $status) {
 					$failure_delivery_note .= ($status['date'] . '-' . $status['time']) . ':\n' . ($status['comments'] ?? 'none');
 				}
+
 				// Add delivery failure add_note.
 				update_post_meta($this->order->get_id(), '_biz_failure_delivery_note', $failure_delivery_note);
 			}
 		} else {
 
 			// Handle pending shipment status.
-			$order = wc_get_order($this->order->get_id());
-			$order->update_status("processing", __("The newly connected shipment is pending.", 'wc-biz-courier-logistics'));
+			$this->order->update_status("processing", __("The newly connected shipment is pending.", 'wc-biz-courier-logistics'));
 		}
 	}
 
@@ -334,6 +354,7 @@ class WC_Biz_Courier_Logistics_Shipment
 	/**
 	 * Get the status definitions.
 	 * 
+	 * @param string? $identifier Return data only for a specific identifier.
 	 * @param bool? $force_refresh Force refreshes the saved status definitions.
 	 * @return array The array of status definitions.
 	 * 
@@ -342,68 +363,85 @@ class WC_Biz_Courier_Logistics_Shipment
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.4.0
 	 */
-	public static function get_status_definitions(bool $force_refresh = false): array
+	public static function get_status_definition(string $identifier = null, bool $force_refresh = false): array
 	{
+		if (!function_exists("retrieve_definitions")) {
 
-		// TODO @alexandrosraikos: Add settings option to refresh definitions manually. (#37)
+			/**
+			 * Retrieve the status definitions from the Biz API.
+			 * 
+			 * @return array The retrieved array of status definitions.
+			 */
+			function retrieve_definitions(): array
+			{
+				/** @var Object $biz_status_definitions The official list of status levels. */
+				$biz_status_definitions = WC_Biz_Courier_Logistics::contactBizCourierAPI(
+					"https://www.bizcourier.eu/pegasus_cloud_app/service_01/TrackEvntSrv.php?wsdl",
+					"TrackEvntSrv",
+					[],
+					true
+				);
 
-		/**
-		 * Retrieve the status definitions from the Biz API.
-		 * 
-		 * @return array The retrieved array of status definitions.
-		 */
-		function retrieve_definitions(): array
-		{
+				/** @var array $status_levels All available status levels. */
+				$status_definitions = [];
 
-			/** @var Object $biz_status_definitions The official list of status levels. */
-			$biz_status_definitions = WC_Biz_Courier_Logistics::contactBizCourierAPI(
-				"https://www.bizcourier.eu/pegasus_cloud_app/service_01/TrackEvntSrv.php?wsdl",
-				"TrackEvntSrv",
-				[],
-				true
-			);
+				// Populate status levels from the call.
+				foreach ($biz_status_definitions as $biz_status_definition) {
+					$status_definitions[$biz_status_definition['Status_Code']] = [
+						'level' => $biz_status_definition['Level'],
+						'description' => $biz_status_definition['Comments']
+					];
+				}
 
-			/** @var array $status_levels All available status levels. */
-			$status_definitions = [];
-
-			// Populate status levels from the call.
-			foreach ($biz_status_definitions as $biz_status_definition) {
-				$status_levels[$biz_status_definition['Status_Code']] = [
-					'level' => $biz_status_definition['Level'],
-					'description' => $biz_status_definition['Comments']
+				// Insert custom `'NONE'` status level.
+				$status_definitions['NONE'] = [
+					'level' => 'Pending',
+					'description' => __("Delivery status update", 'wc-biz-courier-logistics')
 				];
+
+				$status_definitions['last_updated'] = time();
+
+				update_option('wc_biz_courier_logistics_status_definitions', $status_definitions);
+				return $status_definitions;
 			}
-
-			// Insert custom `'NONE'` status level.
-			$status_definitions['NONE'] = [
-				'level' => 'Pending',
-				'description' => __("Delivery status update", 'wc-biz-courier-logistics')
-			];
-
-			$status_definitions['last_updated'] = time();
-
-			update_option('wc_biz_courier_logistics_status_definitions', $status_definitions);
-			return $status_definitions;
 		}
+
 
 		/** @var array $status_definitions The array of status definitions. */
 		$status_definitions = get_option('wc_biz_courier_logistics_status_definitions');
 
-		// Force refresh of definitions.
-		if($force_refresh) {
-			return retrieve_definitions();
-		}
-
-		// Check for existing definitions.
-		if (empty($status_definitions)) {
-			return retrieve_definitions();
+		// Fetch definitions the Biz API.
+		if ($force_refresh || count($status_definitions) < 3) {
+			$status_definitions = retrieve_definitions();
 		} else {
 			// Refresh definitions older than 7 days.
 			if ((time() - $status_definitions['last_updated']) > 7 * 24 * 60 * 60 * 60) {
-				return retrieve_definitions();
-			} else return $status_definitions;
+				$status_definitions = retrieve_definitions();
+			}
 		}
 
+		// Handle specific identifier.
+		if (!empty($identifier)) {
+			if (array_key_exists($identifier, $status_definitions)) {
+				return $status_definitions[$identifier];
+			} else {
+				// Fetch once if definition is not found in DB storage.
+				$status_definitions = retrieve_definitions();
+				if (array_key_exists($identifier, $status_definitions)) {
+					return $status_definitions[$identifier];
+				} else throw new ErrorException(
+					sprintf(
+						__(
+							"The definition for the shipment status \"%s\" cannot be found.",
+							'wc-biz-courier-logistics'
+						),
+						$identifier
+					)
+				);
+			}
+		} else {
+			return $status_definitions;
+		}
 	}
 
 	/**

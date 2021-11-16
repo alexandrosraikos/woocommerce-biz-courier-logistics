@@ -57,6 +57,12 @@ msgstr "Εκκρεμεί"
 msgid "You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator."
 msgstr "Πρέπει να ενεργοποιήσετε την επέκταση soap στην εγκατάσταση PHP σας για να χρησιμοποιήσετε τις λειτουργίες του Biz Courier & Logistics for WooCommerce. Επικοινωνήστε με τον διαχειριστή του εξυπηρετητή σας."
 
+msgid "This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. Please update to %1$s %2$s or later."
+msgstr "Αυτή η έκδοση %1$s δεν υποστηρίζεται από το Biz Courier & Logistics for WooCommerce. Ενημερώστε στην έκδοση %2$s ή μεταγενέστερη."
+
+msgid "Biz Courier & Logistics for WooCommerce requires the WooCommerce plugin to be installed and enabled."
+msgstr "Το Biz Courier & Logistics for WooCommerce απαιτεί το πρόσθετο WooCommerce plugin να είναι εγκατεστημένο και ενεργοποιημένο."
+
 msgid "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 msgstr "Πρέπει να ρυθμίσετε τα στοιχεία σας Biz Courier στις <a href='%s'>ρυθμίσεις WooCommerce</a>."
 
@@ -404,8 +410,17 @@ msgid "The newly connected shipment is pending delivery."
 msgstr "Εκκρεμεί η παράδοση της νέας συνδεδεμένης σας αποστολής Biz."
 
 # Error messages
-msgid "This voucher was not found. Please provide a valid shipment voucher."
-msgstr "Αυτός ο κωδικός παράδοσης δεν βρέθηκε. Εισάγετε έναν έγκυρο κωδικό παράδοσης."
+msgid "There was a connection issue while trying to contact the Biz Courier & Logistics API:"
+msgstr "Προέκυψε ένα πρόβλημα κατά τη σύνδεση με το Biz Courier & Logistics API:"
+
+msgid "The definition for the shipment status \"%s\" cannot be found."
+msgstr "Ο ορισμός για την κατάσταση παραγγελίας \"%s\" δεν βρέθηκε."
+
+msgid "Unable to fetch status history for this shipment."
+msgstr "Δεν ήταν δυνατή η ανάκτηση του ιστορικού παράδοσης."
+
+msgid "The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher."
+msgstr "Ο κωδικός παράδοσης \"%s\" δεν βρέθηκε. Εισάγετε έναν έγκυρο κωδικό αποστολής."
 
 msgid "The voucher number couldn't be retrieved."
 msgstr "Ο κωδικός παράδοσης δεν μπορούσε να αναγνωσθεί."

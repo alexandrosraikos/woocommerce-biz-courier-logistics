@@ -27,7 +27,6 @@ var $ = jQuery;
  * @since 1.4.0
  */
 function showAlert(selector, message, type = null, placeBefore = false) {
-  console.log($(selector));
   if (placeBefore) {
     $(selector).before(
       '<div class="wc-biz-courier-logistics-notice ' +

@@ -50,8 +50,16 @@ msgstr ""
 # Integration
 # ------
 # This section provides the necessary translations for initialising the custom Biz integration.
-msgctxt "SETTINGS_INTEGRATION_SETUP_INSTALLATION_ERROR"
+msgctxt "SETTINGS_INTEGRATION_SETUP_INSTALLATION_SOAP_ERROR"
 msgid "You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator."
+msgstr ""
+
+msgctxt "SETTINGS_INTEGRATION_SETUP_INSTALLATION_VERSION_ERROR"
+msgid "This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. Please update to %1$s %2$s or later."
+msgstr ""
+
+msgctxt "SETTINGS_INTEGRATION_SETUP_INSTALLATION_WOOCOMMERCE_ERROR"
+msgid "Biz Courier & Logistics for WooCommerce requires the WooCommerce plugin to be installed and enabled."
 msgstr ""
 
 msgctxt "SETTINGS_INTEGRATION_SETUP_PROMPT"
@@ -512,8 +520,18 @@ msgid "The newly connected shipment is pending delivery."
 msgstr ""
 
 # Error messages
+msgctxt "GENERIC_SOAPCLIENT_CONNECTION_ERROR"
+msgid "There was a connection issue while trying to contact the Biz Courier & Logistics API:"
+
+msgctxt "SHIPMENT_STATUS_DEFINITION_NOT_FOUND"
+msgid "The definition for the shipment status \"%s\" cannot be found."
+
+msgctxt "ORDER_METABOX_STATUS_HISTORY_FETCH_ERROR"
+msgid "Unable to fetch status history for this shipment."
+msgstr ""
+
 msgctxt "ORDER_EDIT_VOUCHER_NOT_FOUND_ERROR"
-msgid "This voucher was not found. Please provide a valid shipment voucher."
+msgid "The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher."
 msgstr ""
 
 msgctxt "ORDER_MODIFY_SHIPMENT_VOUCHER_NOT_FOUND_ERROR"

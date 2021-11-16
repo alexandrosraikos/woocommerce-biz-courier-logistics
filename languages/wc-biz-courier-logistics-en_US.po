@@ -51,6 +51,15 @@ msgstr "Pending"
 # Integration
 # ------
 # This section provides the necessary translations for initialising the custom Biz integration.
+msgid "You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator."
+msgstr "You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator."
+
+msgid "This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. Please update to %1$s %2$s or later."
+msgstr "This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. Please update to %1$s %2$s or later."
+
+msgid "Biz Courier & Logistics for WooCommerce requires the WooCommerce plugin to be installed and enabled."
+msgstr "Biz Courier & Logistics for WooCommerce requires the WooCommerce plugin to be installed and enabled."
+
 msgid "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 msgstr "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 
@@ -399,8 +408,17 @@ msgid "The newly connected shipment is pending delivery."
 msgstr "The newly connected shipment is pending delivery."
 
 # Error messages
-msgid "This voucher was not found. Please provide a valid shipment voucher."
-msgstr "This voucher was not found. Please provide a valid shipment voucher."
+msgid "There was a connection issue while trying to contact the Biz Courier & Logistics API:"
+msgstr "There was a connection issue while trying to contact the Biz Courier & Logistics API:"
+
+msgid "The definition for the shipment status \"%s\" cannot be found."
+msgstr "The definition for the shipment status \"%s\" cannot be found."
+
+msgid "Unable to fetch status history for this shipment."
+msgstr "Unable to fetch status history for this shipment."
+
+msgid "The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher."
+msgstr "The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher."
 
 msgid "The voucher number couldn't be retrieved."
 msgstr "The voucher number couldn't be retrieved."
