@@ -247,6 +247,9 @@ class WC_Biz_Courier_Logistics
 		if (!wp_next_scheduled('shipment_status_cron_handler_hook')) {
 			wp_schedule_event(time(), 'ten_minutes', 'shipment_status_cron_handler_hook');
 		}
+
+		/** Utility hooks */
+		$this->loader->add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', $plugin_admin, 'shipment_voucher_custom_query_var_handler', 10, 2 );
 	}
 
 	/**

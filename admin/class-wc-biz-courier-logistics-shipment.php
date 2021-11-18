@@ -73,8 +73,32 @@ class WC_Biz_Courier_Logistics_Shipment
 	 */
 	public function set_voucher(string $value, bool $conclude = false): void
 	{
-		// TODO @alexandrosraikos: Check if voucher exists on another order and report (#38).
-		
+		$order = wc_get_orders([
+			'voucher' => $value
+		]);
+		if (count($order) == 1) {
+			throw new RuntimeException(
+				sprintf(
+					__(
+						"The voucher \"%s\" is already in use by <a href=\"%s\">order #%d</a>.",
+						'wc-biz-courier-logistics'
+					),
+					$value,
+					get_edit_post_link($order[0]->id),
+					$order[0]->id
+				)
+			);
+		} elseif (count($order) > 1) {
+			throw new RuntimeException(
+				sprintf(
+					__(
+						"Using the voucher \"%s\" in multiple orders simultaneously is not supported.",
+						'wc-biz-courier-logistics'
+					),
+					$value
+				)
+			);
+		}
 
 		/** @var array $report The status history report. */
 		$report = $this->get_status($value);
@@ -236,8 +260,6 @@ class WC_Biz_Courier_Logistics_Shipment
 	{
 		/** @var array $report The full status history report. */
 		if (empty($report)) $report = $this->get_status();
-
-		error_log(json_encode($report));
 
 		if (end($report)['level'] == 'Final') {
 			if (end($report)['conclusion'] == 'completed') {
@@ -476,7 +498,15 @@ class WC_Biz_Courier_Logistics_Shipment
 		$items = $this->order->get_items();
 
 		// Check for no items.
-		if (empty($items)) throw new RuntimeException(__("There are no items in this order.", 'wc-biz-courier-logistics'));
+		if (empty($items)) {
+			throw new RuntimeException(
+				__(
+					"There are no items included in this order.",
+					'wc-biz-courier-logistics'
+				)
+			);
+		}
+
 
 		/**
 		 * Prepare shipment items.
@@ -535,7 +565,14 @@ class WC_Biz_Courier_Logistics_Shipment
 		}
 
 		// Check for supported items.
-		if (empty($shipment_products)) throw new RuntimeException(__("There are no Biz items to submit in this order.", 'wc-biz-courier-logistics'));
+		if (empty($shipment_products)) {
+			throw new RuntimeException(
+				__(
+					"There are no Biz Warehouse items included in this order.",
+					'wc-biz-courier-logistics'
+				)
+			);
+		}
 
 		/** @var string $first_product The extracted first product from `$shipment_products`. */
 		$first_product = array_shift($shipment_products);

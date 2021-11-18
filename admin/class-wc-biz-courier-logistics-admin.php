@@ -288,7 +288,7 @@ class WC_Biz_Courier_Logistics_Admin
 		} catch (SoapFault $f) {
 			// Display the error.
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-			notice_display_html(__("There was a connection issue when trying to contact the Biz Courier & Logistics API:", 'wc-biz-courier-logistics')." ".$f->getMessage(), 'failure');
+			notice_display_html(__("There was a connection issue when trying to contact the Biz Courier & Logistics API:", 'wc-biz-courier-logistics') . " " . $f->getMessage(), 'failure');
 		} catch (\Exception $e) {
 
 			// Display the error.
@@ -1212,5 +1212,38 @@ class WC_Biz_Courier_Logistics_Admin
 				}
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * Utility Hooks
+	 * 	------------
+	 * Additional internal functionality 
+	 * related to shipment management.
+	 */
+
+
+	/**
+	 * Filter a query by adding a custom query argument reader for the Biz voucher
+	 * key in the meta array.
+	 * 
+	 * @param WC_Query $query The default WooCommerce query.
+	 * @param array $query_vars The passed query arguments.
+	 * @usedby 'woocommerce_order_data_store_cpt_get_orders_query'
+	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	function shipment_voucher_custom_query_var_handler($query, $query_vars)
+	{
+		// Check for 
+		if (!empty($query_vars['voucher'])) {
+			$query['meta_query'][] = array(
+				'key' => '_biz_voucher',
+				'value' => esc_attr($query_vars['voucher']),
+			);
+		}
+
+		return $query;
 	}
 }

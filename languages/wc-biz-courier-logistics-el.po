@@ -420,7 +420,13 @@ msgid "Unable to fetch status history for this shipment."
 msgstr "Δεν ήταν δυνατή η ανάκτηση του ιστορικού παράδοσης."
 
 msgid "The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher."
-msgstr "Ο κωδικός παράδοσης \"%s\" δεν βρέθηκε. Εισάγετε έναν έγκυρο κωδικό αποστολής."
+msgstr "Ο κωδικός παράδοσης \"%s\" δεν βρέθηκε. Εισάγετε έναν έγκυρο κωδικό παράδοσης."
+
+msgid "The voucher \"%s\" is already in use by <a href=\"%s\">order #%d</a>."
+msgstr "Ο κωδικός παράδοσης \"%s\" χρησιμοποιείται ήδη από την <a href=\"%s\">παραγγελία #%d</a>."
+
+msgid "Using the voucher \"%s\" in multiple orders simultaneously is not supported."
+msgstr "Η χρήση του ίδιου κωδικού παράδοσης \"%s\" σε πολλές παραγγελίες ταυτόχρονα δεν υποστηρίζεται."
 
 msgid "The voucher number couldn't be retrieved."
 msgstr "Ο κωδικός παράδοσης δεν μπορούσε να αναγνωσθεί."
@@ -431,8 +437,11 @@ msgstr "Ένα άγνωστο σφάλμα προέκυψε κατά την επ
 msgid "An unknown Biz error occured while processing shipment modification information."
 msgstr "Ένα άγνωστο σφάλμα προέκυψε από την Biz κατά την επεξεργασία των πληροφοριών επεξεργασίας της παράδοσης."
 
-msgid "There are no products in this order."
+msgid "There are no items included in this order."
 msgstr "Δεν υπάρχουν προϊόντα σε αυτή την παραγγελία."
+
+msgid "There are no Biz Warehouse items included in this order."
+msgstr "Δεν υπάρχουν προϊόντα της αποθήκης σας Biz σε αυτή την παραγγελία."
 
 msgid "Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability."
 msgstr "Κάποια προϊόντα δεν βρέθηκαν στην αποθήκη Biz. Προσπαθήστε να κάνετε \"Μέτρηση αποθέματος\" στην σελίδα \"Όλα τα προϊόντα\" για να ενημερώσετε τη διαθεσιμότητά τους."

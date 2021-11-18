@@ -534,6 +534,14 @@ msgctxt "ORDER_EDIT_VOUCHER_NOT_FOUND_ERROR"
 msgid "The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher."
 msgstr ""
 
+msgctxt "SHIPMENT_VOUCHER_EXISTS_ERROR"
+msgid "The voucher \"%s\" is already in use by <a href=\"%s\">order #%d</a>."
+msgstr ""
+
+msgctxt "SHIPMENT_VOUCHER_EXISTS_MULTIPLE_ERROR"
+msgid "Using the voucher \"%s\" in multiple orders simultaneously is not supported."
+msgstr ""
+
 msgctxt "ORDER_MODIFY_SHIPMENT_VOUCHER_NOT_FOUND_ERROR"
 msgid "The voucher number couldn't be retrieved."
 msgstr ""
@@ -547,7 +555,11 @@ msgid "An unknown Biz error occured while processing shipment modification infor
 msgstr ""
 
 msgctxt "ORDER_SEND_SHIPMENT_NO_PRODUCTS_ERROR"
-msgid "There are no products in this order."
+msgid "There are no items included in this order."
+msgstr ""
+
+msgctxt "SHIPMENT_SEND_NO_SUPPORTED_PRODUCTS_FOUND_ERROR"
+msgid "There are no Biz Warehouse items included in this order."
 msgstr ""
 
 msgctxt "ORDER_SEND_SHIPMENT_SKU_ERROR"

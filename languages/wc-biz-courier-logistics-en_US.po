@@ -420,6 +420,12 @@ msgstr "Unable to fetch status history for this shipment."
 msgid "The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher."
 msgstr "The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher."
 
+msgid "The voucher \"%s\" is already in use by <a href=\"%s\">order #%d</a>."
+msgstr "The voucher \"%s\" is already in use by <a href=\"%s\">order #%d</a>."
+
+msgid "Using the voucher \"%s\" in multiple orders simultaneously is not supported."
+msgstr "Using the voucher \"%s\" in multiple orders simultaneously is not supported."
+
 msgid "The voucher number couldn't be retrieved."
 msgstr "The voucher number couldn't be retrieved."
 
@@ -429,8 +435,11 @@ msgstr "An unknown error occured while processing shipment modification informat
 msgid "An unknown Biz error occured while processing shipment modification information."
 msgstr "An unknown Biz error occured while processing shipment modification information."
 
-msgid "There are no products in this order."
-msgstr "There are no products in this order."
+msgid "There are no items included in this order."
+msgstr "There are no items included in this order."
+
+msgid "There are no Biz Warehouse items included in this order."
+msgstr "There are no Biz Warehouse items included in this order."
 
 msgid "Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability."
 msgstr "Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability."
