@@ -848,7 +848,7 @@ class WC_Biz_Courier_Logistics_Admin
 					"bizShipmentSendNonce" => wp_create_nonce('biz_shipment_send'),
 					"bizShipmentAddVoucherNonce" => wp_create_nonce('biz_shipment_add_voucher'),
 					"orderID" => $order_id,
-					"SEND_SHIPMENT_CONFIRMATION" => __("Are you sure you want to send this shipment?", "wc-biz-courier-logistics"),
+					"SEND_SHIPMENT_CONFIRMATION" => __("Are you sure you want to send this shipment?", 'wc-biz-courier-logistics'),
 					"ADD_VOUCHER_MESSAGE" => __("Insert the shipment's voucher number from Biz Courier in the field below.", "wc-biz-courier-logistics")
 				));
 			}

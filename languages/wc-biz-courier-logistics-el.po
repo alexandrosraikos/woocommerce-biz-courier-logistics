@@ -121,16 +121,16 @@ msgid "Update Processing shipment status automatically to Completed or Cancelled
 msgstr "Αυτόματη ενημέρωση παραγγελιών υπό Επεξεργασία σε Ολοκληρωμένες ή Ακυρωμένες, βάσει δεδομένων της Biz Courier."
 
 msgid "Automatic shipment creation"
-msgstr "Αυτόματη δημιουργία αποστολής"
+msgstr "Αυτόματη δημιουργία παράδοσης"
 
 msgid "Automatically send Biz shipments when orders enter the selected status. <em>WARNING: This applies for all orders, regardless if the customer selected Biz Courier as a shipping method or not.</em>"
-msgstr "Αυτόματη δημιουργία αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση. <em>ΠΡΟΣΟΧΗ: Αυτό ισχύει για όλες τις παραγγελίες, ανεξαρτήτως αν ο πελάτης επέλεξε την Biz Courier ως μέθοδο αποστολής ή όχι.</em>"
+msgstr "Αυτόματη δημιουργία παράδοσης Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση. <em>ΠΡΟΣΟΧΗ: Αυτό ισχύει για όλες τις παραγγελίες, ανεξαρτήτως αν ο πελάτης επέλεξε την Biz Courier ως μέθοδο παράδοσης ή όχι.</em>"
 
 msgid "Automatic shipment cancellation"
-msgstr "Αυτόματη ακύρωση αποστολής"
+msgstr "Αυτόματη ακύρωση παράδοσης"
 
 msgid "Automatically cancel Biz shipments when orders enter the selected status. <em>NOTICE: This works only for orders containing a valid Biz voucher number.</em>"
-msgstr "Αυτόματη ακύρωση αποστολής Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση. <em>ΣΗΜΕΙΩΣΗ: Αυτό λειτουργεί μόνο για παραγγελίες που περιέχουν έναν έγκυρο κωδικός παράδοσης Biz.</em>"
+msgstr "Αυτόματη ακύρωση παράδοσης Biz όταν μία παραγγελία μεταβαίνει στην επιλεγμένη κατάσταση. <em>ΣΗΜΕΙΩΣΗ: Αυτό λειτουργεί μόνο για παραγγελίες που περιέχουν έναν έγκυρο κωδικός παράδοσης Biz.</em>"
 
 msgid "Disable"
 msgstr "Απενεργοποίηση"
@@ -221,7 +221,7 @@ msgid "Use billing phone"
 msgstr "Χρήση αριθμού τηλεφώνου χρέωσης"
 
 msgid "Submit the recipient's billing phone number instead of the shipping phone number to Biz."
-msgstr "Χρησιμοποιείστε τον αριθμό τηλεφώνου χρέωσης αντί για τον αριθμό τηλεφώνου αποστολής όταν αποστέλλετε μία νέα παράδοση στη Biz."
+msgstr "Χρησιμοποιείστε τον αριθμό τηλεφώνου χρέωσης αντί για τον αριθμό τηλεφώνου παράδοσης όταν αποστέλλετε μία νέα παράδοση στη Biz."
 
 msgid "Morning delivery"
 msgstr "Πρωινή παράδοση"
@@ -267,7 +267,7 @@ msgid "Inaccessible areas"
 msgstr "Δυσπρόσιτες περιοχές"
 
 msgid "Delivery pricing"
-msgstr "Κόστος αποστολής"
+msgstr "Κόστος παράδοσης"
 
 msgid "Insert the delivery fee amount for up to 2kg."
 msgstr "Εισάγετε το ποσό χρέωσης για την αποστολή εώς 2 κιλών (kg)."
@@ -300,29 +300,32 @@ msgstr "Αυτή η παραγγελία δεν έχει αποσταλεί μέ
 msgid "Send shipment"
 msgstr "Αποστολή παραγγελίας"
 
+msgid "Are you sure you want to send this shipment?"
+msgstr "Θέλετε σίγουρα να αποστείλετε αυτή την παραγγελία για παράδοση μέσω Biz;"
+
 msgid "The shipment was successfully registered to Biz Courier."
 msgstr "Η παράδοση καταχωρήθηκε με επιτυχία στην Biz Courier."
 
 msgid "Add existing voucher number"
-msgstr "Προσθήκη κωδικού αποστολής"
+msgstr "Προσθήκη κωδικού παράδοσης"
 
 msgid "Insert the shipment's voucher number from Biz Courier in the field below."
-msgstr "Εισάγετε τον κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
+msgstr "Εισάγετε τον κωδικό παράδοσης από την Biz Courier στο παρακάτω πεδίο."
 
 msgid "Voucher number: "
 msgstr "Κωδικός παράδοσης: "
 
 msgid "Edit voucher"
-msgstr "Επεξεργασία κωδικού αποστολής"
+msgstr "Επεξεργασία κωδικού παράδοσης"
 
 msgid "Insert the new shipment voucher number from Biz Courier in the field below."
-msgstr "Εισάγετε τον νέο κωδικό αποστολής από την Biz Courier στο παρακάτω πεδίο."
+msgstr "Εισάγετε τον νέο κωδικό παράδοσης από την Biz Courier στο παρακάτω πεδίο."
 
 msgid "Delete voucher"
-msgstr "Διαγραφή κωδικού αποστολής"
+msgstr "Διαγραφή κωδικού παράδοσης"
 
 msgid "Are you sure you want to delete the shipment voucher from this order?"
-msgstr "Είστε σίγουρος/η πως θέλετε να διαγράψετε αυτόν τον κωδικό αποστολής από την παραγγελία;"
+msgstr "Είστε σίγουρος/η πως θέλετε να διαγράψετε αυτόν τον κωδικό παράδοσης από την παραγγελία;"
 
 msgid "Shipment actions: "
 msgstr "Ενέργειες παράδοσης: "
@@ -343,7 +346,7 @@ msgid "Request shipment cancellation"
 msgstr "Αίτηση ακύρωσης παράδοσης"
 
 msgid "Are you sure you want to request the cancellation of this Biz shipment? If you want to send it again, you will receive a new tracking code."
-msgstr "Σίγουρα επιθυμείτε να στείλετε αίτηση ακύρωσης αυτής της παράδοσης Biz; Αν επιθυμείτε να την ξαναστείλετε, θα λάβετε νέο κωδικό αποστολής."
+msgstr "Σίγουρα επιθυμείτε να στείλετε αίτηση ακύρωσης αυτής της παράδοσης Biz; Αν επιθυμείτε να την ξαναστείλετε, θα λάβετε νέο κωδικό παράδοσης."
 
 msgid "The Biz shipment with tracking code %s was cancelled."
 msgstr "Η παράδοση μέσω Biz με τον κωδικό ανίχνευσης %s ακυρώθηκε."
@@ -407,7 +410,7 @@ msgid "The connected Biz shipment has failed."
 msgstr "Η συνδεδεμένη παράδοση Biz απέτυχε."
 
 msgid "The newly connected shipment is pending delivery."
-msgstr "Εκκρεμεί η παράδοση της νέας συνδεδεμένης σας αποστολής Biz."
+msgstr "Εκκρεμεί η παράδοση της νέας συνδεδεμένης σας παράδοσης Biz."
 
 # Error messages
 msgid "There was a connection issue while trying to contact the Biz Courier & Logistics API:"
@@ -459,7 +462,7 @@ msgid "A voucher already exists for this order."
 msgstr "Ένας κωδικός παράδοσης υπάρχει ήδη για αυτή την παραγγελία."
 
 msgid "There was a problem with the recipient's information. Make sure you have filled in all the necessary fields: First name, last name, phone number, e-mail address, address line #1, city, postal code and country."
-msgstr "Υπήρξε ένα πρόβλημα με της πληροφορίες του παραλήπτη. Ελέγξτε τις πληροφορίες αποστολής που έχετε εισάγει: Όνομα, επώνυμο, αριθμός τηλεφώνου, διεύθυνση e-mail, γραμμή 1 διεύθυνσης, πόλη/περιοχή, ταχυδρομικός κώδικας και χώρα."
+msgstr "Υπήρξε ένα πρόβλημα με της πληροφορίες του παραλήπτη. Ελέγξτε τις πληροφορίες παράδοσης που έχετε εισάγει: Όνομα, επώνυμο, αριθμός τηλεφώνου, διεύθυνση e-mail, γραμμή 1 διεύθυνσης, πόλη/περιοχή, ταχυδρομικός κώδικας και χώρα."
 
 msgid "There was a problem registering recipient information with Biz. Please check your recipient information entries."
 msgstr "Υπήρξε ένα πρόβλημα κατά την αποστολή πληροφοριών παραλήπτη στην Biz. Ελέγξτε τις πληροφορίες παραλήπτη που έχετε εισάγει."

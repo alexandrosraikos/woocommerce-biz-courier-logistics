@@ -147,7 +147,6 @@ class WC_Biz_Courier_Logistics
 	 */
 	private function define_admin_hooks()
 	{
-		// TODO @alexandrosraikos: Update all translations (#38).
 		// TODO @alexandrosraikos: Log and test all cases thoroughly (#37).
 
 		$plugin_admin = new WC_Biz_Courier_Logistics_Admin($this->get_WC_Biz_Courier_Logistics(), $this->get_version());

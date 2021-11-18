@@ -481,7 +481,6 @@ class WC_Biz_Courier_Logistics_Shipment
 	 */
 	public function send(): void
 	{
-		// TODO @alexandrosraikos: Handle empty orders or unsupported orders (#36).
 		/**
 		 * Initialization
 		 * 

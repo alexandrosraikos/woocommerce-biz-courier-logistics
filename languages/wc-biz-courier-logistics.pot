@@ -374,6 +374,10 @@ msgctxt "ORDER_METABOX_SEND_SHIPMENT_BUTTON"
 msgid "Send shipment"
 msgstr ""
 
+msgctxt "SHIPMENT_SEND_CONFIRMATION_PROMPT"
+msgid "Are you sure you want to send this shipment?"
+msgstr ""
+
 msgctxt "ORDER_METABOX_SEND_SHIPMENT_SUCCESS_ORDER_NOTE"
 msgid "The shipment was successfully registered to Biz Courier."
 msgstr ""

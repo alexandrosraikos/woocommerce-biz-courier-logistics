@@ -298,6 +298,9 @@ msgstr "This order has not shipped with Biz."
 msgid "Send shipment"
 msgstr "Send shipment"
 
+msgid "Are you sure you want to send this shipment?"
+msgstr "Are you sure you want to send this shipment?"
+
 msgid "The shipment was successfully registered to Biz Courier."
 msgstr "The shipment was successfully registered to Biz Courier."
 
