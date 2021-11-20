@@ -82,10 +82,9 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 				$this->product->get_id(),
 				'_biz_stock_sync_aggregate',
 				true
-			)));
+			))
+		);
 	}
-
-	// TODO @alexandrosraikos: Extend functions that can be considered `aggregate` with apply_to_children(). (#34)
 
 	/**
 	 * Prohibit a product from being utilised by the delegate.
@@ -97,6 +96,15 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 	 */
 	public function prohibit(): void
 	{
+		// Remove permissions from all childen if aggregate.
+		if ($this->aggregated) {
+			$this->apply_to_children(
+				function ($child) {
+					$child->prohibit();
+				}
+			);
+		}
+
 		// Persist prohibition on the instance and the database.
 		$this->permitted = !delete_post_meta($this->product->get_id(), '_biz_stock_sync');
 
@@ -137,8 +145,13 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 				'yes'
 			);
 
-			// 
+			// Enable option and allow all children.
 			$this->aggregated = true;
+			$this->apply_to_children(
+				function ($child) {
+					self::permit($child);
+				}
+			);
 		} else {
 			throw new WCBizCourierLogisticsProductDelegateNotAllowedException(
 				$this->product->get_title()
@@ -181,7 +194,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 	 * Get the Biz synchronization status of a product.
 	 * 
 	 * @param bool $composite Whether to create a composite label using children's statuses as well.
-	 * @return array A tuple-like [`label`, `status`] of the resulting status.
+	 * @return array A tuple-like [`status`, `label`] of the resulting status.
 	 * 
 	 * @uses self::apply_to_children
 	 * @uses self::get_synchronization_status

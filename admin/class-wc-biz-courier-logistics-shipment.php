@@ -33,6 +33,8 @@ class WC_Biz_Courier_Logistics_Shipment
 	/** @var array $status_definitions The definitions of shipment statuses. */
 	protected array $status_definitions;
 
+	// TODO @alexandrosraikos: Replace generic exception classes (#37).
+
 	/**
 	 * Initialize the class and retrieve the associated order data.
 	 * 

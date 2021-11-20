@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * The exception for missing product delegate permissions.
+ * 
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.4.0
+ */
 class WCBizCourierLogisticsProductDelegateNotAllowedException extends Exception
 {
 	public function __construct(string $product_title)
@@ -18,7 +23,13 @@ class WCBizCourierLogisticsProductDelegateNotAllowedException extends Exception
 	}
 }
 
-class WCBizCourierLogisticsUnsupportedValueException extends Exception
+/**
+ * The exception for unsupported values.
+ * 
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.4.0
+ */
+ class WCBizCourierLogisticsUnsupportedValueException extends Exception
 {
 	public function __construct(string $value)
 	{
@@ -35,7 +46,3 @@ class WCBizCourierLogisticsUnsupportedValueException extends Exception
 		);
 	}
 }
-
-
-
-// TODO @alexandrosraikos: Add more common exceptions (#37)

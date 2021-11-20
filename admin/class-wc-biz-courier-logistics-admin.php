@@ -352,8 +352,7 @@ class WC_Biz_Courier_Logistics_Admin
 		} catch (WCBizCourierLogisticsProductDelegateNotAllowedException $e) {
 			http_response_code(401);
 			die($e->getMessage());
-		}
-		catch (RuntimeException $e) {
+		} catch (RuntimeException $e) {
 			http_response_code(400);
 			die($e->getMessage());
 		} catch (ErrorException $e) {
@@ -497,16 +496,15 @@ class WC_Biz_Courier_Logistics_Admin
 		/** @var WP_Post $post The current post. */
 		global $post;
 
-
-		// TODO @alexandrosraikos: Add 'Include all variations' option. (#34)
-
 		$this->async_handler(function () use ($post) {
 
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($post->ID);
+			$status = $delegate->get_synchronization_status();
 
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-			product_synchronization_checkbox($delegate->get_synchronization_status());
+			product_synchronization_checkbox($status[0], $status[1]);
+			product_aggregation_checkbox($delegate->aggregated);
 		}, $post->ID);
 	}
 
@@ -524,14 +522,23 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	public function add_product_variation_biz_warehouse_option($loop, $variation_data, $variation): void
 	{
-		// TODO @alexandrosraikos: Do not show if variations are all included in parent. (#34)
-
 		$this->async_handler(function () use ($loop, $variation) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
-			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($variation->ID);
 
+			// Check permissions.
+			if(WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($variation)) {
+				// Get status.
+				$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($variation->ID);
+				$status = $delegate->get_synchronization_status();
+			}
+
+			// Print based on aggregation option.
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-			product_variation_synchronization_checkbox($loop, $delegate->get_synchronization_status());
+			if (!($delegate->aggregated ?? false)) {
+				product_variation_synchronization_checkbox($loop, $status[0] ?? '', $status[1] ?? '');
+			} else {
+				product_synchronization_status_indicator($status[0], $status[1]);
+			}
 		}, $variation->ID);
 	}
 
@@ -647,8 +654,6 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	public function save_product_biz_warehouse_option($post_id): void
 	{
-		// TODO @alexandrosraikos: Save data for all variations too if they are automatically included. (#34)
-
 		$this->async_handler(function () use ($post_id) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 
@@ -658,18 +663,25 @@ class WC_Biz_Courier_Logistics_Admin
 			if (!empty($_POST['_biz_stock_sync'])) {
 				WC_Biz_Courier_Logistics_Product_Delegate::permit($product);
 			}
-			
+
 			if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
 
 				/** @var WC_Biz_Courier_Logistics_Product_Delegate $delegate The product delegate. */
 				$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($post_id);
-	
-			// Give delegate permission if preferred.
+
+				// Give delegate permission if preferred.
 				if (empty($_POST['_biz_stock_sync'])) {
 					$delegate->prohibit();
 					return;
-				} 
-	
+				}
+
+				// Apply aggregation preference.
+				if (!empty($_POST['_biz_stock_sync_aggregate'])) {
+					$delegate->aggregate();
+				} else {
+					$delegate->separate();
+				}
+
 				// Reset synchronization status on SKU change.
 				if ($_POST['_sku'] != $delegate->product->get_sku()) {
 					$delegate->reset_synchronization_status();
@@ -724,7 +736,6 @@ class WC_Biz_Courier_Logistics_Admin
 				if ($_POST['variable_sku'][$i] != $delegate->product->get_sku()) {
 					$delegate->reset_synchronization_status();
 				}
-
 			}
 		}, $variation_id);
 	}

@@ -110,12 +110,12 @@ function product_synchronization_status_indicator(string $status, string $label)
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.4.0
  */
-function product_synchronization_status_extended_indicator($status): void
+function product_synchronization_status_extended_indicator(string $status, string $label): void
 {
     echo '
     <div class="wc-biz-courier-logistics extended-synchronization-indicator">
         <span>' . __('Biz status', 'wc-biz-courier-logistics') . ':</span> 
-        ' . product_synchronization_status_indicator($status) . '
+        ' . product_synchronization_status_indicator($status, $label) . '
     </div>
     ';
 }
@@ -130,7 +130,7 @@ function product_synchronization_status_extended_indicator($status): void
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.4.0
  */
-function product_synchronization_checkbox($status): void
+function product_synchronization_checkbox(string $status, string $label): void
 {
     // Print the checkbox.
     echo `
@@ -149,8 +149,34 @@ function product_synchronization_checkbox($status): void
 
     // Print additional stock synchronisation status.
     if (!empty($status)) {
-        product_synchronization_status_extended_indicator($status);
+        product_synchronization_status_extended_indicator($status, $label);
     }
+}
+
+
+/**
+ * Print product aggregation checkbox with
+ * the accompanying status if enabled.
+ *
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.4.0
+ */
+function product_aggregation_checkbox(bool $status): void
+{
+    // Print the checkbox.
+    echo `
+    <div class="wc-biz-courier-logistics">`
+    .
+    woocommerce_wp_checkbox(
+        array(
+            'id' => '_biz_stock_sync_aggregate',
+            'label' => __('Include variations', 'wc-biz-courier-logistics'),
+            'description' => __("Select this option if you want to include all variations autmoatically.", 'wc-biz-courier-logistics'),
+            'value' => ($status) ? 'yes' : 'no'
+        )
+    )
+    .
+    `</div>`;
 }
 
 /**
@@ -162,7 +188,7 @@ function product_synchronization_checkbox($status): void
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.4.0
  */
-function product_variation_synchronization_checkbox($loop, $status): void
+function product_variation_synchronization_checkbox($loop, $status, $label): void
 {
     echo '
     <label class="tips" data-tip="' . __('Select this option if the product is stored in your Biz warehouse.', 'wc-biz-courier-logistics') . '">
@@ -171,12 +197,12 @@ function product_variation_synchronization_checkbox($loop, $status): void
             type="checkbox" 
             class="checkbox variable_checkbox"
             name="_biz_stock_sync[' . esc_attr($loop) . ']"
-            ' . (!empty($status) ? 'checked' : '') . ' 
+            ' . ((!empty($status) || $status != 'disabled')? 'checked' : '') . ' 
         />
     </label>';
 
-    if (!empty($status)) {
-        product_synchronization_status_extended_indicator($status);
+    if (!empty($status) || $status != 'disabled') {
+        product_synchronization_status_extended_indicator($status, $label);
     }
 }
 
