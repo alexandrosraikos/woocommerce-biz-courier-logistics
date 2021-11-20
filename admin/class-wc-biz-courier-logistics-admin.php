@@ -349,7 +349,11 @@ class WC_Biz_Courier_Logistics_Admin
 				http_response_code(200);
 				die(json_encode($data));
 			}
-		} catch (RuntimeException $e) {
+		} catch (WCBizCourierLogisticsProductDelegateNotAllowedException $e) {
+			http_response_code(401);
+			die($e->getMessage());
+		}
+		catch (RuntimeException $e) {
 			http_response_code(400);
 			die($e->getMessage());
 		} catch (ErrorException $e) {
@@ -648,16 +652,28 @@ class WC_Biz_Courier_Logistics_Admin
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 
 			/** @var WC_Product $product The product. */
-			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($post_id);
+			$product = wc_get_product($post_id);
 
-			// Reset synchronization status on SKU change.
-			if ($_POST['_sku'] != $delegate->product->get_sku()) {
-				$delegate->reset_synchronization_status();
+			if (!empty($_POST['_biz_stock_sync'])) {
+				WC_Biz_Courier_Logistics_Product_Delegate::permit($product);
 			}
+			
+			if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
 
-			// Reset synchronization status on Biz Warehouse option change.
-			if (!empty($_POST['_biz_stock_sync'])) $delegate->enable();
-			else $delegate->disable();
+				/** @var WC_Biz_Courier_Logistics_Product_Delegate $delegate The product delegate. */
+				$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($post_id);
+	
+			// Give delegate permission if preferred.
+				if (empty($_POST['_biz_stock_sync'])) {
+					$delegate->prohibit();
+					return;
+				} 
+	
+				// Reset synchronization status on SKU change.
+				if ($_POST['_sku'] != $delegate->product->get_sku()) {
+					$delegate->reset_synchronization_status();
+				}
+			}
 		}, $post_id);
 	}
 
@@ -683,23 +699,31 @@ class WC_Biz_Courier_Logistics_Admin
 		$this->async_handler(function () use ($i) {
 			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 
-			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($variation_id);
+			/** @var WC_Product $variation The variation. */
+			$variation = wc_get_product($variation_id);
 
-			// Synchronization is set.
+			// Give delegate permission if preferred.
 			if (!empty($_POST['_biz_stock_sync'][$i])) {
-				// Synchronization status.
-				if ($_POST['_biz_stock_sync'][$i] == 'yes') {
-					$delegate->enable();
-				} else {
-					$delegate->disable();
-				}
-			} else {
-				$delegate->disable();
+				WC_Biz_Courier_Logistics_Product_Delegate::permit($variation);
 			}
 
-			// SKU has changed.
-			if ($_POST['variable_sku'][$i] != $delegate->product->get_sku()) {
-				$delegate->reset_synchronization_status();
+			// Do delegate actions if permitted.
+			if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($variation)) {
+
+				/** @var WC_Biz_Courier_Logistics_Product_Delegate $delegate The variation delegate. */
+				$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($variation);
+
+				// Prohibit further delegate actions if preferred.
+				if (empty($_POST['_biz_stock_sync'])) {
+					$delegate->prohibit();
+					return;
+				}
+
+				// Reset synchronization status on SKU change.
+				if ($_POST['variable_sku'][$i] != $delegate->product->get_sku()) {
+					$delegate->reset_synchronization_status();
+				}
+
 			}
 		}, $variation_id);
 	}
@@ -726,25 +750,7 @@ class WC_Biz_Courier_Logistics_Admin
 	public function product_stock_synchronization_all(): void
 	{
 		$this->ajax_handler(function () {
-			/** @var WC_Product[] $products An array of all products. */
-			$products = wc_get_products(array(
-				'limit' => -1,
-			));
-
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
-
-			/** @var string[] $all_skus An array of all SKUs. */
-			$all_skus = [];
-			if (!empty($products)) {
-				foreach ($products as $product) {
-					$all_skus = array_merge(
-						$all_skus,
-						WC_Biz_Courier_Logistics_Product_Delegate::get_all_related_skus($product)
-					);
-				}
-			}
-
-			WC_Biz_Courier_Logistics_Product_Delegate::stock_level_synchronization($all_skus);
+			WC_Biz_Courier_Logistics_Product_Delegate::just_synchronize_stock_levels(true);
 		});
 	}
 

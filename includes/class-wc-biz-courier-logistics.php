@@ -120,6 +120,12 @@ class WC_Biz_Courier_Logistics
 		 */
 		require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-wc-biz-courier-logistics-public.php';
 
+		/**
+		 * The class responsible for custom exceptions.
+		 */
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-exceptions.php';
+		
+
 		$this->loader = new WC_Biz_Courier_Logistics_Loader();
 	}
 
@@ -337,7 +343,7 @@ class WC_Biz_Courier_Logistics
 	 * @param callable $rejection The custom rejection procedure.
 	 * @param bool $no_crm Omit the CRM code from the authentication data for authorized requests.
 	 * 
-	 * @return ?Object If no `$completion` is defined.
+	 * @return array If no `$completion` is defined.
 	 * 
 	 * @throws RuntimeException When there are no credentials registered.
 	 * @throws SoapFault When there is a connection error.

@@ -15,51 +15,170 @@
 
 class WC_Biz_Courier_Logistics_Product_Delegate
 {
+	/** @var WC_Product $product The connected product. */
 	public WC_Product $product;
 
-	public function __construct(int $wc_product_id)
+	/** @var bool $aggregated Whether the delegate concerns the product's children as well. */
+	public bool $aggregated;
+
+	/** @var bool $permitted An instantiated permission status reference. */
+	protected bool $permitted;
+
+	/**
+	 * The core constructor method.
+	 * 
+	 * @param mixed $wc_product_id_sku A WC_Product, a product ID or an SKU.
+	 * 
+	 * @throws WCBizCourierLogisticsProductDelegateNotAllowedException When the delegate isn't permitted to use the product.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	public function __construct(mixed $wc_product_id_sku)
 	{
-		$this->product = wc_get_product($wc_product_id);
-		if (empty($this->product)) {
-			throw new RuntimeException(__("Unable to retrieve product data.", 'wc-biz-courier-logistics'));
+		// Retrieve the WC_Product.
+		if (is_a($this->product, 'WC_Product')) {
+			$this->product = $wc_product_id_sku;
+		} else {
+			// Retrieve the WC_Product by ID.
+			$this->product = wc_get_product($wc_product_id_sku);
+			if (empty($this->product)) {
+				// Retrieve the WC_Product by SKU.
+				$id = wc_get_product_id_by_sku($wc_product_id_sku);
+				$this->product = wc_get_product($id);
+				if (empty($this->product)) {
+					throw new RuntimeException(
+						__(
+							"Unable to retrieve product data.",
+							'wc-biz-courier-logistics'
+						)
+					);
+				}
+			}
 		}
+
+		// Retrieve permission status.
+		$this->permitted = self::is_permitted($this->product);
+		if (!$this->permitted) {
+			throw new WCBizCourierLogisticsProductDelegateNotAllowedException(
+				$this->product->get_title()
+			);
+		}
+
+		// Retrieve aggregate status if there are children.
+		$this->aggregated = ($this->product->has_child() &&
+			!empty(get_post_meta(
+				$this->product->get_id(),
+				'_biz_stock_sync_aggregate',
+				true
+			)));
 	}
 
-	public function enable(): void
+	// TODO @alexandrosraikos: Extend functions that can be considered `aggregate` with apply_to_children(). (#34)
+
+	/**
+	 * Allow a product to be utilised by the delegate.
+	 * 
+	 * @param WC_Product $product The product.
+	 * 
+	 * @uses self::reset_synchronization_status
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	public static function permit(WC_Product $product): void
 	{
-		update_post_meta($this->product->get_id(), '_biz_stock_sync', 'yes');
-		$this->reset_synchronization_status();
+		// Persist change.
+		update_post_meta($product->get_id(), '_biz_stock_sync', 'yes');
+
+		// Reset synchronization status.
+		$delegate = new self($product);
+		$delegate->reset_synchronization_status();
 	}
 
-	public function disable(): void
+	/**
+	 * Prohibit a product from being utilised by the delegate.
+	 * 	 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	public function prohibit(): void
 	{
-		if (!delete_post_meta($this->product->get_id(), '_biz_stock_sync')) {
-			throw new ErrorException(__("The product couldn't be removed from the Biz Warehouse.", 'wc-biz-courier-logistics'));
+		// Persist prohibition on the instance and the database.
+		$this->permitted = !delete_post_meta($this->product->get_id(), '_biz_stock_sync');
+
+		// Check if permission was removed.
+		if ($this->permitted) {
+			throw new RuntimeException(
+				__(
+					"The product couldn't be removed from the Biz Warehouse.",
+					'wc-biz-courier-logistics'
+				)
+			);
 		}
+
+		// Check if synchronization status were removed.
 		if (!delete_post_meta($this->product->get_id(), '_biz_stock_sync_status')) {
-			throw new ErrorException(__("The product synchronization status couldn't be deleted.", 'wc-biz-courier-logistics'));
+			throw new RuntimeException(
+				__(
+					"The product synchronization status couldn't be deleted.",
+					'wc-biz-courier-logistics'
+				)
+			);
 		}
 	}
 
-	public function is_enabled(): bool
+	/**
+	 * Enable product children aggregate methods.
+	 * 	 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	public function aggregate(): void
 	{
-		if (!empty(get_post_meta($this->product->get_id(), '_biz_stock_sync', true))) {
-			return get_post_meta($this->product->get_id(), '_biz_stock_sync', true) == 'yes';
-		} else return false;
+		// Persist change.
+		update_post_meta(
+			$this->product->get_id(),
+			'_biz_stock_sync_aggregate',
+			'yes'
+		);
+
+		// 
+		$this->aggregated = true;
 	}
 
-	// TODO @alexandrosraikos: Getter and setter functions for enabling/disabling Biz Warehouse option on all variations automatically. (#34)
+	/**
+	 * Disable product children aggregate methods.
+	 * 	 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	public function separate(): void
+	{
+		// Persist separation on the instance and the database.
+		$this->aggregated = !delete_post_meta($this->product->get_id(), '_biz_stock_sync_aggregate');
+
+		// Check if separation was complete.
+		if ($this->aggregated) {
+			throw new RuntimeException(
+				__(
+					"The product synchronization status couldn't be deleted.",
+					'wc-biz-courier-logistics'
+				)
+			);
+		}
+	}
 
 	public function get_synchronization_status(): string
 	{
-		if ($this->is_enabled()) {
+		if ($this->enabled) {
 			return get_post_meta($this->product->get_id(), '_biz_stock_sync_status', true);
 		} else return '';
 	}
 
 	public function set_synchronization_status($value): void
 	{
-		if ($this->is_enabled()) {
+		if ($this->enabled) {
 			update_post_meta($this->product->get_id(), '_biz_stock_sync_status', $value);
 		} else throw new RuntimeException(__("The product is not in the Biz Warehouse", 'wc-biz-courier-logistics'));
 	}
@@ -69,14 +188,9 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 		$this->set_synchronization_status("pending");
 	}
 
-	public function synchronize(): void
-	{
-		self::stock_level_synchronization($this->product->get_sku());
-	}
-
 	public function get_composite_synchronization_status(): string
 	{
-		if (!$this->is_enabled()) {
+		if (!$this->enabled) {
 			return 'disabled';
 		}
 
@@ -87,7 +201,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 		if (!empty($children_ids)) {
 			foreach ($children_ids as $child_id) {
 				$child = new self($child_id);
-				if (!$child->is_enabled()) {
+				if (!$child->enabled) {
 					continue;
 				} else {
 					$child_status = $child->get_synchronization_status();
@@ -121,7 +235,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 	 * @uses 	 wc_get_product()
 	 * @param	 WC_Product $product A WooCommerce product.
 	 */
-	public static function get_all_related_skus($product)
+	public static function get_sku_group($product)
 	{
 		// Push simple product SKUs.
 		$skus = array();
@@ -144,7 +258,125 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 		return array_unique($skus);
 	}
 
-	public static function reset_all_sync_status()
+	/**
+	 * Synchronizes the stock levels of the products.
+	 * 
+	 * @param int|null $level The desired stock level, or leave null to fetch status from Biz.
+	 * 
+	 * @uses self::fetch_stock_levels
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	public function synchronize_stock_levels(int|null $level): void
+	{
+		if (isset($level)) {
+			// Update remaining stock quantity.
+			wc_update_product_stock(
+				$this->product,
+				($level >= 0) ? $level : 0,
+				'set'
+			);
+		} else {
+			/** @var array $stock_levels The retrieved stock levels. */
+			$stock_levels = self::fetch_stock_levels();
+
+			/** @var string $sku The delegate instance's SKU. */
+			$sku = $this->product->get_sku();
+
+			// Update remaining stock quantity if found in warehouse.
+			if (array_key_exists($sku, $stock_levels)) {
+				wc_update_product_stock(
+					$this->product,
+					($stock_levels[$sku] >= 0) ? $stock_levels[$sku] : 0,
+					'set'
+				);
+			}
+		}
+	}
+
+	/**
+	 * Applies the selected method recursively to all
+	 * of the instantiated delegate's product's permitted children.
+	 * 
+	 * @param string $method The supported class method's name.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	protected function apply_to_children(string $method): void
+	{
+		function get_children_delegates(WC_Product $product): array
+		{
+			return array_map(
+				function ($child_id) {
+					// Instantiate delegate.
+					return new self($child_id);
+				},
+				// Only permitted children.
+				array_filter(
+					$product->get_children(),
+					function ($child_id) {
+						return self::is_permitted(wc_get_product($child_id));
+					}
+				)
+			);
+		}
+
+		$delegates = get_children_delegates($this->product);
+		foreach ($delegates as $delegate) {
+			if (method_exists($delegate, $method)) {
+				$delegate->{$method}();
+			}
+		}
+	}
+
+	/**
+	 * Synchronizes the stock levels of permitted products.
+	 * 
+	 * @param array|bool $products An array of products, or `true` for all products.
+	 * 
+	 * @uses self::fetch_stock_levels
+	 * @uses self::synchronize_stock_levels
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	public static function just_synchronize_stock_levels(array|bool $products = true): void
+	{
+		/** @var array $stock_levels The retrieved stock levels. */
+		$stock_levels = self::fetch_stock_levels();
+
+		// Retrieve all products.
+		if (is_bool($products) && !empty($products)) {
+			$products = wc_get_products(array(
+				'limit' => -1,
+			));
+		}
+
+		// Update stock levels for each.
+		foreach ($products as $product) {
+			$delegate = new self($product);
+			if (
+				$delegate->enabled &&
+				array_key_exists($delegate->product->get_sku(), $stock_levels)
+			) {
+				$delegate->synchronize_stock_levels(
+					$stock_levels[$delegate->product->get_sku()]
+				);
+			}
+		}
+	}
+
+	/**
+	 * Resets the synchronization status of all permitted products.
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.2.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public static function just_reset_synchronization_status(): void
 	{
 		// Get all products.
 		$products = wc_get_products(array(
@@ -173,83 +405,62 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 	}
 
 	/**
-	 * Synchronizes stock between given WooCommerce SKUs and Biz Courier via stored credentials. 
-	 *
-	 * @param array $skus An array of product skus formatted as strings.
+	 * Check if the product has enabled Biz delegate access.
 	 * 
-	 * @uses WC_Biz_Courier_Logistics_Admin::reset_all_sync_status()
+	 * @param WC_Product $product The connected product.
+	 * @return bool Whether it is permitted to manipulate warehouse data.
 	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since 1.0.0
-	 * 
-	 * @version 1.4.0
+	 * @since 1.4.0
 	 */
-	public static function stock_level_synchronization($skus)
+	public static function is_permitted(WC_Product $product): bool
 	{
-		WC_Biz_Courier_Logistics::contactBizCourierAPI(
+		// Get standalone permission.
+		if (!empty(get_post_meta(
+			$product->get_id(),
+			'_biz_stock_sync',
+			true
+		))) {
+			return true;
+		} else {
+			// Check for transitive permission by parent.
+			$parent_id = $product->get_parent_id();
+			if ($parent_id == 0) {
+				return false;
+			} else {
+				return WC_Biz_Courier_Logistics_Product_Delegate::is_permitted(wc_get_product($parent_id));
+			}
+		}
+	}
+
+	/**
+	 * Fetch the stock levels of all products.
+	 * 
+	 * @return array An array with an [`sku` => `level`] schema.
+	 * 
+	 * @uses WC_Biz_Courier_Logistics::contactBizCourierAPI
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	protected static function fetch_stock_levels(): array
+	{
+		// Fetch status and update stock.
+		$response = WC_Biz_Courier_Logistics::contactBizCourierAPI(
 			"https://www.bizcourier.eu/pegasus_cloud_app/service_01/prod_stock.php?wsdl",
 			'prod_stock',
 			[],
-			true,
-			function ($data) use ($skus) {
-
-				/** @var array $retrieved_skus The extracted SKUs from the Biz response. */
-				$retrieved_skus = array_map(function ($bp) {
-					return $bp['Product_Code'];
-				}, $data);
-
-				/** @var array $retrieved_quantities The extracted quantities from the Biz response. */
-				$retrieved_quantities = array_combine($retrieved_skus, array_map(function ($bp) {
-					return $bp['Remaining_Quantity'];
-				}, $data));
-
-				// Compare with each product in the synchronization call.
-				foreach ($skus as $sku) {
-					$delegate = new self(wc_get_product_id_by_sku($sku));
-
-					// Check for active stock syncing.
-					if ($delegate->is_enabled()) {
-						if (in_array($sku, $retrieved_skus)) {
-
-							// Update remaining stock quantity.
-							wc_update_product_stock(
-								$delegate->product,
-								($retrieved_quantities[$sku] >= 0) ? $retrieved_quantities[$sku] : 0,
-								'set'
-							);
-
-							$delegate->set_synchronization_status('synced');
-
-
-							// Update same SKU children.
-							if ($delegate->product->has_child()) {
-								foreach ($delegate->product->get_children() as $child_id) {
-									$child_delegate = new self($child_id);
-
-									if (
-										$child_delegate->is_enabled() &&
-										$child_delegate->product->get_sku() == $delegate->product->get_sku()
-									) {
-
-										// Update remaining stock quantity.
-										wc_update_product_stock(
-											$child_delegate->product,
-											($retrieved_quantities[$sku] >= 0) ? $retrieved_quantities[$sku] : 0,
-											'set'
-										);
-
-										$child_delegate->set_synchronization_status('synced');
-									}
-								}
-							}
-						} else {
-							$delegate->set_synchronization_status('not-synced');
-						}
-					}
-				}
-			},
-			NULL,
 			true
+		);
+
+		// Return a combined array with SKUs as keys and quantites as values.
+		return array_combine(
+			array_map(function ($product) {
+				return $product['Product_Code'];
+			}, $response),
+			array_map(function ($bp) {
+				return $bp['Remaining_Quantity'];
+			}, $response)
 		);
 	}
 }
