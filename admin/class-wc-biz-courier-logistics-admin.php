@@ -616,10 +616,11 @@ class WC_Biz_Courier_Logistics_Admin
 				$this->async_handler(function () use ($product_post_id) {
 					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 					$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product_post_id);
+					$status = $delegate->get_synchronization_status(true);
 
 					// Show HTML.
 					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-					echo product_synchronization_status_indicator($delegate->get_composite_synchronization_status());
+					echo product_synchronization_status_indicator($status[0], $status[1]);
 				});
 		}
 	}
@@ -750,7 +751,7 @@ class WC_Biz_Courier_Logistics_Admin
 	public function product_stock_synchronization_all(): void
 	{
 		$this->ajax_handler(function () {
-			WC_Biz_Courier_Logistics_Product_Delegate::just_synchronize_stock_levels(true);
+			WC_Biz_Courier_Logistics_Product_Delegate::just_synchronize_all_stock_levels(true);
 		});
 	}
 

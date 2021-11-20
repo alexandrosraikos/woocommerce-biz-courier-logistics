@@ -82,31 +82,22 @@ function product_stock_synchronize_all_button_html()
 /**
  * Print HTML column stock synchronization indicators.
  *
+ * @param string $status The status code.
+ * @param string $label The corresponding status label.
+ * 
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.0.0
  * 
  * @version 1.4.0
  */
-function product_synchronization_status_indicator($status): string
+function product_synchronization_status_indicator(string $status, string $label): string
 {
-    $label = __("Pending", "wc-biz-courier-logistics");
-    switch ($status):
-        case 'synced';
-            $label = __("Found", "wc-biz-courier-logistics");
-            break;
-        case 'not-synced';
-            $label = __("Not found", "wc-biz-courier-logistics");
-            break;
-        case 'partial';
-            $label = __("Partially found", "wc-biz-courier-logistics");
-            break;
-        case 'disabled';
-            $label = __("Disabled", "wc-biz-courier-logistics");
-            break;
-    endswitch;
+    /** @var string $label The translated label. */
+    $label = __($label, 'wc-biz-courier-logistics');
+
     return <<<INDICATOR
     <div class="wc-biz-courier-logistics">
-        <div class="synchronization-indicator $status">$label</div>
+        <div class="synchronization-indicator $status"> $label</div>
     </div>
     INDICATOR;
 }
