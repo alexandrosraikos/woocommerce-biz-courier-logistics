@@ -912,8 +912,10 @@ class WC_Biz_Courier_Logistics_Admin
 				}
 				shipment_management_html($shipment->get_voucher(), $shipment->order->get_status(), $shipment_history ?? null);
 			} else {
+				$compatibility_list = WC_Biz_Courier_Logistics_Shipment::get_compatible_order_items($post->ID, false);
+
 				prepare_scripts_new_shipment($post->ID);
-				shipment_creation_html();
+				shipment_creation_html($compatibility_list);
 			}
 		}
 

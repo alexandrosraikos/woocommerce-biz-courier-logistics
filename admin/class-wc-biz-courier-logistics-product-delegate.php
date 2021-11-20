@@ -48,7 +48,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 	public function __construct(mixed $wc_product_id_sku)
 	{
 		// Retrieve the WC_Product.
-		if (is_a($this->product, 'WC_Product')) {
+		if (is_a($wc_product_id_sku, 'WC_Product')) {
 			$this->product = $wc_product_id_sku;
 		} else {
 			// Retrieve the WC_Product by ID.
@@ -362,6 +362,33 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 	}
 
 	/**
+	 * Get the children delegates of a product.
+	 * 
+	 * @return array The array of children delegates.
+	 * 
+	 * @uses self::is_permitted
+	 * 
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.4.0
+	 */
+	protected function get_children_delegates(): array
+	{
+		return array_map(
+			function ($child_id) {
+				// Instantiate delegate.
+				return new self($child_id);
+			},
+			// Only permitted children.
+			array_filter(
+				$this->product->get_children(),
+				function ($child_id) {
+					return self::is_permitted(wc_get_product($child_id));
+				}
+			)
+		);
+	}
+
+	/**
 	 * Applies the selected method recursively to all
 	 * of the instantiated delegate's product's permitted children.
 	 * 
@@ -372,24 +399,8 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 	 */
 	protected function apply_to_children(callable $method): ?array
 	{
-		function get_children_delegates(WC_Product $product): array
-		{
-			return array_map(
-				function ($child_id) {
-					// Instantiate delegate.
-					return new self($child_id);
-				},
-				// Only permitted children.
-				array_filter(
-					$product->get_children(),
-					function ($child_id) {
-						return self::is_permitted(wc_get_product($child_id));
-					}
-				)
-			);
-		}
 
-		$delegates = get_children_delegates($this->product);
+		$delegates = $this->get_children_delegates($this->product);
 		$result = [];
 		foreach ($delegates as $delegate) {
 			$result[] = $method($delegate);

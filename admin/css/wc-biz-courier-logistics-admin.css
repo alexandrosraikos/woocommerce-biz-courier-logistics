@@ -298,6 +298,39 @@
 }
 
 /**
+* Compatible items
+* ------------
+* This subsection provides the necessary
+* styles for the compatible items list.
+*/
+
+#wc-biz-courier-logistics-shipment-management > .item-list a {
+  /* Display & Box Model */
+  display: flex;
+  align-items: center;
+  /* Other */
+  font-weight: bold;
+}
+
+#wc-biz-courier-logistics-shipment-management > .item-list a > svg {
+  /* Display & Box Model */
+  width: 18px;
+  height: auto;
+  margin-right: 10px;
+}
+
+#wc-biz-courier-logistics-shipment-management > .item-list a.compatible > svg {
+  fill: var(--foreground-color-success);
+}
+
+#wc-biz-courier-logistics-shipment-management
+  > .item-list
+  a.incompatible
+  > svg {
+  fill: var(--foreground-color-failure);
+}
+
+/**
 * 
 * Voucher
 * ------------

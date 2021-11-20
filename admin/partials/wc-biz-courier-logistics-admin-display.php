@@ -135,17 +135,17 @@ function product_synchronization_checkbox(string $status, string $label): void
     // Print the checkbox.
     echo `
     <div class="wc-biz-courier-logistics">`
-    .
-    woocommerce_wp_checkbox(
-        array(
-            'id' => '_biz_stock_sync',
-            'label' => __('Biz Warehouse', 'wc-biz-courier-logistics'),
-            'description' => __('Select this option if the product is stored in your Biz warehouse.', 'wc-biz-courier-logistics'),
-            'value' => (!empty($status)) ? 'yes' : 'no'
+        .
+        woocommerce_wp_checkbox(
+            array(
+                'id' => '_biz_stock_sync',
+                'label' => __('Biz Warehouse', 'wc-biz-courier-logistics'),
+                'description' => __('Select this option if the product is stored in your Biz warehouse.', 'wc-biz-courier-logistics'),
+                'value' => (!empty($status)) ? 'yes' : 'no'
+            )
         )
-    )
-    .
-    `</div>`;
+        .
+        `</div>`;
 
     // Print additional stock synchronisation status.
     if (!empty($status)) {
@@ -166,17 +166,17 @@ function product_aggregation_checkbox(bool $status): void
     // Print the checkbox.
     echo `
     <div class="wc-biz-courier-logistics">`
-    .
-    woocommerce_wp_checkbox(
-        array(
-            'id' => '_biz_stock_sync_aggregate',
-            'label' => __('Include variations', 'wc-biz-courier-logistics'),
-            'description' => __("Select this option if you want to include all variations autmoatically.", 'wc-biz-courier-logistics'),
-            'value' => ($status) ? 'yes' : 'no'
+        .
+        woocommerce_wp_checkbox(
+            array(
+                'id' => '_biz_stock_sync_aggregate',
+                'label' => __('Include variations', 'wc-biz-courier-logistics'),
+                'description' => __("Select this option if you want to include all variations autmoatically.", 'wc-biz-courier-logistics'),
+                'value' => ($status) ? 'yes' : 'no'
+            )
         )
-    )
-    .
-    `</div>`;
+        .
+        `</div>`;
 }
 
 /**
@@ -197,7 +197,7 @@ function product_variation_synchronization_checkbox($loop, $status, $label): voi
             type="checkbox" 
             class="checkbox variable_checkbox"
             name="_biz_stock_sync[' . esc_attr($loop) . ']"
-            ' . ((!empty($status) || $status != 'disabled')? 'checked' : '') . ' 
+            ' . ((!empty($status) || $status != 'disabled') ? 'checked' : '') . ' 
         />
     </label>';
 
@@ -247,9 +247,9 @@ function order_column_voucher_html($voucher): void
  * 
  * @version 1.4.0
  */
-function shipment_creation_html(): void
+function shipment_creation_html(?array $items): void
 {
-    ?>
+?>
     <div id="wc-biz-courier-logistics-shipment-management" class="wc-biz-courier-logistics">
         <p><?php _e("This order has not shipped with Biz.", "wc-biz-courier-logistics") ?></p>
         <div class="actions">
@@ -260,6 +260,28 @@ function shipment_creation_html(): void
                 <?php _e("Add existing voucher number", "wc-biz-courier-logistics") ?>
             </button>
         </div>
+        <?php if (!empty($items)) { ?>
+            <div class="item-list">
+                <h4><?php _e("Warehouse items", 'wc-biz-courier-logistics') ?></h4>
+                <ul>
+                    <?php
+                    foreach ($items as $item) {
+                    ?>
+                        <li>
+                            <a 
+                                href="<?php echo get_site_url('', '/wp-admin/post.php?post='. $item['product']->get_id().'&action=edit') ?>"
+                                class="<?php echo (($item['compatible']) ? 'compatible' : 'incompatible') ?>"
+                            >
+                                <?php echo file_get_contents(plugin_dir_path(dirname(__FILE__)) . 'svg/' .(($item['compatible']) ? 'completed.svg' : 'failed.svg')) ?>
+                                <?php echo $item['product']->get_title(); ?> (#<?php echo $item['product']->get_id() ?>)
+                            </a>
+                        </li>
+                    <?php
+                    }
+                    ?>
+                </ul>
+            </div>
+        <?php } ?>
     </div>
 <?php
 }

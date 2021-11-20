@@ -469,6 +469,53 @@ class WC_Biz_Courier_Logistics_Shipment
 	}
 
 	/**
+	 * Get a sequential list of products and their compatibility status with Biz.
+	 * 
+	 * @param int $order_id The associated order ID.
+	 * @param bool $filter Return only compatible items.
+	 * @return array An array using the [`WC_Product $product`, `bool $state`] schema for all items.
+	 * 
+	 * @author	Alexandros Raikos <alexandros@araikos.gr>
+	 * @since	1.4.0
+	 */
+	public static function get_compatible_order_items(int $order_id, bool $filter = true): array
+	{
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
+
+		/** @var WC_Order $order The associated order. */
+		$order = wc_get_order($order_id);
+
+		// Make a full item list with compatibility status.
+		$items = array_map(
+			function ($item) {
+				// TODO @alexandrosraikos: Fix variations displaying as well (#32).
+				$product = wc_get_product($item['product_id']);
+				if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
+					$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product);
+					$compatible = ($delegate->get_synchronization_status() == 'synced');
+				}
+				return [
+					'product' => $product,
+					'compatible' => $compatible ?? false
+				];
+			},
+			$order->get_items()
+		);
+
+		// Filter only compatible items.
+		if ($filter) {
+			$items = array_filter(
+				$items,
+				function ($item) {
+					return $item['compatible'];
+				}
+			);
+		}
+
+		return $items;
+	}
+
+	/**
 	 * Creates a new shipment with and saves the response voucher in the order's meta
 	 * as `_biz_voucher`. For more information on this API call visit the official documentation here:
 	 * https://www.bizcourier.eu/WebServices
@@ -495,8 +542,8 @@ class WC_Biz_Courier_Logistics_Shipment
 			throw new RuntimeException(__("A voucher already exists for this order.", 'wc-biz-courier-logistics'));
 		}
 
-		/** @var WC_Order_Item[] $items The order's items. */
-		$items = $this->order->get_items();
+		/** @var WC_Order_Item[] $items The order's compatible items. */
+		$items = self::get_compatible_order_items($this->order->get_id());
 
 		// Check for no items.
 		if (empty($items)) {
@@ -530,49 +577,36 @@ class WC_Biz_Courier_Logistics_Shipment
 		// Handle each item included in the order.
 		foreach ($items as $item) {
 
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
-
-			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($item['product_id']);
-
 			/** @var WC_Product $product The order item's product data. */
-			$product = $delegate->product;
+			$product = wc_get_product($item['product_id']);
 
 			// Get exact variation used as the product the referred product is variable.
 			if ($product->is_type('variable') && !empty($item['variation_id'])) {
 				$product = wc_get_product($item['variation_id']);
 			}
 
-			// Check for active Biz synchronization status.
-			if (!empty($delegate->get_synchronization_status())) {
-				if ($delegate->get_synchronization_status() == 'synced') {
+			// Merge order item codes and quantities.
+			$shipment_products[] = $product->get_sku() . ":" . $item->get_quantity();
 
-					// Merge order item codes and quantities.
-					$shipment_products[] = $product->get_sku() . ":" . $item->get_quantity();
-
-					// Add volume and weight to total dimensions.
-					if (
-						!empty($product->get_width()) &&
-						!empty($product->get_height()) &&
-						!empty($product->get_length()) &&
-						!empty($product->get_weight())
-					) {
-						$package_metrics['width'] += $product->get_width() * $item->get_quantity();
-						$package_metrics['height'] += $product->get_height() * $item->get_quantity();
-						$package_metrics['length'] += $product->get_length() * $item->get_quantity();
-						$package_metrics['weight'] += $product->get_weight() * $item->get_quantity();
-					} else throw new RuntimeException(__("Please make sure all products in the order have their weight & dimensions registered.", 'wc-biz-courier-logistics'));
-				} else throw new RuntimeException(__("Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability.", 'wc-biz-courier-logistics'));
+			// Add volume and weight to total dimensions.
+			if (
+				!empty($product->get_width()) &&
+				!empty($product->get_height()) &&
+				!empty($product->get_length()) &&
+				!empty($product->get_weight())
+			) {
+				$package_metrics['width'] += $product->get_width() * $item->get_quantity();
+				$package_metrics['height'] += $product->get_height() * $item->get_quantity();
+				$package_metrics['length'] += $product->get_length() * $item->get_quantity();
+				$package_metrics['weight'] += $product->get_weight() * $item->get_quantity();
+			} else {
+				throw new RuntimeException(
+					__(
+						"Please make sure all products in the order have their weight & dimensions registered.",
+						'wc-biz-courier-logistics'
+					)
+				);
 			}
-		}
-
-		// Check for supported items.
-		if (empty($shipment_products)) {
-			throw new RuntimeException(
-				__(
-					"There are no Biz Warehouse items included in this order.",
-					'wc-biz-courier-logistics'
-				)
-			);
 		}
 
 		/** @var string $first_product The extracted first product from `$shipment_products`. */
