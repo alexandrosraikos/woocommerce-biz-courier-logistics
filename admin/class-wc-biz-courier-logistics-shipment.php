@@ -68,7 +68,7 @@ class WC_Biz_Courier_Logistics_Shipment
 	 * @param string $value The new voucher value.
 	 * @param bool $conclude Whether to conclude the order status based on the status history.
 	 * 
-	 * @throws ErrorException When the new shipment voucher cannot be set.
+	 * @throws RuntimeException When the new shipment voucher cannot be set.
 	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.4.0
@@ -127,7 +127,7 @@ class WC_Biz_Courier_Logistics_Shipment
 	 * Delete the shipment's voucher in the associated
 	 * order's metadata.
 	 * 
-	 * @throws ErrorException When the shipment voucher cannot be deleted.
+	 * @throws RuntimeException When the shipment voucher cannot be deleted.
 	 * 
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.4.0
@@ -136,7 +136,7 @@ class WC_Biz_Courier_Logistics_Shipment
 	{
 		// Check for falsy operation.
 		if (!delete_post_meta($this->order->get_id(), '_biz_voucher')) {
-			throw new ErrorException(__("The shipment voucher could not be deleted from this order.", 'wc-biz-courier-logistics'));
+			throw new RuntimeException(__("The shipment voucher could not be deleted from this order.", 'wc-biz-courier-logistics'));
 		}
 	}
 
@@ -453,7 +453,7 @@ class WC_Biz_Courier_Logistics_Shipment
 				$status_definitions = retrieve_definitions();
 				if (array_key_exists($identifier, $status_definitions)) {
 					return $status_definitions[$identifier];
-				} else throw new ErrorException(
+				} else throw new RuntimeException(
 					sprintf(
 						__(
 							"The definition for the shipment status \"%s\" cannot be found.",
@@ -473,7 +473,7 @@ class WC_Biz_Courier_Logistics_Shipment
 	 * 
 	 * @param int $order_id The associated order ID.
 	 * @param bool $filter Return only compatible items.
-	 * @return array An array using the [`WC_Product $product`, `bool $state`] schema for all items.
+	 * @return array An array using the [`'item' => WC_Order_Item `, `'product' => WC_Product`, `'compatible' => bool`] schema for all items.
 	 * 
 	 * @author	Alexandros Raikos <alexandros@araikos.gr>
 	 * @since	1.4.0
@@ -489,12 +489,21 @@ class WC_Biz_Courier_Logistics_Shipment
 		$items = array_map(
 			function ($item) {
 				// TODO @alexandrosraikos: Fix variations displaying as well (#32).
+
+				/** @var WC_Product $product The order item's product data. */
 				$product = wc_get_product($item['product_id']);
+
+				// Get exact variation used as the product the referred product is variable.
+				if ($product->is_type('variable') && !empty($item['variation_id'])) {
+					$product = wc_get_product($item['variation_id']);
+				}
+
 				if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
 					$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product);
-					$compatible = ($delegate->get_synchronization_status() == 'synced');
+					$compatible = ($delegate->get_synchronization_status()[0] == 'synced');
 				}
 				return [
+					'self' => $item,
 					'product' => $product,
 					'compatible' => $compatible ?? false
 				];
@@ -521,7 +530,7 @@ class WC_Biz_Courier_Logistics_Shipment
 	 * https://www.bizcourier.eu/WebServices
 	 * 
 	 * @throws	RuntimeException When data are invalid.
-	 * @throws	ErrorException When there are API errors.
+	 * @throws	WCBizCourierLogisticsAPIError When there are API errors.
 	 * 
 	 * @author	Alexandros Raikos <alexandros@araikos.gr>
 	 * @since	1.0.0
@@ -577,28 +586,20 @@ class WC_Biz_Courier_Logistics_Shipment
 		// Handle each item included in the order.
 		foreach ($items as $item) {
 
-			/** @var WC_Product $product The order item's product data. */
-			$product = wc_get_product($item['product_id']);
-
-			// Get exact variation used as the product the referred product is variable.
-			if ($product->is_type('variable') && !empty($item['variation_id'])) {
-				$product = wc_get_product($item['variation_id']);
-			}
-
 			// Merge order item codes and quantities.
-			$shipment_products[] = $product->get_sku() . ":" . $item->get_quantity();
+			$shipment_products[] = $item['product']->get_sku() . ":" . $item['self']->get_quantity();
 
 			// Add volume and weight to total dimensions.
 			if (
-				!empty($product->get_width()) &&
-				!empty($product->get_height()) &&
-				!empty($product->get_length()) &&
-				!empty($product->get_weight())
+				!empty($item['product']->get_width()) &&
+				!empty($item['product']->get_height()) &&
+				!empty($item['product']->get_length()) &&
+				!empty($item['product']->get_weight())
 			) {
-				$package_metrics['width'] += $product->get_width() * $item->get_quantity();
-				$package_metrics['height'] += $product->get_height() * $item->get_quantity();
-				$package_metrics['length'] += $product->get_length() * $item->get_quantity();
-				$package_metrics['weight'] += $product->get_weight() * $item->get_quantity();
+				$package_metrics['width'] += $item['product']->get_width() * $item['self']->get_quantity();
+				$package_metrics['height'] += $item['product']->get_height() * $item['self']->get_quantity();
+				$package_metrics['length'] += $item['product']->get_length() * $item['self']->get_quantity();
+				$package_metrics['weight'] += $item['product']->get_weight() * $item['self']->get_quantity();
 			} else {
 				throw new RuntimeException(
 					__(
@@ -712,32 +713,32 @@ class WC_Biz_Courier_Logistics_Shipment
 
 					// Set the voucher response.
 					$this->set_voucher($response['Voucher']);
-				} else throw new ErrorException(__("Response from Biz could not be read, please check your warehouse shipments from the official application.", 'wc-biz-courier-logistics'));
+				} else throw new WCBizCourierLogisticsAPIError(__("Response from Biz could not be read, please check your warehouse shipments from the official application.", 'wc-biz-courier-logistics'));
 			case 1:
-				throw new ErrorException(__("There was an error with your Biz credentials.", 'wc-biz-courier-logistics'));
+				throw new WCBizCourierLogisticsAPIError(__("There was an error with your Biz credentials.", 'wc-biz-courier-logistics'));
 			case 2:
 			case 3:
-				throw new ErrorException(__("There was a problem registering recipient information with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
+				throw new WCBizCourierLogisticsAPIError(__("There was a problem registering recipient information with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
 			case 4:
-				throw new ErrorException(__("There was a problem registering the recipient's area code with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
+				throw new WCBizCourierLogisticsAPIError(__("There was a problem registering the recipient's area code with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
 			case 5:
-				throw new ErrorException(__("There was a problem registering the recipient's area with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
+				throw new WCBizCourierLogisticsAPIError(__("There was a problem registering the recipient's area with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
 			case 6:
-				throw new ErrorException(__("There was a problem registering the recipient's phone number with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
+				throw new WCBizCourierLogisticsAPIError(__("There was a problem registering the recipient's phone number with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
 			case 7:
-				throw new ErrorException(__("The item does not belong to this Biz account. Please check the order.", 'wc-biz-courier-logistics'));
+				throw new WCBizCourierLogisticsAPIError(__("The item does not belong to this Biz account. Please check the order.", 'wc-biz-courier-logistics'));
 			case 8:
-				throw new ErrorException(__("Some products do not belong to this Biz account. Please check the order's items.", 'wc-biz-courier-logistics'));
+				throw new WCBizCourierLogisticsAPIError(__("Some products do not belong to this Biz account. Please check the order's items.", 'wc-biz-courier-logistics'));
 			case 9:
-				throw new ErrorException(__("The shipment's products were incorrectly registered.", 'wc-biz-courier-logistics'));
+				throw new WCBizCourierLogisticsAPIError(__("The shipment's products were incorrectly registered.", 'wc-biz-courier-logistics'));
 			case 10:
-				throw new ErrorException(__("There was a problem registering the recipient's postal code with Biz. Please fill in all required recipient information entries.", 'wc-biz-courier-logistics'));
+				throw new WCBizCourierLogisticsAPIError(__("There was a problem registering the recipient's postal code with Biz. Please fill in all required recipient information entries.", 'wc-biz-courier-logistics'));
 			case 11:
-				throw new ErrorException(__("There was a problem registering the recipient's postal code with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
+				throw new WCBizCourierLogisticsAPIError(__("There was a problem registering the recipient's postal code with Biz. Please check your recipient information entries.", 'wc-biz-courier-logistics'));
 			case 12:
-				throw new ErrorException(__("A shipment used for relabeling cannot be used.", 'wc-biz-courier-logistics'));
+				throw new WCBizCourierLogisticsAPIError(__("A shipment used for relabeling cannot be used.", 'wc-biz-courier-logistics'));
 			default:
-				throw new ErrorException(__("An unknown Biz error occured after submitting the shipment information.", 'wc-biz-courier-logistics'));
+				throw new WCBizCourierLogisticsAPIError(__("An unknown Biz error occured after submitting the shipment information.", 'wc-biz-courier-logistics'));
 		}
 	}
 }

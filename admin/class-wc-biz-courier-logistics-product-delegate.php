@@ -52,11 +52,13 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 			$this->product = $wc_product_id_sku;
 		} else {
 			// Retrieve the WC_Product by ID.
-			$this->product = wc_get_product($wc_product_id_sku);
-			if (empty($this->product)) {
+			$product = wc_get_product($wc_product_id_sku);
+			if (empty($product)) {
 				// Retrieve the WC_Product by SKU.
 				$id = wc_get_product_id_by_sku($wc_product_id_sku);
 				$this->product = wc_get_product($id);
+
+				// Check for empty product.
 				if (empty($this->product)) {
 					throw new RuntimeException(
 						__(
@@ -65,6 +67,8 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 						)
 					);
 				}
+			} else {
+				$this->product = $product;
 			}
 		}
 
@@ -82,8 +86,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 				$this->product->get_id(),
 				'_biz_stock_sync_aggregate',
 				true
-			))
-		);
+			)));
 	}
 
 	/**
@@ -105,17 +108,16 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 			);
 		}
 
-		// Persist prohibition on the instance and the database.
-		$this->permitted = !delete_post_meta($this->product->get_id(), '_biz_stock_sync');
-
 		// Check if permission was removed.
-		if ($this->permitted) {
+		if (!delete_post_meta($this->product->get_id(), '_biz_stock_sync')) {
 			throw new RuntimeException(
 				__(
 					"The product couldn't be removed from the Biz Warehouse.",
 					'wc-biz-courier-logistics'
 				)
 			);
+		} else {
+			$this->permitted = false;
 		}
 
 		// Check if synchronization status were removed.
@@ -213,6 +215,10 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 			/** @var string $status The synchronization status. */
 			$status = get_post_meta($this->product->get_id(), '_biz_stock_sync_status', true);
 
+			if (empty($status)) {
+				$status = 'disabled';
+			}
+
 			// Calculate composite label, if preferred.
 			if ($composite && $status != 'pending') {
 				// Get status labels for all children.
@@ -243,7 +249,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 
 			try {
 				return [$status, self::$status_labels[$status]];
-			} catch (OutOfBoundsException $e) {
+			} catch (\Exception $e) {
 				throw new WCBizCourierLogisticsUnsupportedValueException($status);
 			}
 		} else {
@@ -312,7 +318,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.4.0
 	 */
-	public function synchronize_stock_levels(int|null $level): void
+	public function synchronize_stock_levels(int $level = null): void
 	{
 		if ($this->permitted) {
 			if (isset($level)) {
@@ -336,23 +342,29 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 						($stock_levels[$sku] >= 0) ? $stock_levels[$sku] : 0,
 						'set'
 					);
+					$this->set_synchronization_status('synced');
 				}
-
+				else {
+					$this->set_synchronization_status('not-synced');
+				}
+				
 				// Repeat for all children.
-				if ($this->aggregated) {
-					$this->apply_to_children(
-						function ($child) use ($stock_levels) {
-							$sku = $child->product->get_sku();
-							if (array_key_exists($sku, $stock_levels)) {
-								wc_update_product_stock(
-									$child->product,
-									($stock_levels[$sku] >= 0) ? $stock_levels[$sku] : 0,
-									'set'
-								);
-							}
+				$this->apply_to_children(
+					function ($child) use ($stock_levels) {
+						$sku = $child->product->get_sku();
+						if (array_key_exists($sku, $stock_levels)) {
+							wc_update_product_stock(
+								$child->product,
+								($stock_levels[$sku] >= 0) ? $stock_levels[$sku] : 0,
+								'set'
+							);
+							$child->set_synchronization_status('synced');
 						}
-					);
-				}
+						else {
+							$child->set_synchronization_status('not-synced');
+						}
+					}
+				);
 			}
 		} else {
 			throw new WCBizCourierLogisticsProductDelegateNotAllowedException(
@@ -397,7 +409,7 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.4.0
 	 */
-	protected function apply_to_children(callable $method): ?array
+	public function apply_to_children(callable $method): ?array
 	{
 
 		$delegates = $this->get_children_delegates($this->product);
@@ -553,16 +565,27 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 			'_biz_stock_sync',
 			true
 		))) {
-			return true;
-		} else {
-			// Check for transitive permission by parent.
-			$parent_id = $product->get_parent_id();
-			if ($parent_id == 0) {
-				return false;
+			if (get_post_meta(
+				$product->get_id(),
+				'_biz_stock_sync',
+				true
+			) == 'yes') {
+				return true;
 			} else {
-				return WC_Biz_Courier_Logistics_Product_Delegate::is_permitted(wc_get_product($parent_id));
+				return false;
 			}
+		} else {
+			return false;
 		}
+		// else {
+		// 	// Check for transitive permission by parent.
+		// 	$parent_id = $product->get_parent_id();
+		// 	if ($parent_id == 0) {
+		// 		return false;
+		// 	} else {
+		// 		return WC_Biz_Courier_Logistics_Product_Delegate::is_permitted(wc_get_product($parent_id));
+		// 	}
+		// }
 	}
 
 	/**
@@ -582,8 +605,15 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 			"https://www.bizcourier.eu/pegasus_cloud_app/service_01/prod_stock.php?wsdl",
 			'prod_stock',
 			[],
+			true,
+			NULL,
+			NULL,
 			true
 		);
+
+		if(in_array('Error', $response[0])) {
+			throw new WCBizCourierLogisticsAPIError($response[0]['Product_Code']);
+		}
 
 		// Return a combined array with SKUs as keys and quantites as values.
 		return array_combine(

@@ -39,6 +39,54 @@ function synchronizeStock(e) {
   }
 }
 
+function permitProduct(e) {
+  e.preventDefault();
+  const id = $(e.target).data("product-id");
+  makeWPRequest(
+    '#wc-biz-courier-logistics-product-management button[data-action="permit"]',
+    "product_permit",
+    ProductProperties.bizProductPermitNonce,
+    {
+      product_id: id,
+    },
+    () => {
+      window.location.reload();
+    }
+  );
+}
+
+function prohibitProduct(e) {
+  e.preventDefault();
+  const id = $(e.target).data("product-id");
+  makeWPRequest(
+    '#wc-biz-courier-logistics-product-management button[data-action="prohibit"]',
+    "product_prohibit",
+    ProductProperties.bizProductProhibitNonce,
+    {
+      product_id: id,
+    },
+    () => {
+      window.location.reload();
+    }
+  );
+}
+
+function synchronizeProduct(e) {
+  e.preventDefault();
+  const id = $(e.target).data("product-id");
+  makeWPRequest(
+    '#wc-biz-courier-logistics-product-management button[data-action="synchronize"]',
+    "product_synchronize",
+    ProductProperties.bizProductSynchronizeNonce,
+    {
+      product_id: id,
+    },
+    () => {
+      window.location.reload();
+    }
+  );
+}
+
 (function ($) {
   "use strict";
 
@@ -54,5 +102,17 @@ function synchronizeStock(e) {
     $('button.wc-biz-courier-logistics[data-action="synchronize-stock"]').click(
       synchronizeStock
     );
+
+    $(
+      '#wc-biz-courier-logistics-product-management button[data-action="permit"]'
+    ).click(permitProduct);
+
+    $(
+      '#wc-biz-courier-logistics-product-management button[data-action="prohibit"]'
+    ).click(prohibitProduct);
+
+    $(
+      '#wc-biz-courier-logistics-product-management button[data-action="synchronize"]'
+    ).click(synchronizeProduct);
   });
 })(jQuery);

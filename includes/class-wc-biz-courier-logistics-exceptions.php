@@ -46,3 +46,27 @@ class WCBizCourierLogisticsProductDelegateNotAllowedException extends Exception
 		);
 	}
 }
+
+/**
+ * The exception for API errors.
+ * 
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.4.0
+ */
+ class WCBizCourierLogisticsAPIError extends Exception
+{
+	public function __construct(string $error)
+	{
+		parent::__construct(
+			sprintf(
+				__(
+					"The Biz Courier API responded with \"%s\".",
+					'wc-biz-courier-logistics'
+				),
+				$error
+			),
+			0,
+			null
+		);
+	}
+}

@@ -102,107 +102,96 @@ function product_synchronization_status_indicator(string $status, string $label)
     INDICATOR;
 }
 
-/**
- * Print HTML column stock synchronization indicators with a title label.
- * 
- * @uses product_synchronization_status_indicator
- *
- * @author Alexandros Raikos <alexandros@araikos.gr>
- * @since 1.4.0
- */
-function product_synchronization_status_extended_indicator(string $status, string $label): void
+function product_management_html(array $status, string $sku, int $id, array $variations = null, bool $aggregated = false): void
 {
-    echo '
-    <div class="wc-biz-courier-logistics extended-synchronization-indicator">
-        <span>' . __('Biz status', 'wc-biz-courier-logistics') . ':</span> 
-        ' . product_synchronization_status_indicator($status, $label) . '
+?>
+    <div id="wc-biz-courier-logistics-product-management" class="wc-biz-courier-logistics">
+        <div class="status">
+            <h4>
+                <?php
+                _e("Status", 'wc-biz-courier-logistics');
+                ?>
+            </h4>
+            <?php echo product_synchronization_status_indicator($status[0], $status[1]) ?>
+            <div class="sku"><?php echo $sku ?></div>
+            <button data-action="synchronize" data-product-id="<?php echo $id ?>" class="button button-primary">
+                <?php
+                _e("Synchronize", 'wc-biz-courier-logistics');
+                ?>
+            </button>
+            <button data-action="prohibit" data-product-id=<?php echo $id ?>">
+                <?php
+                _e("Disable", 'wc-biz-courier-logistics');
+                ?>
+            </button>
+        </div>
+        <?php
+        if (!empty($variations)) {
+        ?>
+            <div class="variations">
+                <h4>
+                    <?php
+                    _e("Variations", 'wc-biz-courier-logistics');
+                    ?>
+                </h4>
+                <ul>
+                    <?php
+                    foreach ($variations as $variation) {
+                        echo "<li class=\"" . ($variation['enabled'] ? 'enabled' : 'disabled') . "\">";
+                        echo '<div class="title">' . $variation['product_title'] . " - <span class=\"attribute\">" . $variation['title'] . '</span></div>';
+                        echo '<div class="sku">' . $variation['sku'] . '</div>';
+                        if ($variation['enabled']) {
+                            echo product_synchronization_status_indicator($variation['status'][0], $variation['status'][1]);
+                        }
+                    ?>
+                        <button data-action="<?php echo ($variation['enabled'] ? 'prohibit' : 'permit') ?>" data-product-id="<?php echo $variation['id'] ?>">
+                            <?php
+                            if ($variation['enabled']) {
+                                _e("Disable", "wc-biz-courier-logistics");
+                            } else {
+                                _e("Enable", "wc-biz-courier-logistics");
+                            }
+                            ?>
+                        </button>
+                        </li>
+                    <?php
+                        echo '</li>';
+                    }
+                    ?>
+                </ul>
+            </div>
+        <?php
+        }
+        ?>
     </div>
-    ';
+
+    <?php
 }
 
-
-/**
- * Print product synchronization checkbox with
- * the accompanying status label if enabled.
- * 
- * @uses product_synchronization_status_indicator
- *
- * @author Alexandros Raikos <alexandros@araikos.gr>
- * @since 1.4.0
- */
-function product_synchronization_checkbox(string $status, string $label): void
+function product_management_disabled_html(string $sku, int $id, string $error = null)
 {
-    // Print the checkbox.
-    echo `
-    <div class="wc-biz-courier-logistics">`
-        .
-        woocommerce_wp_checkbox(
-            array(
-                'id' => '_biz_stock_sync',
-                'label' => __('Biz Warehouse', 'wc-biz-courier-logistics'),
-                'description' => __('Select this option if the product is stored in your Biz warehouse.', 'wc-biz-courier-logistics'),
-                'value' => (!empty($status)) ? 'yes' : 'no'
-            )
-        )
-        .
-        `</div>`;
-
-    // Print additional stock synchronisation status.
-    if (!empty($status)) {
-        product_synchronization_status_extended_indicator($status, $label);
-    }
-}
-
-
-/**
- * Print product aggregation checkbox with
- * the accompanying status if enabled.
- *
- * @author Alexandros Raikos <alexandros@araikos.gr>
- * @since 1.4.0
- */
-function product_aggregation_checkbox(bool $status): void
-{
-    // Print the checkbox.
-    echo `
-    <div class="wc-biz-courier-logistics">`
-        .
-        woocommerce_wp_checkbox(
-            array(
-                'id' => '_biz_stock_sync_aggregate',
-                'label' => __('Include variations', 'wc-biz-courier-logistics'),
-                'description' => __("Select this option if you want to include all variations autmoatically.", 'wc-biz-courier-logistics'),
-                'value' => ($status) ? 'yes' : 'no'
-            )
-        )
-        .
-        `</div>`;
-}
-
-/**
- * Print product variation synchronization checkbox with
- * the accompanying status label if enabled.
- * 
- * @uses product_synchronization_status_extended_indicator
- *
- * @author Alexandros Raikos <alexandros@araikos.gr>
- * @since 1.4.0
- */
-function product_variation_synchronization_checkbox($loop, $status, $label): void
-{
-    echo '
-    <label class="tips" data-tip="' . __('Select this option if the product is stored in your Biz warehouse.', 'wc-biz-courier-logistics') . '">
-        ' . __('Biz Warehouse', 'wc-biz-courier-logistics') . '
-        <input 
-            type="checkbox" 
-            class="checkbox variable_checkbox"
-            name="_biz_stock_sync[' . esc_attr($loop) . ']"
-            ' . ((!empty($status) || $status != 'disabled') ? 'checked' : '') . ' 
-        />
-    </label>';
-
-    if (!empty($status) || $status != 'disabled') {
-        product_synchronization_status_extended_indicator($status, $label);
+    if (!empty($error)) {
+        notice_display_embedded_html($error);
+    } else {
+    ?>
+        <div id="wc-biz-courier-logistics-product-management" class="wc-biz-courier-logistics">
+            <p>
+                <?php
+                // TODO: Translate.
+                _e(
+                    "Start using Biz Courier & Logistics for WooCommerce features with this product.",
+                    'wc-biz-courier-logistics'
+                );
+                ?>
+            </p>
+            <button data-action="permit" data-product-id=<?php echo $id ?>" class="button button-primary">
+                <?php
+                // TODO: Translate.
+                _e("Activate", 'wc-biz-courier-logistics');
+                ?>
+            </button>
+        </div>
+    <?php
     }
 }
 
@@ -249,7 +238,7 @@ function order_column_voucher_html($voucher): void
  */
 function shipment_creation_html(?array $items): void
 {
-?>
+    ?>
     <div id="wc-biz-courier-logistics-shipment-management" class="wc-biz-courier-logistics">
         <p><?php _e("This order has not shipped with Biz.", "wc-biz-courier-logistics") ?></p>
         <div class="actions">
@@ -263,17 +252,22 @@ function shipment_creation_html(?array $items): void
         <?php if (!empty($items)) { ?>
             <div class="item-list">
                 <h4><?php _e("Warehouse items", 'wc-biz-courier-logistics') ?></h4>
+                <p>
+                    <?php
+                    _e(
+                        "Make sure all the items in the order enabled and found in the Biz Warehouse:",
+                        "wc-biz-courier-logistics"
+                    );
+                    ?>
+                </p>
                 <ul>
                     <?php
                     foreach ($items as $item) {
                     ?>
                         <li>
-                            <a 
-                                href="<?php echo get_site_url('', '/wp-admin/post.php?post='. $item['product']->get_id().'&action=edit') ?>"
-                                class="<?php echo (($item['compatible']) ? 'compatible' : 'incompatible') ?>"
-                            >
-                                <?php echo file_get_contents(plugin_dir_path(dirname(__FILE__)) . 'svg/' .(($item['compatible']) ? 'completed.svg' : 'failed.svg')) ?>
-                                <?php echo $item['product']->get_title(); ?> (#<?php echo $item['product']->get_id() ?>)
+                            <a href="<?php echo $item['url'] ?>" class="<?php echo (($item['compatible']) ? 'compatible' : 'incompatible') ?>">
+                                <?php echo file_get_contents(plugin_dir_path(dirname(__FILE__)) . 'svg/' . (($item['compatible']) ? 'completed.svg' : 'failed.svg')) ?>
+                                <?php echo $item['title'] ?>
                             </a>
                         </li>
                     <?php

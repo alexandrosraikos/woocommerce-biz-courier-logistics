@@ -192,18 +192,22 @@ class WC_Biz_Courier_Logistics
 		 */
 
 		/** Interface hooks */
-		$this->loader->add_action('woocommerce_product_options_inventory_product_data', $plugin_admin, 'add_product_biz_warehouse_option');
-		$this->loader->add_action('woocommerce_variation_options', $plugin_admin, 'add_product_variation_biz_warehouse_option', 10, 3);
+		// $this->loader->add_action('woocommerce_product_options_inventory_product_data', $plugin_admin, 'add_product_biz_warehouse_option');
+		// $this->loader->add_action('woocommerce_variation_options', $plugin_admin, 'add_product_variation_biz_warehouse_option', 10, 3);
 		$this->loader->add_action('manage_posts_extra_tablenav', $plugin_admin, 'add_product_stock_synchronize_all_button', 20, 1);
 		$this->loader->add_filter('manage_edit-product_columns', $plugin_admin, 'add_product_stock_status_indicator_column');
 		$this->loader->add_action('manage_product_posts_custom_column', $plugin_admin, 'product_stock_status_indicator_column', 10, 2);
+		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_product_management_meta_box');
 
 		/** Handler hooks */
-		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'save_product_biz_warehouse_option', 10, 1);
-		$this->loader->add_action('woocommerce_save_product_variation', $plugin_admin, 'save_product_variation_biz_warehouse_option', 10, 2);
+		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'product_sku_change_handler', 10, 1);
+		$this->loader->add_action('woocommerce_save_product_variation', $plugin_admin, 'product_variation_sku_change_handler', 10, 2);
 
 		/** AJAX handler hooks */
 		$this->loader->add_action('wp_ajax_product_stock_synchronization_all', $plugin_admin, 'product_stock_synchronization_all');
+		$this->loader->add_action('wp_ajax_product_permit', $plugin_admin, 'product_permit_handler');
+		$this->loader->add_action('wp_ajax_product_prohibit', $plugin_admin, 'product_prohibit_handler');
+		$this->loader->add_action('wp_ajax_product_synchronize', $plugin_admin, 'product_synchronize_handler');
 
 		/** 
 		 * Shipping Method
@@ -402,7 +406,7 @@ class WC_Biz_Courier_Logistics
 		} else {
 			if ($rejection != NULL) {
 				$rejection($response);
-			} else throw new ErrorException($response['Error']);
+			} else throw new WCBizCourierLogisticsAPIError($response['Error']);
 		}
 	}
 

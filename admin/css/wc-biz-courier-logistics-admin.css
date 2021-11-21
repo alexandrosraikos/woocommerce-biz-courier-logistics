@@ -17,9 +17,10 @@
  *
  *  4. Shipments
  *   4.1. Generic
- *   4.2. Voucher
- *   4.3. Actions
- *   4.4. History
+ *   4.2. Compatible Items
+ *   4.3. Voucher
+ *   4.4. Actions
+ *   4.5. History
  *
  * =====
  *
@@ -168,19 +169,9 @@
 */
 
 /**
-* The default generated column.
-*/
-.column-biz_sync {
-  /*  Display & Box Model */
-  width: 10ch;
-}
-
-/**
 *
 * Synchronization Indicator
-* ------------
-* This section provides styling rules
-* for the synchronization indicator.
+* -------
 */
 
 /**
@@ -255,6 +246,132 @@
 }
 
 /**
+* Synchronization status column.
+* ---------
+*/
+
+/**
+* The default generated column.
+*/
+.column-biz_sync {
+  /*  Display & Box Model */
+  width: 10ch;
+}
+
+/**
+*
+* Metabox
+* ------------
+* This section provides styling rules
+* for generic native interface elements.
+*/
+
+/**
+* Add a top-bottom margin to all container children.
+*/
+#wc-biz-courier-logistics-product-management > div:not(:last-of-type) {
+  /* Display & Box Model */
+  padding-bottom: 7px;
+  margin: 10px 0;
+  border-bottom: var(--thin-border);
+}
+
+#wc-biz-courier-logistics-product-management > div > h4 {
+  /* Display & Box Model */
+  margin: 10px 0;
+
+  /* Other */
+  font-size: 16px;
+}
+
+#wc-biz-courier-logistics-product-management .sku {
+  /* Display & Box Model */
+  margin: 10px 0;
+  padding: 5px 10px;
+  background-color: var(--background-color-notice);
+  border-radius: 8px;
+
+  /* Other */
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+#wc-biz-courier-logistics-product-management .synchronization-indicator {
+  /* Other */
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+#wc-biz-courier-logistics-product-management
+  > .status
+  .synchronization-indicator {
+  /* Other */
+  font-size: 20px;
+}
+
+#wc-biz-courier-logistics-product-management
+  > .status
+  .synchronization-indicator::before {
+  /* Display & Box Model */
+  height: 14px;
+  width: 14px;
+}
+
+#wc-biz-courier-logistics-product-management button[data-action="prohibit"] {
+  /* Display & Box Model */
+  display: block;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 6px 0;
+
+  /* Other */
+  text-decoration: underline;
+  color: var(--wc-red);
+}
+
+#wc-biz-courier-logistics-product-management > .variations > ul {
+  border: var(--thin-border);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+#wc-biz-courier-logistics-product-management
+  > .variations
+  > ul
+  > li:not(:last-of-type) {
+  /* Display & Box Model */
+  padding-bottom: 7px;
+  margin: 10px 0;
+  border-bottom: var(--thin-border);
+}
+
+#wc-biz-courier-logistics-product-management > .variations > ul > li > .title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#wc-biz-courier-logistics-product-management
+  > .variations
+  > ul
+  > li
+  > .title
+  > .attribute {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: var(--background-color-warning);
+}
+
+#wc-biz-courier-logistics-product-management > .variations > ul > li > .sku {
+  display: inline-block;
+  font-size: 14px;
+}
+
+/**
 * ------------
 * Shipment Management
 * ------------
@@ -298,28 +415,38 @@
 }
 
 /**
-* Compatible items
+* Compatible Items
 * ------------
 * This subsection provides the necessary
 * styles for the compatible items list.
 */
 
+#wc-biz-courier-logistics-shipment-management > .item-list ul {
+  /* Display & Box Model */
+  padding-left: 4px;
+}
+
 #wc-biz-courier-logistics-shipment-management > .item-list a {
   /* Display & Box Model */
   display: flex;
   align-items: center;
+
   /* Other */
   font-weight: bold;
 }
 
 #wc-biz-courier-logistics-shipment-management > .item-list a > svg {
   /* Display & Box Model */
-  width: 18px;
+  display: block;
+  float: left;
+  margin-bottom: -1px;
+  width: 16px;
   height: auto;
-  margin-right: 10px;
+  margin-right: 6px;
 }
 
 #wc-biz-courier-logistics-shipment-management > .item-list a.compatible > svg {
+  /* Other */
   fill: var(--foreground-color-success);
 }
 
@@ -327,6 +454,7 @@
   > .item-list
   a.incompatible
   > svg {
+  /* Other */
   fill: var(--foreground-color-failure);
 }
 

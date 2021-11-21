@@ -344,7 +344,7 @@ class WC_Biz_Courier_Logistics_Admin
 			// Prepare the data and send.
 			$data = json_encode($data);
 			if ($data == false) {
-				throw new ErrorException("There was an error while encoding the data to JSON.");
+				throw new RuntimeException("There was an error while encoding the data to JSON.");
 			} else {
 				http_response_code(200);
 				die(json_encode($data));
@@ -355,7 +355,7 @@ class WC_Biz_Courier_Logistics_Admin
 		} catch (RuntimeException $e) {
 			http_response_code(400);
 			die($e->getMessage());
-		} catch (ErrorException $e) {
+		} catch (WCBizCourierLogisticsAPIError $e) {
 			http_response_code(500);
 			die($e->getMessage());
 		} catch (SoapFault $f) {
@@ -477,72 +477,6 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 
 	/**
-	 * 
-	 * Display Biz Warehouse option to include each product in the stock synchronisation process.
-	 *
-	 * @uses $post
-	 * @uses self::async_handler()
-	 * @uses WC_Biz_Courier_Logistics_Product_Delegate
-	 * @uses product_synchronization_checkbox()
-	 * @usedby 'woocommerce_product_options_inventory_product_data'
-	 * 
-	 * @author Alexandros Raikos <alexandros@araikos.gr> 
-	 * @since 1.2.0
-	 * 
-	 * @version 1.4.0
-	 */
-	public function add_product_biz_warehouse_option(): void
-	{
-		/** @var WP_Post $post The current post. */
-		global $post;
-
-		$this->async_handler(function () use ($post) {
-
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
-			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($post->ID);
-			$status = $delegate->get_synchronization_status();
-
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-			product_synchronization_checkbox($status[0], $status[1]);
-			product_aggregation_checkbox($delegate->aggregated);
-		}, $post->ID);
-	}
-
-	/**
-	 * Display Biz Warehouse option to include each product variation in the stock synchronisation process.
-	 *
-	 * @uses self::async_handler()
-	 * @uses WC_Biz_Courier_Logistics_Product_Delegate
-	 * @uses product_synchronization_status_indicator()
-	 * @usedby 'woocommerce_variation_options'
-	 * 
-	 * @since 1.2.0
-	 * 
-	 * @version 1.4.0
-	 */
-	public function add_product_variation_biz_warehouse_option($loop, $variation_data, $variation): void
-	{
-		$this->async_handler(function () use ($loop, $variation) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
-
-			// Check permissions.
-			if(WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($variation)) {
-				// Get status.
-				$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($variation->ID);
-				$status = $delegate->get_synchronization_status();
-			}
-
-			// Print based on aggregation option.
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-			if (!($delegate->aggregated ?? false)) {
-				product_variation_synchronization_checkbox($loop, $status[0] ?? '', $status[1] ?? '');
-			} else {
-				product_synchronization_status_indicator($status[0], $status[1]);
-			}
-		}, $variation->ID);
-	}
-
-	/**
 	 * Add Biz Courier remaining stock synchronization button to the All Products page.
 	 * 
 	 * @uses product_stock_synchronize_all_button_html()
@@ -632,6 +566,127 @@ class WC_Biz_Courier_Logistics_Admin
 		}
 	}
 
+
+	/**
+	 * Add the product management view in the product editing page.
+	 * 
+	 * @usedby 'add_meta_boxes'
+	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since 1.0.0
+	 * 
+	 * @version 1.4.0
+	 */
+	public function add_product_management_meta_box(): void
+	{
+		/**
+		 * Print the Biz Shipment meta box.
+		 * 
+		 * @param WP_Post $post The current post.
+		 * 
+		 * @version 1.4.0
+		 */
+		function product_management_meta_box($post): void
+		{
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
+
+			$product = wc_get_product($post->ID);
+
+			// Enqueue and localize button scripts.
+			wp_enqueue_script('wc-biz-courier-logistics-product-management');
+			wp_localize_script('wc-biz-courier-logistics-product-management', "ProductProperties", array(
+				"bizProductPermitNonce" => wp_create_nonce('product_permit'),
+				"bizProductProhibitNonce" => wp_create_nonce('product_prohibit'),
+				"bizProductSynchronizeNonce" => wp_create_nonce('product_synchronize'),
+			));
+
+
+			if ($product->managing_stock()) {
+				if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
+					$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product);
+
+					if ($product->is_type('variable')) {
+						product_management_html(
+							$delegate->get_synchronization_status(true),
+							$product->get_sku(),
+							$product->get_id(),
+							array_map(
+								function ($child_id) use ($product) {
+									$child = wc_get_product($child_id);
+									$product_title = $product->get_title();
+									$title = wc_get_formatted_variation(
+										new WC_Product_Variation($child),
+										true,
+										false
+									);
+									$sku = $child->get_sku();
+									if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($child)) {
+										$child_delegate = new WC_Biz_Courier_Logistics_Product_Delegate($child);
+										return [
+											'enabled' => true,
+											'product_title' => $product_title,
+											'title' => $title,
+											'id' => $child_id,
+											'sku' => $sku,
+											'status' => $child_delegate->get_synchronization_status()
+										];
+									}
+									else {
+										return [
+											'enabled' => false,
+											'product_title' => $product_title,
+											'title' => $title,
+											'id' => $child_id,
+											'sku' => $sku
+										];
+									}
+								},
+								$product->get_children()
+							)
+						);
+					} else {
+						product_management_html(
+							$delegate->get_synchronization_status(),
+							$product->get_id(),
+							$product->get_sku()
+						);
+					}
+				} else {
+					product_management_disabled_html(
+						$product->get_sku(),
+						$product->get_id(),
+					);
+				}
+			} else {
+				// TODO: Translate.
+				product_management_disabled_html(
+					$product->get_sku(),
+					$product->get_id(),
+					__(
+						"You need to enable stock management for this product to activate Biz Courier & Logistics features.",
+						'wc-biz-courier-logistics'
+					)
+				);
+			}
+		}
+
+		// Ensure the administrator is on the "Edit" screen and not "Add".
+		if (get_current_screen()->action != 'add') {
+
+			// Add the meta box.
+			add_meta_box(
+				'wc-biz-courier-logistics_product_management_meta_box',
+				__("Biz Warehouse", 'wc-biz-courier-logistics'),
+				'product_management_meta_box',
+				'product',
+				'side',
+				'high'
+			);
+		}
+	}
+
+
 	/**
 	 * 	Handler Hooks
 	 * 	------------
@@ -639,105 +694,43 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 
 	/**
+	 * 
 	 * Handle product option persistence for the Biz warehouse stock synchronisation.
+	 *
+	 * @author Alexandros Raikos <alexandros@araikos.gr>
+	 * @since    1.2.0
 	 * 
-	 * @param int $post_id The ID of the product post.
+	 * @version 1.4.0
+	 */
+	function product_sku_change_handler($post_id)
+	{
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
+		$product = wc_get_product($post_id);
+
+		if(WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
+			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product);
+			$delegate->set_synchronization_status('pending');
+		}
+	}
+
+	/**
 	 * 
-	 * @uses self::async_handler()
-	 * @uses WC_Biz_Courier_Logistics_Product_Delegate
-	 * @usedby 'woocommerce_process_product_meta'
+	 * Handle product variation option persistence for the Biz warehouse stock synchronisation.
 	 *
 	 * @author Alexandros Raikos <alexandros@araikos.gr>
 	 * @since 1.2.0
 	 * 
 	 * @version 1.4.0
 	 */
-	public function save_product_biz_warehouse_option($post_id): void
+	function product_variation_sku_change_handler($variation_id, $i)
 	{
-		$this->async_handler(function () use ($post_id) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
+		$variation = wc_get_product($variation_id);
 
-			/** @var WC_Product $product The product. */
-			$product = wc_get_product($post_id);
-
-			if (!empty($_POST['_biz_stock_sync'])) {
-				WC_Biz_Courier_Logistics_Product_Delegate::permit($product);
-			}
-
-			if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
-
-				/** @var WC_Biz_Courier_Logistics_Product_Delegate $delegate The product delegate. */
-				$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($post_id);
-
-				// Give delegate permission if preferred.
-				if (empty($_POST['_biz_stock_sync'])) {
-					$delegate->prohibit();
-					return;
-				}
-
-				// Apply aggregation preference.
-				if (!empty($_POST['_biz_stock_sync_aggregate'])) {
-					$delegate->aggregate();
-				} else {
-					$delegate->separate();
-				}
-
-				// Reset synchronization status on SKU change.
-				if ($_POST['_sku'] != $delegate->product->get_sku()) {
-					$delegate->reset_synchronization_status();
-				}
-			}
-		}, $post_id);
-	}
-
-
-	/**
-	 * 
-	 * Handle product variation option persistence for the Biz warehouse stock synchronisation.
-	 * 
-	 * @param int $variation_id The ID of the variation product post.
-	 * @param int $i The index of the current variation being processed in the array.
-	 * 
-	 * @uses self::async_handler()
-	 * @uses WC_Biz_Courier_Logistics_Product_Delegate
-	 * @usedby 'woocommerce_save_product_variation'
-	 * 
-	 * @author Alexandros Raikos <alexandros@araikos.gr>
-	 * @since 1.0.0
-	 * 
-	 * @version 1.4.0
-	 */
-	public function save_product_variation_biz_warehouse_option($variation_id, $i): void
-	{
-		$this->async_handler(function () use ($i) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
-
-			/** @var WC_Product $variation The variation. */
-			$variation = wc_get_product($variation_id);
-
-			// Give delegate permission if preferred.
-			if (!empty($_POST['_biz_stock_sync'][$i])) {
-				WC_Biz_Courier_Logistics_Product_Delegate::permit($variation);
-			}
-
-			// Do delegate actions if permitted.
-			if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($variation)) {
-
-				/** @var WC_Biz_Courier_Logistics_Product_Delegate $delegate The variation delegate. */
-				$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($variation);
-
-				// Prohibit further delegate actions if preferred.
-				if (empty($_POST['_biz_stock_sync'])) {
-					$delegate->prohibit();
-					return;
-				}
-
-				// Reset synchronization status on SKU change.
-				if ($_POST['variable_sku'][$i] != $delegate->product->get_sku()) {
-					$delegate->reset_synchronization_status();
-				}
-			}
-		}, $variation_id);
+		if(WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($variation)) {
+			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($variation);
+			$delegate->set_synchronization_status('pending');
+		}
 	}
 
 	/**
@@ -763,6 +756,30 @@ class WC_Biz_Courier_Logistics_Admin
 	{
 		$this->ajax_handler(function () {
 			WC_Biz_Courier_Logistics_Product_Delegate::just_synchronize_all_stock_levels(true);
+		});
+	}
+
+	public function product_permit_handler(): void
+	{
+		$this->ajax_handler(function ($data) {
+			$product = wc_get_product( $data['product_id'] );
+			WC_Biz_Courier_Logistics_Product_Delegate::permit($product);
+		});
+	}
+
+	public function product_prohibit_handler(): void
+	{
+		$this->ajax_handler(function ($data) {
+			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($data['product_id']);
+			$delegate->prohibit();
+		});
+	}
+
+	public function product_synchronize_handler(): void
+	{
+		$this->ajax_handler(function ($data) {
+			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($data['product_id']);
+			$delegate->synchronize_stock_levels();
 		});
 	}
 
@@ -912,10 +929,31 @@ class WC_Biz_Courier_Logistics_Admin
 				}
 				shipment_management_html($shipment->get_voucher(), $shipment->order->get_status(), $shipment_history ?? null);
 			} else {
-				$compatibility_list = WC_Biz_Courier_Logistics_Shipment::get_compatible_order_items($post->ID, false);
+				$items = array_map(
+					function ($item) {
+						if($item['product']->is_type('variation')) {
+							$title = $item['product']->get_title()." - ".wc_get_formatted_variation(
+								new WC_Product_Variation($item['product']),
+								true,
+								false
+							);
+							$parent = wc_get_product($item['product']->get_parent_id());
+							$url = get_site_url('','/wp-admin/post.php?post='.$parent->get_id().'&action=edit');
+						} else {
+							$title = $item['product']->get_title();
+							$url = get_site_url('','/wp-admin/post.php?post='.$item['product']->get_id().'&action=edit');
+						}
+						return [
+							'url' => $url ?? null,
+							'compatible' => $item['compatible'],
+							'title' => $title
+						];
+					},
+					WC_Biz_Courier_Logistics_Shipment::get_compatible_order_items($post->ID, false)
+				);
 
 				prepare_scripts_new_shipment($post->ID);
-				shipment_creation_html($compatibility_list);
+				shipment_creation_html($items);
 			}
 		}
 
