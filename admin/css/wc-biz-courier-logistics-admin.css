@@ -319,6 +319,19 @@
   width: 14px;
 }
 
+#wc-biz-courier-logistics-product-management button[data-action="permit"] {
+  /* Display & Box Model */
+  display: block;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 6px 0;
+
+  /* Other */
+  text-decoration: underline;
+  color: var(--wp-admin-theme-color);
+}
+
 #wc-biz-courier-logistics-product-management button[data-action="prohibit"] {
   /* Display & Box Model */
   display: block;
@@ -336,6 +349,8 @@
   border: var(--thin-border);
   border-radius: 8px;
   padding: 10px;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 #wc-biz-courier-logistics-product-management

@@ -153,7 +153,9 @@ class WC_Biz_Courier_Logistics
 	 */
 	private function define_admin_hooks()
 	{
-		// TODO @alexandrosraikos: Log and test all cases thoroughly (#37).
+		// TODO @alexandrosraikos: Log all use cases (#37) [Parameters: Functionality, design, localization].
+		// TODO @alexandrosraikos: Test all use cases (#37).
+		// TODO @alexandrosraikos: Finalize code docs (#38).
 
 		$plugin_admin = new WC_Biz_Courier_Logistics_Admin($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
 
@@ -227,7 +229,6 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_shipment_management_meta_box');
 		$this->loader->add_filter('manage_edit-shop_order_columns', $plugin_admin, 'add_shipment_voucher_column');
 		$this->loader->add_action('manage_shop_order_posts_custom_column', $plugin_admin, 'shipment_voucher_column', 10, 2);
-		// TODO @alexandrosraikos: Add Biz Warehouse indicator column on order items panel. (#32)
 
 		/** Handler hooks */
 		$this->loader->add_action('woocommerce_order_status_changed', $plugin_admin, 'order_status_change_handler', 10, 3);
