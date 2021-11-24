@@ -177,7 +177,7 @@ function product_management_disabled_html(string $sku, int $id, string $error = 
         <div id="wc-biz-courier-logistics-product-management" class="wc-biz-courier-logistics">
             <p>
                 <?php
-                // TODO: Translate.
+                // TODO @alexandrosraikos: Translate to Greek (TESTING)
                 _e(
                     "Start using Biz Courier & Logistics for WooCommerce features with this product.",
                     'wc-biz-courier-logistics'
@@ -186,7 +186,7 @@ function product_management_disabled_html(string $sku, int $id, string $error = 
             </p>
             <button data-action="permit" data-product-id=<?php echo $id ?>" class="button button-primary">
                 <?php
-                // TODO: Translate.
+                // TODO @alexandrosraikos: Translate to Greek (TESTING)
                 _e("Activate", 'wc-biz-courier-logistics');
                 ?>
             </button>
@@ -255,7 +255,7 @@ function shipment_creation_html(?array $items): void
                 <p>
                     <?php
                     _e(
-                        "Make sure all the items in the order enabled and found in the Biz Warehouse:",
+                        "Any checked items below will be submitted to Biz. Make sure all the items in the order enabled and found in the Biz Warehouse:",
                         "wc-biz-courier-logistics"
                     );
                     ?>

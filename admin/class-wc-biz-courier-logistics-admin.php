@@ -555,6 +555,7 @@ class WC_Biz_Courier_Logistics_Admin
 		switch ($column_name) {
 			case 'biz_sync':
 				$this->async_handler(function () use ($product_post_id) {
+					// TODO @alexandrosraikos: Don't show error for excluded products. (TESTING)
 					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 					$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product_post_id);
 					$status = $delegate->get_synchronization_status(true);
@@ -648,8 +649,8 @@ class WC_Biz_Courier_Logistics_Admin
 					} else {
 						product_management_html(
 							$delegate->get_synchronization_status(),
-							$product->get_id(),
-							$product->get_sku()
+							$product->get_sku(),
+							$product->get_id()
 						);
 					}
 				} else {
@@ -659,7 +660,7 @@ class WC_Biz_Courier_Logistics_Admin
 					);
 				}
 			} else {
-				// TODO: Translate.
+				// TODO @alexandrosraikos: Translate. (TESTING)
 				product_management_disabled_html(
 					$product->get_sku(),
 					$product->get_id(),
@@ -704,6 +705,7 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	function product_sku_change_handler($post_id)
 	{
+		// TODO @alexandrosraikos: Check only for SKU change. (TESTING)
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 		$product = wc_get_product($post_id);
 
@@ -724,6 +726,7 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	function product_variation_sku_change_handler($variation_id, $i)
 	{
+		// TODO @alexandrosraikos: Check only for SKU change. (TESTING)
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 		$variation = wc_get_product($variation_id);
 
@@ -755,12 +758,14 @@ class WC_Biz_Courier_Logistics_Admin
 	public function product_stock_synchronization_all(): void
 	{
 		$this->ajax_handler(function () {
+			// TODO @alexandrosraikos: Fix stock levels updating. (TESTING)
 			WC_Biz_Courier_Logistics_Product_Delegate::just_synchronize_all_stock_levels(true);
 		});
 	}
 
 	public function product_permit_handler(): void
 	{
+		// TODO @alexandrosraikos:  Fix not working on #459 (TESTING).
 		$this->ajax_handler(function ($data) {
 			$product = wc_get_product( $data['product_id'] );
 			WC_Biz_Courier_Logistics_Product_Delegate::permit($product);
