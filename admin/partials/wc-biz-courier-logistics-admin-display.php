@@ -119,7 +119,7 @@ function product_management_html(array $status, string $sku, int $id, array $var
                 _e("Synchronize", 'wc-biz-courier-logistics');
                 ?>
             </button>
-            <button data-action="prohibit" data-product-id=<?php echo $id ?>">
+            <button data-action="prohibit" data-product-id="<?php echo $id ?>">
                 <?php
                 _e("Disable", 'wc-biz-courier-logistics');
                 ?>
@@ -177,16 +177,14 @@ function product_management_disabled_html(string $sku, int $id, string $error = 
         <div id="wc-biz-courier-logistics-product-management" class="wc-biz-courier-logistics">
             <p>
                 <?php
-                // TODO @alexandrosraikos: Translate to Greek (TESTING)
                 _e(
                     "Start using Biz Courier & Logistics for WooCommerce features with this product.",
                     'wc-biz-courier-logistics'
                 );
                 ?>
             </p>
-            <button data-action="permit" data-product-id=<?php echo $id ?>" class="button button-primary">
+            <button data-action="permit" data-product-id="<?php echo $id ?>" class="button button-primary">
                 <?php
-                // TODO @alexandrosraikos: Translate to Greek (TESTING)
                 _e("Activate", 'wc-biz-courier-logistics');
                 ?>
             </button>

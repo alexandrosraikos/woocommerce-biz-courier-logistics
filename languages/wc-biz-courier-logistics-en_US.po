@@ -161,6 +161,24 @@ msgstr "Get stock levels"
 msgid "Are you sure you would like to synchronize the stock levels of all the products in the catalogue with your Biz Warehouse?"
 msgstr "Are you sure you would like to synchronize the stock levels of all the products in the catalogue with your Biz Warehouse?"
 
+msgid "Start using Biz Courier & Logistics for WooCommerce features with this product."
+msgstr "Start using Biz Courier & Logistics for WooCommerce features with this product."
+
+msgid "Activate"
+msgstr "Activate"
+
+msgid "You need to enable stock management for this product to activate Biz Courier & Logistics features."
+msgstr "You need to enable stock management for this product to activate Biz Courier & Logistics features."
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Variations"
+msgstr "Variations"
+
+msgid "Synchronize"
+msgstr "Synchronize"
+
 # Shipping Method
 # ------
 # This section provides the necessary translations for initialising

@@ -195,6 +195,30 @@ msgctxt "PRODUCT_STOCK_SYNCHRONIZATION_ALL_CONFIRMATION"
 msgid "Are you sure you would like to synchronize the stock levels of all the products in the catalogue with your Biz Warehouse?"
 msgstr ""
 
+msgctxt "PRODUCT_MANAGEMENT_STOCK_MANAGEMENT_CTA"
+msgid "Start using Biz Courier & Logistics for WooCommerce features with this product."
+msgstr ""
+
+msgctxt "PRODUCT_MANAGEMENT_STOCK_MANAGEMENT_ACTIVATION_BUTTON"
+msgid "Activate"
+msgstr ""
+
+msgctxt "PRODUCT_MANAGEMENT_STOCK_MANAGEMENT_NOTICE"
+msgid "You need to enable stock management for this product to activate Biz Courier & Logistics features."
+msgstr ""
+
+msgctxt "PRODUCT_MANAGEMENT_STATUS_LABEL"
+msgid "Status"
+msgstr ""
+
+msgctxt "PRODUCT_MANAGEMENT_VARIATIONS_LABEL"
+msgid "Variations"
+msgstr ""
+
+msgctxt "PRODUCT_STOCK_SYNCHRONIZATION_BUTTON"
+msgid "Synchronize"
+msgstr ""
+
 # Shipping Method
 # ------
 # This section provides the necessary translations for initialising 

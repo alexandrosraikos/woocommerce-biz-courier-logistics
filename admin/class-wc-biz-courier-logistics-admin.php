@@ -555,14 +555,17 @@ class WC_Biz_Courier_Logistics_Admin
 		switch ($column_name) {
 			case 'biz_sync':
 				$this->async_handler(function () use ($product_post_id) {
-					// TODO @alexandrosraikos: Don't show error for excluded products. (TESTING)
 					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
-					$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product_post_id);
-					$status = $delegate->get_synchronization_status(true);
+					$product = wc_get_product($product_post_id);
+
+					if(WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
+						$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product);
+						$status = $delegate->get_synchronization_status(true);
+					}
 
 					// Show HTML.
 					require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-					echo product_synchronization_status_indicator($status[0], $status[1]);
+					echo product_synchronization_status_indicator($status[0] ?? 'disabled', $status[1] ?? 'Disabled');
 				});
 		}
 	}
@@ -660,7 +663,6 @@ class WC_Biz_Courier_Logistics_Admin
 					);
 				}
 			} else {
-				// TODO @alexandrosraikos: Translate. (TESTING)
 				product_management_disabled_html(
 					$product->get_sku(),
 					$product->get_id(),
@@ -703,15 +705,15 @@ class WC_Biz_Courier_Logistics_Admin
 	 * 
 	 * @version 1.4.0
 	 */
-	function product_sku_change_handler($post_id)
+	function product_sku_change_handler($post_id, $post)
 	{
-		// TODO @alexandrosraikos: Check only for SKU change. (TESTING)
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 		$product = wc_get_product($post_id);
-
-		if(WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
-			$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product);
-			$delegate->set_synchronization_status('pending');
+		if ($_POST['_sku'] != wc_get_product($post_id)->get_sku()) {
+			if(WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
+				$delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product);
+				$delegate->set_synchronization_status('pending');
+			}
 		}
 	}
 
@@ -726,7 +728,6 @@ class WC_Biz_Courier_Logistics_Admin
 	 */
 	function product_variation_sku_change_handler($variation_id, $i)
 	{
-		// TODO @alexandrosraikos: Check only for SKU change. (TESTING)
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
 		$variation = wc_get_product($variation_id);
 
@@ -758,14 +759,12 @@ class WC_Biz_Courier_Logistics_Admin
 	public function product_stock_synchronization_all(): void
 	{
 		$this->ajax_handler(function () {
-			// TODO @alexandrosraikos: Fix stock levels updating. (TESTING)
 			WC_Biz_Courier_Logistics_Product_Delegate::just_synchronize_all_stock_levels(true);
 		});
 	}
 
 	public function product_permit_handler(): void
 	{
-		// TODO @alexandrosraikos:  Fix not working on #459 (TESTING).
 		$this->ajax_handler(function ($data) {
 			$product = wc_get_product( $data['product_id'] );
 			WC_Biz_Courier_Logistics_Product_Delegate::permit($product);

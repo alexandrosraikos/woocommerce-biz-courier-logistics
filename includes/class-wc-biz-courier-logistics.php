@@ -202,7 +202,7 @@ class WC_Biz_Courier_Logistics
 		$this->loader->add_action('add_meta_boxes', $plugin_admin, 'add_product_management_meta_box');
 
 		/** Handler hooks */
-		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'product_sku_change_handler', 10, 1);
+		$this->loader->add_action('woocommerce_process_product_meta', $plugin_admin, 'product_sku_change_handler', 10, 2);
 		$this->loader->add_action('woocommerce_save_product_variation', $plugin_admin, 'product_variation_sku_change_handler', 10, 2);
 
 		/** AJAX handler hooks */

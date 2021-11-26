@@ -99,7 +99,11 @@ function makeWPRequest(actionDOMSelector, action, nonce, data, completion) {
         } catch (objError) {
           console.error("Invalid JSON response: " + objError);
         }
-      } else if (response.status === 400 || response.status === 500) {
+      } else if (
+        response.status === 400 ||
+        response.status === 401 ||
+        response.status === 500
+      ) {
         showAlert(actionDOMSelector, response.responseText, "failure");
 
         // Remove the loading class.

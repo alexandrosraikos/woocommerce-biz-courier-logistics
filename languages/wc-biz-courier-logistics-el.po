@@ -162,6 +162,24 @@ msgstr "Μέτρηση αποθέματος"
 msgid "Are you sure you would like to synchronize the stock levels of all the products in the catalogue with your Biz Warehouse?"
 msgstr "Θέλετε σίγουρα να μετρήσετε το απόθεμα στην Biz αποθήκη σας για όλα τα προϊόντα του καταλόγου;"
 
+msgid "Start using Biz Courier & Logistics for WooCommerce features with this product."
+msgstr "Ξεκινήστε να χρησιμοποιείτε τις λειτουργίες του Biz Courier & Logistics for WooCommerce με αυτό το προϊόν."
+
+msgid "Activate"
+msgstr "Ενεργοποίηση"
+
+msgid "You need to enable stock management for this product to activate Biz Courier & Logistics features."
+msgstr "Πρέπει να ενεργοποιήσετε τη διαχείριση αποθέματος σε αυτό το προϊόν για να ενεργοποιήσετε τις λειτουργίες του Biz Courier & Logistics."
+
+msgid "Status"
+msgstr "Κατάσταση"
+
+msgid "Variations"
+msgstr "Παραλλαγές"
+
+msgid "Synchronize"
+msgstr "Συγχρονισμός"
+
 # Shipping Method
 # ------
 # This section provides the necessary translations for initialising

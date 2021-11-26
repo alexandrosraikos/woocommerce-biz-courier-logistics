@@ -229,18 +229,18 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 				);
 
 				foreach ($children_statuses as $child_status) {
-					if ($status == 'synced' && $child_status == 'not-synced') {
+					if ($status == 'synced' && $child_status[0] == 'not-synced') {
 						$status = 'partial';
 						continue;
 					}
-					if ($status == 'not-synced' && $child_status == 'synced') {
+					if ($status == 'not-synced' && $child_status[0] == 'synced') {
 						$status = 'partial';
 						continue;
 					}
 					if ($status == 'disabled') {
 						$status = $child_status;
 					}
-					if ($child_status == 'pending') {
+					if ($child_status[0] == 'pending') {
 						$status = 'pending';
 						continue;
 					}
@@ -500,13 +500,13 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 		foreach ($products as $product) {
 			if (self::is_permitted($product)) {
 				$delegate = new self($product);
-				if (
-					$delegate->enabled &&
-					array_key_exists($delegate->product->get_sku(), $stock_levels)
-				) {
+				if (array_key_exists($delegate->product->get_sku(), $stock_levels)) {
 					$delegate->synchronize_stock_levels(
 						$stock_levels[$delegate->product->get_sku()]
 					);
+					$delegate->set_synchronization_status('synced');
+				} else {
+					$delegate->set_synchronization_status('not-synced');
 				}
 			}
 		}
@@ -559,33 +559,29 @@ class WC_Biz_Courier_Logistics_Product_Delegate
 	 */
 	public static function is_permitted(WC_Product $product): bool
 	{
-		// Get standalone permission.
-		if (!empty(get_post_meta(
-			$product->get_id(),
-			'_biz_stock_sync',
-			true
-		))) {
-			if (get_post_meta(
+		if ($product->managing_stock())
+		{
+			// Get standalone permission.
+			if (!empty(get_post_meta(
 				$product->get_id(),
 				'_biz_stock_sync',
 				true
-			) == 'yes') {
-				return true;
+			))) {
+				if (get_post_meta(
+					$product->get_id(),
+					'_biz_stock_sync',
+					true
+				) == 'yes') {
+					return true;
+				} else {
+					return false;
+				}
 			} else {
 				return false;
 			}
 		} else {
 			return false;
 		}
-		// else {
-		// 	// Check for transitive permission by parent.
-		// 	$parent_id = $product->get_parent_id();
-		// 	if ($parent_id == 0) {
-		// 		return false;
-		// 	} else {
-		// 		return WC_Biz_Courier_Logistics_Product_Delegate::is_permitted(wc_get_product($parent_id));
-		// 	}
-		// }
 	}
 
 	/**

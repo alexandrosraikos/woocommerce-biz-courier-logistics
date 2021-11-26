@@ -319,7 +319,9 @@
   width: 14px;
 }
 
-#wc-biz-courier-logistics-product-management button[data-action="permit"] {
+#wc-biz-courier-logistics-product-management
+  .variations
+  button[data-action="permit"] {
   /* Display & Box Model */
   display: block;
   border: none;
