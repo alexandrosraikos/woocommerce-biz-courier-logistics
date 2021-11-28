@@ -145,23 +145,19 @@ class WCBizCourierLogisticsProductDelegate
 
         // Calculate composite label, if preferred.
         if ($composite && $status != 'pending') {
-            // Get status labels for all children.
-
-            foreach ($this->applyToChildren(
-                function ($child) {
-                    return $child->GetSynchronizationStatus();
-                }
-            ) as $child_status) {
-                if (($status == 'synced' && $child_status[0] == 'not-synced') ||
-                    ($status == 'not-synced' && $child_status[0] == 'synced')
+            // Get composite status label from all children.
+            $this->applyToChildren(
+                function ($child) use ($status) {
+                    $child_status = $child->GetSynchronizationStatus()[0];
+                    if (($status == 'synced' && $child_status == 'not-synced') ||
+                    ($status == 'not-synced' && $child_status == 'synced')
                     ) {
-                    $status = 'partial';
-                    continue;
+                        $status = 'partial';
+                    } elseif ($status == 'disabled' || $child_status == 'pending') {
+                        $status = $child_status;
+                    }
                 }
-                if ($status == 'disabled' || $child_status[0] == 'pending') {
-                    $status = $child_status;
-                }
-            }
+            );
         }
 
         try {
