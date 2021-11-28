@@ -36,6 +36,8 @@ class WCBizCourierLogisticsShipment
     /** @var array $status_definitions The definitions of shipment statuses. */
     protected array $status_definitions;
 
+    protected ?array $status_report;
+
     /**
      * Initialize the class and retrieve the associated order data.
      *
@@ -162,21 +164,7 @@ class WCBizCourierLogisticsShipment
         return !empty(get_post_meta($wc_order_id, BIZ_VOUCHER_KEY, true));
     }
 
-    /**
-     * Get the status history of a Biz Courier shipment using the stored voucher number.
-     *
-     * @param string? $custom_voucher A different voucher code than the one associated.
-     * @return array An array of the complete status history.
-     *
-     * @uses WC_Biz_Courier_Logistics::contactBizCourierAPI()
-     * @throws WCBizCourierLogisticsRuntimeException When there are no data for the given voucher number.
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
-     * @since 1.0.0
-     *
-     * @version 1.4.0
-     */
-    public function getStatus(string $custom_voucher = null): array
+    protected function fetchStatusHistory(string $custom_voucher = null): array
     {
         /** @var Object $biz_status_list The shipment's status history. */
         $biz_status_history = WC_Biz_Courier_Logistics::contactBizCourierAPI(
@@ -201,20 +189,37 @@ class WCBizCourierLogisticsShipment
             );
         }
 
+        return $biz_status_history;
+    }
+
+    /**
+     * Get the status history of a Biz Courier shipment using the stored voucher number.
+     *
+     * @param string? $custom_voucher A different voucher code than the one associated.
+     * @return array An array of the complete status history.
+     *
+     * @uses WC_Biz_Courier_Logistics::contactBizCourierAPI()
+     * @throws WCBizCourierLogisticsRuntimeException When there are no data for the given voucher number.
+     *
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @since 1.0.0
+     *
+     * @version 1.4.0
+     */
+    public function getStatus(string $custom_voucher = null): array
+    {
         /** @var array $biz_full_status_history The shipment's complete status history. */
         $biz_full_status_history = [];
-        foreach ($biz_status_history as $status) {
+        
+        foreach ($this->fetchStatusHistory($custom_voucher ?? null) as $status) {
 
             /** @var string $i The array key which joins three properties. */
             $i = $status['Status_Date'] . '-' . $status['Status_Time'] . '-' . $status['Status_Code'];
 
             /** @var string $status_code The status code of each level. */
-            $status_code = $status['Status_Code'];
-            if (empty($status_code)) {
-                $status_code = 'NONE';
-            }
+            $status_code = empty($status['Status_Code']) ? $status['Status_Code'] : 'NONE';
 
-            $status_definition = $this->getStatusDefinition($status_code);
+            $status_definition = $this->getStatusDefinitions($status_code);
 
             // Reach conclusion on Final levels.
             if ($status_definition['level'] == 'Final') {
@@ -260,6 +265,24 @@ class WCBizCourierLogisticsShipment
         return $biz_full_status_history;
     }
 
+    protected function appendDeliveryFailureNote(array $report)
+    {
+
+        // Add delivery failure add_note.
+        $failure_delivery_note = (
+            end($report)['level-description']
+            . __('Other comments:', 'wc-biz-courier-logistics')
+            . '\n'
+        );
+        foreach (array_reverse($report) as $status) {
+            $failure_delivery_note .= (
+                $status['date'] . '-' . $status['time']) . ':\n'
+                . ($status['comments'] ?? 'none'
+            );
+        }
+        update_post_meta($this->order->get_id(), BIZ_DELIVERY_FAILURE_KEY, $failure_delivery_note);
+    }
+
     /**
      * Handles the conclusion of order status based on the status report.
      *
@@ -281,63 +304,32 @@ class WCBizCourierLogisticsShipment
         }
 
         if (end($report)['level'] == 'Final') {
-            if (end($report)['conclusion'] == 'completed') {
-                if ($add_note) {
+            switch (end($report)['conclusion']) {
+                case 'completed':
                     $this->order->update_status(
                         "completed",
-                        __("The connected Biz shipment was completed.", 'wc-biz-courier-logistics')
+                        $add_note ? __("The connected Biz shipment was completed.", 'wc-biz-courier-logistics') : ''
                     );
-                } else {
-                    $this->order->update_status("completed");
-                }
-            } elseif (end($report)['conclusion'] == 'cancelled') {
-                if ($add_note) {
+                    break;
+                case 'cancelled':
                     $this->order->update_status(
                         "cancelled",
-                        __("The connected Biz shipment was cancelled.", 'wc-biz-courier-logistics')
+                        $add_note ? __("The connected Biz shipment was cancelled.", 'wc-biz-courier-logistics') : ''
                     );
-                } else {
-                    $this->order->update_status("cancelled");
-                }
-
-                // Add delivery failure add_note.
-                $failure_delivery_note = (
-                    end($report)['level-description']
-                    . __('Other comments:', 'wc-biz-courier-logistics')
-                    . '\n'
-                );
-                foreach (array_reverse($report) as $status) {
-                    $failure_delivery_note .= (
-                        $status['date'] . '-' . $status['time']) . ':\n'
-                        . ($status['comments'] ?? 'none'
-                    );
-                }
-                update_post_meta($this->order->get_id(), BIZ_DELIVERY_FAILURE_KEY, $failure_delivery_note);
-            } elseif (end($report)['conclusion'] == 'failed') {
-                // Handle failed shipment status.
-                if ($add_note) {
+                    $this->appendDeliveryFailureNote($report);
+                    break;
+                case 'failed':
+                    // Handle failed shipment status.
                     $this->order->update_status(
                         "failed",
-                        __("The connected Biz shipment has failed.", 'wc-biz-courier-logistics')
+                        $add_note ? __("The connected Biz shipment has failed.", 'wc-biz-courier-logistics') : ''
                     );
-                } else {
-                    $this->order->update_status("failed");
-                }
-
-                $failure_delivery_note = (
-                    end($report)['level-description']
-                    . __('Other comments:', 'wc-biz-courier-logistics') .
-                     '\n'
+                    $this->appendDeliveryFailureNote($report);
+                    break;
+                default:
+                    throw new WCBizCourierLogisticsUnsupportedValueException(
+                        end($report)['conclusion']
                     );
-                foreach (array_reverse($report) as $status) {
-                    $failure_delivery_note .= (
-                        ($status['date'] . '-' . $status['time']) . ':\n'
-                        . ($status['comments'] ?? 'none')
-                    );
-                }
-
-                // Add delivery failure add_note.
-                update_post_meta($this->order->get_id(), BIZ_DELIVERY_FAILURE_KEY, $failure_delivery_note);
             }
         } else {
             // Handle pending shipment status.
@@ -461,7 +453,7 @@ class WCBizCourierLogisticsShipment
      * @author Alexandros Raikos <alexandros@araikos.gr>
      * @since 1.4.0
      */
-    public static function getStatusDefinition(string $identifier = null, bool $force_refresh = false): array
+    public static function getStatusDefinitions(string $identifier = null, bool $force_refresh = false): array
     {
         if (!function_exists("retrieve_definitions")) {
 
