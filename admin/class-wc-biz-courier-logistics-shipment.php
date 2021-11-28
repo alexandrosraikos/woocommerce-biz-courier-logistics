@@ -432,8 +432,8 @@ class WCBizCourierLogisticsShipment
                     true
                 );
             },
-            function ($error) use ($order, $voucher) {
-                $order->update_status(
+            function ($error) use ($current_order, $voucher) {
+                $current_order->update_status(
                     'cancelled',
                     sprintf(
                         __(
@@ -600,58 +600,8 @@ class WCBizCourierLogisticsShipment
         return $items;
     }
 
-    /**
-     * Creates a new shipment with and saves the response voucher in the order's meta
-     * as `_biz_voucher`. For more information on this API call visit the official documentation here:
-     * https://www.bizcourier.eu/WebServices
-     *
-     * @throws  WCBizCourierLogisticsRuntimeException When data are invalid.
-     * @throws  WCBizCourierLogisticsAPIError When there are API errors.
-     *
-     * @author  Alexandros Raikos <alexandros@araikos.gr>
-     * @since   1.0.0
-     *
-     * @version 1.4.0
-     */
-    public function send(): void
+    protected static function getPackageMetrics(array $items): array
     {
-        /**
-         * Initialization
-         *
-         * The following variables and conditions are critical
-         * to the execution of the shipment.
-         */
-
-        // Check for existing voucher.
-        if ($this->isSubmitted($this->order->get_id())) {
-            throw new WCBizCourierLogisticsRuntimeException(
-                __("A voucher already exists for this order.", 'wc-biz-courier-logistics')
-            );
-        }
-
-        /** @var WC_Order_Item[] $items The order's compatible items. */
-        $items = self::getCompatibleOrderItems($this->order->get_id());
-
-        // Check for no items.
-        if (empty($items)) {
-            throw new WCBizCourierLogisticsRuntimeException(
-                __(
-                    "There are no items included in this order.",
-                    'wc-biz-courier-logistics'
-                )
-            );
-        }
-
-
-        /**
-         * Prepare shipment items.
-         *
-         * This section checks for product data
-         * and calculates package dimensions.
-         */
-
-        /** @var string[] $shipment_products The order items array in product_code:quantity format. */
-        $shipment_products = [];
 
         /** @var double[] $package_metrics The total calculated dimensions. */
         $package_metrics = [
@@ -663,9 +613,6 @@ class WCBizCourierLogisticsShipment
 
         // Handle each item included in the order.
         foreach ($items as $item) {
-            // Merge order item codes and quantities.
-            $shipment_products[] = $item['product']->get_sku() . ":" . $item['self']->get_quantity();
-
             // Add volume and weight to total dimensions.
             if (!empty($item['product']->get_width()) &&
                 !empty($item['product']->get_height()) &&
@@ -686,14 +633,48 @@ class WCBizCourierLogisticsShipment
             }
         }
 
+        return $package_metrics;
+    }
+
+    protected function prepareShipmentData(): array
+    {
+        /**
+         * Initialization
+         */
+
+        /** @var WC_Order_Item[] $items The order's compatible items. */
+        $items = self::getCompatibleOrderItems($this->order->get_id());
+
+        // Check for no items.
+        if (empty($items)) {
+            throw new WCBizCourierLogisticsRuntimeException(
+                __(
+                    "There are no items included in this order.",
+                    'wc-biz-courier-logistics'
+                )
+            );
+        }
+
+
+        /**
+         * Prepare shipment items.
+         */
+
+        /** @var string[] $shipment_products The order items array in product_code:quantity format. */
+        $shipment_products = [];
+
+        foreach ($items as $item) {
+            // Merge order item codes and quantities.
+            $shipment_products[] = $item['product']->get_sku() . ":" . $item['self']->get_quantity();
+        }
+
         /** @var string $first_product The extracted first product from `$shipment_products`. */
         $first_product = array_shift($shipment_products);
 
+        $package_metrics = self::getPackageMetrics($items);
+
         /**
          * Prepare shipment options.
-         *
-         * This section checks for enabled options
-         * and prepares fields accordinf to the Biz API.
          */
 
         /** @var string[] $biz_shipping_settings Any registered Biz Courier shipping method options. */
@@ -758,53 +739,79 @@ class WCBizCourierLogisticsShipment
             );
         }
 
+        return [
+            "R_Name" => WC_Biz_Courier_Logistics::truncate_field(
+                $this->order->get_shipping_first_name() . " " . $this->order->get_shipping_last_name()
+            ),
+            "R_Address" => WC_Biz_Courier_Logistics::truncate_field(
+                $this->order->get_shipping_address_1() . " " . $this->order->get_shipping_address_2()
+            ),
+            "R_Area_Code" => $this->order->get_shipping_country(),
+            "R_Area" => WC_Biz_Courier_Logistics::truncate_field($this->order->get_shipping_city()),
+            "R_PC" => $this->order->get_shipping_postcode(),
+            "R_Phone1" => $phone,
+            "R_Phone2" => "",
+            "R_Email" => WC_Biz_Courier_Logistics::truncate_field($this->order->get_billing_email(), 60),
+            "Length" => $package_metrics['length'], // cm int
+            "Width" => $package_metrics['width'], // cm int
+            "Height" => $package_metrics['height'], // cm int
+            "Weight" => $package_metrics['weight'], // kg int
+            "Prod" => explode(":", $first_product)[0],
+            "Pieces" => explode(":", $first_product)[1],
+            "Multi_Prod" => empty($shipment_products) ? implode("#", $shipment_products) : '',
+            "Cash_On_Delivery" => (
+                ($this->order->get_payment_method() == 'cod')
+                ? number_format($this->order->get_total(), 2)
+                : ''
+            ),
+            "Checques_On_Delivery" => "", // Unsupported.
+            "Comments" => WC_Biz_Courier_Logistics::truncate_field($comments, 1000),
+            "Charge" => "3", // Unsupported, always 3.
+            "Type" => "2", // Unsupported, always assume parcel.
+            "Relative1" => "", // Unsupported.
+            "Relative2" => "", // Unsupported.
+            "Delivery_Time_To" => "", // Unsupported.
+            "SMS" => (($biz_shipping_settings['biz_sms_notifications'] ?? "no") == "yes") ? "1" : "0",
+            "Special_Treatment" => "", // Unsupported.
+            "Protocol" => "", // Unsupported.
+            "Morning_Delivery" => $morning_delivery,
+            "Buy_Amount" => "", // Unsupported.
+            "Pick_Up" => "", // Unsupported.
+            "Service_Type" => "", // Unsupported.
+            "Relabel" => "", // Unsupported.
+            "Con_Call" => "0", // Unsupported.
+            "Ins_Amount" => "" // Unsupported.
+        ];
+    }
+
+    /**
+     * Creates a new shipment with and saves the response voucher in the order's meta
+     * as `_biz_voucher`. For more information on this API call visit the official documentation here:
+     * https://www.bizcourier.eu/WebServices
+     *
+     * @throws  WCBizCourierLogisticsRuntimeException When data are invalid.
+     * @throws  WCBizCourierLogisticsAPIError When there are API errors.
+     *
+     * @author  Alexandros Raikos <alexandros@araikos.gr>
+     * @since   1.0.0
+     *
+     * @version 1.4.0
+     */
+    public function send(): void
+    {
+
+        // Check for existing voucher.
+        if ($this->isSubmitted($this->order->get_id())) {
+            throw new WCBizCourierLogisticsRuntimeException(
+                __("A voucher already exists for this order.", 'wc-biz-courier-logistics')
+            );
+        }
+
         /** @var array $response The API response on shipment creation. */
         $response = WC_Biz_Courier_Logistics::contactBizCourierAPI(
             "https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl",
             "newShipment",
-            [
-                "R_Name" => WC_Biz_Courier_Logistics::truncate_field(
-                    $this->order->get_shipping_first_name() . " " . $this->order->get_shipping_last_name()
-                ),
-                "R_Address" => WC_Biz_Courier_Logistics::truncate_field(
-                    $this->order->get_shipping_address_1() . " " . $this->order->get_shipping_address_2()
-                ),
-                "R_Area_Code" => $this->order->get_shipping_country(),
-                "R_Area" => WC_Biz_Courier_Logistics::truncate_field($this->order->get_shipping_city()),
-                "R_PC" => $this->order->get_shipping_postcode(),
-                "R_Phone1" => $phone,
-                "R_Phone2" => "",
-                "R_Email" => WC_Biz_Courier_Logistics::truncate_field($this->order->get_billing_email(), 60),
-                "Length" => $package_metrics['length'], // cm int
-                "Width" => $package_metrics['width'], // cm int
-                "Height" => $package_metrics['height'], // cm int
-                "Weight" => $package_metrics['weight'], // kg int
-                "Prod" => explode(":", $first_product)[0],
-                "Pieces" => explode(":", $first_product)[1],
-                "Multi_Prod" => empty($shipment_products) ? implode("#", $shipment_products) : '',
-                "Cash_On_Delivery" => (
-                    ($this->order->get_payment_method() == 'cod')
-                    ? number_format($this->order->get_total(), 2)
-                    : ''
-                ),
-                "Checques_On_Delivery" => "", // Unsupported.
-                "Comments" => WC_Biz_Courier_Logistics::truncate_field($comments, 1000),
-                "Charge" => "3", // Unsupported, always 3.
-                "Type" => "2", // Unsupported, always assume parcel.
-                "Relative1" => "", // Unsupported.
-                "Relative2" => "", // Unsupported.
-                "Delivery_Time_To" => "", // Unsupported.
-                "SMS" => (($biz_shipping_settings['biz_sms_notifications'] ?? "no") == "yes") ? "1" : "0",
-                "Special_Treatment" => "", // Unsupported.
-                "Protocol" => "", // Unsupported.
-                "Morning_Delivery" => $morning_delivery,
-                "Buy_Amount" => "", // Unsupported.
-                "Pick_Up" => "", // Unsupported.
-                "Service_Type" => "", // Unsupported.
-                "Relabel" => "", // Unsupported.
-                "Con_Call" => "0", // Unsupported.
-                "Ins_Amount" => "" // Unsupported.
-            ],
+            $this->prepareShipmentData(),
             true
         );
 
