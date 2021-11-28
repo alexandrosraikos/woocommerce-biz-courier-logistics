@@ -147,7 +147,7 @@ class WCBizCourierLogisticsProductDelegate
         if ($composite && $status != 'pending') {
             // Get composite status label from all children.
             $this->applyToChildren(
-                function ($child) use ($status) {
+                function ($child) use (&$status) {
                     $child_status = $child->GetSynchronizationStatus()[0];
                     if (($status == 'synced' && $child_status == 'not-synced') ||
                     ($status == 'not-synced' && $child_status == 'synced')
