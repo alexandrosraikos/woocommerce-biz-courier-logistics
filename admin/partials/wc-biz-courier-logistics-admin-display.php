@@ -13,9 +13,9 @@
  */
 
 /**
- * 	------------
- * 	Generic
- * 	------------
+ *  ------------
+ *  Generic
+ *  ------------
  *  This section provides generic markup.
  */
 
@@ -30,11 +30,11 @@
  */
 function notice_display_html($message, $type = 'error'): void
 {
-?>
+    ?>
     <div class="notice notice-<?php echo $type ?>">
         <?php echo $message ?>
     </div>
-<?php
+    <?php
 }
 
 /**
@@ -48,20 +48,20 @@ function notice_display_html($message, $type = 'error'): void
  */
 function notice_display_embedded_html($message, $type = ""): void
 {
-?>
+    ?>
     <div class="wc-biz-courier-logistics-notice <?php echo $type ?>">
         <?php echo $message ?>
     </div>
-<?php
+    <?php
 }
 
 /**
  * ------------
- * Product Management 
+ * Product Management
  * ------------
- * This section provides the necessary markup for 
+ * This section provides the necessary markup for
  * managing products.
- * 
+ *
  */
 
 /**
@@ -72,22 +72,23 @@ function notice_display_embedded_html($message, $type = ""): void
  */
 function product_stock_synchronize_all_button_html()
 {
-?>
+    ?>
     <button class="button button-primary wc-biz-courier-logistics" data-action="synchronize-stock" style="height:32px;">
         <?php _e("Get stock levels", "wc-biz-courier-logistics") ?>
     </button>
-<?php
+    <?php
 }
 
 /**
  * Print HTML column stock synchronization indicators.
  *
+ *
  * @param string $status The status code.
  * @param string $label The corresponding status label.
- * 
+ *
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.0.0
- * 
+ *
  * @version 1.4.0
  */
 function product_synchronization_status_indicator(string $status, string $label): string
@@ -104,7 +105,7 @@ function product_synchronization_status_indicator(string $status, string $label)
 
 function product_management_html(array $status, string $sku, int $id, array $variations = null, bool $aggregated = false): void
 {
-?>
+    ?>
     <div id="wc-biz-courier-logistics-product-management" class="wc-biz-courier-logistics">
         <div class="status">
             <h4>
@@ -127,7 +128,7 @@ function product_management_html(array $status, string $sku, int $id, array $var
         </div>
         <?php
         if (!empty($variations)) {
-        ?>
+            ?>
             <div class="variations">
                 <h4>
                     <?php
@@ -143,7 +144,7 @@ function product_management_html(array $status, string $sku, int $id, array $var
                         if ($variation['enabled']) {
                             echo product_synchronization_status_indicator($variation['status'][0], $variation['status'][1]);
                         }
-                    ?>
+                        ?>
                         <button data-action="<?php echo ($variation['enabled'] ? 'prohibit' : 'permit') ?>" data-product-id="<?php echo $variation['id'] ?>">
                             <?php
                             if ($variation['enabled']) {
@@ -154,13 +155,13 @@ function product_management_html(array $status, string $sku, int $id, array $var
                             ?>
                         </button>
                         </li>
-                    <?php
+                        <?php
                         echo '</li>';
                     }
                     ?>
                 </ul>
             </div>
-        <?php
+            <?php
         }
         ?>
     </div>
@@ -173,7 +174,7 @@ function product_management_disabled_html(string $sku, int $id, string $error = 
     if (!empty($error)) {
         notice_display_embedded_html($error);
     } else {
-    ?>
+        ?>
         <div id="wc-biz-courier-logistics-product-management" class="wc-biz-courier-logistics">
             <p>
                 <?php
@@ -189,7 +190,7 @@ function product_management_disabled_html(string $sku, int $id, string $error = 
                 ?>
             </button>
         </div>
-    <?php
+        <?php
     }
 }
 
@@ -197,20 +198,20 @@ function product_management_disabled_html(string $sku, int $id, string $error = 
 
 /**
  * ------------
- * Shipment Management 
+ * Shipment Management
  * ------------
- * This section provides the necessary markup for 
+ * This section provides the necessary markup for
  * managing shipments.
- * 
+ *
  */
 
 /**
  * Print HTML column order voucher.
  *
  * @param string $voucher The order's voucher.
- * 
+ *
  * @usedby WC_Biz_Courier_Logistics_Admin::shipment_voucher_column()
- * 
+ *
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.3.0
  */
@@ -226,12 +227,12 @@ function order_column_voucher_html($voucher): void
 
 /**
  * Print the shipment creation HTML.
- * 
+ *
  * @usedby WC_Biz_Courier_Logistics_Admin::add_shipment_management_meta_box()
- * 
+ *
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.0.0
- * 
+ *
  * @version 1.4.0
  */
 function shipment_creation_html(?array $items): void
@@ -261,40 +262,40 @@ function shipment_creation_html(?array $items): void
                 <ul>
                     <?php
                     foreach ($items as $item) {
-                    ?>
+                        ?>
                         <li>
                             <a href="<?php echo $item['url'] ?>" class="<?php echo (($item['compatible']) ? 'compatible' : 'incompatible') ?>">
                                 <?php echo file_get_contents(plugin_dir_path(dirname(__FILE__)) . 'svg/' . (($item['compatible']) ? 'completed.svg' : 'failed.svg')) ?>
                                 <?php echo $item['title'] ?>
                             </a>
                         </li>
-                    <?php
+                        <?php
                     }
                     ?>
                 </ul>
             </div>
         <?php } ?>
     </div>
-<?php
+    <?php
 }
 
 /**
  * Print the shipment management HTML.
- * 
+ *
  * @param string $voucher The connected shipment voucher.
  * @param string $status The order's status.
  * @param array $history The shipment's complete history.
- * 
+ *
  * @usedby WC_Biz_Courier_Logistics_Admin::add_shipment_management_meta_box()
- * 
+ *
  * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.0.0
- * 
+ *
  * @version 1.4.0
  */
 function shipment_management_html($voucher, $status, $history): void
 {
-?>
+    ?>
     <div id="wc-biz-courier-logistics-shipment-management" class="wc-biz-courier-logistics">
         <div class="voucher">
             <h4><?php _e("Voucher number", 'wc-biz-courier-logistics') ?></h4>
@@ -304,10 +305,10 @@ function shipment_management_html($voucher, $status, $history): void
             // Show last mile tracking number, if available.
             if (!empty($history)) {
                 if (!empty(end($history)['last_mile_tracking_number'])) {
-            ?>
+                    ?>
                     <h5><?php _e('Partner tracking number', 'wc-biz-courier-logistics') ?></h5>
                     <div class="partner-number"> <?php echo end($history)['last_mile_tracking_number'] ?></div>
-            <?php
+                    <?php
                 }
             }
             ?>
@@ -321,7 +322,7 @@ function shipment_management_html($voucher, $status, $history): void
         </div>
         <?php
         if (!empty($history)) {
-        ?>
+            ?>
             <div class="actions">
                 <h4><?php _e("Shipment actions", 'wc-biz-courier-logistics') ?></h4>
                 <?php
@@ -329,17 +330,17 @@ function shipment_management_html($voucher, $status, $history): void
                 // Shipment modification actions.
                 if (end($history)['level'] != 'Final') {
                     if ($status == "processing") {
-                ?>
+                        ?>
                         <button class="button" data-action="modify">
                             <?php _e("Modify shipment", "wc-biz-courier-logistics") ?>
                         </button>
                         <button class="button" data-action="cancel">
                             <?php _e("Request shipment cancellation", "wc-biz-courier-logistics") ?>
                         </button>
-                    <?php
+                        <?php
                     } else {
                         notice_display_embedded_html(__('You must change the order status to "Processing" in order to perform more actions on this shipment.', 'wc-biz-courier-logistics'), 'warning');
-                    ?>
+                        ?>
                         <button class="button button-primary" data-action="sync">
                             <?php _e("Synchronize order status", "wc-biz-courier-logistics") ?>
                         </button>
@@ -357,11 +358,11 @@ function shipment_management_html($voucher, $status, $history): void
                         } else {
                             if ($status == 'processing') {
                                 notice_display_embedded_html(sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change. You can also enable automatic order status updates in <em>WooCoomerce Settings > Integrations > Biz Courier & Logistics</em>.", "wc-biz-courier-logistics"), __(end($history)['conclusion'], 'wc-biz-courier-logistics')), 'warning');
-                        ?>
+                                ?>
                                 <button class="button button-primary" data-action="sync">
                                     <?php _e("Synchronize order status", "wc-biz-courier-logistics") ?>
                                 </button>
-                <?php
+                                <?php
                             } else {
                                 notice_display_embedded_html(sprintf(__("This shipment has reached a %s state. You must change the order status to reflect that change.", "wc-biz-courier-logistics"), __(end($history)['conclusion'], 'wc-biz-courier-logistics')), 'warning');
                             }
@@ -381,7 +382,6 @@ function shipment_management_html($voucher, $status, $history): void
                 <ul class="status-list">
                     <?php
                     foreach (array_reverse($history) as $status) {
-
                         // Basic information.
                         echo '<li class="status ' . $status['conclusion'] . '">';
                         echo '<span class="level">' . __($status['level'], 'wc-biz-courier-logistics') . '</span>';
@@ -405,9 +405,11 @@ function shipment_management_html($voucher, $status, $history): void
                     }
                     ?>
             </div>
-        <?php
-        } else notice_display_embedded_html(__("Unable to fetch status history for this shipment.", 'wc-biz-courier-logistics'), 'warning');
+            <?php
+        } else {
+            notice_display_embedded_html(__("Unable to fetch status history for this shipment.", 'wc-biz-courier-logistics'), 'warning');
+        }
         ?>
     </div>
-<?php
+    <?php
 }
