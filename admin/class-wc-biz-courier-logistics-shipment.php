@@ -217,7 +217,7 @@ class WCBizCourierLogisticsShipment
             $i = $status['Status_Date'] . '-' . $status['Status_Time'] . '-' . $status['Status_Code'];
 
             /** @var string $status_code The status code of each level. */
-            $status_code = empty($status['Status_Code']) ? $status['Status_Code'] : 'NONE';
+            $status_code = !empty($status['Status_Code']) ? $status['Status_Code'] : 'NONE';
 
             $status_definition = $this->getStatusDefinitions($status_code);
 
@@ -442,6 +442,45 @@ class WCBizCourierLogisticsShipment
     }
 
     /**
+     * Retrieve the status definitions from the Biz API.
+     *
+     * @return array The retrieved array of status definitions.
+     */
+    protected static function fetchStatusDefinitions(): array
+    {
+        /** @var Object $biz_status_definitions The official list of status levels. */
+        $biz_status_definitions = WC_Biz_Courier_Logistics::contactBizCourierAPI(
+            "https://www.bizcourier.eu/pegasus_cloud_app/service_01/TrackEvntSrv.php?wsdl",
+            "TrackEvntSrv",
+            [],
+            true
+        );
+
+        /** @var array $status_levels All available status levels. */
+        $status_definitions = [];
+
+        // Populate status levels from the call.
+        foreach ($biz_status_definitions as $biz_status_definition) {
+            $status_definitions[$biz_status_definition['Status_Code']] = [
+            'level' => $biz_status_definition['Level'],
+            'description' => $biz_status_definition['Comments']
+            ];
+        }
+
+        // Insert custom `'NONE'` status level.
+        $status_definitions['NONE'] = [
+        'level' => 'Pending',
+        'description' => __("Delivery status update", 'wc-biz-courier-logistics')
+        ];
+
+        $status_definitions['last_updated'] = time();
+
+        update_option('wc_biz_courier_logistics_status_definitions', $status_definitions);
+        return $status_definitions;
+    }
+
+
+    /**
      * Get the status definitions.
      *
      * @param string? $identifier Return data only for a specific identifier.
@@ -455,58 +494,16 @@ class WCBizCourierLogisticsShipment
      */
     public static function getStatusDefinitions(string $identifier = null, bool $force_refresh = false): array
     {
-        if (!function_exists("retrieve_definitions")) {
-
-            /**
-             * Retrieve the status definitions from the Biz API.
-             *
-             * @return array The retrieved array of status definitions.
-             */
-            function retrieve_definitions(): array
-            {
-                /** @var Object $biz_status_definitions The official list of status levels. */
-                $biz_status_definitions = WC_Biz_Courier_Logistics::contactBizCourierAPI(
-                    "https://www.bizcourier.eu/pegasus_cloud_app/service_01/TrackEvntSrv.php?wsdl",
-                    "TrackEvntSrv",
-                    [],
-                    true
-                );
-
-                /** @var array $status_levels All available status levels. */
-                $status_definitions = [];
-
-                // Populate status levels from the call.
-                foreach ($biz_status_definitions as $biz_status_definition) {
-                    $status_definitions[$biz_status_definition['Status_Code']] = [
-                        'level' => $biz_status_definition['Level'],
-                        'description' => $biz_status_definition['Comments']
-                    ];
-                }
-
-                // Insert custom `'NONE'` status level.
-                $status_definitions['NONE'] = [
-                    'level' => 'Pending',
-                    'description' => __("Delivery status update", 'wc-biz-courier-logistics')
-                ];
-
-                $status_definitions['last_updated'] = time();
-
-                update_option('wc_biz_courier_logistics_status_definitions', $status_definitions);
-                return $status_definitions;
-            }
-        }
-
-
         /** @var array $status_definitions The array of status definitions. */
         $status_definitions = get_option('wc_biz_courier_logistics_status_definitions');
 
         // Fetch definitions the Biz API.
         if ($force_refresh || count($status_definitions) < 3) {
-            $status_definitions = retrieve_definitions();
+            $status_definitions = self::fetchStatusDefinitions();
         } else {
             // Refresh definitions older than 7 days.
             if ((time() - $status_definitions['last_updated']) > 7 * 24 * 60 * 60 * 60) {
-                $status_definitions = retrieve_definitions();
+                $status_definitions = self::fetchStatusDefinitions();
             }
         }
 
@@ -516,7 +513,7 @@ class WCBizCourierLogisticsShipment
                 return $status_definitions[$identifier];
             } else {
                 // Fetch once if definition is not found in DB storage.
-                $status_definitions = retrieve_definitions();
+                $status_definitions = self::fetchStatusDefinitions();
                 if (array_key_exists($identifier, $status_definitions)) {
                     return $status_definitions[$identifier];
                 } else {
@@ -750,7 +747,7 @@ class WCBizCourierLogisticsShipment
             "Weight" => $package_metrics['weight'], // kg int
             "Prod" => explode(":", $first_product)[0],
             "Pieces" => explode(":", $first_product)[1],
-            "Multi_Prod" => empty($shipment_products) ? implode("#", $shipment_products) : '',
+            "Multi_Prod" => !empty($shipment_products) ? implode("#", $shipment_products) : '',
             "Cash_On_Delivery" => (
                 ($this->order->get_payment_method() == 'cod')
                 ? number_format($this->order->get_total(), 2)
@@ -799,11 +796,13 @@ class WCBizCourierLogisticsShipment
             );
         }
 
+        $data = $this->prepareShipmentData();
+
         /** @var array $response The API response on shipment creation. */
         $response = WC_Biz_Courier_Logistics::contactBizCourierAPI(
             "https://www.bizcourier.eu/pegasus_cloud_app/service_01/shipmentCreation_v2.2.php?wsdl",
             "newShipment",
-            $this->prepareShipmentData(),
+            $data,
             true
         );
 

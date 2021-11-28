@@ -378,10 +378,11 @@ msgctxt "CHECKOUT_SHIPPING_OPTION_MORNING_DELIVERY"
 msgid "Morning delivery (until 10:30 a.m.)"
 msgstr ""
 
-# Order Status
+# Shipment Management
 # ------
 # This section provides the necessary translations for mapping, managing and displaying
 # WooCommerce orders and their status to Biz Courier Shipments.
+
 msgctxt "ALL_ORDERS_SHIPMENT_VOUCHER_COLUMN_TITLE"
 msgid "Biz shipment voucher"
 msgstr ""
@@ -400,6 +401,14 @@ msgstr ""
 
 msgctxt "SHIPMENT_SEND_CONFIRMATION_PROMPT"
 msgid "Are you sure you want to send this shipment?"
+msgstr ""
+
+msgctxt "SHIPMENT_CREATION_WAREHOUSE_SECTION_TITLE"
+msgid "Warehouse items"
+msgstr ""
+
+msgctxt "SHIPMENT_CREATION_WAREHOUSE_SECTION_DESCRIPTION"
+msgid "Any checked items below will be submitted to Biz. Make sure all the items in the order are enabled and found in the Biz Warehouse:"
 msgstr ""
 
 msgctxt "ORDER_METABOX_SEND_SHIPMENT_SUCCESS_ORDER_NOTE"

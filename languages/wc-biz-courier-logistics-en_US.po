@@ -300,10 +300,11 @@ msgstr "Simple delivery"
 msgid "Morning delivery (until 10:30 a.m.)"
 msgstr "Morning delivery (until 10:30 a.m.)"
 
-# Order Status
+# Shipment Management
 # ------
 # This section provides the necessary translations for mapping, managing and displaying
 # WooCommerce orders and their status to Biz Courier Shipments.
+
 msgid "Biz shipment voucher"
 msgstr "Biz shipment voucher"
 
@@ -318,6 +319,12 @@ msgstr "Send shipment"
 
 msgid "Are you sure you want to send this shipment?"
 msgstr "Are you sure you want to send this shipment?"
+
+msgid "Warehouse items"
+msgstr "Warehouse items"
+
+msgid "Any checked items below will be submitted to Biz. Make sure all the items in the order are enabled and found in the Biz Warehouse:"
+msgstr "Any checked items below will be submitted to Biz. Make sure all the items in the order are enabled and found in the Biz Warehouse:"
 
 msgid "The shipment was successfully registered to Biz Courier."
 msgstr "The shipment was successfully registered to Biz Courier."

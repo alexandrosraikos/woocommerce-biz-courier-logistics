@@ -20,7 +20,7 @@
  * @subpackage WC_Biz_Courier_Logistics/admin
  * @author     Alexandros Raikos <alexandros@araikos.gr>
  */
-class WC_Biz_Courier_Logistics_Admin
+class WCBizCourierLogisticsAdmin
 {
 
     /**
@@ -50,6 +50,9 @@ class WC_Biz_Courier_Logistics_Admin
      */
     public function __construct($WC_Biz_Courier_Logistics, $version)
     {
+        // Check if the option is enabled.
+        $biz_settings = get_option('woocommerce_biz_integration_settings');
+
         $this->WC_Biz_Courier_Logistics = $WC_Biz_Courier_Logistics;
         $this->version = $version;
     }
@@ -354,7 +357,7 @@ class WC_Biz_Courier_Logistics_Admin
         } catch (WCBizCourierLogisticsProductDelegateNotAllowedException $e) {
             http_response_code(401);
             die($e->getMessage());
-        } catch (RuntimeException $e) {
+        } catch (WCBizCourierLogisticsRuntimeException $e) {
             http_response_code(400);
             die($e->getMessage());
         } catch (WCBizCourierLogisticsAPIError $e) {
@@ -537,7 +540,7 @@ class WC_Biz_Courier_Logistics_Admin
      * @param int $product_post_id The ID of the product post in the row.
      *
      * @uses self::async_handler()
-     * @uses WC_Biz_Courier_Logistics_Product_Delegate
+     * @uses WCBizCourierLogisticsProductDelegate
      * @uses product_synchronization_status_indicator()
      * @usedby 'manage_product_posts_custom_column'
      *
@@ -555,9 +558,9 @@ class WC_Biz_Courier_Logistics_Admin
                     require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
                     $product = wc_get_product($product_post_id);
 
-                    if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
-                        $delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product);
-                        $status = $delegate->get_synchronization_status(true);
+                    if (WCBizCourierLogisticsProductDelegate::isPermitted($product)) {
+                        $delegate = new WCBizCourierLogisticsProductDelegate($product);
+                        $status = $delegate->getSynchronizationStatus(true);
                     }
 
                     // Show HTML.
@@ -604,12 +607,12 @@ class WC_Biz_Courier_Logistics_Admin
 
 
             if ($product->managing_stock()) {
-                if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
-                    $delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product);
+                if (WCBizCourierLogisticsProductDelegate::isPermitted($product)) {
+                    $delegate = new WCBizCourierLogisticsProductDelegate($product);
 
                     if ($product->is_type('variable')) {
                         product_management_html(
-                            $delegate->get_synchronization_status(true),
+                            $delegate->getSynchronizationStatus(true),
                             $product->get_sku(),
                             $product->get_id(),
                             array_map(
@@ -622,15 +625,15 @@ class WC_Biz_Courier_Logistics_Admin
                                         false
                                     );
                                     $sku = $child->get_sku();
-                                    if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($child)) {
-                                        $child_delegate = new WC_Biz_Courier_Logistics_Product_Delegate($child);
+                                    if (WCBizCourierLogisticsProductDelegate::isPermitted($child)) {
+                                        $child_delegate = new WCBizCourierLogisticsProductDelegate($child);
                                         return [
                                             'enabled' => true,
                                             'product_title' => $product_title,
                                             'title' => $title,
                                             'id' => $child_id,
                                             'sku' => $sku,
-                                            'status' => $child_delegate->get_synchronization_status()
+                                            'status' => $child_delegate->getSynchronizationStatus()
                                         ];
                                     } else {
                                         return [
@@ -647,7 +650,7 @@ class WC_Biz_Courier_Logistics_Admin
                         );
                     } else {
                         product_management_html(
-                            $delegate->get_synchronization_status(),
+                            $delegate->getSynchronizationStatus(),
                             $product->get_sku(),
                             $product->get_id()
                         );
@@ -705,9 +708,9 @@ class WC_Biz_Courier_Logistics_Admin
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
         $product = wc_get_product($post_id);
         if ($_POST['_sku'] != wc_get_product($post_id)->get_sku()) {
-            if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($product)) {
-                $delegate = new WC_Biz_Courier_Logistics_Product_Delegate($product);
-                $delegate->set_synchronization_status('pending');
+            if (WCBizCourierLogisticsProductDelegate::isPermitted($product)) {
+                $delegate = new WCBizCourierLogisticsProductDelegate($product);
+                $delegate->setSynchronizationStatus('pending');
             }
         }
     }
@@ -726,9 +729,9 @@ class WC_Biz_Courier_Logistics_Admin
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
         $variation = wc_get_product($variation_id);
 
-        if (WC_Biz_Courier_Logistics_Product_Delegate::is_permitted($variation)) {
-            $delegate = new WC_Biz_Courier_Logistics_Product_Delegate($variation);
-            $delegate->set_synchronization_status('pending');
+        if (WCBizCourierLogisticsProductDelegate::isPermitted($variation)) {
+            $delegate = new WCBizCourierLogisticsProductDelegate($variation);
+            $delegate->setSynchronizationStatus('pending');
         }
     }
 
@@ -743,7 +746,7 @@ class WC_Biz_Courier_Logistics_Admin
      * for all products in the WooCommerce catalogue.
      *
      * @uses self::ajax_handler()
-     * @uses WC_Biz_Courier_Logistics_Product_Delegate
+     * @uses WCBizCourierLogisticsProductDelegate
      * @usedby 'wp_ajax_biz_stock_synchronization'
      *
      * @author Alexandros Raikos <alexandros@araikos.gr>
@@ -754,7 +757,7 @@ class WC_Biz_Courier_Logistics_Admin
     public function product_stock_synchronization_all(): void
     {
         $this->ajax_handler(function () {
-            WC_Biz_Courier_Logistics_Product_Delegate::just_synchronize_all_stock_levels(true);
+            WCBizCourierLogisticsProductDelegate::justSynchronizeAllStockLevels(true);
         });
     }
 
@@ -762,14 +765,14 @@ class WC_Biz_Courier_Logistics_Admin
     {
         $this->ajax_handler(function ($data) {
             $product = wc_get_product($data['product_id']);
-            WC_Biz_Courier_Logistics_Product_Delegate::permit($product);
+            WCBizCourierLogisticsProductDelegate::permit($product);
         });
     }
 
     public function product_prohibit_handler(): void
     {
         $this->ajax_handler(function ($data) {
-            $delegate = new WC_Biz_Courier_Logistics_Product_Delegate($data['product_id']);
+            $delegate = new WCBizCourierLogisticsProductDelegate($data['product_id']);
             $delegate->prohibit();
         });
     }
@@ -777,8 +780,8 @@ class WC_Biz_Courier_Logistics_Admin
     public function product_synchronize_handler(): void
     {
         $this->ajax_handler(function ($data) {
-            $delegate = new WC_Biz_Courier_Logistics_Product_Delegate($data['product_id']);
-            $delegate->synchronize_stock_levels();
+            $delegate = new WCBizCourierLogisticsProductDelegate($data['product_id']);
+            $delegate->synchronizeStockLevels();
         });
     }
 
@@ -847,7 +850,7 @@ class WC_Biz_Courier_Logistics_Admin
     /**
      * Add the shipment management view in the order editing page.
      *
-     * @uses WC_Biz_Courier_Logistics_Shipment
+     * @uses WCBizCourierLogisticsShipment
      * @uses shipment_creation_html()
      * @uses shipment_management_html()
      * @uses notice_display_embedded_html()
@@ -917,18 +920,18 @@ class WC_Biz_Courier_Logistics_Admin
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
 
-            $shipment = new WC_Biz_Courier_Logistics_Shipment($post->ID);
+            $shipment = new WCBizCourierLogisticsShipment($post->ID);
 
             // Get Biz API data and prepare scripts appropriately.
-            if (!empty($shipment->get_voucher())) {
+            if (!empty($shipment->getVoucher())) {
                 prepare_scripts_existing_shipment($post->ID);
                 try {
-                    $shipment = new WC_Biz_Courier_Logistics_Shipment($post->ID);
-                    $shipment_history = $shipment->get_status();
+                    $shipment = new WCBizCourierLogisticsShipment($post->ID);
+                    $shipment_history = $shipment->getStatus();
                 } catch (\Exception $e) {
                     notice_display_embedded_html($e->getMessage(), 'failure');
                 }
-                shipment_management_html($shipment->get_voucher(), $shipment->order->get_status(), $shipment_history ?? null);
+                shipment_management_html($shipment->getVoucher(), $shipment->order->get_status(), $shipment_history ?? null);
             } else {
                 $items = array_map(
                     function ($item) {
@@ -950,7 +953,7 @@ class WC_Biz_Courier_Logistics_Admin
                             'title' => $title
                         ];
                     },
-                    WC_Biz_Courier_Logistics_Shipment::get_compatible_order_items($post->ID, false)
+                    WCBizCourierLogisticsShipment::getCompatibleOrderItems($post->ID, false)
                 );
 
                 prepare_scripts_new_shipment($post->ID);
@@ -994,7 +997,7 @@ class WC_Biz_Courier_Logistics_Admin
      * Register the voucher column.
      *
      * @uses self::async_handler()
-     * @uses WC_Biz_Courier_Logistics_Shipment
+     * @uses WCBizCourierLogisticsShipment
      * @uses order_column_voucher_html()
      * @usedby 'manage_shop_order_posts_custom_column
      *
@@ -1011,10 +1014,10 @@ class WC_Biz_Courier_Logistics_Admin
                 $this->async_handler(function () use ($post_id) {
 
                     require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
-                    $shipment = new WC_Biz_Courier_Logistics_Shipment($post_id);
+                    $shipment = new WCBizCourierLogisticsShipment($post_id);
 
                     require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-                    order_column_voucher_html($shipment->get_voucher());
+                    order_column_voucher_html($shipment->getVoucher());
                 });
                 break;
         }
@@ -1035,7 +1038,7 @@ class WC_Biz_Courier_Logistics_Admin
      * @param string $to The next order status.
      *
      * @uses self::async_handler()
-     * @uses WC_Biz_Courier_Logistics_Shipment
+     * @uses WCBizCourierLogisticsShipment
      * @usedby 'woocommerce_order_status_changed'
      *
      * @author Alexandros Raikos <alexandros@araikos.gr>
@@ -1053,10 +1056,10 @@ class WC_Biz_Courier_Logistics_Admin
             // Handle shipment sending.
             $this->async_handler(function () use ($id) {
                 require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
-                $shipment = new WC_Biz_Courier_Logistics_Shipment($id);
+                $shipment = new WCBizCourierLogisticsShipment($id);
 
                 // Match preferred sending state on a voucher order.
-                if (!empty($shipment->get_voucher())) {
+                if (empty($shipment->getVoucher())) {
                     $shipment->send();
                 }
             }, $id);
@@ -1067,10 +1070,10 @@ class WC_Biz_Courier_Logistics_Admin
             // Handle shipment sending.
             $this->async_handler(function () use ($id) {
                 require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
-                $shipment = new WC_Biz_Courier_Logistics_Shipment($id);
+                $shipment = new WCBizCourierLogisticsShipment($id);
 
                 // Match preferred sending cancellation on a voucher order.
-                if (!empty($shipment->get_voucher())) {
+                if (!empty($shipment->getVoucher())) {
                     $shipment->cancel();
                 }
             }, $id);
@@ -1088,7 +1091,7 @@ class WC_Biz_Courier_Logistics_Admin
      * Handles shipment creation AJAX requests from authorized users.
      *
      * @uses self::ajax_handler()
-     * @uses WC_Biz_Courier_Logistics_Shipment
+     * @uses WCBizCourierLogisticsShipment
      * @usedby 'wp_ajax_biz_shipment_send'
      *
      * @author Alexandros Raikos <alexandros@araikos.gr>
@@ -1099,7 +1102,7 @@ class WC_Biz_Courier_Logistics_Admin
     public function shipment_creation_handler(): void
     {
         $this->ajax_handler(function ($data) {
-            $shipment = new WC_Biz_Courier_Logistics_Shipment(intval($data['order_id']));
+            $shipment = new WCBizCourierLogisticsShipment(intval($data['order_id']));
             $shipment->send();
         });
     }
@@ -1108,7 +1111,7 @@ class WC_Biz_Courier_Logistics_Admin
      * Handles shipment modification AJAX requests from authorized users.
      *
      * @uses self::ajax_handler()
-     * @uses WC_Biz_Courier_Logistics_Shipment
+     * @uses WCBizCourierLogisticsShipment
      * @usedby 'wp_ajax_biz_shipment_modification_request'
      *
      * @author Alexandros Raikos <alexandros@araikos.gr>
@@ -1119,7 +1122,7 @@ class WC_Biz_Courier_Logistics_Admin
     public function shipment_modification_request_handler(): void
     {
         $this->ajax_handler(function ($data) {
-            $shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
+            $shipment = new WCBizCourierLogisticsShipment($data['order_id']);
             $shipment->modify($data['shipment_modification_message']);
         });
     }
@@ -1128,7 +1131,7 @@ class WC_Biz_Courier_Logistics_Admin
      * Handles shipment cancellation AJAX requests from authorized users.
      *
      * @uses self::ajax_handler()
-     * @uses WC_Biz_Courier_Logistics_Shipment
+     * @uses WCBizCourierLogisticsShipment
      * @usedby 'wp_ajax_biz_shipment_cancellation_request'
      *
      * @author Alexandros Raikos <alexandros@araikos.gr>
@@ -1139,7 +1142,7 @@ class WC_Biz_Courier_Logistics_Admin
     public function shipment_cancellation_request_handler(): void
     {
         $this->ajax_handler(function ($data) {
-            $shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
+            $shipment = new WCBizCourierLogisticsShipment($data['order_id']);
             $shipment->cancel();
         });
     }
@@ -1148,7 +1151,7 @@ class WC_Biz_Courier_Logistics_Admin
      * Handles manual voucher addition AJAX requests from authorized users.
      *
      * @uses self::ajax_handler()
-     * @uses WC_Biz_Courier_Logistics_Shipment
+     * @uses WCBizCourierLogisticsShipment
      * @usedby 'wp_ajax_biz_shipment_add_voucher'
      *
      * @author Alexandros Raikos <alexandros@araikos.gr>
@@ -1159,8 +1162,8 @@ class WC_Biz_Courier_Logistics_Admin
     public function shipment_add_voucher_handler(): void
     {
         $this->ajax_handler(function ($data) {
-            $shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
-            $shipment->set_voucher($data['new_voucher'], true);
+            $shipment = new WCBizCourierLogisticsShipment($data['order_id']);
+            $shipment->setVoucher($data['new_voucher'], true);
         });
     }
 
@@ -1168,7 +1171,7 @@ class WC_Biz_Courier_Logistics_Admin
      * Handles manual voucher editing AJAX requests from authorized users.
      *
      * @uses self::ajax_handler()
-     * @uses WC_Biz_Courier_Logistics_Shipment
+     * @uses WCBizCourierLogisticsShipment
      * @usedby 'wp_ajax_biz_shipment_edit_voucher'
      *
      * @author Alexandros Raikos <alexandros@araikos.gr>
@@ -1179,8 +1182,8 @@ class WC_Biz_Courier_Logistics_Admin
     public function shipment_edit_voucher_handler(): void
     {
         $this->ajax_handler(function ($data) {
-            $shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
-            $shipment->set_voucher($data['new_voucher'], true);
+            $shipment = new WCBizCourierLogisticsShipment($data['order_id']);
+            $shipment->setVoucher($data['new_voucher'], true);
         });
     }
 
@@ -1188,7 +1191,7 @@ class WC_Biz_Courier_Logistics_Admin
      * Handles manual voucher deletion AJAX requests from authorized users.
      *
      * @uses self::ajax_handler()
-     * @uses WC_Biz_Courier_Logistics_Shipment
+     * @uses WCBizCourierLogisticsShipment
      * @usedby 'wp_ajax_biz_shipment_delete_voucher'
      *
      * @author Alexandros Raikos <alexandros@araikos.gr>
@@ -1199,8 +1202,8 @@ class WC_Biz_Courier_Logistics_Admin
     public function shipment_delete_voucher_handler(): void
     {
         $this->ajax_handler(function ($data) {
-            $shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
-            $shipment->delete_voucher();
+            $shipment = new WCBizCourierLogisticsShipment($data['order_id']);
+            $shipment->deleteVoucher();
         });
     }
 
@@ -1208,7 +1211,7 @@ class WC_Biz_Courier_Logistics_Admin
      * Handles manual voucher deletion AJAX requests from authorized users.
      *
      * @uses self::ajax_handler()
-     * @uses WC_Biz_Courier_Logistics_Shipment
+     * @uses WCBizCourierLogisticsShipment
      * @usedby 'wp_ajax_biz_shipment_synchronize_order'
      *
      * @author Alexandros Raikos <alexandros@araikos.gr>
@@ -1219,8 +1222,8 @@ class WC_Biz_Courier_Logistics_Admin
     public function shipment_synchronize_order_handler(): void
     {
         $this->ajax_handler(function ($data) {
-            $shipment = new WC_Biz_Courier_Logistics_Shipment($data['order_id']);
-            $shipment->conclude_order();
+            $shipment = new WCBizCourierLogisticsShipment($data['order_id']);
+            $shipment->concludeOrder();
         });
     }
 
@@ -1236,7 +1239,7 @@ class WC_Biz_Courier_Logistics_Admin
      * Check for cancelled & completed orders.
      *
      * @uses self::async_handler()
-     * @uses WC_Biz_Courier_Logistics_Shipment
+     * @uses WCBizCourierLogisticsShipment
      * @usedby 'shipment_status_cron_handler_hook'
      *
      * @author Alexandros Raikos <alexandros@araikos.gr>
@@ -1257,13 +1260,14 @@ class WC_Biz_Courier_Logistics_Admin
                 'return' => 'ids'
             ));
 
+            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
+
             // Conclude status for each order with an active voucher.
             foreach ($orders as $wc_order_id) {
-                if (WC_Biz_Courier_Logistics_Shipment::is_submitted($wc_order_id)) {
+                if (WCBizCourierLogisticsShipment::isSubmitted($wc_order_id)) {
                     $this->async_handler(function () use ($wc_order_id) {
-                        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
-                        $shipment = new WC_Biz_Courier_Logistics_Shipment($wc_order_id);
-                        $shipment->conclude_order();
+                        $shipment = new WCBizCourierLogisticsShipment($wc_order_id);
+                        $shipment->concludeOrder();
                     }, $wc_order_id);
                 }
             }

@@ -300,10 +300,11 @@ msgstr "Απλή παράδοση"
 msgid "Morning delivery (until 10:30 a.m.)"
 msgstr "Πρωινή παράδοση (έως 10:30 π.μ.)"
 
-# Order Status
+# Shipment Management
 # ------
 # This section provides the necessary translations for mapping, managing and displaying
 # WooCommerce orders and their status to Biz Courier Shipments.
+
 msgid "Biz shipment voucher"
 msgstr "Κωδικός παράδοσης Biz"
 
@@ -318,6 +319,12 @@ msgstr "Αποστολή παραγγελίας"
 
 msgid "Are you sure you want to send this shipment?"
 msgstr "Θέλετε σίγουρα να αποστείλετε αυτή την παραγγελία για παράδοση μέσω Biz;"
+
+msgid "Warehouse items"
+msgstr "Τεμάχια αποθήκης"
+
+msgid "Any checked items below will be submitted to Biz. Make sure all the items in the order are enabled and found in the Biz Warehouse:"
+msgstr "Τα τεμάχια της παραγγελίας σημειωμένα με πράσινο θα αποσταλλούν στην Biz. Σιγουρευτείτε πως όλα τα τεμάχια που θέλετε να αποστείλλετε είναι ενεργοποιημένα και συγχρονισμένα με την Biz αποθήκη σας:"
 
 msgid "The shipment was successfully registered to Biz Courier."
 msgstr "Η παράδοση καταχωρήθηκε με επιτυχία στην Biz Courier."

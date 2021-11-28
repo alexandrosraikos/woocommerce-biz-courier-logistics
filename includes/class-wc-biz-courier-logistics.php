@@ -157,7 +157,7 @@ class WC_Biz_Courier_Logistics
         // TODO @alexandrosraikos: Test all use cases (#37).
         // TODO @alexandrosraikos: Finalize code docs (#38).
 
-        $plugin_admin = new WC_Biz_Courier_Logistics_Admin($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
+        $plugin_admin = new WCBizCourierLogisticsAdmin($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
 
         /**
          * General
@@ -488,10 +488,13 @@ class WC_Biz_Courier_Logistics
                 empty($biz_settings['username']) ||
                 empty($biz_settings['password'])
             ) {
-                throw new RuntimeException(
-                    __(
-                        `Please set up your Biz Courier & Logistics credentials before submitting a shipment.`,
-                        'wc-biz-courier-logistics'
+                throw new WCBizCourierLogisticsRuntimeException(
+                    sprintf(
+                        __(
+                            "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.",
+                            "wc-biz-courier-logistics"
+                        ),
+                        admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')
                     )
                 );
             }

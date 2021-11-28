@@ -254,7 +254,7 @@ function shipment_creation_html(?array $items): void
                 <p>
                     <?php
                     _e(
-                        "Any checked items below will be submitted to Biz. Make sure all the items in the order enabled and found in the Biz Warehouse:",
+                        "Any checked items below will be submitted to Biz. Make sure all the items in the order are enabled and found in the Biz Warehouse:",
                         "wc-biz-courier-logistics"
                     );
                     ?>
@@ -265,7 +265,7 @@ function shipment_creation_html(?array $items): void
                         ?>
                         <li>
                             <a href="<?php echo $item['url'] ?>" class="<?php echo (($item['compatible']) ? 'compatible' : 'incompatible') ?>">
-                                <?php echo file_get_contents(plugin_dir_path(dirname(__FILE__)) . 'svg/' . (($item['compatible']) ? 'completed.svg' : 'failed.svg')) ?>
+                                <?php echo file_get_contents(plugin_dir_path(dirname(__FILE__)) . 'svg/' . (($item['compatible']) ? 'completed.svg' : 'cancelled.svg')) ?>
                                 <?php echo $item['title'] ?>
                             </a>
                         </li>

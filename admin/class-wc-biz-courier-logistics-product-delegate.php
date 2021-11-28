@@ -379,13 +379,11 @@ class WCBizCourierLogisticsProductDelegate
      */
     public static function justSynchronizeAllStockLevels(array|bool $products = true): void
     {
-        /**
-     @var array $stock_levels The retrieved stock levels.
-*/
+        
         $stock_levels = self::fetchStockLevels();
 
         // Retrieve all products.
-        if (is_bool($products) && !empty($products)) {
+        if ($products === true) {
             $products = wc_get_products(
                 array(
                 'limit' => -1,
@@ -405,6 +403,20 @@ class WCBizCourierLogisticsProductDelegate
                 } else {
                     $delegate->SetSynchronizationStatus('not-synced');
                 }
+                
+                // Apply for active children too.
+                $delegate->applyToChildren(
+                    function ($child_delegate) use ($stock_levels) {
+                        if (array_key_exists($child_delegate->product->get_sku(), $stock_levels)) {
+                            $child_delegate->synchronizeStockLevels(
+                                $stock_levels[$child_delegate->product->get_sku()]
+                            );
+                            $child_delegate->SetSynchronizationStatus('synced');
+                        } else {
+                            $child_delegate->SetSynchronizationStatus('not-synced');
+                        }
+                    }
+                );
             }
         }
     }

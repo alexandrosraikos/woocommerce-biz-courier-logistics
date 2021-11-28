@@ -26,12 +26,12 @@
 class Biz_Shipping_Method extends WC_Shipping_Method
 {
 
-	/**
-	 * Initialize the class and set its properties
-	 *
-	 * @since    1.0.0
-	 * @param 	 int $instance_id The given instance ID for this shipping method.
-	 */
+    /**
+     * Initialize the class and set its properties
+     *
+     * @since    1.0.0
+     * @param    int $instance_id The given instance ID for this shipping method.
+     */
     public function __construct($instance_id = 0)
     {
         $this->id = 'biz_shipping_method';
@@ -45,11 +45,11 @@ class Biz_Shipping_Method extends WC_Shipping_Method
     }
 
 
-	/**
-	 * Initialise the WooCommerce Settings API integration.
-	 *
-	 * @since    1.0.0
-	 */
+    /**
+     * Initialise the WooCommerce Settings API integration.
+     *
+     * @since    1.0.0
+     */
     function init()
     {
         $this->init_form_fields();
@@ -57,20 +57,18 @@ class Biz_Shipping_Method extends WC_Shipping_Method
         $this->init_settings();
 
         add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
-        
     }
 
 
-	/**
-	 * Initialize the WooCommerce Settings API form fields.
-	 *
-	 * @since    1.0.0
-	 */
+    /**
+     * Initialize the WooCommerce Settings API form fields.
+     *
+     * @since    1.0.0
+     */
     function init_form_fields()
     {
         $statuses = array_merge(array(
-            'disabled' => __('Disable','wc-biz-courier-logistics')), wc_get_order_statuses()
-        );
+            'disabled' => __('Disable', 'wc-biz-courier-logistics')), wc_get_order_statuses());
         $this->form_fields = array(
             'enabled' => array(
                 'title' => __('Enable', 'wc-biz-courier-logistics'),
@@ -178,12 +176,12 @@ class Biz_Shipping_Method extends WC_Shipping_Method
 
 
 
-	/**
-	 * Calculate shipping and add Biz Courier rates.
-	 *
-	 * @since    1.0.0
-	 * @param 	 array $package The given package to be delivered.
-	 */
+    /**
+     * Calculate shipping and add Biz Courier rates.
+     *
+     * @since    1.0.0
+     * @param    array $package The given package to be delivered.
+     */
     public function calculate_shipping($package = array())
     {
         // Calculate weight.
@@ -191,7 +189,7 @@ class Biz_Shipping_Method extends WC_Shipping_Method
         $weight = 0;
         foreach ($package['contents'] as $item) {
             $product = $item['data'];
-            $weight = $weight + $product->get_weight() * $item['quantity'];
+            $weight = $weight + intval($product->get_weight()) * $item['quantity'];
         }
         $weight = wc_get_weight($weight, 'kg');
         if ($weight > 2) {
@@ -208,8 +206,7 @@ class Biz_Shipping_Method extends WC_Shipping_Method
 
         // Calculate rates for extra services.
         if ($this->get_option('biz_zone_type') == 'same-area') {
-
-            if($this->get_option('biz_morning_delivery') == 'yes') {
+            if ($this->get_option('biz_morning_delivery') == 'yes') {
                 // Morning deliveries.
                 $this->add_rate(array(
                     'id' => $this->id . '-morning-delivery',
@@ -218,8 +215,7 @@ class Biz_Shipping_Method extends WC_Shipping_Method
                 ));
             }
 
-            if($this->get_option('biz_saturday_delivery') == 'yes') {
-
+            if ($this->get_option('biz_saturday_delivery') == 'yes') {
                 // Saturday deliveries.
                 $this->add_rate(array(
                     'id' => $this->id . '-saturday-delivery',
