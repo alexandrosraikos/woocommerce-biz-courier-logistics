@@ -50,9 +50,6 @@ class WCBizCourierLogisticsAdmin
      */
     public function __construct($WC_Biz_Courier_Logistics, $version)
     {
-        // Check if the option is enabled.
-        $biz_settings = get_option('woocommerce_biz_integration_settings');
-
         $this->WC_Biz_Courier_Logistics = $WC_Biz_Courier_Logistics;
         $this->version = $version;
     }
@@ -84,21 +81,20 @@ class WCBizCourierLogisticsAdmin
      */
     public function check_minimum_requirements(): void
     {
+        define(
+            'BIZ_COURIER_MINIMUM_REQUIREMENT_NOTICE',
+            __(
+                'This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. Please update to %1$s %2$s or later.',
+                'wc-biz-courier-logistics'
+            )
+        );
+
         // Check for PHP and loaded extensions.
         $minimum_php_version = '7.4.0';
         if (version_compare(phpversion(), $minimum_php_version) < 0) {
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-            notice_display_html(sprintf(
-                __(
-                    'This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. Please update to %1$s %2$s or later.',
-                    'wc-biz-courier-logistics'
-                ),
-                'PHP',
-                $minimum_php_version
-            ));
+            notice_display_html(sprintf(BIZ_COURIER_MINIMUM_REQUIREMENT_NOTICE, 'PHP', $minimum_php_version));
         }
         if (!extension_loaded('soap')) {
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
             notice_display_html(__("You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator.", "wc-biz-courier-logistics"));
         }
 
@@ -106,36 +102,20 @@ class WCBizCourierLogisticsAdmin
         global $wp_version;
         $minimum_wp_version = '5.7.0';
         if (version_compare($wp_version, $minimum_wp_version) < 0) {
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-            notice_display_html(sprintf(
-                __(
-                    'This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. Please update to %1$s %2$s or later.',
-                    'wc-biz-courier-logistics'
-                ),
-                'WordPress',
-                $minimum_wp_version
-            ));
+            notice_display_html(sprintf(BIZ_COURIER_MINIMUM_REQUIREMENT_NOTICE, 'WordPress', $minimum_wp_version));
         }
 
         // Check for installed WooCommerce.
         if (!class_exists('WooCommerce')) {
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
             notice_display_html(__("Biz Courier & Logistics for WooCommerce requires the WooCommerce plugin to be installed and enabled.", 'wc-biz-courier-logistics'));
         }
 
-        // Check for supported WooCommerce version.
-        $minimum_wc_version = '5.6.0';
-        // NOTE: The WC_VERSION warning below is completely normal.
-        if (version_compare(WC_VERSION, $minimum_wc_version) < 0) {
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-            notice_display_html(sprintf(
-                __(
-                    'This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. Please update to %1$s %2$s or later.',
-                    'wc-biz-courier-logistics'
-                ),
-                'WooCommerce',
-                $minimum_wc_version
-            ));
+        if (defined('WC_VERSION')) {
+            // Check for supported WooCommerce version.
+            $minimum_wc_version = '5.6.0';
+            if (version_compare(constant('WC_VERSION'), $minimum_wc_version) < 0) {
+                notice_display_html(sprintf(BIZ_COURIER_MINIMUM_REQUIREMENT_NOTICE, 'WooCommerce', $minimum_wc_version));
+            }
         }
     }
 
@@ -153,10 +133,10 @@ class WCBizCourierLogisticsAdmin
      */
     public function internal_error_notice(): void
     {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+        
 
         /** @var string $internal_error The internal persistent error. */
-        $internal_error = get_option('biz_internal_error');
+        $internal_error = get_option(BIZ_INTERNAL_ERROR_KEY);
 
         // Get and show the error.
         if (!empty($internal_error)) {
@@ -164,18 +144,18 @@ class WCBizCourierLogisticsAdmin
         }
 
         // Delete the error after shown.
-        delete_option('biz_internal_error');
+        delete_option(BIZ_INTERNAL_ERROR_KEY);
 
         // Check for any internal errors in the active post.
         if (!empty($_GET['post'])) {
             // Get and show the error.
-            $internal_error = get_post_meta($_GET['post'], '_biz_internal_error', true);
+            $internal_error = get_post_meta($_GET['post'], BIZ_INTERNAL_POST_ERROR_KEY, true);
             if (!empty($internal_error)) {
                 notice_display_html($internal_error, 'error');
             }
 
             // Delete the error from the metadata.
-            delete_post_meta($_GET['post'], '_biz_internal_error');
+            delete_post_meta($_GET['post'], BIZ_INTERNAL_POST_ERROR_KEY);
         }
     }
 
@@ -236,7 +216,7 @@ class WCBizCourierLogisticsAdmin
     public function plugin_action_links($actions): array
     {
         return array_merge(array(
-            '<a href="' . esc_url(admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')) . '">' . __('Settings', 'wc-biz-courier-logistics') . '</a>'
+            '<a href="' . esc_url(BIZ_INTEGRATION_SETTINGS_URI) . '">' . __('Settings', 'wc-biz-courier-logistics') . '</a>'
         ), $actions);
     }
 
@@ -293,11 +273,11 @@ class WCBizCourierLogisticsAdmin
             $completion();
         } catch (SoapFault $f) {
             // Display the error.
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+            
             notice_display_html(__("There was a connection issue when trying to contact the Biz Courier & Logistics API:", 'wc-biz-courier-logistics') . " " . $f->getMessage(), 'failure');
         } catch (\Exception $e) {
             // Display the error.
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+            
             notice_display_html($e->getMessage(), 'failure');
 
             if (empty($post_id)) {
@@ -332,13 +312,6 @@ class WCBizCourierLogisticsAdmin
             die("Unverified request for action: " . $action);
         }
 
-        // Include action relevant definitions.
-        if (str_contains($_POST['action'], 'shipment')) {
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
-        } elseif (str_contains($_POST['action'], 'product')) {
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
-        }
-
         // Send shipment using POST data and handle errors.
         try {
             /** @var array $data The filtered $_POST data excluding WP specific keys. */
@@ -348,8 +321,8 @@ class WCBizCourierLogisticsAdmin
 
             // Prepare the data and send.
             $data = json_encode($data);
-            if ($data == false) {
-                throw new RuntimeException("There was an error while encoding the data to JSON.");
+            if ($data === false) {
+                throw new WCBizCourierLogisticsRuntimeException("There was an error while encoding the data to JSON.");
             } else {
                 http_response_code(200);
                 die(json_encode($data));
@@ -444,10 +417,8 @@ class WCBizCourierLogisticsAdmin
             $biz_settings = get_option('woocommerce_biz_integration_settings');
             if (isset($_GET['biz_error'])) {
                 if ($_GET['biz_error'] == 'auth-error') {
-                    require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-                    notice_display_html(sprintf(__("Your Biz Courier credentials are invalid. Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.", "wc-biz-courier-logistics"), admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')));
+                    notice_display_html(sprintf(__("Your Biz Courier credentials are invalid. Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.", "wc-biz-courier-logistics"), BIZ_INTEGRATION_SETTINGS_URI));
                 } elseif ($_GET['biz_error'] == 'conn-error') {
-                    require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
                     notice_display_html(__("There was an error contacting Biz Courier, please try again later.", "wc-biz-courier-logistics"));
                 }
             } elseif ($biz_settings['account_number'] == null ||
@@ -455,8 +426,7 @@ class WCBizCourierLogisticsAdmin
                 $biz_settings['username'] == null ||
                 $biz_settings['password'] == null
             ) {
-                require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-                notice_display_html(sprintf(__("Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.", "wc-biz-courier-logistics"), admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')), 'warning');
+                notice_display_html(sprintf(__("Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.", "wc-biz-courier-logistics"), BIZ_INTEGRATION_SETTINGS_URI), 'warning');
             }
         }
     }
@@ -506,7 +476,7 @@ class WCBizCourierLogisticsAdmin
         ));
 
         // Insert button HTML.
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+        
         product_stock_synchronize_all_button_html();
     }
 
@@ -555,7 +525,7 @@ class WCBizCourierLogisticsAdmin
         switch ($column_name) {
             case 'biz_sync':
                 $this->async_handler(function () use ($product_post_id) {
-                    require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
+                    
                     $product = wc_get_product($product_post_id);
 
                     if (WCBizCourierLogisticsProductDelegate::isPermitted($product)) {
@@ -564,7 +534,7 @@ class WCBizCourierLogisticsAdmin
                     }
 
                     // Show HTML.
-                    require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+                    
                     echo product_synchronization_status_indicator($status[0] ?? 'disabled', $status[1] ?? 'Disabled');
                 });
         }
@@ -592,9 +562,6 @@ class WCBizCourierLogisticsAdmin
          */
         function product_management_meta_box($post): void
         {
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
-
             $product = wc_get_product($post->ID);
 
             // Enqueue and localize button scripts.
@@ -605,70 +572,56 @@ class WCBizCourierLogisticsAdmin
                 "bizProductSynchronizeNonce" => wp_create_nonce('product_synchronize'),
             ));
 
+            if (WCBizCourierLogisticsProductDelegate::isPermitted($product) && $product->managing_stock()) {
+                $delegate = new WCBizCourierLogisticsProductDelegate($product);
 
-            if ($product->managing_stock()) {
-                if (WCBizCourierLogisticsProductDelegate::isPermitted($product)) {
-                    $delegate = new WCBizCourierLogisticsProductDelegate($product);
-
-                    if ($product->is_type('variable')) {
-                        product_management_html(
-                            $delegate->getSynchronizationStatus(true),
-                            $product->get_sku(),
-                            $product->get_id(),
-                            array_map(
-                                function ($child_id) use ($product) {
-                                    $child = wc_get_product($child_id);
-                                    $product_title = $product->get_title();
-                                    $title = wc_get_formatted_variation(
-                                        new WC_Product_Variation($child),
-                                        true,
-                                        false
-                                    );
-                                    $sku = $child->get_sku();
-                                    if (WCBizCourierLogisticsProductDelegate::isPermitted($child)) {
-                                        $child_delegate = new WCBizCourierLogisticsProductDelegate($child);
-                                        return [
-                                            'enabled' => true,
-                                            'product_title' => $product_title,
-                                            'title' => $title,
-                                            'id' => $child_id,
-                                            'sku' => $sku,
-                                            'status' => $child_delegate->getSynchronizationStatus()
-                                        ];
-                                    } else {
-                                        return [
-                                            'enabled' => false,
-                                            'product_title' => $product_title,
-                                            'title' => $title,
-                                            'id' => $child_id,
-                                            'sku' => $sku
-                                        ];
-                                    }
-                                },
-                                $product->get_children()
-                            )
-                        );
-                    } else {
-                        product_management_html(
-                            $delegate->getSynchronizationStatus(),
-                            $product->get_sku(),
-                            $product->get_id()
-                        );
-                    }
-                } else {
-                    product_management_disabled_html(
+                if ($product->is_type('variable')) {
+                    product_management_html(
+                        $delegate->getSynchronizationStatus(true),
                         $product->get_sku(),
                         $product->get_id(),
+                        array_map(
+                            function ($child_id) use ($product) {
+                                $child = wc_get_product($child_id);
+                                $product_title = $product->get_title();
+                                $title = wc_get_formatted_variation(
+                                    new WC_Product_Variation($child),
+                                    true,
+                                    false
+                                );
+                                $sku = $child->get_sku();
+                                $permitted = WCBizCourierLogisticsProductDelegate::isPermitted($child);
+                                return [
+                                    'enabled' => $permitted,
+                                    'product_title' => $product_title,
+                                    'title' => $title,
+                                    'id' => $child_id,
+                                    'sku' => $sku,
+                                    'status' => $permitted ?
+                                    (new WCBizCourierLogisticsProductDelegate($child))->getSynchronizationStatus()
+                                    : null
+                                ];
+                            },
+                            $product->get_children()
+                        )
+                    );
+                } else {
+                    product_management_html(
+                        $delegate->getSynchronizationStatus(),
+                        $product->get_sku(),
+                        $product->get_id()
                     );
                 }
             } else {
                 product_management_disabled_html(
                     $product->get_sku(),
                     $product->get_id(),
-                    __(
-                        "You need to enable stock management for this product to activate Biz Courier & Logistics features.",
-                        'wc-biz-courier-logistics'
-                    )
+                    $product->managing_stock() ?
+                        __(
+                            "You need to enable stock management for this product to activate Biz Courier & Logistics features.",
+                            'wc-biz-courier-logistics'
+                        )
+                        : ''
                 );
             }
         }
@@ -703,15 +656,15 @@ class WCBizCourierLogisticsAdmin
      *
      * @version 1.4.0
      */
-    function product_sku_change_handler($post_id, $post)
+    function product_sku_change_handler($post_id)
     {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
+        
         $product = wc_get_product($post_id);
-        if ($_POST['_sku'] != wc_get_product($post_id)->get_sku()) {
-            if (WCBizCourierLogisticsProductDelegate::isPermitted($product)) {
-                $delegate = new WCBizCourierLogisticsProductDelegate($product);
-                $delegate->setSynchronizationStatus('pending');
-            }
+        if ($_POST['_sku'] != wc_get_product($post_id)->get_sku() &&
+            WCBizCourierLogisticsProductDelegate::isPermitted($product)
+            ) {
+            $delegate = new WCBizCourierLogisticsProductDelegate($product);
+            $delegate->setSynchronizationStatus('pending');
         }
     }
 
@@ -724,9 +677,9 @@ class WCBizCourierLogisticsAdmin
      *
      * @version 1.4.0
      */
-    function product_variation_sku_change_handler($variation_id, $i)
+    function product_variation_sku_change_handler($variation_id)
     {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
+        
         $variation = wc_get_product($variation_id);
 
         if (WCBizCourierLogisticsProductDelegate::isPermitted($variation)) {
@@ -917,8 +870,8 @@ class WCBizCourierLogisticsAdmin
                 ));
             }
 
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
+            
+            
 
             $shipment = new WCBizCourierLogisticsShipment($post->ID);
 
@@ -936,16 +889,16 @@ class WCBizCourierLogisticsAdmin
                 $items = array_map(
                     function ($item) {
                         if ($item['product']->is_type('variation')) {
-                            $title = $item['product']->get_title()." - ".wc_get_formatted_variation(
+                            $title = $item['product']->get_title() . " - " . wc_get_formatted_variation(
                                 new WC_Product_Variation($item['product']),
                                 true,
                                 false
                             );
                             $parent = wc_get_product($item['product']->get_parent_id());
-                            $url = get_site_url('', '/wp-admin/post.php?post='.$parent->get_id().'&action=edit');
+                            $url = get_site_url('', '/wp-admin/post.php?post=' . $parent->get_id() . '&action=edit');
                         } else {
                             $title = $item['product']->get_title();
-                            $url = get_site_url('', '/wp-admin/post.php?post='.$item['product']->get_id().'&action=edit');
+                            $url = get_site_url('', '/wp-admin/post.php?post=' . $item['product']->get_id() . '&action=edit');
                         }
                         return [
                             'url' => $url ?? null,
@@ -1013,10 +966,10 @@ class WCBizCourierLogisticsAdmin
             case 'biz-voucher':
                 $this->async_handler(function () use ($post_id) {
 
-                    require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
+                    
                     $shipment = new WCBizCourierLogisticsShipment($post_id);
 
-                    require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wc-biz-courier-logistics-admin-display.php';
+                    
                     order_column_voucher_html($shipment->getVoucher());
                 });
                 break;
@@ -1055,7 +1008,7 @@ class WCBizCourierLogisticsAdmin
         if (substr(($biz_settings['automatic_shipment_creation'] ?? 'disabled'), 3) == $to) {
             // Handle shipment sending.
             $this->async_handler(function () use ($id) {
-                require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
+                
                 $shipment = new WCBizCourierLogisticsShipment($id);
 
                 // Match preferred sending state on a voucher order.
@@ -1069,7 +1022,7 @@ class WCBizCourierLogisticsAdmin
         if (substr(($biz_settings['automatic_shipment_cancellation'] ?? 'disabled'), 3) == $to) {
             // Handle shipment sending.
             $this->async_handler(function () use ($id) {
-                require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
+                
                 $shipment = new WCBizCourierLogisticsShipment($id);
 
                 // Match preferred sending cancellation on a voucher order.
@@ -1260,7 +1213,7 @@ class WCBizCourierLogisticsAdmin
                 'return' => 'ids'
             ));
 
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-wc-biz-courier-logistics-shipment.php';
+            
 
             // Conclude status for each order with an active voucher.
             foreach ($orders as $wc_order_id) {

@@ -97,6 +97,11 @@ class WC_Biz_Courier_Logistics
     private function load_dependencies()
     {
 
+        define('BIZ_INTEGRATION_SETTINGS_URI', admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration'));
+        define('BIZ_INTERNAL_ERROR_KEY', 'biz_internal_error');
+        define('BIZ_INTERNAL_POST_ERROR_KEY', '_biz_internal_error');
+
+
         /**
          * The class responsible for orchestrating the actions and filters of the
          * core plugin.
@@ -124,6 +129,26 @@ class WC_Biz_Courier_Logistics
          * The class responsible for custom exceptions.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-exceptions.php';
+
+        require_once(
+            plugin_dir_path(
+                dirname(__FILE__)
+            )
+            . 'admin/partials/wc-biz-courier-logistics-admin-display.php'
+        );
+        require_once(
+            plugin_dir_path(
+                dirname(__FILE__)
+            )
+            . 'admin/class-wc-biz-courier-logistics-product-delegate.php'
+        );
+        require_once(
+            plugin_dir_path(
+                dirname(__FILE__)
+            )
+            . 'admin/class-wc-biz-courier-logistics-shipment.php'
+        );
+
 
 
         $this->loader = new WC_Biz_Courier_Logistics_Loader();
@@ -225,14 +250,14 @@ class WC_Biz_Courier_Logistics
             $plugin_admin,
             'product_sku_change_handler',
             10,
-            2
+            1
         );
         $this->loader->add_action(
             'woocommerce_save_product_variation',
             $plugin_admin,
             'product_variation_sku_change_handler',
             10,
-            2
+            1
         );
 
         /** AJAX handler hooks */
@@ -494,7 +519,7 @@ class WC_Biz_Courier_Logistics
                             "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.",
                             "wc-biz-courier-logistics"
                         ),
-                        admin_url('admin.php?page=wc-settings&tab=integration&section=biz_integration')
+                        BIZ_INTEGRATION_SETTINGS_URI
                     )
                 );
             }
