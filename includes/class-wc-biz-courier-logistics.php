@@ -130,27 +130,6 @@ class WC_Biz_Courier_Logistics
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-wc-biz-courier-logistics-exceptions.php';
 
-        require_once(
-            plugin_dir_path(
-                dirname(__FILE__)
-            )
-            . 'admin/partials/wc-biz-courier-logistics-admin-display.php'
-        );
-        require_once(
-            plugin_dir_path(
-                dirname(__FILE__)
-            )
-            . 'admin/class-wc-biz-courier-logistics-product-delegate.php'
-        );
-        require_once(
-            plugin_dir_path(
-                dirname(__FILE__)
-            )
-            . 'admin/class-wc-biz-courier-logistics-shipment.php'
-        );
-
-
-
         $this->loader = new WC_Biz_Courier_Logistics_Loader();
     }
 
@@ -180,26 +159,27 @@ class WC_Biz_Courier_Logistics
     {
         // TODO @alexandrosraikos: Log all use cases (#37) [Parameters: Functionality, design, localization].
         // TODO @alexandrosraikos: Test all use cases (#37).
-        // TODO @alexandrosraikos: Finalize code docs (#38).
-
-        $plugin_admin = new WCBizCourierLogisticsAdmin($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
+        // TODO @alexandrosraikos: Finalize code docs (#38) - [Delegates, Product Manager, Displays and Public remaining].
 
         /**
-         * General
+         * ----------------
+         * Plugin administration
          * ----------------
          */
 
+        $plugin_admin = new WCBizCourierLogisticsAdmin($this->get_WC_Biz_Courier_Logistics(), $this->get_version());
+
         /** Interface hooks */
-        $this->loader->add_action('init', $plugin_admin, 'check_minimum_requirements');
-        $this->loader->add_filter('admin_notices', $plugin_admin, 'internal_error_notice');
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+        $this->loader->add_action('init', $plugin_admin, 'checkMinimumRequirements');
+        $this->loader->add_filter('admin_notices', $plugin_admin, 'internalErrorNotice');
+        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueueStyles');
+        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueueScripts');
         $this->loader->add_filter(
             'plugin_action_links_wc-biz-courier-logistics/wc-biz-courier-logistics.php',
             $plugin_admin,
-            'plugin_action_links'
+            'pluginActionLinks'
         );
-        $this->loader->add_filter('plugin_row_meta', $plugin_admin, 'plugin_row_meta', 10, 2);
+        $this->loader->add_filter('plugin_row_meta', $plugin_admin, 'pluginRowMeta', 10, 2);
 
         /**
          * Integration
@@ -207,83 +187,15 @@ class WC_Biz_Courier_Logistics
          */
 
         /** Extensions */
-        $this->loader->add_action('woocommerce_integrations_init', $plugin_admin, 'biz_integration');
-        $this->loader->add_filter('woocommerce_integrations', $plugin_admin, 'add_biz_integration');
+        $this->loader->add_action('woocommerce_integrations_init', $plugin_admin, 'bizIntegration');
+        $this->loader->add_filter('woocommerce_integrations', $plugin_admin, 'addBizIntegration');
 
         /** Interface hooks */
-        $this->loader->add_filter('admin_notices', $plugin_admin, 'biz_settings_notice');
+        $this->loader->add_filter('admin_notices', $plugin_admin, 'bizSettingsNotice');
+
 
         /**
-         * Product Management
-         * ----------------
-         */
-
-        /** Interface hooks */
-        $this->loader->add_action(
-            'manage_posts_extra_tablenav',
-            $plugin_admin,
-            'add_product_stock_synchronize_all_button',
-            20,
-            1
-        );
-        $this->loader->add_filter(
-            'manage_edit-product_columns',
-            $plugin_admin,
-            'add_product_stock_status_indicator_column'
-        );
-        $this->loader->add_action(
-            'manage_product_posts_custom_column',
-            $plugin_admin,
-            'product_stock_status_indicator_column',
-            10,
-            2
-        );
-        $this->loader->add_action(
-            'add_meta_boxes',
-            $plugin_admin,
-            'add_product_management_meta_box'
-        );
-
-        /** Handler hooks */
-        $this->loader->add_action(
-            'woocommerce_process_product_meta',
-            $plugin_admin,
-            'product_sku_change_handler',
-            10,
-            1
-        );
-        $this->loader->add_action(
-            'woocommerce_save_product_variation',
-            $plugin_admin,
-            'product_variation_sku_change_handler',
-            10,
-            1
-        );
-
-        /** AJAX handler hooks */
-        $this->loader->add_action(
-            'wp_ajax_product_stock_synchronization_all',
-            $plugin_admin,
-            'product_stock_synchronization_all'
-        );
-        $this->loader->add_action(
-            'wp_ajax_product_permit',
-            $plugin_admin,
-            'product_permit_handler'
-        );
-        $this->loader->add_action(
-            'wp_ajax_product_prohibit',
-            $plugin_admin,
-            'product_prohibit_handler'
-        );
-        $this->loader->add_action(
-            'wp_ajax_product_synchronize',
-            $plugin_admin,
-            'product_synchronize_handler'
-        );
-
-        /**
-         * Shipping Method
+         * Shipping method
          * ----------------
          */
 
@@ -291,85 +203,193 @@ class WC_Biz_Courier_Logistics
         $this->loader->add_action(
             'woocommerce_shipping_init',
             $plugin_admin,
-            'biz_shipping_method'
+            'bizShippingMethod'
         );
         $this->loader->add_filter(
             'woocommerce_shipping_methods',
             $plugin_admin,
-            'add_biz_shipping_method'
+            'addBizShippingMethod'
         );
 
+        $this->defineAdminProductHooks();
+        $this->defineAdminShipmentHooks();
+    }
+
+    private function defineAdminProductHooks()
+    {
+        
         /**
+         * ----------------
+         * Product Management
+         * ----------------
+         */
+
+        $product_manager = new WCBizCourierLogisticsProductManager();
+
+        /** Interface hooks */
+
+        $this->loader->add_action(
+            'manage_posts_extra_tablenav',
+            $product_manager,
+            'addSynchronizeAllButton',
+            20,
+            1
+        );
+
+        $this->loader->add_filter(
+            'manage_edit-product_columns',
+            $product_manager,
+            'addDelegateStatusColumn'
+        );
+
+        $this->loader->add_action(
+            'manage_product_posts_custom_column',
+            $product_manager,
+            'delegateStatusColumnIndicator',
+            10,
+            2
+        );
+
+        $this->loader->add_action(
+            'add_meta_boxes',
+            $product_manager,
+            'addProductManagementMetabox'
+        );
+
+        /** Handler hooks */
+
+        $this->loader->add_action(
+            'woocommerce_process_product_meta',
+            $product_manager,
+            'handleProductSKUChange',
+            10,
+            1
+        );
+
+        $this->loader->add_action(
+            'woocommerce_save_product_variation',
+            $product_manager,
+            'handleVariationSKUChange',
+            10,
+            1
+        );
+
+        /** AJAX handler hooks */
+
+        $this->loader->add_action(
+            'wp_ajax_product_stock_synchronization_all',
+            $product_manager,
+            'handleAllStockSynchronization'
+        );
+
+        $this->loader->add_action(
+            'wp_ajax_product_permit',
+            $product_manager,
+            'handleProductDelegatePermission'
+        );
+
+        $this->loader->add_action(
+            'wp_ajax_product_prohibit',
+            $product_manager,
+            'handleProductDelegateProhibition'
+        );
+
+        $this->loader->add_action(
+            'wp_ajax_product_synchronize',
+            $product_manager,
+            'handleProductSynchronization'
+        );
+    }
+
+    private function defineAdminShipmentHooks()
+    {
+
+        /**
+         * ----------------
          * Shipment Management
          * ----------------
          */
 
+        $shipment_manager = new WCBizCourierLogisticsShipmentManager();
+
         /** Interface hooks */
+
         $this->loader->add_action(
             'add_meta_boxes',
-            $plugin_admin,
-            'add_shipment_management_meta_box'
+            $shipment_manager,
+            'addShipmentManagementMetabox'
         );
+
         $this->loader->add_filter(
             'manage_edit-shop_order_columns',
-            $plugin_admin,
-            'add_shipment_voucher_column'
+            $shipment_manager,
+            'addShipmentVoucherColumn'
         );
+
         $this->loader->add_action(
             'manage_shop_order_posts_custom_column',
-            $plugin_admin,
-            'shipment_voucher_column',
+            $shipment_manager,
+            'shipmentVoucherColumn',
             10,
             2
         );
 
         /** Handler hooks */
+
         $this->loader->add_action(
             'woocommerce_order_status_changed',
-            $plugin_admin,
-            'order_status_change_handler',
+            $shipment_manager,
+            'handleOrderStatusChange',
             10,
             3
         );
 
         /** AJAX handler hooks */
+
         $this->loader->add_action(
             'wp_ajax_biz_shipment_send',
-            $plugin_admin,
-            'shipment_creation_handler'
+            $shipment_manager,
+            'handleCreation'
         );
+
         $this->loader->add_action(
             'wp_ajax_biz_shipment_modification_request',
-            $plugin_admin,
-            'shipment_modification_request_handler'
+            $shipment_manager,
+            'handleModificationRequest'
         );
+
         $this->loader->add_action(
             'wp_ajax_biz_shipment_cancellation_request',
-            $plugin_admin,
-            'shipment_cancellation_request_handler'
+            $shipment_manager,
+            'handleCancellationRequest'
         );
+
         $this->loader->add_action(
             'wp_ajax_biz_shipment_add_voucher',
-            $plugin_admin,
-            'shipment_add_voucher_handler'
+            $shipment_manager,
+            'handleVoucherAddition'
         );
+
         $this->loader->add_action(
             'wp_ajax_biz_shipment_edit_voucher',
-            $plugin_admin,
-            'shipment_edit_voucher_handler'
+            $shipment_manager,
+            'handleVoucherEditing'
         );
+
         $this->loader->add_action(
             'wp_ajax_biz_shipment_delete_voucher',
-            $plugin_admin,
-            'shipment_delete_voucher_handler'
+            $shipment_manager,
+            'handleVoucherDeletion'
         );
+
         $this->loader->add_action(
             'wp_ajax_biz_shipment_synchronize_order',
-            $plugin_admin,
-            'shipment_synchronize_order_handler'
+            $shipment_manager,
+            'handleOrderStatusSynchronization'
         );
 
         /** Cron hooks */
+
         add_filter(
             'cron_schedules',
             function ($schedules) {
@@ -380,16 +400,17 @@ class WC_Biz_Courier_Logistics
                 return $schedules;
             }
         );
-        $this->loader->add_action('shipment_status_cron_handler_hook', $plugin_admin, 'shipment_status_cron_handler');
+        $this->loader->add_action('shipment_status_cron_handler_hook', $shipment_manager, 'scoutShipmentStatus');
         if (!wp_next_scheduled('shipment_status_cron_handler_hook')) {
             wp_schedule_event(time(), 'ten_minutes', 'shipment_status_cron_handler_hook');
         }
 
         /** Utility hooks */
+
         $this->loader->add_filter(
             'woocommerce_order_data_store_cpt_get_orders_query',
-            $plugin_admin,
-            'shipment_voucher_custom_query_var_handler',
+            $shipment_manager,
+            'extendVoucherCustomQuery',
             10,
             2
         );
@@ -471,131 +492,5 @@ class WC_Biz_Courier_Logistics
     public function get_version()
     {
         return $this->version;
-    }
-
-    /**
-     * Make an authorized request to the Biz Courier API via SOAP.
-     *
-     * @param string $wsdl_url The url to WSDL file.
-     * @param string $method The method to call within the WSDL.
-     * @param array $data The data to include in the request.
-     * @param bool $authorized Whether this request requires authorization.
-     * @param callable $completion The callback to complete the procedure.
-     * @param callable $rejection The custom rejection procedure.
-     * @param bool $no_crm Omit the CRM code from the authentication data for authorized requests.
-     *
-     * @return array If no `$completion` is defined.
-     *
-     * @throws RuntimeException When there are no credentials registered.
-     * @throws SoapFault When there is a connection error.
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
-     * @since 1.4.0
-     */
-    public static function contactBizCourierAPI(
-        string $wsdl_url,
-        string $method,
-        array $data,
-        bool $authorized,
-        ?callable $completion = null,
-        ?callable $rejection = null,
-        ?bool $no_crm = false
-    ) {
-        // For authorized requests.
-        if ($authorized) {
-
-            /** @var string[] $biz_settings The persistent Biz integration settings. */
-            $biz_settings = get_option('woocommerce_biz_integration_settings');
-
-            // Check for existing credentials.
-            if (empty($biz_settings['account_number']) ||
-                empty($biz_settings['warehouse_crm']) ||
-                empty($biz_settings['username']) ||
-                empty($biz_settings['password'])
-            ) {
-                throw new WCBizCourierLogisticsRuntimeException(
-                    sprintf(
-                        __(
-                            "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>.",
-                            "wc-biz-courier-logistics"
-                        ),
-                        BIZ_INTEGRATION_SETTINGS_URI
-                    )
-                );
-            }
-
-            // Append to data array.
-            $data = array_merge([
-                'Code' => $biz_settings['account_number'],
-                'CRM' => $biz_settings['warehouse_crm'],
-                'User' => $biz_settings['username'],
-                'Pass' => $biz_settings['password']
-            ], $data);
-
-            // Remove CRM code if not required.
-            if ($no_crm) {
-                array_splice($data, 1, 1);
-            }
-        }
-
-        /** @var SoapClient $client The SOAP client with exceptions enabled. */
-        $client = new SoapClient($wsdl_url, [
-            'trace' => 1,
-            'exceptions' =>    true,
-            'encoding' => 'UTF-8'
-        ]);
-
-        /** @var Object $response The API response. */
-        $response = $client->__soapCall($method, $data);
-        $response = json_decode(json_encode($response), true);
-
-        // Handle response.
-        if (($response['Error'] ?? 0) == 0) {
-            if ($completion != null) {
-                $completion($response);
-            } else {
-                return $response;
-            }
-        } else {
-            if ($rejection != null) {
-                $rejection($response);
-            } else {
-                throw new WCBizCourierLogisticsAPIError($response['Error']);
-            }
-        }
-    }
-
-    /**
-     * Ensure the string is in UTF-8 format.
-     *
-     * @param string $string The string.
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
-     * @since 1.3.2
-     */
-    public static function ensure_utf8(string $string): string
-    {
-        return (mb_detect_encoding($string) == 'UTF-8') ? $string : utf8_encode($string);
-    }
-
-    /**
-     * Truncate text to the desired character limit.
-     *
-     * @param string $string The text to be truncated.
-     * @param int $length The maximum length.
-     *
-     * @return  string The text truncated to the desired length (40 characters is default).
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
-     * @since   1.0.0
-     * @version 1.4.0
-     */
-    public static function truncate_field(string $string, int $length = 40)
-    {
-        // Ensure UTF-8 encoding.
-        $string = WC_Biz_Courier_Logistics::ensure_utf8($string);
-
-        // Return the truncated string.
-        return (mb_strlen($string, 'UTF-8') > $length) ? mb_substr($string, 0, $length - 1) . "." : $string;
     }
 }
