@@ -157,9 +157,8 @@ class WC_Biz_Courier_Logistics
      */
     private function define_admin_hooks()
     {
-        // TODO @alexandrosraikos: Log all use cases (#37) [Parameters: Functionality, design, localization].
         // TODO @alexandrosraikos: Test all use cases (#37).
-        // TODO @alexandrosraikos: Finalize code docs (#38) - [Delegates, Product Manager, Displays and Public remaining].
+        // TODO @alexandrosraikos: Finalize code docs (#38) - [Product Manager & Delegate, Displays and Public remaining].
 
         /**
          * ----------------

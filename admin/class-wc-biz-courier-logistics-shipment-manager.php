@@ -30,27 +30,25 @@ class WCBizCourierLogisticsShipmentManager extends WCBizCourierLogisticsManager
     public function __construct()
     {
         // Require the Shipment Delegate class.
-        require_once(
-            plugin_dir_path(
-                dirname(__FILE__)
-            )
-            . 'admin/class-wc-biz-courier-logistics-shipment-delegate.php'
-        );
+        require_once(plugin_dir_path(
+            dirname(__FILE__)
+        )
+            . 'admin/class-wc-biz-courier-logistics-shipment-delegate.php');
 
-        // Require the Product Delegate class.
-        require_once(
-            plugin_dir_path(
-                dirname(__FILE__)
-            )
-            . 'admin/partials/wc-biz-courier-logistics-admin-shipment-display.php'
-        );
+        // Require the shipment display functions.
+        require_once(plugin_dir_path(
+            dirname(__FILE__)
+        )
+            . 'admin/partials/wc-biz-courier-logistics-admin-shipment-display.php');
 
         // Register the shipment creation script.
         wp_register_script(
             'wc-biz-courier-logistics-shipment-creation',
             plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-shipment-creation.js',
-            array('jquery',
-            $this->WC_Biz_Courier_Logistics)
+            array(
+                'jquery',
+                $this->WC_Biz_Courier_Logistics
+            )
         );
 
         // Register the shipment management script.
@@ -139,7 +137,7 @@ class WCBizCourierLogisticsShipmentManager extends WCBizCourierLogisticsManager
                 }
 
                 // Show full shipment details.
-                shipment_management_html(
+                shipmentManagementHTML(
                     $delegate->getVoucher(),
                     $delegate->order->get_status(),
                     $shipment_history ?? null
@@ -172,7 +170,7 @@ class WCBizCourierLogisticsShipmentManager extends WCBizCourierLogisticsManager
                  */
                 $items = array_map(
                     function ($item) {
-                        
+
                         if ($item['product']->is_type('variation')) {
                             /**
                              * The full and properly formatted variation title.
@@ -189,8 +187,7 @@ class WCBizCourierLogisticsShipmentManager extends WCBizCourierLogisticsManager
                              */
                             $url = get_site_url(
                                 '',
-                                (
-                                    '/wp-admin/post.php?post='
+                                ('/wp-admin/post.php?post='
                                     . (wc_get_product($item['product']->get_parent_id()))->get_id()
                                     . '&action=edit')
                             );
@@ -221,7 +218,7 @@ class WCBizCourierLogisticsShipmentManager extends WCBizCourierLogisticsManager
                 );
 
                 // Show complete shipment preparation view.
-                shipment_creation_html($items);
+                shipmentCreationHTML($items);
             }
         }
 
@@ -268,7 +265,7 @@ class WCBizCourierLogisticsShipmentManager extends WCBizCourierLogisticsManager
                 // Show the shipment's voucher.
                 $this->handleSynchronousRequest(function () use ($post_id) {
                     $shipment = new WCBizCourierLogisticsShipmentDelegate($post_id);
-                    order_column_voucher_html($shipment->getVoucher());
+                    shipmentVoucherColumnHTML($shipment->getVoucher());
                 });
                 break;
         }

@@ -1,9 +1,35 @@
 <?php
+/**
+ * The product-specific functionality of the plugin.
+ *
+ * @link       https://github.com/alexandrosraikos/wc-biz-courier-logistics
+ * @since      1.4.0
+ *
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/admin
+ */
 
+/**
+ * The product-specific functionality of the plugin.
+ *
+ * Defines all the shipment related functions used by hooks
+ * to display plugin views and handle jobs.
+ *
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/admin
+ * @author     Alexandros Raikos <alexandros@araikos.gr>
+ */
 class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
 {
+    /**
+     * Initialize the class and set its properties.
+     *
+     * @since    1.4.0
+     */
     public function __construct()
     {
+
+        // Require the Product Delegate.
         require_once(
             plugin_dir_path(
                 dirname(__FILE__)
@@ -11,6 +37,7 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
             . 'admin/class-wc-biz-courier-logistics-product-delegate.php'
         );
 
+        // Require the display functions.
         require_once(
             plugin_dir_path(
                 dirname(__FILE__)
@@ -32,6 +59,11 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
      *  All the functionality related to the Product Management WordPress interface.
      */
 
+    /**
+     * Add the
+     *
+     * @return void
+     */
     public function addSynchronizeAllButton(): void
     {
         global $current_screen;
