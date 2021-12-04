@@ -269,14 +269,12 @@ class WCBizCourierLogisticsShipmentManager extends WCBizCourierLogisticsManager
      */
     public function shipmentVoucherColumn($column, $post_id): void
     {
-        switch ($column) {
-            case 'biz-voucher':
-                // Show the shipment's voucher.
-                $this->handleSynchronousRequest(function () use ($post_id) {
-                    $shipment = new WCBizCourierLogisticsShipmentDelegate($post_id);
-                    shipmentVoucherColumnHTML($shipment->getVoucher());
-                });
-                break;
+        if ($column == 'biz_voucher') {
+            // Show the shipment's voucher.
+            $this->handleSynchronousRequest(function () use ($post_id) {
+                $shipment = new WCBizCourierLogisticsShipmentDelegate($post_id);
+                shipmentVoucherColumnHTML($shipment->getVoucher());
+            });
         }
     }
 

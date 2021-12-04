@@ -546,7 +546,7 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
         $current_order = $this->order;
 
         self::contactBizCourierAPI(
-            "http://www.bizcourier.eu/pegasus_cloud_app/service_01/loc_app/biz_add_act.php?wsdl",
+            "https://www.bizcourier.eu/pegasus_cloud_app/service_01/loc_app/biz_add_act.php?wsdl",
             "actionShipment",
             [
                 'voucher' => $this->getVoucher(),
