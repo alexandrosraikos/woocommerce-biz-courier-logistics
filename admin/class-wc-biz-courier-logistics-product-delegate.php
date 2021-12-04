@@ -17,7 +17,7 @@ DEFINE("BIZ_ENABLED_OPTION", '_biz_stock_sync');
 DEFINE("BIZ_SYNC_STATUS_OPTION", '_biz_stock_sync_status');
 
 
-class WCBizCourierLogisticsProductDelegate
+class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
 {
     /**
      * @var WC_Product $product The connected product.
@@ -43,14 +43,12 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * The core constructor method.
      *
+     * @since  1.4.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @param mixed $wc_product_id_sku A WC_Product, a product ID or an SKU.
-     *
      * @throws WCBizCourierLogisticsProductDelegateNotAllowedException
      *  NOTE: Use @see `::isPermitted()` to check before instantiating if unsure.
      * @throws WCBizCourierLogisticsRuntimeException
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
-     * @since  1.4.0
      */
     public function __construct(mixed $wc_product_id_sku)
     {
@@ -91,10 +89,10 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * Prohibit a product from being utilised by the delegate.
      *
-     * @throws WCBizCourierLogisticsRuntimeException
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @since  1.4.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @throws WCBizCourierLogisticsRuntimeException
+     * @return void
      */
     public function prohibit(): void
     {
@@ -124,17 +122,12 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * Get the Biz synchronization status of a product.
      *
+     * @since  1.0.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @param  bool $composite Whether to create a composite label using children's statuses as well.
      * @return array A tuple-like [`status`, `label`] of the resulting status.
-     *
-     * @uses   self::applyToChildren
-     * @uses   self::GetSynchronizationStatus
      * @throws WCBizCourierLogisticsUnsupportedValueException If the status value found is unsupported.
      * @throws WCBizCourierLogisticsProductDelegateNotAllowedException
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
-     * @since  1.0.0
-     *
      * @version 1.4.0
      */
     public function getSynchronizationStatus(bool $composite = false): array
@@ -170,15 +163,13 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * Set the synchronization status given a specific value.
      *
+     * @since  1.0.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @param string $status The status label to be set.
      *                       NOTE: Can be either `synced`, `not-synced`, `pending` or `disabled`.
-     *
+     * @return void
      * @throws WCBizCourierLogisticsUnsupportedValueException When the status label is invalid.
      * @throws WCBizCourierLogisticsProductDelegateNotAllowedException
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
-     * @since  1.0.0
-     *
      * @version 1.4.0
      */
     public function setSynchronizationStatus(string $status): void
@@ -194,9 +185,10 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * Reset the synchronization status of the product.
      *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @since  1.0.0
-     *
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @return void
+     * @throws WCBizCourierLogisticsProductDelegateNotAllowedException
      * @version 1.4.0
      */
     public function resetSynchronizationStatus(): void
@@ -213,13 +205,9 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * Synchronizes the stock levels of the products.
      *
-     * @param int|null $level The desired stock level, or leave null to fetch status from Biz.
-     *
-     * @uses self::fetch_stock_levels
-     * @uses self::applyToChildren
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @since  1.4.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @param int|null $level The desired stock level, or leave null to fetch status from Biz.
      */
     public function synchronizeStockLevels(int $level = null): void
     {
@@ -269,12 +257,9 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * Get the children delegates of a product.
      *
-     * @return array The array of children delegates.
-     *
-     * @uses self::isPermitted
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @since  1.4.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @return array The array of children delegates.
      */
     protected function getChildrenDelegates(): array
     {
@@ -297,10 +282,10 @@ class WCBizCourierLogisticsProductDelegate
      * Applies the selected method recursively to all
      * of the instantiated delegate's product's permitted children.
      *
-     * @param callable $method The desired callback.
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @since  1.4.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @param callable $method The desired callback.
+     * @return ?array
      */
     public function applyToChildren(callable $method): ?array
     {
@@ -316,12 +301,10 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * Allow a product to be utilised by the delegate.
      *
-     * @param WC_Product $product The product.
-     *
-     * @uses self::reset_synchronization_status
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @since  1.4.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @param WC_Product $product The product.
+     * @return void
      */
     public static function permit(WC_Product $product): void
     {
@@ -336,11 +319,9 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * Gets all SKUs of a product or its variants.
      *
-     * @param WC_Product $product A WooCommerce product.
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @since  1.0.0
-     *
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @param WC_Product $product A WooCommerce product.
      * @version 1.4.0
      */
     public static function getSKUGroup($product)
@@ -369,15 +350,12 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * Synchronizes the stock levels of permitted products.
      *
-     * @param array|bool $products An array of products, or `true` for all products.
-     *
-     * @uses self::fetch_stock_levels
-     * @uses self::synchronize_stock_levels
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @since  1.4.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @param array|bool $products An array of products, or `true` for all products.
+     * @return void
      */
-    public static function justSynchronizeAllStockLevels(array|bool $products = true): void
+    public static function justSynchronizeAllStockLevels($products = true): void
     {
         
         $stock_levels = self::fetchStockLevels();
@@ -424,9 +402,9 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * Resets the synchronization status of all permitted products.
      *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @since  1.2.0
-     *
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @return void
      * @version 1.4.0
      */
     public static function justResetAllSynchronizationStatus(): void
@@ -461,6 +439,14 @@ class WCBizCourierLogisticsProductDelegate
         }
     }
 
+    /**
+     * Do a throwing permissions check.
+     *
+     * @since  1.4.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @throws WCBizCourierLogisticsProductDelegateNotAllowedException
+     * @return void
+     */
     public function blockingPermissionsCheck(): void
     {
         if (!$this->permitted) {
@@ -473,11 +459,10 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * Check if the product has enabled Biz delegate access.
      *
+     * @since  1.4.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @param  WC_Product $product The connected product.
      * @return bool Whether it is permitted to manipulate warehouse data.
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
-     * @since  1.4.0
      */
     public static function isPermitted(WC_Product $product): bool
     {
@@ -507,17 +492,15 @@ class WCBizCourierLogisticsProductDelegate
     /**
      * Fetch the stock levels of all products.
      *
-     * @return array An array with an [`sku` => `level`] schema.
-     *
-     * @uses WC_Biz_Courier_Logistics::contactBizCourierAPI
-     *
-     * @author Alexandros Raikos <alexandros@araikos.gr>
      * @since  1.4.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @return array An array with an [`sku` => `level`] schema.
+     * @throws WCBizCourierLogisticsAPIError
      */
     protected static function fetchStockLevels(): array
     {
         // Fetch status and update stock.
-        $response = WC_Biz_Courier_Logistics::contactBizCourierAPI(
+        $response = self::contactBizCourierAPI(
             "https://www.bizcourier.eu/pegasus_cloud_app/service_01/prod_stock.php?wsdl",
             'prod_stock',
             [],

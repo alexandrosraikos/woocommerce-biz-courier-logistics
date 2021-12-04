@@ -1,25 +1,29 @@
 <?php
-
 /**
- * ------------
- * Product Management
- * ------------
- * This section provides the necessary markup for
- * managing products.
+ * The product-specific HTML templates of the plugin.
  *
+ * @link       https://github.com/alexandrosraikos/wc-biz-courier-logistics
+ * @since      1.0.0
+ *
+ * @package    WC_Biz_Courier_Logistics
+ * @subpackage WC_Biz_Courier_Logistics/admin/partials
  */
 
 /**
  * Print HTML button for stock synchronization.
  *
- * @author Alexandros Raikos <alexandros@araikos.gr>
  * @since 1.0.0
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @return void
  */
-function product_stock_synchronize_all_button_html()
+function synchronizeAllButtonHTML(): void
 {
     ?>
-    <button class="button button-primary wc-biz-courier-logistics" data-action="synchronize-stock" style="height:32px;">
-        <?php _e("Get stock levels", "wc-biz-courier-logistics") ?>
+    <button 
+        class="button button-primary wc-biz-courier-logistics" 
+        data-action="synchronize-stock" style="height:32px;"
+        >
+        <?= __("Get stock levels", "wc-biz-courier-logistics") ?>
     </button>
     <?php
 }
@@ -27,16 +31,14 @@ function product_stock_synchronize_all_button_html()
 /**
  * Print HTML column stock synchronization indicators.
  *
- *
+ * @since 1.0.0
+ * @author Alexandros Raikos <alexandros@araikos.gr>
  * @param string $status The status code.
  * @param string $label The corresponding status label.
- *
- * @author Alexandros Raikos <alexandros@araikos.gr>
- * @since 1.0.0
- *
  * @version 1.4.0
+ * @return string The HTML template for the status indicator.
  */
-function product_synchronization_status_indicator(string $status, string $label): string
+function delegateStatusIndicatorHTML(string $status, string $label): string
 {
     /** @var string $label The translated label. */
     $label = __($label, 'wc-biz-courier-logistics');
@@ -48,73 +50,104 @@ function product_synchronization_status_indicator(string $status, string $label)
     INDICATOR;
 }
 
-function product_management_html(array $status, string $sku, int $id, array $variations = null, bool $aggregated = false): void
-{
+/**
+ * Print the product management HTML.
+ *
+ * @since 1.4.0
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @param array $status The formatted product status.
+ * @param string $sku The product's SKU.
+ * @param integer $id The product's ID.
+ * @param array|null $variations The formatted variation information.
+ * @return void
+ */
+function productManagementHTML(
+    array $status,
+    string $sku,
+    int $id,
+    array $variations = null
+): void {
     ?>
-    <div id="wc-biz-courier-logistics-product-management" class="wc-biz-courier-logistics">
+    <div 
+        id="wc-biz-courier-logistics-product-management"
+        class="wc-biz-courier-logistics">
         <div class="status">
             <h4>
-            <?php
-            _e("Status", 'wc-biz-courier-logistics');
-            ?>
+            <?= __("Status", 'wc-biz-courier-logistics') ?>
             </h4>
-            <?php echo product_synchronization_status_indicator($status[0], $status[1]) ?>
-            <div class="sku"><?php echo $sku ?></div>
-            <button data-action="synchronize" data-product-id="<?php echo $id ?>" class="button button-primary">
-                <?php
-                _e("Synchronize", 'wc-biz-courier-logistics');
-                ?>
+            <?= delegateStatusIndicatorHTML($status[0], $status[1]) ?>
+            <div class="sku"><?= $sku ?></div>
+            <button 
+                data-action="synchronize" 
+                data-product-id="<?= $id ?>" 
+                class="button button-primary">
+                <?= __("Synchronize", 'wc-biz-courier-logistics') ?>
             </button>
-            <button data-action="prohibit" data-product-id="<?php echo $id ?>">
-                <?php
-                _e("Disable", 'wc-biz-courier-logistics');
-                ?>
+            <button 
+                data-action="prohibit" 
+                data-product-id="<?= $id ?>">
+                <?= __("Disable", 'wc-biz-courier-logistics') ?>
             </button>
         </div>
-            <?php
-            if (!empty($variations)) {
-                ?>
-            <div class="variations">
-                <h4>
-                    <?php
-                    _e("Variations", 'wc-biz-courier-logistics');
-                    ?>
-                </h4>
-                <ul>
-                    <?php
-                    foreach ($variations as $variation) {
-                        echo "<li class=\"" . ($variation['enabled'] ? 'enabled' : 'disabled') . "\">";
-                        echo '<div class="title">' . $variation['product_title'] . " - <span class=\"attribute\">" . $variation['title'] . '</span></div>';
-                        echo '<div class="sku">' . $variation['sku'] . '</div>';
-                        if ($variation['enabled']) {
-                            echo product_synchronization_status_indicator($variation['status'][0], $variation['status'][1]);
-                        }
+        <?php
+        if (!empty($variations)) {
+            ?>
+        <div class="variations">
+            <h4>
+                <?= __("Variations", 'wc-biz-courier-logistics') ?>
+            </h4>
+            <ul>
+                <?php
+                foreach ($variations as $variation) {
+                    ?> 
+                    <li class="<?= ($variation['enabled'] ? 'enabled' : 'disabled') ?>">
+                        <div class="title">
+                            <?= $variation['product_title'] ?> - 
+                            <span class="attribute">
+                                <?= $variation['title'] ?>
+                            </span>
+                        </div>
+                        <div class="sku">
+                            <?= $variation['sku'] ?>
+                        </div>
+                        <?=
+                            ($variation['enabled']) ?
+                            delegateStatusIndicatorHTML(
+                                $variation['status'][0],
+                                $variation['status'][1]
+                            )
+                            : ''
                         ?>
-                        <button data-action="<?php echo ($variation['enabled'] ? 'prohibit' : 'permit') ?>" data-product-id="<?php echo $variation['id'] ?>">
-                            <?php
-                            if ($variation['enabled']) {
-                                _e("Disable", "wc-biz-courier-logistics");
-                            } else {
-                                _e("Enable", "wc-biz-courier-logistics");
-                            }
+                        <button 
+                            data-action="<?= ($variation['enabled'] ? 'prohibit' : 'permit') ?>" 
+                            data-product-id="<?= $variation['id'] ?>">
+                            <?=
+                                ($variation['enabled']) ?
+                                __("Disable", "wc-biz-courier-logistics") :
+                                __("Enable", "wc-biz-courier-logistics")
                             ?>
                         </button>
-                        </li>
-                        <?php
-                        echo '</li>';
-                    }
-                    ?>
-                </ul>
-            </div>
-                <?php
-            }
-            ?>
+                    </li>
+                    <?php
+                }
+                ?>
+            </ul>
+        </div>
+        <?php } ?>
     </div>
-
-        <?php
+    <?php
 }
 
-function product_management_disabled_html(string $sku, int $id, string $error = null)
+/**
+ * Print the disabled product management HTML.
+ *
+ * @since 1.4.0
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @param int $id The product's ID.
+ * @param string $error Any errors to display.
+ * @return void
+ */
+function productManagementDisabledHTML(int $id, string $error = null)
 {
     if (!empty($error)) {
         notice_display_embedded_html($error);
@@ -129,12 +162,12 @@ function product_management_disabled_html(string $sku, int $id, string $error = 
             );
             ?>
             </p>
-            <button data-action="permit" data-product-id="<?php echo $id ?>" class="button button-primary">
+            <button data-action="permit" data-product-id="<?= $id ?>" class="button button-primary">
                 <?php
                 _e("Activate", 'wc-biz-courier-logistics');
                 ?>
             </button>
         </div>
-            <?php
+        <?php
     }
 }

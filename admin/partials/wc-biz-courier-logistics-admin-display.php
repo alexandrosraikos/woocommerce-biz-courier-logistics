@@ -22,11 +22,11 @@
 /**
  * Display a notice in native WP styling.
  *
+ * @since 1.4.0
+ * @author Alexandros Raikos <alexandros@araikos.gr>
  * @param string $message The message to be displayed.
  * @param string $type The type of notice (currently only `warning` and `error` supported).
- *
- * @author Alexandros Raikos <alexandros@araikos.gr>
- * @since 1.4.0
+ * @return void
  */
 function notice_display_html($message, $type = 'error'): void
 {
@@ -40,11 +40,11 @@ function notice_display_html($message, $type = 'error'): void
 /**
  * Embed a notice box.
  *
+ * @since 1.4.0
+ * @author Alexandros Raikos <alexandros@araikos.gr>
  * @param string $message The message to be displayed.
  * @param string? $type The type of notice (`warning`, `failure` & `success` supported).
- *
- * @author Alexandros Raikos <alexandros@araikos.gr>
- * @since 1.4.0
+ * @return void
  */
 function notice_display_embedded_html($message, $type = ""): void
 {
