@@ -59,7 +59,7 @@ function shipmentCreationHTML(?array $items): void
         <?php if (!empty($items)) { ?>
             <div class="item-list">
                 <h4>
-                    <?= _e("Warehouse items", 'wc-biz-courier-logistics') ?>
+                    <?= __("Warehouse items", 'wc-biz-courier-logistics') ?>
                 </h4>
                 <p>
                     <?=
@@ -113,7 +113,7 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
     ?>
     <div id="wc-biz-courier-logistics-shipment-management" class="wc-biz-courier-logistics">
         <div class="voucher">
-            <h4><?= _("Voucher number", 'wc-biz-courier-logistics') ?></h4>
+            <h4><?= __("Voucher number", 'wc-biz-courier-logistics') ?></h4>
             <div class="number">
                 <?= $voucher ?>
             </div>
@@ -131,10 +131,10 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
             }
             ?>
             <button data-action="edit">
-                <?= _e("Edit voucher", "wc-biz-courier-logistics") ?>
+                <?= __("Edit voucher", "wc-biz-courier-logistics") ?>
             </button>
             <button data-action="delete">
-                <?= _e("Delete voucher", "wc-biz-courier-logistics") ?>
+                <?= __("Delete voucher", "wc-biz-courier-logistics") ?>
             </button>
         </div>
         <?php
@@ -150,10 +150,10 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
                     if ($status == "processing") {
                         ?>
                         <button class="button" data-action="modify">
-                            <?= _e("Modify shipment", "wc-biz-courier-logistics") ?>
+                            <?= __("Modify shipment", "wc-biz-courier-logistics") ?>
                         </button>
                         <button class="button" data-action="cancel">
-                            <?= _e("Request shipment cancellation", "wc-biz-courier-logistics") ?>
+                            <?= __("Request shipment cancellation", "wc-biz-courier-logistics") ?>
                         </button>
                         <?php
                     } else {
@@ -167,7 +167,7 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
                         );
                         ?>
                         <button class="button button-primary" data-action="sync">
-                            <?= _e("Synchronize order status", "wc-biz-courier-logistics") ?>
+                            <?= __("Synchronize order status", "wc-biz-courier-logistics") ?>
                         </button>
                         <?php
                     }

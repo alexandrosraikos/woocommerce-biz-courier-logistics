@@ -222,6 +222,20 @@ class WC_Biz_Courier_Logistics
          * ----------------
          */
 
+        require_once(
+            plugin_dir_path(
+                dirname(__FILE__)
+            )
+            . 'admin/abstract-wc-biz-courier-logistics-manager.php'
+        );
+
+        require_once(
+            plugin_dir_path(
+                dirname(__FILE__)
+            )
+            . 'admin/class-wc-biz-courier-logistics-product-manager.php'
+        );
+
         $product_manager = new WCBizCourierLogisticsProductManager();
 
         /** Interface hooks */
@@ -307,6 +321,20 @@ class WC_Biz_Courier_Logistics
          * Shipment Management
          * ----------------
          */
+        
+        require_once(
+            plugin_dir_path(
+                dirname(__FILE__)
+            )
+            . 'admin/abstract-wc-biz-courier-logistics-manager.php'
+        );
+
+        require_once(
+            plugin_dir_path(
+                dirname(__FILE__)
+            )
+            . 'admin/class-wc-biz-courier-logistics-shipment-manager.php'
+        );
 
         $shipment_manager = new WCBizCourierLogisticsShipmentManager();
 

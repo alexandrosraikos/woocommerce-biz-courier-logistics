@@ -29,6 +29,15 @@ class WCBizCourierLogisticsShipmentManager extends WCBizCourierLogisticsManager
      */
     public function __construct()
     {
+        
+        // Require the Delegate.
+        require_once(
+            plugin_dir_path(
+                dirname(__FILE__)
+            )
+            . 'admin/abstract-wc-biz-courier-logistics-delegate.php'
+        );
+
         // Require the Shipment Delegate class.
         require_once(plugin_dir_path(
             dirname(__FILE__)
@@ -47,7 +56,7 @@ class WCBizCourierLogisticsShipmentManager extends WCBizCourierLogisticsManager
             plugin_dir_url(__FILE__) . 'js/wc-biz-courier-logistics-admin-shipment-creation.js',
             array(
                 'jquery',
-                $this->WC_Biz_Courier_Logistics
+                'wc-biz-courier-logistics'
             )
         );
 

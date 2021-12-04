@@ -13,8 +13,12 @@
  * @subpackage WC_Biz_Courier_Logistics/admin/partials
  */
 
-DEFINE("BIZ_ENABLED_OPTION", '_biz_stock_sync');
-DEFINE("BIZ_SYNC_STATUS_OPTION", '_biz_stock_sync_status');
+if (!defined('BIZ_ENABLED_OPTION')) {
+    DEFINE("BIZ_ENABLED_OPTION", '_biz_stock_sync');
+}
+if (!defined('BIZ_SYNC_STATUS_OPTION')) {
+    DEFINE("BIZ_SYNC_STATUS_OPTION", '_biz_stock_sync_status');
+}
 
 
 class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate

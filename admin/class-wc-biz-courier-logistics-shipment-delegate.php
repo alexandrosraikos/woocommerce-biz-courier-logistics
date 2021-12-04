@@ -9,6 +9,23 @@
  * @subpackage WC_Biz_Courier_Logistics/admin
  */
 
+if (!defined('BIZ_VOUCHER_KEY')) {
+    /**
+     * The associated query key for vouchers
+     * stored in orders.
+     * @var string
+     */
+    DEFINE('BIZ_VOUCHER_KEY', '_biz_voucher');
+}
+
+if (!defined('BIZ_DELIVERY_FAILURE_KEY')) {
+    /**
+     * The associated query key for delivery
+     * failure notes stored in orders.
+     * @var string
+     */
+    DEFINE('BIZ_DELIVERY_FAILURE_KEY', '_biz_failure_delivery_note');
+}
 /**
  * The shipment-specific interoperability interface of the plugin.
  *
@@ -50,20 +67,6 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
      */
     public function __construct(int $order_id)
     {
-        /**
-         * The associated query key for vouchers
-         * stored in orders.
-         * @var string
-         */
-        DEFINE('BIZ_VOUCHER_KEY', '_biz_voucher');
-
-        /**
-         * The associated query key for delivery
-         * failure notes stored in orders.
-         * @var string
-         */
-        DEFINE('BIZ_DELIVERY_FAILURE_KEY', '_biz_failure_delivery_note');
-
         // Get the current order.
         $this->order = wc_get_order($order_id);
 
