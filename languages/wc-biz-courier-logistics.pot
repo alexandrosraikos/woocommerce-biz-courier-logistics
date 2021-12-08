@@ -50,8 +50,16 @@ msgstr ""
 # Integration
 # ------
 # This section provides the necessary translations for initialising the custom Biz integration.
-msgctxt "SETTINGS_INTEGRATION_SETUP_INSTALLATION_ERROR"
+msgctxt "SETTINGS_INTEGRATION_SETUP_INSTALLATION_SOAP_ERROR"
 msgid "You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator."
+msgstr ""
+
+msgctxt "SETTINGS_INTEGRATION_SETUP_INSTALLATION_VERSION_ERROR"
+msgid "This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. Please update to %1$s %2$s or later."
+msgstr ""
+
+msgctxt "SETTINGS_INTEGRATION_SETUP_INSTALLATION_WOOCOMMERCE_ERROR"
+msgid "Biz Courier & Logistics for WooCommerce requires the WooCommerce plugin to be installed and enabled."
 msgstr ""
 
 msgctxt "SETTINGS_INTEGRATION_SETUP_PROMPT"
@@ -181,6 +189,34 @@ msgstr ""
 
 msgctxt "ALL_PRODUCTS_SYNC_BUTTON"
 msgid "Get stock levels"
+msgstr ""
+
+msgctxt "PRODUCT_STOCK_SYNCHRONIZATION_ALL_CONFIRMATION"
+msgid "Are you sure you would like to synchronize the stock levels of all the products in the catalogue with your Biz Warehouse?"
+msgstr ""
+
+msgctxt "PRODUCT_MANAGEMENT_STOCK_MANAGEMENT_CTA"
+msgid "Start using Biz Courier & Logistics for WooCommerce features with this product."
+msgstr ""
+
+msgctxt "PRODUCT_MANAGEMENT_STOCK_MANAGEMENT_ACTIVATION_BUTTON"
+msgid "Activate"
+msgstr ""
+
+msgctxt "PRODUCT_MANAGEMENT_STOCK_MANAGEMENT_NOTICE"
+msgid "You need to enable stock management for this product to activate Biz Courier & Logistics features."
+msgstr ""
+
+msgctxt "PRODUCT_MANAGEMENT_STATUS_LABEL"
+msgid "Status"
+msgstr ""
+
+msgctxt "PRODUCT_MANAGEMENT_VARIATIONS_LABEL"
+msgid "Variations"
+msgstr ""
+
+msgctxt "PRODUCT_STOCK_SYNCHRONIZATION_BUTTON"
+msgid "Synchronize"
 msgstr ""
 
 # Shipping Method
@@ -342,10 +378,11 @@ msgctxt "CHECKOUT_SHIPPING_OPTION_MORNING_DELIVERY"
 msgid "Morning delivery (until 10:30 a.m.)"
 msgstr ""
 
-# Order Status
+# Shipment Management
 # ------
 # This section provides the necessary translations for mapping, managing and displaying
 # WooCommerce orders and their status to Biz Courier Shipments.
+
 msgctxt "ALL_ORDERS_SHIPMENT_VOUCHER_COLUMN_TITLE"
 msgid "Biz shipment voucher"
 msgstr ""
@@ -360,6 +397,18 @@ msgstr ""
 
 msgctxt "ORDER_METABOX_SEND_SHIPMENT_BUTTON"
 msgid "Send shipment"
+msgstr ""
+
+msgctxt "SHIPMENT_SEND_CONFIRMATION_PROMPT"
+msgid "Are you sure you want to send this shipment?"
+msgstr ""
+
+msgctxt "SHIPMENT_CREATION_WAREHOUSE_SECTION_TITLE"
+msgid "Warehouse items"
+msgstr ""
+
+msgctxt "SHIPMENT_CREATION_WAREHOUSE_SECTION_DESCRIPTION"
+msgid "Any checked items below will be submitted to Biz. Make sure all the items in the order are enabled and found in the Biz Warehouse:"
 msgstr ""
 
 msgctxt "ORDER_METABOX_SEND_SHIPMENT_SUCCESS_ORDER_NOTE"
@@ -508,8 +557,26 @@ msgid "The newly connected shipment is pending delivery."
 msgstr ""
 
 # Error messages
+msgctxt "GENERIC_SOAPCLIENT_CONNECTION_ERROR"
+msgid "There was a connection issue while trying to contact the Biz Courier & Logistics API:"
+
+msgctxt "SHIPMENT_STATUS_DEFINITION_NOT_FOUND"
+msgid "The definition for the shipment status \"%s\" cannot be found."
+
+msgctxt "ORDER_METABOX_STATUS_HISTORY_FETCH_ERROR"
+msgid "Unable to fetch status history for this shipment."
+msgstr ""
+
 msgctxt "ORDER_EDIT_VOUCHER_NOT_FOUND_ERROR"
-msgid "This voucher was not found. Please provide a valid shipment voucher."
+msgid "The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher."
+msgstr ""
+
+msgctxt "SHIPMENT_VOUCHER_EXISTS_ERROR"
+msgid "The voucher \"%s\" is already in use by <a href=\"%s\">order #%d</a>."
+msgstr ""
+
+msgctxt "SHIPMENT_VOUCHER_EXISTS_MULTIPLE_ERROR"
+msgid "Using the voucher \"%s\" in multiple orders simultaneously is not supported."
 msgstr ""
 
 msgctxt "ORDER_MODIFY_SHIPMENT_VOUCHER_NOT_FOUND_ERROR"
@@ -525,11 +592,15 @@ msgid "An unknown Biz error occured while processing shipment modification infor
 msgstr ""
 
 msgctxt "ORDER_SEND_SHIPMENT_NO_PRODUCTS_ERROR"
-msgid "There are no products in this order."
+msgid "There are no items included in this order."
+msgstr ""
+
+msgctxt "SHIPMENT_SEND_NO_SUPPORTED_PRODUCTS_FOUND_ERROR"
+msgid "There are no Biz Warehouse items included in this order."
 msgstr ""
 
 msgctxt "ORDER_SEND_SHIPMENT_SKU_ERROR"
-msgid "Some products were not found in the Biz warehouse."
+msgid "Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability."
 msgstr ""
 
 msgctxt "ORDER_SEND_SHIPMENT_METRICS_ERROR"

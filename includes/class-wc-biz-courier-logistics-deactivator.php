@@ -32,8 +32,7 @@ class WC_Biz_Courier_Logistics_Deactivator
 	 */
 	public static function deactivate()
 	{	
-		require_once plugin_dir_path(__FILE__) . 'admin/partials/wc-biz-courier-logistics-admin-stock-synchronization.php';
-		// delete_option('woocommerce_biz_integration_settings');
-		reset_all_sync_status();
+		require_once plugin_dir_path(__FILE__) . 'admin/class-wc-biz-courier-logistics-product-delegate.php';
+		WC_Biz_Courier_Logistics_Product_Delegate::just_reset_all_synchronization_status();
 	}
 }

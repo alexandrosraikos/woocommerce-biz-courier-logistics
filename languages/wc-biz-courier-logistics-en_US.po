@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Biz Courier & Logistics for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.3.3\n"
+"Project-Id-Version: Biz Courier & Logistics for WooCommerce 1.4.0\n"
 "Report-Msgid-Bugs-To: Alexandros Raikos <alexandros@araikos.gr>\n"
 "PO-Revision-Date: 2021-09-16 18:46+0300\n"
 "MIME-Version: 1.0\n"
@@ -51,6 +51,15 @@ msgstr "Pending"
 # Integration
 # ------
 # This section provides the necessary translations for initialising the custom Biz integration.
+msgid "You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator."
+msgstr "You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator."
+
+msgid "This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. Please update to %1$s %2$s or later."
+msgstr "This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. Please update to %1$s %2$s or later."
+
+msgid "Biz Courier & Logistics for WooCommerce requires the WooCommerce plugin to be installed and enabled."
+msgstr "Biz Courier & Logistics for WooCommerce requires the WooCommerce plugin to be installed and enabled."
+
 msgid "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 msgstr "Please setup your Biz Courier credentials in <a href='%s'>WooCommerce Settings</a>."
 
@@ -148,6 +157,27 @@ msgstr "Disabled"
 
 msgid "Get stock levels"
 msgstr "Get stock levels"
+
+msgid "Are you sure you would like to synchronize the stock levels of all the products in the catalogue with your Biz Warehouse?"
+msgstr "Are you sure you would like to synchronize the stock levels of all the products in the catalogue with your Biz Warehouse?"
+
+msgid "Start using Biz Courier & Logistics for WooCommerce features with this product."
+msgstr "Start using Biz Courier & Logistics for WooCommerce features with this product."
+
+msgid "Activate"
+msgstr "Activate"
+
+msgid "You need to enable stock management for this product to activate Biz Courier & Logistics features."
+msgstr "You need to enable stock management for this product to activate Biz Courier & Logistics features."
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Variations"
+msgstr "Variations"
+
+msgid "Synchronize"
+msgstr "Synchronize"
 
 # Shipping Method
 # ------
@@ -270,10 +300,11 @@ msgstr "Simple delivery"
 msgid "Morning delivery (until 10:30 a.m.)"
 msgstr "Morning delivery (until 10:30 a.m.)"
 
-# Order Status
+# Shipment Management
 # ------
 # This section provides the necessary translations for mapping, managing and displaying
 # WooCommerce orders and their status to Biz Courier Shipments.
+
 msgid "Biz shipment voucher"
 msgstr "Biz shipment voucher"
 
@@ -285,6 +316,15 @@ msgstr "This order has not shipped with Biz."
 
 msgid "Send shipment"
 msgstr "Send shipment"
+
+msgid "Are you sure you want to send this shipment?"
+msgstr "Are you sure you want to send this shipment?"
+
+msgid "Warehouse items"
+msgstr "Warehouse items"
+
+msgid "Any checked items below will be submitted to Biz. Make sure all the items in the order are enabled and found in the Biz Warehouse:"
+msgstr "Any checked items below will be submitted to Biz. Make sure all the items in the order are enabled and found in the Biz Warehouse:"
 
 msgid "The shipment was successfully registered to Biz Courier."
 msgstr "The shipment was successfully registered to Biz Courier."
@@ -396,8 +436,23 @@ msgid "The newly connected shipment is pending delivery."
 msgstr "The newly connected shipment is pending delivery."
 
 # Error messages
-msgid "This voucher was not found. Please provide a valid shipment voucher."
-msgstr "This voucher was not found. Please provide a valid shipment voucher."
+msgid "There was a connection issue while trying to contact the Biz Courier & Logistics API:"
+msgstr "There was a connection issue while trying to contact the Biz Courier & Logistics API:"
+
+msgid "The definition for the shipment status \"%s\" cannot be found."
+msgstr "The definition for the shipment status \"%s\" cannot be found."
+
+msgid "Unable to fetch status history for this shipment."
+msgstr "Unable to fetch status history for this shipment."
+
+msgid "The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher."
+msgstr "The voucher \"%s\" is not registered with Biz. Please provide a valid shipment voucher."
+
+msgid "The voucher \"%s\" is already in use by <a href=\"%s\">order #%d</a>."
+msgstr "The voucher \"%s\" is already in use by <a href=\"%s\">order #%d</a>."
+
+msgid "Using the voucher \"%s\" in multiple orders simultaneously is not supported."
+msgstr "Using the voucher \"%s\" in multiple orders simultaneously is not supported."
 
 msgid "The voucher number couldn't be retrieved."
 msgstr "The voucher number couldn't be retrieved."
@@ -408,11 +463,14 @@ msgstr "An unknown error occured while processing shipment modification informat
 msgid "An unknown Biz error occured while processing shipment modification information."
 msgstr "An unknown Biz error occured while processing shipment modification information."
 
-msgid "There are no products in this order."
-msgstr "There are no products in this order."
+msgid "There are no items included in this order."
+msgstr "There are no items included in this order."
 
-msgid "Some products were not found in the Biz warehouse."
-msgstr "Some products were not found in the Biz warehouse."
+msgid "There are no Biz Warehouse items included in this order."
+msgstr "There are no Biz Warehouse items included in this order."
+
+msgid "Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability."
+msgstr "Some products were not found in the Biz warehouse. Try going to the All Products page and clicking on \"Get stock levels\" to update their Biz availability."
 
 msgid "Please make sure all products in the order have their weight & dimensions registered."
 msgstr "Please make sure all products in the order have their weight & dimensions registered."

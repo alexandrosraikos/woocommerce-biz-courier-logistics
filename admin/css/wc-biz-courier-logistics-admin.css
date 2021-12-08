@@ -1,219 +1,688 @@
 /**
- * All of the CSS for your admin-specific functionality should be
- * included in this file.
+ * All of the CSS for the admin-specific functionality.
+ * 
+ * ====
+ * Table of Contents
+ * =====
+ *
+ *  1. Global
+ *   1.1. Variables
+ *   1.2. Elements
+ *
+ *  2. Notifications
+ *
+ *  3. Product Management
+ *   3.1. Generic
+ *   3.2. Synchronization Indicator
+ *
+ *  4. Shipments
+ *   4.1. Generic
+ *   4.2. Compatible Items
+ *   4.3. Voucher
+ *   4.4. Actions
+ *   4.5. History
+ *
+ * =====
+ *
+ * @author Alexandros Raikos <alexandros@araikos.gr>
+ * @since 1.0.0
+ *
+ * @version 1.4.0
  */
 
 /**
-    * 	Integration
-    * 	------------
-    *  This section provides the necessary styling for initialising the custom Biz integration.
-    * 
-    */
+* ------------
+* Global
+* ------------
+* This section provides generic styling
+* for Biz Courier & Logistics for WooCommerce.
+*
+*/
 
-div.biz-notice {
-  font-weight: bold;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  padding-top: 10px !important;
-  padding-bottom: 10px !important;
+/**
+*
+* Variables
+* ---------
+*/
+:root {
+  /**
+  * Colors
+  */
+
+  /* Element colors */
+  --disabled-color: rgba(140, 140, 140, 0.3);
+  --biz-courier-logistics-primary-color: rgb(3, 92, 194);
+
+  /* Notification foreground colors */
+  --foreground-color-notice: rgb(3, 92, 194);
+  --foreground-color-success: #7ad03a;
+  --foreground-color-failure: #a44;
+  --foreground-color-warning: rgb(194, 117, 3);
+
+  /* Notification background colors */
+  --background-color-notice: #daf0ff;
+  --background-color-success: #daffdd;
+  --background-color-failure: #ffdada;
+  --background-color-warning: #fffdda;
+
+  /**
+  * Properties
+  */
+
+  --thin-border: 1px solid rgba(140, 140, 140, 0.15);
 }
 
 /**
-    * 	Stock Synchronisation
-    * 	------------
-    *  This section provides all the styling related to syncing stock 
-    * 	between the WooCommerce store and the items in the connected warehouse.
-    * 
-    */
+*
+* Elements
+* ---------
+*/
 
-.column-biz_sync {
-  width: 10ch;
+.wc-biz-courier-logistics button:hover {
+  /* Other */
+  cursor: pointer;
 }
 
-.biz_sync-indicator::before {
-  content: "";
+.wc-biz-courier-logistics button:disabled {
+  /* Display & Box Model */
+  background-color: transparent;
+  border-color: var(--disabled-color);
+
+  /* Other */
+  color: var(--disabled-color);
+}
+
+/**
+* ------------
+* Notifications
+* ---------
+* This section provides styling for
+* notification boxes, either displayed
+* dynamically using jQuery, or statically
+* echoed by PHP.
+*/
+
+/**
+* The notice box.
+*/
+.wc-biz-courier-logistics-notice {
+  /* Display & Box Model */
+  margin: 10px 0;
+  padding: 7px !important;
+  background-color: var(--background-color-notice);
+  border-radius: 5px;
+
+  /* Other */
+  color: var(--foreground-color-notice);
+  font-size: 10px;
+  font-weight: bold;
+}
+
+/**
+* The warning notice box.
+*/
+.wc-biz-courier-logistics-notice.warning {
+  /* Display & Box Model */
+  background-color: var(--background-color-warning);
+
+  /* Other */
+  color: var(--foreground-color-warning);
+}
+
+/**
+* The error notice box.
+*/
+.wc-biz-courier-logistics-notice.failure {
+  /* Display & Box Model */
+  background-color: var(--background-color-failure);
+
+  /* Other */
+  color: var(--foreground-color-failure);
+}
+
+/**
+* The success notice box.
+*/
+.wc-biz-courier-logistics-notice.success {
+  /* Display & Box Model */
+  background-color: var(--background-color-success);
+
+  /* Other */
+  color: var(--foreground-color-success);
+}
+
+/**
+* ------------
+* Product Management
+* ------------
+* This section provides styling rules
+* for product management related views.
+*
+*/
+
+/**
+*
+* Generic
+* ------------
+* This section provides styling rules
+* for generic native interface elements.
+*/
+
+/**
+*
+* Synchronization Indicator
+* -------
+*/
+
+/**
+* The synchronization indicator light.
+*/
+.wc-biz-courier-logistics .synchronization-indicator::before {
+  /*  Display & Box Model */
   display: inline-block;
   height: 10px;
   width: 10px;
   margin-right: 5px;
-  background-color: rgb(3, 92, 194);
+  background-color: var(--foreground-color-notice);
   border-radius: 20px;
+
+  /* Other */
+  content: "";
 }
 
-.biz_sync-indicator.synced::before {
+/** Status: Synchronized */
+.wc-biz-courier-logistics .synchronization-indicator.synced::before {
+  /*  Display & Box Model */
   background-color: #7ad03a;
 }
 
-.biz_sync-indicator.not-synced::before {
+/** Status: Not Synchronized */
+.wc-biz-courier-logistics .synchronization-indicator.not-synced::before {
+  /*  Display & Box Model */
   background-color: #a44;
 }
 
-.biz_sync-indicator.partial::before {
+/** Status: Partially Synchronized */
+.wc-biz-courier-logistics .synchronization-indicator.partial::before {
+  /*  Display & Box Model */
   background-color: rgb(194, 117, 3);
 }
 
-.biz_sync-indicator.disabled::before {
+/** Status: Disabled */
+.wc-biz-courier-logistics .synchronization-indicator.disabled::before {
+  /*  Display & Box Model */
   background-color: gray;
 }
 
-.biz_sync-indicator-container {
-  margin: 0 0 12px 12px;
-}
+/**
+* The extended indicator is simply a wrapper
+* containing a title and the indicator itself.
+*/
+.wc-biz-courier-logistics.extended-synchronization-indicator {
+  /*  Display & Box Model */
+  display: flex;
 
-.biz_sync-indicator-title {
-  display: inline-block;
-  width: 150px;
-  margin-right: 0 !important;
-}
-
-.biz_sync-indicator-title,
-.biz_sync-variation-indicator-title {
+  /* Other */
   font-weight: bold;
-  margin-right: 7px;
-  float: left;
-}
-
-button.biz-loading {
-  opacity: 1;
-  cursor: unset;
 }
 
 /**
-	 * 	Order Status 
-	 * 	------------
-	 *  This section provides the necessary styling for displaying
-	 * 	Biz Courier shipment status.
-	 * 
-	 */
+* Add some spacing between the label and the
+* indicator light.
+*/
+.wc-biz-courier-logistics.extended-synchronization-indicator > span {
+  /*  Display & Box Model */
+  margin-right: 7px;
+}
 
-.biz-voucher a,
-.biz-voucher span {
+/**
+* Add the default product inventory panel label spacing
+* and some more spacing.
+*/
+#inventory_product_data.panel
+  .wc-biz-courier-logistics.extended-synchronization-indicator {
+  /*  Display & Box Model */
+  margin: 0 0 12px calc(150px + 12px);
+}
+
+/**
+* Synchronization status column.
+* ---------
+*/
+
+/**
+* The default generated column.
+*/
+.column-biz_sync {
+  /*  Display & Box Model */
+  width: 10ch;
+}
+
+/**
+*
+* Metabox
+* ------------
+* This section provides styling rules
+* for generic native interface elements.
+*/
+
+/**
+* Add a top-bottom margin to all container children.
+*/
+#wc-biz-courier-logistics-product-management > div:not(:last-of-type) {
+  /* Display & Box Model */
+  padding-bottom: 7px;
+  margin: 10px 0;
+  border-bottom: var(--thin-border);
+}
+
+#wc-biz-courier-logistics-product-management > div > h4 {
+  /* Display & Box Model */
+  margin: 10px 0;
+
+  /* Other */
+  font-size: 16px;
+}
+
+#wc-biz-courier-logistics-product-management .sku {
+  /* Display & Box Model */
+  margin: 10px 0;
+  padding: 5px 10px;
+  background-color: var(--background-color-notice);
+  border-radius: 8px;
+
+  /* Other */
+  text-align: center;
+  font-size: 20px;
   font-weight: bold;
   font-family: monospace;
 }
 
-ul#wc-biz-courier-logistics-metabox .biz-error {
-  font-size: 10px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  background: #ffdada;
+#wc-biz-courier-logistics-product-management .synchronization-indicator {
+  /* Other */
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
-ul#wc-biz-courier-logistics-metabox .biz-notice {
-  font-size: 10px;
-  padding: 5px 10px;
-  font-weight: normal;
-  border-radius: 5px;
-  margin: 0 0 10px 0;
-  background: #daf0ff;
+#wc-biz-courier-logistics-product-management
+  > .status
+  .synchronization-indicator {
+  /* Other */
+  font-size: 20px;
 }
 
-ul#wc-biz-courier-logistics-metabox .biz-warning {
-  font-size: 10px;
-  padding: 5px 10px;
-  font-weight: normal;
-  border-radius: 5px;
-  margin: 0 0 10px 0;
-  background: #fffdda;
+#wc-biz-courier-logistics-product-management
+  > .status
+  .synchronization-indicator::before {
+  /* Display & Box Model */
+  height: 14px;
+  width: 14px;
 }
 
-ul#wc-biz-courier-logistics-metabox .biz-success {
-  font-size: 10px;
-  padding: 5px 10px;
-  font-weight: normal;
-  border-radius: 5px;
-  margin: 0 0 10px 0;
-  background: #daffdd;
-}
-
-ul#wc-biz-courier-logistics-metabox > li {
-  margin: 10px 0;
-}
-
-#biz-shipment-actions-title {
-  margin-bottom: 8px;
-}
-
-#biz-cancel-shipment.button {
-  border-color: var(--wc-red);
-  color: var(--wc-red);
-}
-
-#biz-add-shipment-voucher {
-  margin-top: 10px;
-}
-
-#biz-edit-shipment-voucher,
-#biz-delete-shipment-voucher {
+#wc-biz-courier-logistics-product-management
+  .variations
+  button[data-action="permit"] {
+  /* Display & Box Model */
+  display: block;
   border: none;
-  padding: 0;
   background: none;
-  text-decoration: underline;
-}
+  padding: 0;
+  margin: 6px 0;
 
-#biz-edit-shipment-voucher {
+  /* Other */
+  text-decoration: underline;
   color: var(--wp-admin-theme-color);
 }
 
-#biz-delete-shipment-voucher {
+#wc-biz-courier-logistics-product-management button[data-action="prohibit"] {
+  /* Display & Box Model */
+  display: block;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 6px 0;
+
+  /* Other */
+  text-decoration: underline;
   color: var(--wc-red);
 }
 
-#biz-edit-shipment-voucher:hover,
-#biz-delete-shipment-voucher:hover {
-  cursor: pointer;
-}
-
-#biz-edit-shipment-voucher.loading,
-#biz-delete-shipment-voucher.loading,
-#biz-add-shipment-voucher.loading {
-  pointer-events: none;
-  border: rgb(240, 240, 240);
-  color: rgb(240, 240, 240);
-}
-
-.biz-voucher div {
-  font-weight: bold;
-  font-size: 24px;
-  font-family: monospace;
-  margin: 5px 0;
-}
-
-.biz-shipment-partner .tracking-number {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-#biz-shipment-status-history {
+#wc-biz-courier-logistics-product-management > .variations > ul {
+  border: var(--thin-border);
+  border-radius: 8px;
+  padding: 10px;
   max-height: 300px;
   overflow-y: auto;
 }
 
-ul.biz-shipment-status {
+#wc-biz-courier-logistics-product-management
+  > .variations
+  > ul
+  > li:not(:last-of-type) {
+  /* Display & Box Model */
+  padding-bottom: 7px;
+  margin: 10px 0;
+  border-bottom: var(--thin-border);
+}
+
+#wc-biz-courier-logistics-product-management > .variations > ul > li > .title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#wc-biz-courier-logistics-product-management
+  > .variations
+  > ul
+  > li
+  > .title
+  > .attribute {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: var(--background-color-warning);
+}
+
+#wc-biz-courier-logistics-product-management > .variations > ul > li > .sku {
+  display: inline-block;
+  font-size: 14px;
+}
+
+/**
+* ------------
+* Shipment Management
+* ------------
+* This section provides the necessary styling for
+* shipment management.
+*/
+
+/**
+*
+* Generic
+* ------------
+* This section provides generic styling rules
+* for the shipment management meta box.
+*/
+
+/**
+* Add a top-bottom margin to all container children.
+*/
+#wc-biz-courier-logistics-shipment-management > div:not(:last-of-type) {
+  /* Display & Box Model */
+  padding-bottom: 7px;
+  margin: 10px 0;
+  border-bottom: var(--thin-border);
+}
+
+#wc-biz-courier-logistics-shipment-management > div > h4 {
+  /* Display & Box Model */
+  margin: 7px 0 10px 0;
+  padding-bottom: 7px;
+
+  /* Other */
+  font-size: 16px;
+}
+
+#wc-biz-courier-logistics-shipment-management > div > h5 {
+  /* Display & Box Model */
+  margin: 0;
+
+  /* Other */
+  font-size: 14px;
+}
+
+/**
+* Compatible Items
+* ------------
+* This subsection provides the necessary
+* styles for the compatible items list.
+*/
+
+#wc-biz-courier-logistics-shipment-management > .item-list ul {
+  /* Display & Box Model */
+  padding-left: 4px;
+}
+
+#wc-biz-courier-logistics-shipment-management > .item-list a {
+  /* Display & Box Model */
+  display: flex;
+  align-items: center;
+
+  /* Other */
+  font-weight: bold;
+}
+
+#wc-biz-courier-logistics-shipment-management > .item-list a > svg {
+  /* Display & Box Model */
+  display: block;
+  float: left;
+  margin-bottom: -1px;
+  width: 16px;
+  height: auto;
+  margin-right: 6px;
+}
+
+#wc-biz-courier-logistics-shipment-management > .item-list a.compatible > svg {
+  /* Other */
+  fill: var(--foreground-color-success);
+}
+
+#wc-biz-courier-logistics-shipment-management
+  > .item-list
+  a.incompatible
+  > svg {
+  /* Other */
+  fill: var(--foreground-color-failure);
+}
+
+/**
+* 
+* Voucher
+* ------------
+* This section provides the necessary styling for
+* the voucher section.
+*/
+
+/**
+* Emphasize the voucher number.
+*/
+#wc-biz-courier-logistics-shipment-management > .voucher > .number {
+  /* Display & Box Model */
+  margin-bottom: 10px;
+
+  /* Other */
+  font-size: 24px;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+/**
+* Emphasize the partner tracking number subtly.
+*/
+#wc-biz-courier-logistics-shipment-management > .voucher > .partner-number {
+  /* Display & Box Model */
+  margin-bottom: 6px;
+
+  /* Other */
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 18px;
+}
+
+/**
+* Add underlining to voucher management buttons.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .voucher
+  > button[data-action="edit"],
+#wc-biz-courier-logistics-shipment-management
+  > .voucher
+  > button[data-action="delete"] {
+  /* Display & Box Model */
+  border: none;
+  padding: 0;
+  background: none;
+
+  /* Other */
+  text-decoration: underline;
+}
+
+/**
+* Add native WordPress Admin theme 
+* color to editing button.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .voucher
+  > button[data-action="edit"] {
+  /* Other */
+  color: var(--wp-admin-theme-color);
+}
+
+/**
+* Add native WooCommerce destructive 
+* action color to delete button.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .voucher
+  > button[data-action="delete"] {
+  /* Other */
+  color: var(--wc-red);
+}
+
+/**
+* 
+* Actions
+* ------------
+* This section provides the necessary styling for
+* the shipment actions.
+*/
+
+/**
+* Add an extra bottom margin to all action buttons.
+*/
+#wc-biz-courier-logistics-shipment-management > .actions > button {
+  /* Display & Box Model */
+  margin-bottom: 10px;
+}
+
+/**
+* Use native WooCommerce red styling for the "Cancel" button
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .actions
+  > button[data-action="cancel"] {
+  /* Display & Box Model */
+  border-color: var(--wc-red);
+
+  /* Other */
+  color: var(--wc-red);
+}
+
+/**
+* 
+* History
+* ------------
+* This section provides the necessary styling for
+* the status history section.
+*/
+
+/**
+* Constrain the status list height.
+*/
+#wc-biz-courier-logistics-shipment-management > .history > .status-list {
+  /* Display & Box Model */
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/**
+* Style each status container in the list.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status {
+  /* Display & Box Model */
   padding: 10px;
-  border-left: 1px solid rgb(3, 92, 194);
+  border-left: 3px solid var(--biz-courier-logistics-primary-color);
   border-bottom: 1px solid rgb(240, 240, 240);
   margin: 0;
 }
 
-.biz-shipment-status .status-level,
-.biz-shipment-status .actions .title {
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status:first-of-type {
+  border-top: 1px solid rgb(240, 240, 240);
+}
+
+/**
+* Discreetly show status level and action descriptions.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status
+  > .level,
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status
+  > .actions
+  > .title {
+  /* Display & Box Model */
+  margin-bottom: 3px;
+
+  /* Other */
   font-size: 8px;
   opacity: 0.8;
-  margin-bottom: 3px;
   text-transform: uppercase;
 }
 
-.biz-shipment-status .status-description,
+/**
+* Emphasize status descriptions.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status
+  > .description,
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status
+  > .actions
+  > .description,
 .biz-shipment-status .actions .action-description {
+  /* Other */
   font-weight: bold;
 }
 
-.biz-shipment-status .status-description {
+/**
+* Make description text smaller and prevent default margins.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status
+  > .description {
+  /* Display & Box Model */
+  margin: 5px 0;
+
+  /* Other */
   font-size: 14px;
 }
 
-.biz-shipment-status .status-description svg {
+/**
+* Resize final status `svg`.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status
+  > .description
+  > svg {
+  /* Display & Box Model */
   width: 14px;
   height: 14px;
   display: inline-block;
@@ -221,41 +690,91 @@ ul.biz-shipment-status {
   margin-left: 6px;
 }
 
-.biz-shipment-status.completed .status-description svg path {
+/**
+* Fill in green when completed.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status.completed
+  > .description
+  > svg
+  path {
+  /* Other */
   fill: var(--wc-green);
 }
 
-.biz-shipment-status.cancelled .status-description svg path {
+/**
+* Fill in orange when cancelled.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status.cancelled
+  > .description
+  > svg
+  path {
+  /* Other */
   fill: var(--wc-orange);
 }
 
-.biz-shipment-status.failed .status-description svg path {
+/**
+* Fill in red when failed.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status.failed
+  > .description
+  > svg
+  path {
+  /* Other */
   fill: var(--wc-red);
 }
 
-.biz-shipment-status .status-comments {
+/**
+* Style status comments.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status
+  > .comments {
+  /* Other */
   font-family: monospace;
   font-size: 10px;
 }
 
-.biz-shipment-status .actions {
-  background-color: rgb(240, 240, 240);
-  border-radius: 7px;
+/**
+* Visually separate subsequent status actions.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status
+  > .actions {
+  /* Display & Box Model */
   margin: 10px 0;
   padding: 10px;
+  background-color: rgb(240, 240, 240);
+  border-radius: 7px;
 }
 
-.biz-shipment-status .status-date,
-.biz-shipment-status .actions .action-date {
+/**
+* Make status dates discreet.
+*/
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status
+  > .date,
+#wc-biz-courier-logistics-shipment-management
+  > .history
+  > .status-list
+  > .status
+  > .actions
+  > .date {
+  /* Other */
   font-size: 12px;
   opacity: 0.8;
-}
-
-.biz-shipment-status.error {
-  font-weight: bold;
-  color: #a44;
-}
-
-.biz-shipment-modification button {
-  margin: 0 5px 5px 0 !important;
 }
