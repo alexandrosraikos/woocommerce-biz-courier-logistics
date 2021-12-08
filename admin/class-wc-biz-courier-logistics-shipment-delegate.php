@@ -603,6 +603,9 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
          * @var array
          */
         $status_definitions = get_option('wc_biz_courier_logistics_status_definitions');
+        if ($status_definitions === false) {
+            $status_definitions = [];
+        }
 
         // Examine criteria and refresh definitions from the API.
         if ($force_refresh || count($status_definitions) < 3) {
