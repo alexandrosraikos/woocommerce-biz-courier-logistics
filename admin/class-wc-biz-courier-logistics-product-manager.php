@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The product-specific functionality of the plugin.
  *
@@ -28,28 +29,25 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
      */
     public function __construct()
     {
-        
+
         // Require the Delegate.
-        require_once(
-            plugin_dir_path(
-                dirname(__FILE__)
-            )
+        require_once(plugin_dir_path(
+            dirname(__FILE__)
+        )
             . 'admin/abstract-wc-biz-courier-logistics-delegate.php'
         );
 
         // Require the Product Delegate.
-        require_once(
-            plugin_dir_path(
-                dirname(__FILE__)
-            )
+        require_once(plugin_dir_path(
+            dirname(__FILE__)
+        )
             . 'admin/class-wc-biz-courier-logistics-product-delegate.php'
         );
 
         // Require the display functions.
-        require_once(
-            plugin_dir_path(
-                dirname(__FILE__)
-            )
+        require_once(plugin_dir_path(
+            dirname(__FILE__)
+        )
             . 'admin/partials/wc-biz-courier-logistics-admin-product-display.php'
         );
 
@@ -60,7 +58,7 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
             array(
                 'jquery',
                 'wc-biz-courier-logistics'
-                )
+            )
         );
     }
 
@@ -89,14 +87,13 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
 
         wp_enqueue_script('wc-biz-courier-logistics-product-management');
         wp_localize_script('wc-biz-courier-logistics-product-management', "StockProperties", array(
-            
+
             // Value properties.
             "bizStockSynchronizationNonce" => wp_create_nonce('product_stock_synchronization_all'),
 
             // Label properties.
             "PRODUCT_STOCK_SYNCHRONIZATION_ALL_CONFIRMATION" => __(
-                "Are you sure you would like to synchronize the stock levels
-                of all the products in the catalogue with your Biz Warehouse?",
+                "Are you sure you would like to synchronize the stock levels of all the products in the catalogue with your Biz Warehouse?",
                 'wc-biz-courier-logistics'
             )
         ));
@@ -187,9 +184,9 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
         // Prepare scripts
         wp_enqueue_script('wc-biz-courier-logistics-product-management');
         wp_localize_script('wc-biz-courier-logistics-product-management', "ProductProperties", array(
-        "bizProductPermitNonce" => wp_create_nonce('product_permit'),
-        "bizProductProhibitNonce" => wp_create_nonce('product_prohibit'),
-        "bizProductSynchronizeNonce" => wp_create_nonce('product_synchronize'),
+            "bizProductPermitNonce" => wp_create_nonce('product_permit'),
+            "bizProductProhibitNonce" => wp_create_nonce('product_prohibit'),
+            "bizProductSynchronizeNonce" => wp_create_nonce('product_synchronize'),
         ));
 
         /**
@@ -254,8 +251,8 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
                             'id' => $child_id,
                             'sku' => $sku,
                             'status' => $permitted ?
-                            (new WCBizCourierLogisticsProductDelegate($child))->getSynchronizationStatus()
-                            : null
+                                (new WCBizCourierLogisticsProductDelegate($child))->getSynchronizationStatus()
+                                : null
                         ];
                     },
                     $product->get_children()
@@ -266,12 +263,11 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
             productManagementDisabledHTML(
                 $product->get_id(),
                 $product->managing_stock() ?
-                __(
-                    "You need to enable stock management for this product 
-                            to activate Biz Courier & Logistics features.",
-                    'wc-biz-courier-logistics'
-                )
-                : ''
+                    __(
+                        "You need to enable stock management for this product to activate Biz Courier & Logistics features.",
+                        'wc-biz-courier-logistics'
+                    )
+                    : ''
             );
         }
     }
@@ -283,15 +279,15 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
      *  All the functionality related to the Product Management handlers.
      */
 
-     /**
-      * Handle an SKU change on product save.
-      *
-      * @since 1.2.0
-      * @author Alexandros Raikos <alexandros@araikos.gr>
-      * @param int $post_id The associated post ID.
-      * @return void
-      * @version 1.4.0
-      */
+    /**
+     * Handle an SKU change on product save.
+     *
+     * @since 1.2.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @param int $post_id The associated post ID.
+     * @return void
+     * @version 1.4.0
+     */
     public function handleProductSKUChange($post_id)
     {
         /**
@@ -301,23 +297,24 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
         $product = wc_get_product($post_id);
 
         // Check for SKU change.
-        if ($_POST['_sku'] != wc_get_product($post_id)->get_sku() &&
-        WCBizCourierLogisticsProductDelegate::isPermitted($product)
+        if (
+            $_POST['_sku'] != wc_get_product($post_id)->get_sku() &&
+            WCBizCourierLogisticsProductDelegate::isPermitted($product)
         ) {
             $delegate = new WCBizCourierLogisticsProductDelegate($product);
             $delegate->setSynchronizationStatus('pending');
         }
     }
 
-     /**
-      * Handle an SKU change on product variation save.
-      *
-      * @since 1.2.0
-      * @author Alexandros Raikos <alexandros@araikos.gr>
-      * @param int $variation_id The associated variation ID.
-      * @return void
-      * @version 1.4.0
-      */
+    /**
+     * Handle an SKU change on product variation save.
+     *
+     * @since 1.2.0
+     * @author Alexandros Raikos <alexandros@araikos.gr>
+     * @param int $variation_id The associated variation ID.
+     * @return void
+     * @version 1.4.0
+     */
     public function handleVariationSKUChange($variation_id)
     {
         /**

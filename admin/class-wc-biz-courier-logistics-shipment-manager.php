@@ -29,12 +29,11 @@ class WCBizCourierLogisticsShipmentManager extends WCBizCourierLogisticsManager
      */
     public function __construct()
     {
-        
+
         // Require the Delegate.
-        require_once(
-            plugin_dir_path(
-                dirname(__FILE__)
-            )
+        require_once(plugin_dir_path(
+            dirname(__FILE__)
+        )
             . 'admin/abstract-wc-biz-courier-logistics-delegate.php'
         );
 
@@ -108,8 +107,7 @@ class WCBizCourierLogisticsShipmentManager extends WCBizCourierLogisticsManager
 
                     // Label properties.
                     "CANCELLATION_REQUEST_CONFIRMATION" => __(
-                        "Are you sure you want to request the cancellation of this Biz shipment?
-                        If you want to send it again, you will receive a new tracking code.",
+                        "Are you sure you want to request the cancellation of this Biz shipment? If you want to send it again, you will receive a new tracking code.",
                         "wc-biz-courier-logistics"
                     ),
                     "MODIFICATION_REQUEST_PROMPT" => __(
@@ -269,7 +267,7 @@ class WCBizCourierLogisticsShipmentManager extends WCBizCourierLogisticsManager
      */
     public function shipmentVoucherColumn($column, $post_id): void
     {
-        if ($column == 'biz_voucher') {
+        if ($column == 'biz-voucher') {
             // Show the shipment's voucher.
             $this->handleSynchronousRequest(function () use ($post_id) {
                 $shipment = new WCBizCourierLogisticsShipmentDelegate($post_id);

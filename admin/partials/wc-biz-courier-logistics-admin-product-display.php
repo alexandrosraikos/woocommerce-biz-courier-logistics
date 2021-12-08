@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The product-specific HTML templates of the plugin.
  *
@@ -18,14 +19,11 @@
  */
 function synchronizeAllButtonHTML(): void
 {
-    ?>
-    <button 
-        class="button button-primary wc-biz-courier-logistics" 
-        data-action="synchronize-stock" style="height:32px;"
-        >
+?>
+    <button class="button button-primary wc-biz-courier-logistics" data-action="synchronize-stock" style="height:32px;">
         <?= __("Get stock levels", "wc-biz-courier-logistics") ?>
     </button>
-    <?php
+<?php
 }
 
 /**
@@ -67,72 +65,63 @@ function productManagementHTML(
     int $id,
     array $variations = null
 ): void {
-    ?>
-    <div 
-        id="wc-biz-courier-logistics-product-management"
-        class="wc-biz-courier-logistics">
+?>
+    <div id="wc-biz-courier-logistics-product-management" class="wc-biz-courier-logistics">
         <div class="status">
             <h4>
-            <?= __("Status", 'wc-biz-courier-logistics') ?>
+                <?= __("Status", 'wc-biz-courier-logistics') ?>
             </h4>
             <?= delegateStatusIndicatorHTML($status[0], $status[1]) ?>
             <div class="sku"><?= $sku ?></div>
-            <button 
-                data-action="synchronize" 
-                data-product-id="<?= $id ?>" 
-                class="button button-primary">
+            <button data-action="synchronize" data-product-id="<?= $id ?>" class="button button-primary">
                 <?= __("Synchronize", 'wc-biz-courier-logistics') ?>
             </button>
-            <button 
-                data-action="prohibit" 
-                data-product-id="<?= $id ?>">
+            <button data-action="prohibit" data-product-id="<?= $id ?>">
                 <?= __("Disable", 'wc-biz-courier-logistics') ?>
             </button>
         </div>
         <?php
         if (!empty($variations)) {
-            ?>
-        <div class="variations">
-            <h4>
-                <?= __("Variations", 'wc-biz-courier-logistics') ?>
-            </h4>
-            <ul>
-                <?php
-                foreach ($variations as $variation) {
-                    ?> 
-                    <li class="<?= ($variation['enabled'] ? 'enabled' : 'disabled') ?>">
-                        <div class="title">
-                            <?= $variation['product_title'] ?> - 
-                            <span class="attribute">
-                                <?= $variation['title'] ?>
-                            </span>
-                        </div>
-                        <div class="sku">
-                            <?= $variation['sku'] ?>
-                        </div>
-                        <?=
-                            ($variation['enabled']) ?
-                            delegateStatusIndicatorHTML(
-                                $variation['status'][0],
-                                $variation['status'][1]
-                            )
-                            : ''
-                        ?>
-                        <button 
-                            data-action="<?= ($variation['enabled'] ? 'prohibit' : 'permit') ?>" 
-                            data-product-id="<?= $variation['id'] ?>">
-                            <?=
-                                ($variation['enabled']) ?
-                                __("Disable", "wc-biz-courier-logistics") :
-                                __("Enable", "wc-biz-courier-logistics")
-                            ?>
-                        </button>
-                    </li>
+        ?>
+            <div class="variations">
+                <h4>
+                    <?= __("Variations", 'wc-biz-courier-logistics') ?>
+                </h4>
+                <ul>
                     <?php
-                }
-                ?>
-            </ul>
-        </div>
+                    foreach ($variations as $variation) {
+                    ?>
+                        <li class="<?= ($variation['enabled'] ? 'enabled' : 'disabled') ?>">
+                            <div class="title">
+                                <?= $variation['product_title'] ?> -
+                                <span class="attribute">
+                                    <?= $variation['title'] ?>
+                                </span>
+                            </div>
+                            <div class="sku">
+                                <?= $variation['sku'] ?>
+                            </div>
+                            <?=
+                            ($variation['enabled']) ?
+                                delegateStatusIndicatorHTML(
+                                    $variation['status'][0],
+                                    $variation['status'][1]
+                                )
+                                : ''
+                            ?>
+                            <button data-action="<?= ($variation['enabled'] ? 'prohibit' : 'permit') ?>" data-product-id="<?= $variation['id'] ?>">
+                                <?=
+                                ($variation['enabled']) ?
+                                    __("Disable", "wc-biz-courier-logistics") :
+                                    __("Enable", "wc-biz-courier-logistics")
+                                ?>
+                            </button>
+                        </li>
+                    <?php
+                    }
+                    ?>
+                </ul>
+            </div>
         <?php } ?>
     </div>
     <?php
@@ -152,15 +141,15 @@ function productManagementDisabledHTML(int $id, string $error = null)
     if (!empty($error)) {
         notice_display_embedded_html($error);
     } else {
-        ?>
+    ?>
         <div id="wc-biz-courier-logistics-product-management" class="wc-biz-courier-logistics">
             <p>
-            <?php
-            _e(
-                "Start using Biz Courier & Logistics for WooCommerce features with this product.",
-                'wc-biz-courier-logistics'
-            );
-            ?>
+                <?php
+                _e(
+                    "Start using Biz Courier & Logistics for WooCommerce features with this product.",
+                    'wc-biz-courier-logistics'
+                );
+                ?>
             </p>
             <button data-action="permit" data-product-id="<?= $id ?>" class="button button-primary">
                 <?php
@@ -168,6 +157,6 @@ function productManagementDisabledHTML(int $id, string $error = null)
                 ?>
             </button>
         </div>
-        <?php
+<?php
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The exception for missing product delegate permissions.
  *
@@ -16,9 +17,7 @@ class WCBizCourierLogisticsProductDelegateNotAllowedException extends Exception
                     'wc-biz-courier-logistics'
                 ),
                 $product_title
-            ),
-            0,
-            null
+            )
         );
     }
 }
@@ -40,9 +39,7 @@ class WCBizCourierLogisticsUnsupportedValueException extends Exception
                     'wc-biz-courier-logistics'
                 ),
                 $value
-            ),
-            0,
-            null
+            )
         );
     }
 }
@@ -64,9 +61,7 @@ class WCBizCourierLogisticsAPIError extends Exception
                     'wc-biz-courier-logistics'
                 ),
                 $error
-            ),
-            0,
-            null
+            )
         );
     }
 }
@@ -83,9 +78,7 @@ class WCBizCourierLogisticsRuntimeException extends Exception
     public function __construct(string $message)
     {
         parent::__construct(
-            $message,
-            0,
-            null
+            $message
         );
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The shipment-specific interoperability interface of the plugin.
  *
@@ -133,8 +134,7 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
                 } else {
                     throw new WCBizCourierLogisticsAPIError(
                         __(
-                            "Response from Biz could not be read, please check your 
-							warehouse shipments from the official application.",
+                            "Response from Biz could not be read, please check your warehouse shipments from the official application.",
                             'wc-biz-courier-logistics'
                         )
                     );
@@ -150,32 +150,28 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
             case 3:
                 throw new WCBizCourierLogisticsAPIError(
                     __(
-                        "There was a problem registering recipient information with Biz.
-						Please check your recipient information entries.",
+                        "There was a problem registering recipient information with Biz. Please check your recipient information entries.",
                         'wc-biz-courier-logistics'
                     )
                 );
             case 4:
                 throw new WCBizCourierLogisticsAPIError(
                     __(
-                        "There was a problem registering the recipient's area code with Biz.
-						Please check your recipient information entries.",
+                        "There was a problem registering the recipient's area code with Biz. Please check your recipient information entries.",
                         'wc-biz-courier-logistics'
                     )
                 );
             case 5:
                 throw new WCBizCourierLogisticsAPIError(
                     __(
-                        "There was a problem registering the recipient's area with Biz.
-						Please check your recipient information entries.",
+                        "There was a problem registering the recipient's area with Biz. Please check your recipient information entries.",
                         'wc-biz-courier-logistics'
                     )
                 );
             case 6:
                 throw new WCBizCourierLogisticsAPIError(
                     __(
-                        "There was a problem registering the recipient's phone number with Biz.
-						Please check your recipient information entries.",
+                        "There was a problem registering the recipient's phone number with Biz. Please check your recipient information entries.",
                         'wc-biz-courier-logistics'
                     )
                 );
@@ -203,16 +199,14 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
             case 10:
                 throw new WCBizCourierLogisticsAPIError(
                     __(
-                        "There was a problem registering the recipient's postal code with Biz.
-						Please fill in all required recipient information entries.",
+                        "There was a problem registering the recipient's postal code with Biz. Please fill in all required recipient information entries.",
                         'wc-biz-courier-logistics'
                     )
                 );
             case 11:
                 throw new WCBizCourierLogisticsAPIError(
                     __(
-                        "There was a problem registering the recipient's postal code with Biz.
-						Please check your recipient information entries.",
+                        "There was a problem registering the recipient's postal code with Biz. Please check your recipient information entries.",
                         'wc-biz-courier-logistics'
                     )
                 );
@@ -388,7 +382,8 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
 
             // Assign conclusion label on final status.
             if ($status_definition['level'] == 'Final') {
-                if ($status_code == 'ΠΡΔ' ||
+                if (
+                    $status_code == 'ΠΡΔ' ||
                     $status_code == 'COD' ||
                     $status_code == 'OK'
                 ) {
@@ -753,7 +748,7 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
          * @var string[]
          */
         $shipment_products = [];
-        
+
         // Assign items to shipment products with "sku:quantity" formatting.
         foreach ($items as $item) {
             $shipment_products[] = $item['product']->get_sku() . ":" . $item['self']->get_quantity();
@@ -791,7 +786,8 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
         $comments = "";
 
         // Include Saturday delivery in comment.
-        if (str_contains($this->order->get_shipping_method(), "Σαββάτου") ||
+        if (
+            str_contains($this->order->get_shipping_method(), "Σαββάτου") ||
             str_contains($this->order->get_shipping_method(), "Saturday")
         ) {
             $comments .= "[SATURDAY DELIVERY] ";
@@ -814,7 +810,8 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
             : "";
 
         // Check for required recipient information.
-        if (empty($this->order->get_shipping_first_name()) ||
+        if (
+            empty($this->order->get_shipping_first_name()) ||
             empty($this->order->get_shipping_last_name()) ||
             empty($this->order->get_shipping_address_1()) ||
             empty($this->order->get_shipping_country()) ||
@@ -824,10 +821,7 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
         ) {
             throw new WCBizCourierLogisticsRuntimeException(
                 __(
-                    "There was a problem with the recipient's information.
-					Make sure you have filled in all the necessary fields:
-					First name, last name, phone number, e-mail address, 
-					address line #1, city, postal code and country.",
+                    "There was a problem with the recipient's information. Make sure you have filled in all the necessary fields: First name, last name, phone number, e-mail address, address line #1, city, postal code and country.",
                     'wc-biz-courier-logistics'
                 )
             );
@@ -930,12 +924,11 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
         /**
          * The delivery failure note.
          */
-        $failure_delivery_note = (
-            end($report)['level-description']
+        $failure_delivery_note = (end($report)['level-description']
             . __('Other comments:', 'wc-biz-courier-logistics')
             . '\n'
         );
-        
+
         // Add statuses.
         foreach (array_reverse($report) as $status) {
             $failure_delivery_note .= ($status['date'] . '-' . $status['time']) . ':\n'
@@ -1021,7 +1014,8 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
 
         // Sum all packages' dimensions.
         foreach ($items as $item) {
-            if (!empty($item['product']->get_width()) &&
+            if (
+                !empty($item['product']->get_width()) &&
                 !empty($item['product']->get_height()) &&
                 !empty($item['product']->get_length()) &&
                 !empty($item['product']->get_weight())

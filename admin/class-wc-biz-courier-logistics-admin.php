@@ -53,15 +53,14 @@ class WCBizCourierLogisticsAdmin
         $this->version = $version;
 
         // Require the main display module.
-        require_once(
-            plugin_dir_path(
-                dirname(__FILE__)
-            )
+        require_once(plugin_dir_path(
+            dirname(__FILE__)
+        )
             . 'admin/partials/wc-biz-courier-logistics-admin-display.php'
         );
     }
 
-    
+
     /**
      * Check the minimum technical requirements for the plugin's installation environment.
      *
@@ -78,8 +77,7 @@ class WCBizCourierLogisticsAdmin
         define(
             'BIZ_COURIER_MINIMUM_REQUIREMENT_NOTICE',
             __(
-                'This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. 
-                Please update to %1$s %2$s or later.',
+                'This version of %1$s is not supported by Biz Courier & Logistics for WooCommerce. Please update to %1$s %2$s or later.',
                 'wc-biz-courier-logistics'
             )
         );
@@ -99,9 +97,7 @@ class WCBizCourierLogisticsAdmin
         if (!extension_loaded('soap')) {
             notice_display_html(
                 __(
-                    "You need to enable the soap extension in your PHP installation 
-                    in order to use Biz Courier & Logistics features.
-                    Please contact your server administrator.",
+                    "You need to enable the soap extension in your PHP installation in order to use Biz Courier & Logistics features. Please contact your server administrator.",
                     "wc-biz-courier-logistics"
                 )
             );
@@ -123,8 +119,7 @@ class WCBizCourierLogisticsAdmin
         if (!class_exists('WooCommerce')) {
             notice_display_html(
                 __(
-                    "Biz Courier & Logistics for WooCommerce requires the 
-                    WooCommerce plugin to be installed and enabled.",
+                    "Biz Courier & Logistics for WooCommerce requires the WooCommerce plugin to be installed and enabled.",
                     'wc-biz-courier-logistics'
                 )
             );
@@ -138,7 +133,7 @@ class WCBizCourierLogisticsAdmin
              * @var string
              */
             $minimum_wc_version = '5.6.0';
-            
+
             if (version_compare(constant('WC_VERSION'), $minimum_wc_version) < 0) {
                 notice_display_html(
                     sprintf(BIZ_COURIER_MINIMUM_REQUIREMENT_NOTICE, 'WooCommerce', $minimum_wc_version)
@@ -248,8 +243,8 @@ class WCBizCourierLogisticsAdmin
         // Return an array expanded with the settings hyperlink.
         return array_merge(array(
             '<a href="' . esc_url(BIZ_INTEGRATION_SETTINGS_URI) . '">'
-            . __('Settings', 'wc-biz-courier-logistics')
-            . '</a>'
+                . __('Settings', 'wc-biz-courier-logistics')
+                . '</a>'
         ), $actions);
     }
 
@@ -266,22 +261,19 @@ class WCBizCourierLogisticsAdmin
     {
         if (strpos($file, 'wc-biz-courier-logistics.php')) {
             // Add GitHub Sponsors link.
-            $links[] = (
-                '<a href="https://github.com/sponsors/alexandrosraikos" target="blank">'
+            $links[] = ('<a href="https://github.com/sponsors/alexandrosraikos" target="blank">'
                 . __('Donate via GitHub Sponsors', 'wc-biz-courier-logistics')
                 . '</a>'
             );
 
             // Add documentation link.
-            $links[] = (
-                "<a href=\"https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/blob/main/README.md\" 
+            $links[] = ("<a href=\"https://github.com/alexandrosraikos/woocommerce-biz-courier-logistics/blob/main/README.md\" 
                 target=\"blank\">"
                 . __('Documentation', 'wc-biz-courier-logistics') . '</a>'
             );
 
             // Add support link.
-            $links[] = (
-                '<a href="https://www.araikos.gr/en/contact/" target="blank">'
+            $links[] = ('<a href="https://www.araikos.gr/en/contact/" target="blank">'
                 . __('Support', 'wc-biz-courier-logistics')
                 . '</a>'
             );
@@ -350,14 +342,15 @@ class WCBizCourierLogisticsAdmin
 
         // Handle undesirable credentials state outside the Biz Integration tab.
         if (is_admin() && !$in_biz_tab) {
-            
+
             /**
              * The saved Biz Integration settings.
              * @var array
              */
             $biz_settings = get_option('woocommerce_biz_integration_settings');
 
-            if ($biz_settings['account_number'] == null ||
+            if (
+                $biz_settings['account_number'] == null ||
                 $biz_settings['warehouse_crm'] == null ||
                 $biz_settings['username'] == null ||
                 $biz_settings['password'] == null
@@ -396,8 +389,7 @@ class WCBizCourierLogisticsAdmin
     {
         // Import the Biz Shipping Method class.
         if (!class_exists('Biz_Shipping_Method')) {
-            require_once(
-                plugin_dir_path(dirname(__FILE__))
+            require_once(plugin_dir_path(dirname(__FILE__))
                 . 'admin/class-wc-biz-courier-logistics-shipping-method.php'
             );
         }
