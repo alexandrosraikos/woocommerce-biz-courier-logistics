@@ -669,10 +669,8 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
                     $product = wc_get_product($item['variation_id']);
                 }
 
-                if (WCBizCourierLogisticsProductDelegate::isPermitted($product)) {
-                    $delegate = new WCBizCourierLogisticsProductDelegate($product);
-                    $compatible = ($delegate->getSynchronizationStatus()[0] == 'synced');
-                }
+                $compatible = (WCBizCourierLogisticsProductDelegate::getSynchronizationStatus($product)[0] == 'synced');
+
                 return [
                     'self' => $item,
                     'product' => $product,

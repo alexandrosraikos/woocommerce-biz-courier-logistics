@@ -34,7 +34,7 @@ class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
     protected bool $permitted;
 
     /**
-     * @var bool $status_labels The `code` => `label` valid status labels for synchronization status.
+     * @var array $status_labels The `code` => `label` valid status labels for synchronization status.
      */
     protected static array $status_labels = [
         'synced' => "Found",
@@ -54,7 +54,7 @@ class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
      *  NOTE: Use @see `::isPermitted()` to check before instantiating if unsure.
      * @throws WCBizCourierLogisticsRuntimeException
      */
-    public function __construct(mixed $wc_product_id_sku)
+    public function __construct($wc_product_id_sku)
     {
         // Retrieve the WC_Product.
         if (is_a($wc_product_id_sku, 'WC_Product')) {
@@ -134,20 +134,21 @@ class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
      * @throws WCBizCourierLogisticsProductDelegateNotAllowedException
      * @version 1.4.0
      */
-    public function getSynchronizationStatus(bool $composite = false): array
+    public static function getSynchronizationStatus(WC_Product $product, bool $composite = false): array
     {
-        $this->blockingPermissionsCheck();
-        $status = get_post_meta($this->product->get_id(), BIZ_SYNC_STATUS_OPTION, true);
+        $status = get_post_meta($product->get_id(), BIZ_SYNC_STATUS_OPTION, true);
         $status = !empty($status) ? $status : 'disabled';
+        $status = $product->managing_stock() ? $status : 'disabled';
 
         // Calculate composite label, if preferred.
         if ($composite && $status != 'pending') {
             // Get composite status label from all children.
-            $this->applyToChildren(
+            self::applyToChildren(
+                $product,
                 function ($child) use (&$status) {
-                    $child_status = $child->GetSynchronizationStatus()[0];
+                    $child_status = self::GetSynchronizationStatus($child->product)[0];
                     if (($status == 'synced' && $child_status == 'not-synced') ||
-                    ($status == 'not-synced' && $child_status == 'synced')
+                        ($status == 'not-synced' && $child_status == 'synced')
                     ) {
                         $status = 'partial';
                     } elseif ($status == 'disabled' || $child_status == 'pending') {
@@ -238,9 +239,10 @@ class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
             } else {
                 $this->SetSynchronizationStatus('not-synced');
             }
-                
+
             // Repeat for all children.
-            $this->applyToChildren(
+            self::applyToChildren(
+                $this->product,
                 function ($child) use ($stock_levels) {
                     $sku = $child->product->get_sku();
                     if (array_key_exists($sku, $stock_levels)) {
@@ -265,7 +267,7 @@ class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
      * @author Alexandros Raikos <alexandros@araikos.gr>
      * @return array The array of children delegates.
      */
-    protected function getChildrenDelegates(): array
+    public static function getChildrenDelegates($product): array
     {
         return array_map(
             function ($child_id) {
@@ -274,7 +276,7 @@ class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
             },
             // Only permitted children.
             array_filter(
-                $this->product->get_children(),
+                $product->get_children(),
                 function ($child_id) {
                     return self::isPermitted(wc_get_product($child_id));
                 }
@@ -291,10 +293,10 @@ class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
      * @param callable $method The desired callback.
      * @return ?array
      */
-    public function applyToChildren(callable $method): ?array
+    public static function applyToChildren(WC_Product $product, callable $method): ?array
     {
 
-        $delegates = $this->getChildrenDelegates($this->product);
+        $delegates = self::getChildrenDelegates($product);
         $result = [];
         foreach ($delegates as $delegate) {
             $result[] = $method($delegate);
@@ -361,14 +363,14 @@ class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
      */
     public static function justSynchronizeAllStockLevels($products = true): void
     {
-        
+
         $stock_levels = self::fetchStockLevels();
 
         // Retrieve all products.
         if ($products === true) {
             $products = wc_get_products(
                 array(
-                'limit' => -1,
+                    'limit' => -1,
                 )
             );
         }
@@ -385,21 +387,22 @@ class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
                 } else {
                     $delegate->SetSynchronizationStatus('not-synced');
                 }
-                
-                // Apply for active children too.
-                $delegate->applyToChildren(
-                    function ($child_delegate) use ($stock_levels) {
-                        if (array_key_exists($child_delegate->product->get_sku(), $stock_levels)) {
-                            $child_delegate->synchronizeStockLevels(
-                                $stock_levels[$child_delegate->product->get_sku()]
-                            );
-                            $child_delegate->SetSynchronizationStatus('synced');
-                        } else {
-                            $child_delegate->SetSynchronizationStatus('not-synced');
-                        }
-                    }
-                );
             }
+
+            // Apply for active children too.
+            self::applyToChildren(
+                $product,
+                function ($child_delegate) use ($stock_levels) {
+                    if (array_key_exists($child_delegate->product->get_sku(), $stock_levels)) {
+                        $child_delegate->synchronizeStockLevels(
+                            $stock_levels[$child_delegate->product->get_sku()]
+                        );
+                        $child_delegate->SetSynchronizationStatus('synced');
+                    } else {
+                        $child_delegate->SetSynchronizationStatus('not-synced');
+                    }
+                }
+            );
         }
     }
 
@@ -416,7 +419,7 @@ class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
         // Get all products.
         $products = wc_get_products(
             array(
-            'posts_per_page' => -1
+                'posts_per_page' => -1
             )
         );
 
@@ -430,8 +433,8 @@ class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
         // Get all variations.
         $variations = wc_get_products(
             array(
-            'posts_per_page' => -1,
-            'type' => 'variation'
+                'posts_per_page' => -1,
+                'type' => 'variation'
             )
         );
 
@@ -472,14 +475,11 @@ class WCBizCourierLogisticsProductDelegate extends WCBizCourierLogisticsDelegate
     {
         if ($product->managing_stock()) {
             // Get standalone permission.
-            if (!empty(
-                get_post_meta(
-                    $product->get_id(),
-                    BIZ_ENABLED_OPTION,
-                    true
-                )
-            )
-            ) {
+            if (!empty(get_post_meta(
+                $product->get_id(),
+                BIZ_ENABLED_OPTION,
+                true
+            ))) {
                 return get_post_meta(
                     $product->get_id(),
                     BIZ_ENABLED_OPTION,

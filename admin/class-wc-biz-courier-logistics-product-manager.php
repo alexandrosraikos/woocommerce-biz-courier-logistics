@@ -134,10 +134,7 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
         if ($column_name == 'biz_sync') {
             $this->handleSynchronousRequest(function () use ($product_post_id) {
                 $product = wc_get_product($product_post_id);
-                if (WCBizCourierLogisticsProductDelegate::isPermitted($product)) {
-                    $delegate = new WCBizCourierLogisticsProductDelegate($product);
-                    $status = $delegate->getSynchronizationStatus(true);
-                }
+                $status = WCBizCourierLogisticsProductDelegate::getSynchronizationStatus($product, true);
                 echo delegateStatusIndicatorHTML($status[0] ?? 'disabled', $status[1] ?? 'Disabled');
             });
         }
@@ -196,15 +193,10 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
         $product = wc_get_product($post->ID);
 
         if (WCBizCourierLogisticsProductDelegate::isPermitted($product) && $product->managing_stock()) {
-            /**
-             * The product's Biz Courier delegate.
-             * @var WCBizCourierLogisticsProductDelegate
-             */
-            $delegate = new WCBizCourierLogisticsProductDelegate($product);
 
             // Print HTML.
             productManagementHTML(
-                $delegate->getSynchronizationStatus(true),
+                WCBizCourierLogisticsProductDelegate::getSynchronizationStatus($product, true),
                 $product->get_sku(),
                 $product->get_id(),
                 $product->is_type('variable') ? array_map(
@@ -251,7 +243,7 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
                             'id' => $child_id,
                             'sku' => $sku,
                             'status' => $permitted ?
-                                (new WCBizCourierLogisticsProductDelegate($child))->getSynchronizationStatus()
+                                WCBizCourierLogisticsProductDelegate::getSynchronizationStatus($child)
                                 : null
                         ];
                     },
@@ -262,12 +254,62 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
             // Print disabled HTML.
             productManagementDisabledHTML(
                 $product->get_id(),
-                $product->managing_stock() ?
+                $product->is_type('variable') ? array_map(
+                    function ($child_id) use ($product) {
+                        /**
+                         * The child product.
+                         * @var WC_Product
+                         */
+                        $child = wc_get_product($child_id);
+
+                        /**
+                         * The formatted product title.
+                         * @var string
+                         */
+                        $product_title = $product->get_title();
+
+                        /**
+                         * The formatted variation title.
+                         * @var string
+                         */
+                        $title = wc_get_formatted_variation(
+                            new WC_Product_Variation($child),
+                            true,
+                            false
+                        );
+
+                        /**
+                         * The child's SKU.
+                         * @var string
+                         */
+                        $sku = $child->get_sku();
+
+                        /**
+                         * The child's delegate permission status.
+                         * @var bool
+                         */
+                        $permitted = WCBizCourierLogisticsProductDelegate::isPermitted($child);
+
+                        // Return formatted children array.
+                        return [
+                            'enabled' => $permitted,
+                            'product_title' => $product_title,
+                            'title' => $title,
+                            'id' => $child_id,
+                            'sku' => $sku,
+                            'status' => $permitted ?
+                                WCBizCourierLogisticsProductDelegate::getSynchronizationStatus($child)
+                                : null
+                        ];
+                    },
+                    $product->get_children()
+                ) : null,
+                !$product->managing_stock() ?
                     __(
                         "You need to enable stock management for this product to activate Biz Courier & Logistics features.",
                         'wc-biz-courier-logistics'
                     )
-                    : ''
+                    : '',
             );
         }
     }
@@ -378,8 +420,18 @@ class WCBizCourierLogisticsProductManager extends WCBizCourierLogisticsManager
     public function handleProductSynchronization(): void
     {
         $this->handleAJAXRequest(function ($data) {
-            $delegate = new WCBizCourierLogisticsProductDelegate($data['product_id']);
-            $delegate->synchronizeStockLevels();
+            $product = wc_get_product($data['product_id']);
+            if (WCBizCourierLogisticsProductDelegate::isPermitted($product)) {
+                $delegate = new WCBizCourierLogisticsProductDelegate($data['product_id']);
+                $delegate->synchronizeStockLevels();
+            } else {
+                WCBizCourierLogisticsProductDelegate::applyToChildren(
+                    $product,
+                    function ($child_delegate) {
+                        $child_delegate->synchronizeStockLevels();
+                    }
+                );
+            }
         });
     }
 

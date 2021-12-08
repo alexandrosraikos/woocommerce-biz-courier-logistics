@@ -48,6 +48,56 @@ function delegateStatusIndicatorHTML(string $status, string $label): string
     INDICATOR;
 }
 
+function productVariationManagementHTML(array $variations = null)
+{
+?>
+
+    <?php
+    if (!empty($variations)) {
+    ?>
+        <div class="variations">
+            <h4>
+                <?= __("Variations", 'wc-biz-courier-logistics') ?>
+            </h4>
+            <ul>
+                <?php
+                foreach ($variations as $variation) {
+                ?>
+                    <li class="<?= ($variation['enabled'] ? 'enabled' : 'disabled') ?>">
+                        <div class="title">
+                            <?= $variation['product_title'] ?> -
+                            <span class="attribute">
+                                <?= $variation['title'] ?>
+                            </span>
+                        </div>
+                        <div class="sku">
+                            <?= $variation['sku'] ?>
+                        </div>
+                        <?=
+                        ($variation['enabled']) ?
+                            delegateStatusIndicatorHTML(
+                                $variation['status'][0],
+                                $variation['status'][1]
+                            )
+                            : ''
+                        ?>
+                        <button data-action="<?= ($variation['enabled'] ? 'prohibit' : 'permit') ?>" data-product-id="<?= $variation['id'] ?>">
+                            <?=
+                            ($variation['enabled']) ?
+                                __("Disable", "wc-biz-courier-logistics") :
+                                __("Enable", "wc-biz-courier-logistics")
+                            ?>
+                        </button>
+                    </li>
+                <?php
+                }
+                ?>
+            </ul>
+        </div>
+    <?php } ?>
+<?php
+}
+
 /**
  * Print the product management HTML.
  *
@@ -80,51 +130,9 @@ function productManagementHTML(
                 <?= __("Disable", 'wc-biz-courier-logistics') ?>
             </button>
         </div>
-        <?php
-        if (!empty($variations)) {
-        ?>
-            <div class="variations">
-                <h4>
-                    <?= __("Variations", 'wc-biz-courier-logistics') ?>
-                </h4>
-                <ul>
-                    <?php
-                    foreach ($variations as $variation) {
-                    ?>
-                        <li class="<?= ($variation['enabled'] ? 'enabled' : 'disabled') ?>">
-                            <div class="title">
-                                <?= $variation['product_title'] ?> -
-                                <span class="attribute">
-                                    <?= $variation['title'] ?>
-                                </span>
-                            </div>
-                            <div class="sku">
-                                <?= $variation['sku'] ?>
-                            </div>
-                            <?=
-                            ($variation['enabled']) ?
-                                delegateStatusIndicatorHTML(
-                                    $variation['status'][0],
-                                    $variation['status'][1]
-                                )
-                                : ''
-                            ?>
-                            <button data-action="<?= ($variation['enabled'] ? 'prohibit' : 'permit') ?>" data-product-id="<?= $variation['id'] ?>">
-                                <?=
-                                ($variation['enabled']) ?
-                                    __("Disable", "wc-biz-courier-logistics") :
-                                    __("Enable", "wc-biz-courier-logistics")
-                                ?>
-                            </button>
-                        </li>
-                    <?php
-                    }
-                    ?>
-                </ul>
-            </div>
-        <?php } ?>
+        <?php productVariationManagementHTML($variations) ?>
     </div>
-    <?php
+<?php
 }
 
 /**
@@ -136,13 +144,15 @@ function productManagementHTML(
  * @param string $error Any errors to display.
  * @return void
  */
-function productManagementDisabledHTML(int $id, string $error = null)
+function productManagementDisabledHTML(int $id, array $variations, string $error = null)
 {
-    if (!empty($error)) {
-        notice_display_embedded_html($error);
-    } else {
-    ?>
-        <div id="wc-biz-courier-logistics-product-management" class="wc-biz-courier-logistics">
+?>
+    <div id="wc-biz-courier-logistics-product-management" class="wc-biz-courier-logistics">
+        <?php
+        if (!empty($error)) {
+            notice_display_embedded_html($error);
+        } else {
+        ?>
             <p>
                 <?php
                 _e(
@@ -156,7 +166,17 @@ function productManagementDisabledHTML(int $id, string $error = null)
                 _e("Activate", 'wc-biz-courier-logistics');
                 ?>
             </button>
-        </div>
+        <?php
+        }
+        if (!empty($variations)) {
+        ?>
+            <button data-action="synchronize" data-product-id="<?= $id ?>" class="button button-primary">
+                <?= __("Synchronize", 'wc-biz-courier-logistics') ?>
+            </button>
+        <?php
+        }
+        ?>
+        <?php productVariationManagementHTML($variations) ?>
+    </div>
 <?php
-    }
 }
