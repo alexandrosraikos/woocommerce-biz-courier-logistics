@@ -24,6 +24,7 @@ To enable shipping rate calculation:
 Save your Biz Courier credentials into _Dashboard > WooCommerce Settings > Integration > Biz Courier & Logistics_.
 
 _Note: Consult Biz Courier for your shipping country's list of inaccessible areas and their postal codes._
+_Note: Cash on Delivery fee calculation is included only when using the native WooCommerce COD payment method._
 
 ### Manage Shipments
 
