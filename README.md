@@ -57,7 +57,7 @@ Read on below to get started with Biz Courier & Logistics for WooCommerce.
 
 ### Requirements
 
-Recommended requirements for this plugin are PHP 8.0+ (with `soap` extension enabled), WordPress 5.7+, WooCommerce 5.6.0+.
+Recommended requirements for this plugin are PHP 7.4+ (with `soap` extension enabled), WordPress 5.7+, WooCommerce 5.6.0+.
 
 _Biz Courier & Logistics for WooCommerce has not been tested with prior versions of PHP, WordPress or WooCommerce._
 
