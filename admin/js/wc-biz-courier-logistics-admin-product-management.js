@@ -43,7 +43,7 @@ function permitProduct(e) {
   e.preventDefault();
   const id = $(e.target).data("product-id");
   makeWPRequest(
-    '#wc-biz-courier-logistics-product-management button[data-action="permit"]',
+    e.target,
     "product_permit",
     ProductProperties.bizProductPermitNonce,
     {
@@ -59,7 +59,7 @@ function prohibitProduct(e) {
   e.preventDefault();
   const id = $(e.target).data("product-id");
   makeWPRequest(
-    '#wc-biz-courier-logistics-product-management button[data-action="prohibit"]',
+    e.target,
     "product_prohibit",
     ProductProperties.bizProductProhibitNonce,
     {

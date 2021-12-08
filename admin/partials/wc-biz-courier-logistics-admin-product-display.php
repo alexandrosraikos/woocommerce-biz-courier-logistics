@@ -81,6 +81,11 @@ function productVariationManagementHTML(array $variations = null)
                             )
                             : ''
                         ?>
+                        <?php
+                        if (!empty($variation['error'])) {
+                            notice_display_embedded_html($variation['error']);
+                        }
+                        ?>
                         <button data-action="<?= ($variation['enabled'] ? 'prohibit' : 'permit') ?>" data-product-id="<?= $variation['id'] ?>">
                             <?=
                             ($variation['enabled']) ?

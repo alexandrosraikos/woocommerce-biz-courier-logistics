@@ -786,6 +786,13 @@ class WCBizCourierLogisticsShipmentDelegate extends WCBizCourierLogisticsDelegat
          */
         $comments = "";
 
+        if (!function_exists('str_contains')) {
+            function str_contains($haystack, $needle)
+            {
+                return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+            }
+        }
+
         // Include Saturday delivery in comment.
         if (
             str_contains($this->order->get_shipping_method(), "Σαββάτου") ||

@@ -30,18 +30,18 @@ function showAlert(selector, message, type = null, placeBefore = false) {
   if (placeBefore) {
     $(selector).before(
       '<div class="wc-biz-courier-logistics-notice ' +
-        (type ?? "") +
-        '">' +
-        message +
-        "</div>"
+      (type ?? "") +
+      '">' +
+      message +
+      "</div>"
     );
   } else {
     $(selector).after(
       '<div class="wc-biz-courier-logistics-notice ' +
-        (type ?? "") +
-        '">' +
-        message +
-        "</div>"
+      (type ?? "") +
+      '">' +
+      message +
+      "</div>"
     );
   }
 }
@@ -63,8 +63,11 @@ function showAlert(selector, message, type = null, placeBefore = false) {
 function makeWPRequest(actionDOMSelector, action, nonce, data, completion) {
   // Add the loading class.
   $(actionDOMSelector).addClass("loading");
-  if (actionDOMSelector.includes("button")) {
-    $(actionDOMSelector).prop("disabled", true);
+
+  if (typeof actionDOMSelector === 'string') {
+    if (actionDOMSelector.includes("button")) {
+      $(actionDOMSelector).prop("disabled", true);
+    }
   }
 
   // Prepare data fields for WordPress.
@@ -93,8 +96,10 @@ function makeWPRequest(actionDOMSelector, action, nonce, data, completion) {
 
           // Remove the loading class.
           $(actionDOMSelector).removeClass("loading");
-          if (actionDOMSelector.includes("button")) {
-            $(actionDOMSelector).prop("disabled", false);
+          if (typeof actionDOMSelector === 'string') {
+            if (actionDOMSelector.includes("button")) {
+              $(actionDOMSelector).prop("disabled", false);
+            }
           }
         } catch (objError) {
           console.error("Invalid JSON response: " + objError);
@@ -108,8 +113,11 @@ function makeWPRequest(actionDOMSelector, action, nonce, data, completion) {
 
         // Remove the loading class.
         $(actionDOMSelector).removeClass("loading");
-        if (actionDOMSelector.includes("button")) {
-          $(actionDOMSelector).prop("disabled", false);
+
+        if (typeof actionDOMSelector === 'string') {
+          if (actionDOMSelector.includes("button")) {
+            $(actionDOMSelector).prop("disabled", false);
+          }
         }
       } else {
         showAlert(
@@ -120,8 +128,11 @@ function makeWPRequest(actionDOMSelector, action, nonce, data, completion) {
 
         // Remove the loading class.
         $(actionDOMSelector).removeClass("loading");
-        if (actionDOMSelector.includes("button")) {
-          $(actionDOMSelector).prop("disabled", false);
+
+        if (typeof actionDOMSelector === 'string') {
+          if (actionDOMSelector.includes("button")) {
+            $(actionDOMSelector).prop("disabled", false);
+          }
         }
       }
     },
