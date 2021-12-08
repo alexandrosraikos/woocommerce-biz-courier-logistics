@@ -68,7 +68,8 @@ class Biz_Shipping_Method extends WC_Shipping_Method
     function init_form_fields()
     {
         $statuses = array_merge(array(
-            'disabled' => __('Disable', 'wc-biz-courier-logistics')), wc_get_order_statuses());
+            'disabled' => __('Disable', 'wc-biz-courier-logistics')
+        ), wc_get_order_statuses());
         $this->form_fields = array(
             'enabled' => array(
                 'title' => __('Enable', 'wc-biz-courier-logistics'),
@@ -81,6 +82,9 @@ class Biz_Shipping_Method extends WC_Shipping_Method
                 'description' => __('Insert the additional Biz fee for Cash On Delivery payments.', 'wc-biz-courier-logistics'),
                 'type' => 'price',
             ),
+            /*
+            NOTE: Commenting these out until there is a solution for #40.
+            
             'biz_same_day_delivery_title' => array(
                 'title' => __('Same Day Delivery', 'wc-biz-courier-logistics'),
                 'type' => 'title',
@@ -107,6 +111,7 @@ class Biz_Shipping_Method extends WC_Shipping_Method
                 'type' => 'price',
                 'description' => __('Insert the delivery fee amount for every extra kg.', 'wc-biz-courier-logistics'),
             ),
+            */
             'biz_additional_services_title' => array(
                 'title' => __('Additional Services', 'wc-biz-courier-logistics'),
                 'type' => 'title',

@@ -237,7 +237,7 @@ msgid "Use billing phone"
 msgstr "Χρήση αριθμού τηλεφώνου χρέωσης"
 
 msgid "Submit the recipient's billing phone number instead of the shipping phone number to Biz."
-msgstr "Χρησιμοποιείστε τον αριθμό τηλεφώνου χρέωσης αντί για τον αριθμό τηλεφώνου παράδοσης όταν αποστέλλετε μία νέα παράδοση στη Biz."
+msgstr "Χρησιμοποιήστε τον αριθμό τηλεφώνου χρέωσης αντί για τον αριθμό τηλεφώνου παράδοσης όταν αποστέλλετε μία νέα παράδοση στη Biz."
 
 msgid "Morning delivery"
 msgstr "Πρωινή παράδοση"
