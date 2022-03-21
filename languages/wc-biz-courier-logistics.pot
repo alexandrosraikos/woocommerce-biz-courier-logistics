@@ -427,6 +427,10 @@ msgctxt "ORDER_METABOX_VOUCHER_TITLE"
 msgid "Voucher number"
 msgstr ""
 
+msgctxt "ORDER_METABOX_PARTNER_TRACKING_NUMBER_TITLE"
+msgid "Partner tracking number"
+msgstr ""
+
 msgctxt "ORDER_METABOX_VOUCHER_EDIT_ACTION"
 msgid "Edit voucher"
 msgstr ""

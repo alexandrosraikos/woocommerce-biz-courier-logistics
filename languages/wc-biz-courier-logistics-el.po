@@ -338,6 +338,9 @@ msgstr "Εισάγετε τον κωδικό παράδοσης από την Bi
 msgid "Voucher number"
 msgstr "Κωδικός παράδοσης"
 
+msgid "Partner tracking number"
+msgstr "Κωδικός ανίχνευσης συνεργάτη"
+
 msgid "Edit voucher"
 msgstr "Επεξεργασία κωδικού παράδοσης"
 

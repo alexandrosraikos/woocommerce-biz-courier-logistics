@@ -338,6 +338,9 @@ msgstr "Insert the shipment's voucher number from Biz Courier in the field below
 msgid "Voucher number"
 msgstr "Voucher number"
 
+msgid "Partner tracking number"
+msgstr "Partner tracking number"
+
 msgid "Edit voucher"
 msgstr "Edit voucher"
 
