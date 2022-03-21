@@ -254,7 +254,7 @@ class WCBizCourierLogisticsAdmin
      * @author Alexandros Raikos <alexandros@araikos.gr>
      * @param  array $links List of existing plugin row meta links.
      * @return array List of modified plugin row meta links.
-     * @version 1.4.0
+     * @version 1.4.2
      */
     public function pluginRowMeta($links, $file): array
     {
