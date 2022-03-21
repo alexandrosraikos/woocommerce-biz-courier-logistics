@@ -46,7 +46,7 @@ function shipmentVoucherColumnHTML(string $voucher): void
  */
 function shipmentCreationHTML(?array $items): void
 {
-?>
+    ?>
     <div id="wc-biz-courier-logistics-shipment-management" class="wc-biz-courier-logistics">
         <p><?= __("This order has not shipped with Biz.", "wc-biz-courier-logistics") ?></p>
         <div class="actions">
@@ -65,9 +65,7 @@ function shipmentCreationHTML(?array $items): void
                 <p>
                     <?=
                     __(
-                        "Any checked items below will be submitted to Biz. 
-                        Make sure all the items in the order are enabled 
-                        and found in the Biz Warehouse:",
+                        "Any checked items below will be submitted to Biz. Make sure all the items in the order are enabled and found in the Biz Warehouse:",
                         "wc-biz-courier-logistics"
                     );
                     ?>
@@ -75,7 +73,7 @@ function shipmentCreationHTML(?array $items): void
                 <ul>
                     <?php
                     foreach ($items as $item) {
-                    ?>
+                        ?>
                         <li>
                             <a href="<?= $item['url'] ?>" class="<?= (($item['compatible']) ? 'compatible' : 'incompatible') ?>">
                                 <?=
@@ -92,7 +90,7 @@ function shipmentCreationHTML(?array $items): void
             </div>
         <?php } ?>
     </div>
-<?php
+    <?php
 }
 
 /**
@@ -108,7 +106,7 @@ function shipmentCreationHTML(?array $items): void
  */
 function shipmentManagementHTML(string $voucher, string $status, array $history): void
 {
-?>
+    ?>
     <div id="wc-biz-courier-logistics-shipment-management" class="wc-biz-courier-logistics">
         <div class="voucher">
             <h4><?= __("Voucher number", 'wc-biz-courier-logistics') ?></h4>
@@ -118,14 +116,14 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
             <?php
             // Show last mile tracking number, if available.
             if (!empty(end($history)['last_mile_tracking_number'])) {
-            ?>
+                ?>
                 <h5>
                     <?= __('Partner tracking number', 'wc-biz-courier-logistics') ?>
                 </h5>
                 <div class="partner-number">
                     <?= end($history)['last_mile_tracking_number'] ?>
                 </div>
-            <?php
+                <?php
             }
             ?>
             <button data-action="edit">
@@ -137,7 +135,7 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
         </div>
         <?php
         if (!empty($history)) {
-        ?>
+            ?>
             <div class="actions">
                 <h4>
                     <?= __("Shipment actions", 'wc-biz-courier-logistics') ?>
@@ -146,14 +144,14 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
                 // Shipment modification actions.
                 if (end($history)['level'] != 'Final') {
                     if ($status == "processing") {
-                ?>
+                        ?>
                         <button class="button" data-action="modify">
                             <?= __("Modify shipment", "wc-biz-courier-logistics") ?>
                         </button>
                         <button class="button" data-action="cancel">
                             <?= __("Request shipment cancellation", "wc-biz-courier-logistics") ?>
                         </button>
-                    <?php
+                        <?php
                     } else {
                         notice_display_embedded_html(
                             __(
@@ -163,7 +161,7 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
                             ),
                             'warning'
                         );
-                    ?>
+                        ?>
                         <button class="button button-primary" data-action="sync">
                             <?= __("Synchronize order status", "wc-biz-courier-logistics") ?>
                         </button>
@@ -207,11 +205,11 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
                                     ),
                                     'warning'
                                 );
-                        ?>
+                                ?>
                                 <button class="button button-primary" data-action="sync">
                                     <?= __("Synchronize order status", "wc-biz-courier-logistics") ?>
                                 </button>
-                <?php
+                                <?php
                             } else {
                                 notice_display_embedded_html(
                                     sprintf(
@@ -257,7 +255,7 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
                 <ul class="status-list">
                     <?php
                     foreach (array_reverse($history) as $status) {
-                    ?>
+                        ?>
                         <li class="status <?= $status['conclusion'] ?>">
                             <span class="level">
                                 <?= __($status['level'], 'wc-biz-courier-logistics') ?>
@@ -287,14 +285,14 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
                             <?php
                             // Additional status actions.
                             if (!empty($status['actions'])) {
-                            ?>
+                                ?>
                                 <ul class="actions">
                                     <div class="title">
                                         <?= __('Actions:', 'wc-biz-courier-logistics') ?>
                                     </div>
                                     <?php
                                     foreach (array_reverse($status['actions']) as $action) {
-                                    ?>
+                                        ?>
                                         <hr />
                                         <li class="description">
                                             <?= $action['description'] ?>
@@ -306,11 +304,11 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
                                                 . $action['time']
                                             ?>
                                         </li>
-                                    <?php
+                                        <?php
                                     }
                                     ?>
                                 </ul>
-                            <?php
+                                <?php
                             }
                             ?>
                             <span class="date">
@@ -321,11 +319,11 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
                                 ?>
                             </span>
                         </li>
-                    <?php
+                        <?php
                     }
                     ?>
             </div>
-        <?php
+            <?php
         } else {
             notice_display_embedded_html(
                 __("Unable to fetch status history for this shipment.", 'wc-biz-courier-logistics'),
@@ -334,5 +332,5 @@ function shipmentManagementHTML(string $voucher, string $status, array $history)
         }
         ?>
     </div>
-<?php
+    <?php
 }
