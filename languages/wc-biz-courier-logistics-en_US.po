@@ -335,8 +335,8 @@ msgstr "Add existing voucher number"
 msgid "Insert the shipment's voucher number from Biz Courier in the field below."
 msgstr "Insert the shipment's voucher number from Biz Courier in the field below."
 
-msgid "Voucher number: "
-msgstr "Voucher number: "
+msgid "Voucher number"
+msgstr "Voucher number"
 
 msgid "Edit voucher"
 msgstr "Edit voucher"
@@ -350,8 +350,8 @@ msgstr "Delete voucher"
 msgid "Are you sure you want to delete the shipment voucher from this order?"
 msgstr "Are you sure you want to delete the shipment voucher from this order?"
 
-msgid "Shipment actions: "
-msgstr "Shipment actions: "
+msgid "Shipment actions"
+msgstr "Shipment actions"
 
 msgid "Modify shipment"
 msgstr "Modify shipment"
@@ -407,8 +407,8 @@ msgstr "failed"
 msgid "completed"
 msgstr "completed"
 
-msgid "Status history: "
-msgstr "Status history: "
+msgid "Status history"
+msgstr "Status history"
 
 msgid "Delivery status update"
 msgstr "Delivery status update"

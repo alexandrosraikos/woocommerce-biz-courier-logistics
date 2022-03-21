@@ -335,8 +335,8 @@ msgstr "Προσθήκη κωδικού παράδοσης"
 msgid "Insert the shipment's voucher number from Biz Courier in the field below."
 msgstr "Εισάγετε τον κωδικό παράδοσης από την Biz Courier στο παρακάτω πεδίο."
 
-msgid "Voucher number: "
-msgstr "Κωδικός παράδοσης: "
+msgid "Voucher number"
+msgstr "Κωδικός παράδοσης"
 
 msgid "Edit voucher"
 msgstr "Επεξεργασία κωδικού παράδοσης"
@@ -350,8 +350,8 @@ msgstr "Διαγραφή κωδικού παράδοσης"
 msgid "Are you sure you want to delete the shipment voucher from this order?"
 msgstr "Είστε σίγουρος/η πως θέλετε να διαγράψετε αυτόν τον κωδικό παράδοσης από την παραγγελία;"
 
-msgid "Shipment actions: "
-msgstr "Ενέργειες παράδοσης: "
+msgid "Shipment actions"
+msgstr "Ενέργειες παράδοσης"
 
 msgid "Modify shipment"
 msgstr "Επεξεργασία παράδοσης"
@@ -407,8 +407,8 @@ msgstr "απέτυχε"
 msgid "completed"
 msgstr "ολοκληρώθηκε"
 
-msgid "Status history: "
-msgstr "Ιστορικό κατάστασης: "
+msgid "Status history"
+msgstr "Ιστορικό κατάστασης"
 
 msgid "Delivery status update"
 msgstr "Ενημέρωση κατάστασης παράδοσης"

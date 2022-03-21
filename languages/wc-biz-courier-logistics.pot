@@ -424,7 +424,7 @@ msgid "Insert the shipment's voucher number from Biz Courier in the field below.
 msgstr ""
 
 msgctxt "ORDER_METABOX_VOUCHER_TITLE"
-msgid "Voucher number: "
+msgid "Voucher number"
 msgstr ""
 
 msgctxt "ORDER_METABOX_VOUCHER_EDIT_ACTION"
@@ -444,7 +444,7 @@ msgid "Are you sure you want to delete the shipment voucher from this order?"
 msgstr ""
 
 msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_TITLE"
-msgid "Shipment actions: "
+msgid "Shipment actions"
 msgstr ""
 
 msgctxt "ORDER_METABOX_SHIPMENT_ACTIONS_MODIFY_BUTTON"
@@ -520,7 +520,7 @@ msgid "completed"
 msgstr ""
 
 msgctxt "ORDER_METABOX_STATUS_HISTORY_TITLE"
-msgid "Status history: "
+msgid "Status history"
 msgstr ""
 
 msgctxt "ORDER_METABOX_STATUS_HISTORY_GENERIC_DESCRIPTION"
