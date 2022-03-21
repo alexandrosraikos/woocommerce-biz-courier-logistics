@@ -157,7 +157,6 @@ class WC_Biz_Courier_Logistics
      */
     private function define_admin_hooks()
     {
-        // TODO @alexandrosraikos: Test all use cases (#37).
 
         /**
          * ----------------

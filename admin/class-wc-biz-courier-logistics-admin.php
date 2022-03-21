@@ -56,8 +56,7 @@ class WCBizCourierLogisticsAdmin
         require_once(plugin_dir_path(
             dirname(__FILE__)
         )
-            . 'admin/partials/wc-biz-courier-logistics-admin-display.php'
-        );
+            . 'admin/partials/wc-biz-courier-logistics-admin-display.php');
     }
 
 
@@ -273,7 +272,7 @@ class WCBizCourierLogisticsAdmin
             );
 
             // Add support link.
-            $links[] = ('<a href="https://www.araikos.gr/en/contact/" target="blank">'
+            $links[] = ('<a href="mailto:alexandros@araikos.gr?subject=Support request for wc-biz-courier-logistics" target="blank">'
                 . __('Support', 'wc-biz-courier-logistics')
                 . '</a>'
             );
@@ -349,8 +348,7 @@ class WCBizCourierLogisticsAdmin
              */
             $biz_settings = get_option('woocommerce_biz_integration_settings');
 
-            if (
-                $biz_settings['account_number'] == null ||
+            if ($biz_settings['account_number'] == null ||
                 $biz_settings['warehouse_crm'] == null ||
                 $biz_settings['username'] == null ||
                 $biz_settings['password'] == null
@@ -390,8 +388,7 @@ class WCBizCourierLogisticsAdmin
         // Import the Biz Shipping Method class.
         if (!class_exists('Biz_Shipping_Method')) {
             require_once(plugin_dir_path(dirname(__FILE__))
-                . 'admin/class-wc-biz-courier-logistics-shipping-method.php'
-            );
+                . 'admin/class-wc-biz-courier-logistics-shipping-method.php');
         }
     }
 
